@@ -6,7 +6,6 @@ public class StartUp {
 		System.out.println("Hello world");
 		System.out.println("Testing Change file");
 		System.out.println("Testing Change file 2");
-		System.out.println("Testing Change file 3");
 
 	}
 
