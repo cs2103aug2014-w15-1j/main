@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Initialization with parameter (ArrayList<String>) data is required
  * */
 
-class StoringData {
+class DataStore {
 	
 	private ArrayList<String> TRASHDATA;
 	private ArrayList<String> EVENTDATA;
@@ -21,12 +21,12 @@ class StoringData {
 	/**
 	 * Constructor
 	 * */
-	public StoringData() {
+	public DataStore() {
 		this.TRASHDATA = new ArrayList<String>();
 		this.EVENTDATA = new ArrayList<String>();
 	}
 	
-	public StoringData(ArrayList<String> trash, ArrayList<String> event) {
+	public DataStore(ArrayList<String> trash, ArrayList<String> event) {
 		this.TRASHDATA = trash;
 		this.EVENTDATA = event;
 	}
