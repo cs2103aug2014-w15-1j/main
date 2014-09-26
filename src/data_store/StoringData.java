@@ -14,6 +14,7 @@ class StoringData {
 	
 	private ArrayList<String> TRASHDATA;
 	private ArrayList<String> EVENTDATA;
+	
 	private String TRASHERROR = " Trash file writing error ";
 	private String EVENTERROR = " Event file writing error ";
 	

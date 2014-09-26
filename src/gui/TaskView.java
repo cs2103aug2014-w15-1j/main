@@ -31,11 +31,13 @@ import java.awt.Dimension;
 
 
 public class TaskView extends JFrame {
+	
 	private TextArea mainWindow;
-	private JTextField inputWindow;
-	private JPanel mainPanel;
-	private JTextField feedbackWindow;
 	private TextField titleWindow;
+	
+	private JTextField inputWindow;
+	private JTextField feedbackWindow;
+	private JPanel mainPanel;
 
 	/**
 	 * Launch the application.
@@ -114,7 +116,6 @@ public class TaskView extends JFrame {
 		mainPanel.add(feedbackWindow, BorderLayout.SOUTH);
 		feedbackWindow.setColumns(20);
 	}
-	
 	
 	class inputHit implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
