@@ -1,4 +1,5 @@
 package data_store;
+
 import logic.Task;
 
 import java.io.BufferedWriter;
@@ -37,17 +38,11 @@ public class DataStore {
 		writeTrash(trashData);
 		writeEvent(fileData);
 	}
-	
-	/**
-	 * Only write to trash file
-	 */
+
 	public void writeTrash(ArrayList<Task> trashData) {
 		writeFile(TRASHFILENAME, trashData, TRASHERROR);
 	}
 	
-	/**
-	 * Only write to event file
-	 */
 	public void writeEvent(ArrayList<Task> fileData) {
 		writeFile(EVENTFILENAME, fileData, EVENTERROR);
 	}
@@ -88,7 +83,8 @@ public class DataStore {
 	protected String toSentence(Task taskLine) {
 		return taskLine.getName() + SEPERATESIMBOL + 
 			   taskLine.getDescription() + SEPERATESIMBOL +
-			   taskLine.getRepeat() + SEPERATESIMBOL + 
+			   taskLine.getRepeatTimes() + SEPERATESIMBOL +
+			   taskLine.getRepeatDays() + SEPERATESIMBOL + 
 			   taskLine.getStartDate() + SEPERATESIMBOL + 
 			   taskLine.getEndDate(); 
 	}

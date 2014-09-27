@@ -1,6 +1,5 @@
 package read_file;
 
-import data_store.DataStore;
 import logic.Task;
 
 import java.io.BufferedReader;
@@ -11,6 +10,7 @@ public class ReadFile {
 	
 	private final String EVENTFILENAME = "Eventfile.txt";
 	private final String SEPERATESIMBOL = "\\-\\";
+	private final String READERROR = "Error while reading file line by line:";
 	private ArrayList<Task> EVENTTASK;
 	
 	public ReadFile() {
@@ -35,20 +35,20 @@ public class ReadFile {
 			return this.EVENTTASK;
 
 		} catch (Exception e) {
-			System.out.println("Error while reading file line by line:" + e.getMessage());  
+			System.out.println(READERROR + e.getMessage());  
 			return null;
 		}
 	}
-
-	public Task makeTask(String taskString) {
-		String[] tempoTaskSplit = taskString.split(SEPERATESIMBOL);
-		Task curTask = new Task();
-		curTask = addtoTask(tempoTaskSplit, curTask);
-		
-		return curTask;
-	}
 	
-	protected Task addtoTask(String[] tempoTaskSplit, Task curTask) {
+	/**
+	 * create a event
+	 */
+	protected Task makeTask(String taskString) {
+		String[] tempoTaskSplit = taskString.split(SEPERATESIMBOL);
+		Task curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+								tempoTaskSplit[2], tempoTaskSplit[3],
+								tempoTaskSplit[4], tempoTaskSplit[5]);
+		
 		return curTask;
 	}
 }
