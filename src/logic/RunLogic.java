@@ -2,23 +2,12 @@ package logic;
 
 import java.util.ArrayList;
 
-import TextBuddy.COMMAND_TYPE;
-
 public class RunLogic {
 	private static GUIStatus GUI;
 	private static LogicToGui passToGui;
 	private static LogicToStore passToStore;
-	private static CliToLogic userCommand;
 	private static ArrayList<String> taskList;
 	private static ArrayList<String> trashbinList;
-	private static ArrayList<String> undonebinList;
-	private static ArrayList<String> undoList;
-	
-	public static int LIST_VIEW_MODE = 0;
-	public static int TASK_VIEW_MODE = 1;
-	public static int CALENDAR_VIEW_MODE = 2;
-	public static int TRASHBIN_VIEW_MODE = 3;
-	public static int UNDONEBIN_VIEW_MODE = 4;
 	
 	enum COMMAND_TYPE {
 		ADD_TASK, DELETE_TASK, READ_TASK, 
@@ -27,17 +16,15 @@ public class RunLogic {
 	};
 	
 	public static void Logic(CliToLogic CLI){
-		userCommand = CLI;
-		if(checkValid()){
-			executeCommand();
+		CliToLogic userCommand = CLI;
+		if(checkValid(userCommand)){
+			executeCommand(userCommand);
 		} else {
-			wrongCommand();
+			wrongCommand(userCommand);
 		};
-		StoreintoFile(passToStore);
-		ShowInGui(passToGui);
 	}
 	
-	private static boolean checkValid(){
+	private static boolean checkValid(CliToLogic userCommand){
 		String command = userCommand.getCommand();
 		switch(GUI.getMode()){
 		case 0:
@@ -75,33 +62,33 @@ public class RunLogic {
 		}
 	}
 	
-	private static void executeCommand(){
+	private static void executeCommand(CliToLogic userCommand){
 		COMMAND_TYPE commandType = determineCommandType(userCommand.getCommand());
 		
 		switch (commandType) {
 			case ADD_TASK:
-				addTask();
+				addTask(userCommand);
 				break;
 			case DELETE_TASK:
-				deleteTask();
+				deleteTask(userCommand);
 				break;
 			case READ_TASK:
-				readTask();
+				readTask(userCommand);
 				break;
 			case RENAME:
-				rename();
+				rename(userCommand);
 				break;
 			case DESCRIBE:
-				describe();
+				describe(userCommand);
 				break;
 			case REPEAT:
-				repeat();
+				repeat(userCommand);
 				break;
 			case RESCHEDULE:
-				reschedule();
+				reschedule(userCommand);
 				break;
 			case VIEW_MODE:
-				view();
+				view(userCommand);
 				break;
 			case UNDO:
 				undo();
@@ -120,12 +107,63 @@ public class RunLogic {
 		}
 	}
 	
-	private static void addTask() {
-		String newLine = userCommand.getArg1();
+
+	private static void addTask(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
 		
 	}
 
-	private static void wrongCommand(){
+	private static void deleteTask(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void readTask(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void rename(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void describe(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void repeat(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void reschedule(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void view(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void undo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void restore(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void search(CliToLogic userCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void wrongCommand(CliToLogic userCommand){
 		
 	}
 	
