@@ -18,8 +18,11 @@ class DataStore {
 	private String TRASHERROR = " Trash file writing error ";
 	private String EVENTERROR = " Event file writing error ";
 	
+	private String TRASHFILENAME = "Trashfile.txt";
+	private String EVENTFILENAME = "Eventfile.txt";
+	
 	/**
-	 * Constructor
+	 * ========= Constructor
 	 * */
 	public DataStore() {
 		this.TRASHDATA = new ArrayList<String>();
@@ -32,57 +35,48 @@ class DataStore {
 	}
 	
 	/**
-	 * Methods
+	 * ========= Methods
 	 * */
 	
 	/**
 	 * Writing all data to distinctive file
-	 * 
-	 * @param TrashFileName
-	 *            is the (String) name of the trash file
-	 * @param EventFileName
-	 *            is the (String) name of the event file
 	 */
-	public void writeAllData(String TrashFileName, String EventFileName) {
-		writeTrash(TrashFileName);
-		writeEvent(EventFileName);
+	public void writeAllData() {
+		writeTrash();
+		writeEvent();
 	}
 	
 	/**
 	 * Only write to trash file
-	 * 
-	 * @param TrashFileName
-	 *            is the (String) name of the trash file
 	 */
-	public void writeTrash(String TrashFileName) {
-		try {
-			FileWriter fw = new FileWriter (TrashFileName);
-			BufferedWriter bw = new BufferedWriter (fw);
-			PrintWriter fileOut = new PrintWriter (bw);
-			writeLineAL(this.TRASHDATA, fileOut);
-			fileOut.close();
-		}
-		catch (Exception e) {
-			System.out.println(TRASHERROR + e.toString());
-		}
+	public void writeTrash() {
+		writeFile(TRASHFILENAME, TRASHDATA, TRASHERROR);
 	}
 	
 	/**
 	 * Only write to event file
+	 */
+	public void writeEvent() {
+		writeFile(EVENTFILENAME, EVENTDATA, EVENTERROR);
+	}
+	
+	
+	/**
+	 * Writing to specific file
 	 * 
-	 * @param EventFileName
+	 * @param fileName
 	 *            is the (String) name of the event file
 	 */
-	public void writeEvent(String EventFileName) {
+	protected void writeFile(String fileName, ArrayList<String> data, String errorMesg) {
 		try {
-			FileWriter fw = new FileWriter (EventFileName);
+			FileWriter fw = new FileWriter (fileName);
 			BufferedWriter bw = new BufferedWriter (fw);
 			PrintWriter fileOut = new PrintWriter (bw);
-			writeLineAL(this.EVENTDATA, fileOut);
+			writeLineAL(data, fileOut);
 			fileOut.close();
 		}
 		catch (Exception e) {
-			System.out.println(EVENTERROR + e.toString());
+			System.out.println(errorMesg + e.toString());
 		}
 	}
 	
