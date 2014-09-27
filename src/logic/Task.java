@@ -7,10 +7,6 @@ public class Task {
 	private String startDate;
 	private String endDate;
 	
-	Task(){
-		
-	}
-	
 	public String getName(){
 		return this.name;
 	}
