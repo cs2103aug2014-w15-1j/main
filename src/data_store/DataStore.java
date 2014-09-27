@@ -1,4 +1,5 @@
 package data_store;
+import logic.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -15,11 +16,11 @@ class DataStore {
 	private ArrayList<String> TRASHDATA;
 	private ArrayList<String> EVENTDATA;
 	
-	private String TRASHERROR = " Trash file writing error ";
-	private String EVENTERROR = " Event file writing error ";
+	private final String TRASHERROR = " Trash file writing error ";
+	private final String EVENTERROR = " Event file writing error ";
 	
-	private String TRASHFILENAME = "Trashfile.txt";
-	private String EVENTFILENAME = "Eventfile.txt";
+	private final String TRASHFILENAME = "Trashfile.txt";
+	private final String EVENTFILENAME = "Eventfile.txt";
 	
 	/**
 	 * ========= Constructor
@@ -60,7 +61,6 @@ class DataStore {
 		writeFile(EVENTFILENAME, EVENTDATA, EVENTERROR);
 	}
 	
-	
 	/**
 	 * Writing to specific file
 	 * 
@@ -88,10 +88,9 @@ class DataStore {
 	 * @param fileOut
 	 *            (PrintWriter) of the file
 	 */
-	protected void writeLineAL(ArrayList<String> Data, PrintWriter fileOut) {
-		for (int i = 0; i < Data.size(); i++) {
-			fileOut.println(Data.get(i)); 
+	protected void writeLineAL(ArrayList<String> data, PrintWriter fileOut) {
+		for (int i = 0; i < data.size(); i++) {
+			fileOut.println(data.get(i)); 
 		}
 	}
-	
 }
