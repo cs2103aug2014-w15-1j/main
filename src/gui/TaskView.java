@@ -29,7 +29,6 @@ import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Dimension;
 
-
 public class TaskView extends JFrame {
 	private TextArea mainWindow;
 	private JTextField inputWindow;
