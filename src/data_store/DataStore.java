@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-
 /**
  * This class stores data to file by passing (String)filename
  * Initialization with parameter (ArrayList<String>) data is required
@@ -17,11 +16,11 @@ class DataStore {
 	private ArrayList<String> TRASHDATA;
 	private ArrayList<String> EVENTDATA;
 	
-	private String TRASHERROR = " Trash file writing error ";
-	private String EVENTERROR = " Event file writing error ";
+	private final String TRASHERROR = " Trash file writing error ";
+	private final String EVENTERROR = " Event file writing error ";
 	
-	private String TRASHFILENAME = "Trashfile.txt";
-	private String EVENTFILENAME = "Eventfile.txt";
+	private final String TRASHFILENAME = "Trashfile.txt";
+	private final String EVENTFILENAME = "Eventfile.txt";
 	
 	/**
 	 * ========= Constructor
