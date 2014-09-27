@@ -1,6 +1,6 @@
-<<<<<<< HEAD
-/main
+/gui
 /logic
+<<<<<<< HEAD
 =======
 /main/
 /cli/
@@ -10,3 +10,6 @@
 =======
 >>>>>>> 5918829ee826c89dffb9bc01b53677d388a2b403
 >>>>>>> 62cc61d6a4ae073ba9b563e608874bffe119343c
+=======
+/data_store
+>>>>>>> de94cc54f5e0ebd1cf0dbce12a510907f1c66a4d
