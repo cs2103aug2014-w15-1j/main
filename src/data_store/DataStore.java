@@ -1,9 +1,11 @@
 package data_store;
+import logic.*;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+
 
 /**
  * This class stores data to file by passing (String)filename
@@ -60,7 +62,6 @@ class DataStore {
 		writeFile(EVENTFILENAME, EVENTDATA, EVENTERROR);
 	}
 	
-	
 	/**
 	 * Writing to specific file
 	 * 
@@ -88,10 +89,9 @@ class DataStore {
 	 * @param fileOut
 	 *            (PrintWriter) of the file
 	 */
-	protected void writeLineAL(ArrayList<String> Data, PrintWriter fileOut) {
-		for (int i = 0; i < Data.size(); i++) {
-			fileOut.println(Data.get(i)); 
+	protected void writeLineAL(ArrayList<String> data, PrintWriter fileOut) {
+		for (int i = 0; i < data.size(); i++) {
+			fileOut.println(data.get(i)); 
 		}
 	}
-	
 }
