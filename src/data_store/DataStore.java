@@ -19,7 +19,7 @@ class DataStore {
 	private String EVENTERROR = " Event file writing error ";
 	
 	private String TRASHFILENAME = "Trashfile.txt";
-	private String EVENTFILENAME = "EventFIle.txt";
+	private String EVENTFILENAME = "Eventfile.txt";
 	
 	/**
 	 * ========= Constructor
