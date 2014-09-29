@@ -5,13 +5,14 @@ import logic.Task;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ReadFile {
 	
 	private static final String EVENTFILENAME = "Taskfile.txt";
 	private static final String TRASHFILENAME = "Trashfile.txt";
 	
-	private final String SEPERATESIMBOL = "-";
+	private final String SEPERATESIMBOL = "=";
 	private final String READTASKERROR = "Error while reading task file line by line:";
 	private final String READTRASHERROR = "Error while reading trash file line by line:";
 	private ArrayList<Task> EVENTTASK;
@@ -73,9 +74,20 @@ public class ReadFile {
 	 */
 	protected Task makeTask(String taskString) {
 		String[] tempoTaskSplit = taskString.split(SEPERATESIMBOL);
+		
+		String[] startDateStr = tempoTaskSplit[4].split("-");
+		Date startDate = new Date(Integer.parseInt(startDateStr[0]),
+		                          Integer.parseInt(startDateStr[1]),
+		                          Integer.parseInt(startDateStr[2]));
+		
+		String[] endDateStr = tempoTaskSplit[5].split("-");
+        Date endDate = new Date(Integer.parseInt(endDateStr[0]),
+                                Integer.parseInt(endDateStr[1]),
+                                Integer.parseInt(endDateStr[2]));
+        
 		Task curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
 								tempoTaskSplit[2], tempoTaskSplit[3],
-								tempoTaskSplit[4], tempoTaskSplit[5]);
+								startDate, endDate);
 		
 		return curTask;
 	}

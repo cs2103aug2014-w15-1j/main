@@ -21,7 +21,7 @@ public class DataStore {
 	private static final String TRASHFILENAME = "Trashfile.txt";
 	private static final String EVENTFILENAME = "Taskfile.txt";
 	
-	private static final String SEPERATESIMBOL = "-";
+	private static final String SEPERATESIMBOL = "=";
 	
 	/**
 	 * Writing all data to distinctive file
@@ -75,11 +75,6 @@ public class DataStore {
 	}
 	
 	protected static String toSentence(Task taskLine) {
-		return taskLine.getName() + SEPERATESIMBOL + 
-			   taskLine.getDescription() + SEPERATESIMBOL +
-			   taskLine.getRepeatTimes() + SEPERATESIMBOL +
-			   taskLine.getRepeatDays() + SEPERATESIMBOL + 
-			   taskLine.getStartDate() + SEPERATESIMBOL + 
-			   taskLine.getEndDate(); 
+	    return taskLine.toPersonalString();
 	}
 }
