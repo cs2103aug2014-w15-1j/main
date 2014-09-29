@@ -188,14 +188,17 @@ public class CliProcess {
 		String[] newS = new String[7];
 		String s;
 		
-		s = identifyMode(strArr[1]);
+		s = strArr[1];
 		
-		if(s.equals(COMMAND_TYPE.BIN.name())){
-			//bin
+		if(s.equalsIgnoreCase("bin")){
+			//assigned BIN
+			s = COMMAND_TYPE.BIN.name();
 			newS = changeViewCommand(s, strArr);
 		} 		
 	    else{
-	    	//date, month
+	    	//returned DATE or MONTH
+	    	s = identifyMode(strArr[1]);
+	    	
 			newS = addViewCommand(s, strArr);
 		}		
 		
@@ -204,24 +207,25 @@ public class CliProcess {
 		return commandPackage;
 	}
 	
-	/* Add new command for View
+	/* Insert new command for View (on top of VIEW)
 	 * 
-	 * Also shift down the arguments after new command
-	 * @argument 2 commands in total, array of strings to be changed
+	 * VIEW MONTH or VIEW DATE
+	 * @argument 2 commands in total
 	 */
 	private static String[] addViewCommand(String s, String[] strArr){
-		//date, month
+		//take out the actual month/date
 		String temp = strArr[1];
+		//assign to next argument
 		strArr[2] = temp;
+		
 		strArr[1] = s;
 		
 		return strArr;
 	}
 	
-	/* Change commands for View
+	/* Change commands for View Bin
 	 * 
-	 * Also shift up the arguments after new command
-	 * @argument New command , array of strings to be changed
+	 * bin string to COMMAND_TYPE BIN string
 	 */
 	private static String[] changeViewCommand(String s, String[] strArr){
 		//bin
@@ -229,8 +233,6 @@ public class CliProcess {
 		
 		return strArr;
 	}
-	
-	
 	
 	/* Function: View
 	 * To identify different Date mode or Month mode for View 
