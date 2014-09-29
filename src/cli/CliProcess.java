@@ -19,17 +19,15 @@ public class CliProcess {
      * a pack or arguments will be passed on
      */
 	public static CliToLog interpretCommand(String s){ 
-		    String[] inputLine = new String[7]; 
-		    inputLine = separate(s);
+		    String[] inputLine = separate(s);
 		    //Index of array 0,1,2,3,4,5,6 as argument	
 		    return doCommand(inputLine);		   
    }
    
    // Split into string into array of arguments 
    private static String[] separate(String s){
-	   String[] inputSplit = new String[7];
+	   String[] inputSplit = s.split(" ", 7);
 	   //Split into array of index 0,1,2,3,4,5,6
-	  inputSplit = s.split(" ", 7);
 	  for (String stringNode : inputSplit) {
           if (stringNode == null) 
         	  stringNode = NULLED;
