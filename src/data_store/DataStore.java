@@ -1,5 +1,6 @@
 package data_store;
-import logic.*;
+
+import logic.Task;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -11,10 +12,7 @@ import java.util.ArrayList;
  * Initialization with parameter (ArrayList<String>) data is required
  * */
 
-class DataStore {
-	
-	private ArrayList<String> TRASHDATA;
-	private ArrayList<String> EVENTDATA;
+public class DataStore {
 	
 	private final String TRASHERROR = " Trash file writing error ";
 	private final String EVENTERROR = " Event file writing error ";
@@ -22,18 +20,12 @@ class DataStore {
 	private final String TRASHFILENAME = "Trashfile.txt";
 	private final String EVENTFILENAME = "Eventfile.txt";
 	
+	private final String SEPERATESIMBOL = "\\-\\";
+	
 	/**
 	 * ========= Constructor
 	 * */
-	public DataStore() {
-		this.TRASHDATA = new ArrayList<String>();
-		this.EVENTDATA = new ArrayList<String>();
-	}
-	
-	public DataStore(ArrayList<String> trash, ArrayList<String> event) {
-		this.TRASHDATA = trash;
-		this.EVENTDATA = event;
-	}
+	public DataStore() {}
 	
 	/**
 	 * ========= Methods
@@ -42,23 +34,17 @@ class DataStore {
 	/**
 	 * Writing all data to distinctive file
 	 */
-	public void writeAllData() {
-		writeTrash();
-		writeEvent();
+	public void writeAllData(ArrayList<Task> trashData, ArrayList<Task> fileData) {
+		writeTrash(trashData);
+		writeEvent(fileData);
+	}
+
+	public void writeTrash(ArrayList<Task> trashData) {
+		writeFile(TRASHFILENAME, trashData, TRASHERROR);
 	}
 	
-	/**
-	 * Only write to trash file
-	 */
-	public void writeTrash() {
-		writeFile(TRASHFILENAME, TRASHDATA, TRASHERROR);
-	}
-	
-	/**
-	 * Only write to event file
-	 */
-	public void writeEvent() {
-		writeFile(EVENTFILENAME, EVENTDATA, EVENTERROR);
+	public void writeEvent(ArrayList<Task> fileData) {
+		writeFile(EVENTFILENAME, fileData, EVENTERROR);
 	}
 	
 	/**
@@ -67,7 +53,7 @@ class DataStore {
 	 * @param fileName
 	 *            is the (String) name of the event file
 	 */
-	protected void writeFile(String fileName, ArrayList<String> data, String errorMesg) {
+	protected void writeFile(String fileName, ArrayList<Task> data, String errorMesg) {
 		try {
 			FileWriter fw = new FileWriter (fileName);
 			BufferedWriter bw = new BufferedWriter (fw);
@@ -88,9 +74,18 @@ class DataStore {
 	 * @param fileOut
 	 *            (PrintWriter) of the file
 	 */
-	protected void writeLineAL(ArrayList<String> data, PrintWriter fileOut) {
+	protected void writeLineAL(ArrayList<Task> data, PrintWriter fileOut) {
 		for (int i = 0; i < data.size(); i++) {
-			fileOut.println(data.get(i)); 
+			fileOut.println(toSentence(data.get(i))); 
 		}
+	}
+	
+	protected String toSentence(Task taskLine) {
+		return taskLine.getName() + SEPERATESIMBOL + 
+			   taskLine.getDescription() + SEPERATESIMBOL +
+			   taskLine.getRepeatTimes() + SEPERATESIMBOL +
+			   taskLine.getRepeatDays() + SEPERATESIMBOL + 
+			   taskLine.getStartDate() + SEPERATESIMBOL + 
+			   taskLine.getEndDate(); 
 	}
 }

@@ -8,7 +8,11 @@ public class Task {
 	private String startDate;
 	private String endDate;
 	
-	Task(String name){
+	public Task(){
+		// empty constructor
+	}
+	
+	public Task(String name){
 		this.name = name;
 		this.description = null;
 		this.repeatTimes = null;
@@ -17,7 +21,7 @@ public class Task {
 		this.endDate = null;
 	}
 	
-	Task(String name, String description){
+	public Task(String name, String description){
 		this.name = name;
 		this.description = description;
 		this.repeatTimes = null;
@@ -26,7 +30,7 @@ public class Task {
 		this.endDate = null;
 	}
 	
-	Task(String name, String description, String repeatTimes, String repeatDays){
+	public Task(String name, String description, String repeatTimes, String repeatDays){
 		this.name = name;
 		this.description = description;
 		this.repeatTimes = repeatTimes;
@@ -35,7 +39,7 @@ public class Task {
 		this.endDate = null;
 	}
 	
-	Task(String name, String description, String repeatTimes, String repeatDays, String startDate, String endDate){
+	public Task(String name, String description, String repeatTimes, String repeatDays, String startDate, String endDate){
 		this.name = name;
 		this.description = description;
 		this.repeatTimes = repeatTimes;
