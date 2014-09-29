@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 public class ReadFile {
 	
-	private static final String EVENTFILENAME = "../File/Taskfile.txt";
-	private static final String TRASHFILENAME = "../File/Trashfile.txt";
+	private static final String EVENTFILENAME = "Taskfile.txt";
+	private static final String TRASHFILENAME = "Trashfile.txt";
 	
-	private final String SEPERATESIMBOL = "\\-\\";
+	private final String SEPERATESIMBOL = "-";
 	private final String READTASKERROR = "Error while reading task file line by line:";
 	private final String READTRASHERROR = "Error while reading trash file line by line:";
 	private ArrayList<Task> EVENTTASK;
@@ -79,4 +79,10 @@ public class ReadFile {
 		
 		return curTask;
 	}
+	
+	public static void main(String[] args) {
+	    ReadFile rf = new ReadFile();
+	    rf.getTrashFile();
+	}
+
 }

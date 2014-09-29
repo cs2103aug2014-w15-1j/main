@@ -18,10 +18,10 @@ public class DataStore {
 	private static final String TRASHERROR = " Trash file writing error ";
 	private static final String EVENTERROR = " Event file writing error ";
 	
-	private static final String TRASHFILENAME = "../File/Trashfile.txt";
-	private static final String EVENTFILENAME = "../File/Taskfile.txt";
+	private static final String TRASHFILENAME = "Trashfile.txt";
+	private static final String EVENTFILENAME = "Taskfile.txt";
 	
-	private static final String SEPERATESIMBOL = "\\-\\";
+	private static final String SEPERATESIMBOL = "-";
 	
 	/**
 	 * Writing all data to distinctive file
@@ -47,7 +47,7 @@ public class DataStore {
 	 */
 	protected static void writeFile(String fileName, ArrayList<Task> data, String errorMesg) {
 		try {
-			FileWriter fw = new FileWriter (fileName);
+		    FileWriter fw = new FileWriter (fileName);
 			BufferedWriter bw = new BufferedWriter (fw);
 			PrintWriter fileOut = new PrintWriter (bw);
 			writeLineAL(data, fileOut);
@@ -68,6 +68,8 @@ public class DataStore {
 	 */
 	protected static void writeLineAL(ArrayList<Task> data, PrintWriter fileOut) {
 		for (int i = 0; i < data.size(); i++) {
+		    String sentence = toSentence(data.get(i));
+		    PrintWriter seeWriter = fileOut;
 			fileOut.println(toSentence(data.get(i))); 
 		}
 	}
