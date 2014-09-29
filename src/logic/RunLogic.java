@@ -130,9 +130,8 @@ public class RunLogic {
 		Task newTask = new Task(userCommand.getArg1(), userCommand.getArg2(), userCommand.getArg3(),
 				userCommand.getArg4(), userCommand.getArg5(), userCommand.getArg6());
 		taskList.add(newTask);
-		if(!GUI.hasNext() && (taskList.size() % MAX_DISPLAY_LINE == 0)){
-			GUI.changeHasNext();
-		}
+		GUI.changeCurretnTask(taskList.size() - 1);
+		GUI.changeViewMode();
 		passToGui = new LogicToGui(GUI, taskList, ADD_FEEDBACK, TITLE, currentTask);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
