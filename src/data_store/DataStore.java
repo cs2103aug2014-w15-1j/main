@@ -18,8 +18,8 @@ public class DataStore {
 	private static final String TRASHERROR = " Trash file writing error ";
 	private static final String EVENTERROR = " Event file writing error ";
 	
-	private static final String TRASHFILENAME = "Trashfile.txt";
-	private static final String EVENTFILENAME = "Eventfile.txt";
+	private static final String TRASHFILENAME = "../File/Trashfile.txt";
+	private static final String EVENTFILENAME = "../File/Taskfile.txt";
 	
 	private static final String SEPERATESIMBOL = "\\-\\";
 	

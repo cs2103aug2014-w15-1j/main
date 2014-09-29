@@ -265,7 +265,6 @@ public class RunLogic {
 
 	private static void search(CliToLog userCommand) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	private static void wrongCommand(CliToLog userCommand){
