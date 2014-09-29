@@ -29,11 +29,11 @@ import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Dimension;
 
-public class TaskView extends JFrame {
+public class BasicGUI extends JFrame {
 	
 	private TextArea mainWindow;
 	private TextField titleWindow;
-	
+	private JTextArea HelpWindow;
 	private JTextField inputWindow;
 	private JTextField feedbackWindow;
 	private JPanel mainPanel;
@@ -45,7 +45,7 @@ public class TaskView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TaskView frame = new TaskView();
+					BasicGUI frame = new BasicGUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -57,7 +57,7 @@ public class TaskView extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TaskView() {
+	public BasicGUI() {
 		getContentPane().setEnabled(false);
 		getContentPane().setForeground(Color.WHITE);
 		getContentPane().setBackground(Color.WHITE);
@@ -72,7 +72,7 @@ public class TaskView extends JFrame {
 		titleWindow.setBackground(new Color(0, 153, 204));
 		getContentPane().add(titleWindow, BorderLayout.NORTH);
 		
-		JTextArea HelpWindow = new JTextArea();
+		HelpWindow = new JTextArea();
 		HelpWindow.setBorder(null);
 		HelpWindow.setEditable(false);
 		HelpWindow.setBackground(new Color(0, 255, 204));
