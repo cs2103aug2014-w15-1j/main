@@ -3,8 +3,10 @@ package data_store;
 import logic.Task;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,8 +19,11 @@ public class DataStoreTest {
     String description = "Buy New Birthday Gift";
     String repeatTimes = "twice a day";
     String repeatDays = "1 month";
-    String startDate = "22 Augest 2014";
-    String endDate = "22 Sept 2014";
+    
+    @SuppressWarnings("deprecation")
+    Date startDate = new Date(2014, 8, 22);
+    Date endDate = new Date(2014, 9, 22);
+
 
     private   Task testTask = new Task(name, description, repeatTimes, 
                                        repeatDays, startDate, endDate);
