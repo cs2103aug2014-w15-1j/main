@@ -9,7 +9,7 @@ public class CliProcess {
 		ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT,
 		//UPDATE
 		RENAME, RESCHEDULE, DESCRIBE,
-		//VIEW
+		//VIEW_MODE
 		DATE, MONTH, BIN,
 		//
 		REPEAT, SEARCH;
@@ -107,7 +107,7 @@ public class CliProcess {
 	   String s;
 	   
 	   s = identifyField(strArr[1]);
-	   newS = changeCommand(s,strArr);
+	   newS = changeUpdateCommand(s,strArr);
 	   
 	   CliToLog commandPackage = new CliToLog(newS); 
 	   
@@ -134,12 +134,12 @@ public class CliProcess {
 		return sNew;
 	}
    
-	/* Change commands for Update and View
+	/* Change commands for Update
 	 * 
 	 * Also shift up the arguments after new command
 	 * @argument New command , array of strings to be changed
 	 */
-	private static String[] changeCommand(String s, String[] strArr){
+	private static String[] changeUpdateCommand(String s, String[] strArr){
 	   strArr[0] = s;
 	   for(int i = 1; i<6; i++){
 		   strArr[i]= strArr[i+1];
@@ -160,6 +160,9 @@ public class CliProcess {
 		return commandPackage;
 	}
 	
+	/* Undo the previous action
+	 * 
+	 */
 	private static CliToLog undo(String[] strArr){
 		CliToLog commandPackage = new CliToLog(strArr);
 		
@@ -188,11 +191,11 @@ public class CliProcess {
 		s = identifyMode(strArr[1]);
 		
 		if(s.equals(COMMAND_TYPE.BIN.name())){
+			//bin
 			newS = changeViewCommand(s, strArr);
-		} else
-		if (s.equals(COMMAND_TYPE.NEXT.name())){
-			newS = changeCommand(s, strArr);		
-		} else{
+		} 		
+	    else{
+	    	//date, month
 			newS = addViewCommand(s, strArr);
 		}		
 		
@@ -215,7 +218,7 @@ public class CliProcess {
 		return strArr;
 	}
 	
-	/* Change commands for Update
+	/* Change commands for View
 	 * 
 	 * Also shift up the arguments after new command
 	 * @argument New command , array of strings to be changed
@@ -230,24 +233,18 @@ public class CliProcess {
 	
 	
 	/* Function: View
-	 * To identify different modes for View 
+	 * To identify different Date mode or Month mode for View 
 	 * 
 	 */
 	private static String identifyMode(String s){
 		String sNew;
-		
-		if(s.equalsIgnoreCase("nextpage")){
-			sNew = COMMAND_TYPE.NEXT.name();
-		}else
-		if(s.equalsIgnoreCase("bin")){
-			sNew = COMMAND_TYPE.BIN.name();
-		}else
+        
+		//month
 		if(s.equalsIgnoreCase("jan") || s.equalsIgnoreCase("feb") || s.equalsIgnoreCase("mar") || s.equalsIgnoreCase("apr") || s.equalsIgnoreCase("may") || s.equalsIgnoreCase("june") ||
 				s.equalsIgnoreCase("jul") || s.equalsIgnoreCase("aug") || s.equalsIgnoreCase("sep") || s.equalsIgnoreCase("oct") ||s.equalsIgnoreCase("nov") || s.equalsIgnoreCase("dec")){
 			sNew = COMMAND_TYPE.MONTH.name();
 		}else{
-			//date
-			
+		//date
 			sNew = COMMAND_TYPE.DATE.name();
 		}
 		
