@@ -4,6 +4,8 @@ import gui.DisplayConfiguration;
 
 import gui.VIEW_MODE;
 
+import cli.CliToLog;
+
 import java.util.ArrayList;
 
 public class RunLogic {
@@ -36,8 +38,9 @@ public class RunLogic {
 		RESTORE, VIEW_MODE, UNDO, SEARCH, EXIT, INVALID
 	};
 	
-	public static void Logic(CliToLogic CLI){
-		CliToLogic userCommand = CLI;
+	public static void Logic(String inputCommand){
+		
+		CliToLog userCommand = initializeCommand(inputCommand);
 		if(checkValid(userCommand)){
 			executeCommand(userCommand);
 		} else {
@@ -45,7 +48,7 @@ public class RunLogic {
 		};
 	}
 	
-	private static boolean checkValid(CliToLogic userCommand){
+	private static boolean checkValid(CliToLog userCommand){
 		String command = userCommand.getCommand();
 		VIEW_MODE mode = GUI.getMode();
 		switch(mode){
@@ -84,7 +87,7 @@ public class RunLogic {
 		}
 	}
 	
-	private static void executeCommand(CliToLogic userCommand){
+	private static void executeCommand(CliToLog userCommand){
 		COMMAND_TYPE commandType = determineCommandType(userCommand.getCommand());
 		
 		switch (commandType) {
@@ -130,7 +133,7 @@ public class RunLogic {
 	}
 	
 
-	private static void addTask(CliToLogic userCommand) {
+	private static void addTask(CliToLog userCommand) {
 		Task newTask = new Task(userCommand.getArg1(), userCommand.getArg2(), userCommand.getArg3(),
 				userCommand.getArg4(), userCommand.getArg5(), userCommand.getArg6());
 		taskList.add(newTask);
@@ -147,7 +150,7 @@ public class RunLogic {
 	}
 
 
-	private static void deleteTask(CliToLogic userCommand) {
+	private static void deleteTask(CliToLog userCommand) {
 		String deleteLine = userCommand.getArg1();
 		if(deleteLine.equalsIgnoreCase("all")){
 			trashbinList.addAll(taskList);
@@ -188,7 +191,7 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
-	private static void readTask(CliToLogic userCommand) {
+	private static void readTask(CliToLog userCommand) {
 		GUI.changeCurretnTask(Integer.valueOf(userCommand.getArg1()) - 1);
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
@@ -198,7 +201,7 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
-	private static void rename(CliToLogic userCommand) {
+	private static void rename(CliToLog userCommand) {
 		taskList.get(GUI.getTaskIndex()).rename(userCommand.getArg1());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
@@ -208,7 +211,7 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
-	private static void describe(CliToLogic userCommand) {
+	private static void describe(CliToLog userCommand) {
 		taskList.get(GUI.getTaskIndex()).describe(userCommand.getArg1());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
@@ -218,7 +221,7 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
-	private static void repeat(CliToLogic userCommand) {
+	private static void repeat(CliToLog userCommand) {
 		taskList.get(GUI.getTaskIndex()).repeat(userCommand.getArg1(), userCommand.getArg2());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
@@ -229,7 +232,7 @@ public class RunLogic {
 		
 	}
 
-	private static void reschedule(CliToLogic userCommand) {
+	private static void reschedule(CliToLog userCommand) {
 		taskList.get(GUI.getTaskIndex()).reschedule(userCommand.getArg1(), userCommand.getArg2());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
@@ -239,7 +242,7 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
-	private static void view(CliToLogic userCommand) {
+	private static void view(CliToLog userCommand) {
 		// TODO Auto-generated method stub
 		String viewMode = userCommand.getArg1();
 		int modeNumber = getModeNumber(viewMode);
@@ -254,17 +257,17 @@ public class RunLogic {
 		
 	}
 
-	private static void restore(CliToLogic userCommand) {
+	private static void restore(CliToLog userCommand) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void search(CliToLogic userCommand) {
+	private static void search(CliToLog userCommand) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void wrongCommand(CliToLogic userCommand){
+	private static void wrongCommand(CliToLog userCommand){
 		// TODO Auto-generated method stub
 	}
 	
