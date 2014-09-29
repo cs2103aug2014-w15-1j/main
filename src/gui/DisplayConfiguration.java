@@ -17,8 +17,8 @@ public class DisplayConfiguration {
 	
 	public DisplayConfiguration(GUIStatus status, ArrayList<Task> taskList, String feedback, String title){
 		this.mode = status.getMode();
-		this.hasNextPage = status.hasNextPage();
-		this.hasPreviousPage = status.hasPreviousPage();
+		this.hasNextPage = status.hasNext();
+		this.hasPreviousPage = status.hasPrevious();
 		setIsPageInvolved();
 		
 		this.TaskList = taskList;
@@ -62,6 +62,12 @@ public class DisplayConfiguration {
 	
 	public String getTitle(){
 		return this.title;
+	}
+	public boolean hasNextPage(){
+		return this.hasNextPage;
+	}
+	public boolean hasPreviousPage(){
+		return this.hasPreviousPage;
 	}
 	
 }
