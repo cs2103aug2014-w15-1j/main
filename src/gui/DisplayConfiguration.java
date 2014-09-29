@@ -5,21 +5,21 @@ import java.util.ArrayList;
 import logic.Task;
 
 public class DisplayConfiguration {
-	private GUIStatus GUI;
+	private VIEW_MODE 
 	private ArrayList<Task> TaskList;
 	private String feedback;
 	private String title;
 	private int currentTask;
 	
-	DisplayConfiguration(){
-		this.GUI = new GUIStatus();
+	public DisplayConfiguration(){
+		this.GUI = new MainWindowConfiguration();
 		this.TaskList = null;
 		this.feedback = null;
 		this.title = null;
 		this.currentTask = -1;
 	}
 	
-	DisplayConfiguration(GUIStatus GUI, ArrayList<Task> taskList, String feedback, String title, int currentTask){
+	public DisplayConfiguration(MainWindowConfiguration GUI, ArrayList<Task> taskList, String feedback, String title, int currentTask){
 		this.GUI = GUI;
 		this.TaskList = taskList;
 		this.feedback = feedback;
@@ -27,7 +27,7 @@ public class DisplayConfiguration {
 		this.currentTask = currentTask;
 	}
 	
-	public GUIStatus getGUIstatus(){
+	public MainWindowConfiguration getGUIstatus(){
 		return this.GUI;
 	}
 	

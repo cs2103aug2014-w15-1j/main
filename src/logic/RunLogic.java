@@ -1,7 +1,6 @@
 package logic;
 
 import gui.DisplayConfiguration;
-import gui.GUIStatus;
 
 import java.util.ArrayList;
 
