@@ -9,22 +9,19 @@ public class DisplayConfiguration {
 	private ArrayList<Task> TaskList;
 	private String feedback;
 	private String title;
-	private int currentTask;
 	
 	public DisplayConfiguration(){
-		this.GUI = new MainWindowConfiguration();
+		this.GUI = new GUIStatus();
 		this.TaskList = null;
 		this.feedback = null;
 		this.title = null;
-		this.currentTask = -1;
 	}
 	
-	public DisplayConfiguration(MainWindowConfiguration GUI, ArrayList<Task> taskList, String feedback, String title, int currentTask){
+	public DisplayConfiguration(GUIStatus GUI, ArrayList<Task> taskList, String feedback, String title, int currentTask){
 		this.GUI = GUI;
 		this.TaskList = taskList;
 		this.feedback = feedback;
 		this.title = title;
-		this.currentTask = currentTask;
 	}
 	
 	public MainWindowConfiguration getGUIstatus(){
@@ -41,9 +38,5 @@ public class DisplayConfiguration {
 	
 	public String getTitle(){
 		return this.title;
-	}
-	
-	public int getCurrentTask(){
-		return this.currentTask;
 	}
 }
