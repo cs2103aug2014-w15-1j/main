@@ -1,6 +1,7 @@
 package data_store;
 
 import logic.Task;
+import logic.LogicToStore;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -14,36 +15,27 @@ import java.util.ArrayList;
 
 public class DataStore {
 	
-	private final String TRASHERROR = " Trash file writing error ";
-	private final String EVENTERROR = " Event file writing error ";
+	private static final String TRASHERROR = " Trash file writing error ";
+	private static final String EVENTERROR = " Event file writing error ";
 	
-	private final String TRASHFILENAME = "Trashfile.txt";
-	private final String EVENTFILENAME = "Eventfile.txt";
+	private static final String TRASHFILENAME = "../File/Trashfile.txt";
+	private static final String EVENTFILENAME = "../File/Taskfile.txt";
 	
-	private final String SEPERATESIMBOL = "\\-\\";
-	
-	/**
-	 * ========= Constructor
-	 * */
-	public DataStore() {}
-	
-	/**
-	 * ========= Methods
-	 * */
+	private static final String SEPERATESIMBOL = "\\-\\";
 	
 	/**
 	 * Writing all data to distinctive file
 	 */
-	public void writeAllData(ArrayList<Task> trashData, ArrayList<Task> fileData) {
-		writeTrash(trashData);
-		writeEvent(fileData);
+	public static void writeAllData(LogicToStore allData) {
+		writeTrash(allData.getTrashbinList());
+		writeTask(allData.getTaskList());
 	}
 
-	public void writeTrash(ArrayList<Task> trashData) {
+	public static void writeTrash(ArrayList<Task> trashData) {
 		writeFile(TRASHFILENAME, trashData, TRASHERROR);
 	}
 	
-	public void writeEvent(ArrayList<Task> fileData) {
+	public static void writeTask(ArrayList<Task> fileData) {
 		writeFile(EVENTFILENAME, fileData, EVENTERROR);
 	}
 	
@@ -53,7 +45,7 @@ public class DataStore {
 	 * @param fileName
 	 *            is the (String) name of the event file
 	 */
-	protected void writeFile(String fileName, ArrayList<Task> data, String errorMesg) {
+	protected static void writeFile(String fileName, ArrayList<Task> data, String errorMesg) {
 		try {
 			FileWriter fw = new FileWriter (fileName);
 			BufferedWriter bw = new BufferedWriter (fw);
@@ -74,13 +66,13 @@ public class DataStore {
 	 * @param fileOut
 	 *            (PrintWriter) of the file
 	 */
-	protected void writeLineAL(ArrayList<Task> data, PrintWriter fileOut) {
+	protected static void writeLineAL(ArrayList<Task> data, PrintWriter fileOut) {
 		for (int i = 0; i < data.size(); i++) {
 			fileOut.println(toSentence(data.get(i))); 
 		}
 	}
 	
-	protected String toSentence(Task taskLine) {
+	protected static String toSentence(Task taskLine) {
 		return taskLine.getName() + SEPERATESIMBOL + 
 			   taskLine.getDescription() + SEPERATESIMBOL +
 			   taskLine.getRepeatTimes() + SEPERATESIMBOL +

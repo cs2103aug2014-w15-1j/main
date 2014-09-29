@@ -26,7 +26,6 @@ public class CliToLog{
 
 		}
 
-
 		public String getCommand(){
 			return commandFirst;
 		}

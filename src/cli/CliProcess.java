@@ -9,7 +9,7 @@ public class CliProcess {
 		ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT,
 		//UPDATE
 		RENAME, RESCHEDULE, DESCRIBE,
-		//VIEW
+		//VIEW_MODE
 		DATE, MONTH, BIN,
 		//
 		REPEAT, SEARCH;
@@ -19,17 +19,15 @@ public class CliProcess {
      * a pack or arguments will be passed on
      */
 	public static CliToLog interpretCommand(String s){ 
-		    String[] inputLine = new String[7]; 
-		    inputLine = separate(s);
+		    String[] inputLine = separate(s);
 		    //Index of array 0,1,2,3,4,5,6 as argument	
 		    return doCommand(inputLine);		   
    }
    
    // Split into string into array of arguments 
    private static String[] separate(String s){
-	   String[] inputSplit = new String[7];
+	   String[] inputSplit = s.split(" ", 7);
 	   //Split into array of index 0,1,2,3,4,5,6
-	  inputSplit = s.split(" ", 7);
 	  for (String stringNode : inputSplit) {
           if (stringNode == null) 
         	  stringNode = NULLED;
@@ -107,7 +105,7 @@ public class CliProcess {
 	   String s;
 	   
 	   s = identifyField(strArr[1]);
-	   newS = changeCommand(s,strArr);
+	   newS = changeUpdateCommand(s,strArr);
 	   
 	   CliToLog commandPackage = new CliToLog(newS); 
 	   
@@ -134,12 +132,12 @@ public class CliProcess {
 		return sNew;
 	}
    
-	/* Change commands for Update and View
+	/* Change commands for Update
 	 * 
 	 * Also shift up the arguments after new command
 	 * @argument New command , array of strings to be changed
 	 */
-	private static String[] changeCommand(String s, String[] strArr){
+	private static String[] changeUpdateCommand(String s, String[] strArr){
 	   strArr[0] = s;
 	   for(int i = 1; i<6; i++){
 		   strArr[i]= strArr[i+1];
@@ -160,6 +158,9 @@ public class CliProcess {
 		return commandPackage;
 	}
 	
+	/* Undo the previous action
+	 * 
+	 */
 	private static CliToLog undo(String[] strArr){
 		CliToLog commandPackage = new CliToLog(strArr);
 		
@@ -185,14 +186,17 @@ public class CliProcess {
 		String[] newS = new String[7];
 		String s;
 		
-		s = identifyMode(strArr[1]);
+		s = strArr[1];
 		
-		if(s.equals(COMMAND_TYPE.BIN.name())){
+		if(s.equalsIgnoreCase("bin")){
+			//assigned BIN
+			s = COMMAND_TYPE.BIN.name();
 			newS = changeViewCommand(s, strArr);
-		} else
-		if (s.equals(COMMAND_TYPE.NEXT.name())){
-			newS = changeCommand(s, strArr);		
-		} else{
+		} 		
+	    else{
+	    	//returned DATE or MONTH
+	    	s = identifyMode(strArr[1]);
+	    	
 			newS = addViewCommand(s, strArr);
 		}		
 		
@@ -201,24 +205,25 @@ public class CliProcess {
 		return commandPackage;
 	}
 	
-	/* Add new command for View
+	/* Insert new command for View (on top of VIEW)
 	 * 
-	 * Also shift down the arguments after new command
-	 * @argument 2 commands in total, array of strings to be changed
+	 * VIEW MONTH or VIEW DATE
+	 * @argument 2 commands in total
 	 */
 	private static String[] addViewCommand(String s, String[] strArr){
-		//date, month
+		//take out the actual month/date
 		String temp = strArr[1];
+		//assign to next argument
 		strArr[2] = temp;
+		
 		strArr[1] = s;
 		
 		return strArr;
 	}
 	
-	/* Change commands for Update
+	/* Change commands for View Bin
 	 * 
-	 * Also shift up the arguments after new command
-	 * @argument New command , array of strings to be changed
+	 * bin string to COMMAND_TYPE BIN string
 	 */
 	private static String[] changeViewCommand(String s, String[] strArr){
 		//bin
@@ -227,27 +232,19 @@ public class CliProcess {
 		return strArr;
 	}
 	
-	
-	
 	/* Function: View
-	 * To identify different modes for View 
+	 * To identify different Date mode or Month mode for View 
 	 * 
 	 */
 	private static String identifyMode(String s){
 		String sNew;
-		
-		if(s.equalsIgnoreCase("nextpage")){
-			sNew = COMMAND_TYPE.NEXT.name();
-		}else
-		if(s.equalsIgnoreCase("bin")){
-			sNew = COMMAND_TYPE.BIN.name();
-		}else
+        
+		//month
 		if(s.equalsIgnoreCase("jan") || s.equalsIgnoreCase("feb") || s.equalsIgnoreCase("mar") || s.equalsIgnoreCase("apr") || s.equalsIgnoreCase("may") || s.equalsIgnoreCase("june") ||
 				s.equalsIgnoreCase("jul") || s.equalsIgnoreCase("aug") || s.equalsIgnoreCase("sep") || s.equalsIgnoreCase("oct") ||s.equalsIgnoreCase("nov") || s.equalsIgnoreCase("dec")){
 			sNew = COMMAND_TYPE.MONTH.name();
 		}else{
-			//date
-			
+		//date
 			sNew = COMMAND_TYPE.DATE.name();
 		}
 		
