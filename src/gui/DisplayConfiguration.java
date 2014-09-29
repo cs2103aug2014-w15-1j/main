@@ -69,5 +69,8 @@ public class DisplayConfiguration {
 	public boolean hasPreviousPage(){
 		return this.hasPreviousPage;
 	}
+	public boolean isTaskView(){
+		return mode == VIEW_MODE.TASK;
+	}
 	
 }

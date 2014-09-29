@@ -5,14 +5,13 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.Color;
 
+import java.awt.Color;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
 import java.awt.TextField;
 
 import javax.swing.JTextArea;
@@ -22,12 +21,17 @@ import java.awt.Cursor;
 
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+
 import java.awt.Font;
 import java.awt.Component;
+
 import javax.swing.border.EtchedBorder;
+
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Dimension;
+
+import logic.RunLogic;
 
 public class BasicGUI extends JFrame {
 	
@@ -118,8 +122,12 @@ public class BasicGUI extends JFrame {
 	
 	class inputHit implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			String nm = inputWindow.getText().trim();
-			if (nm.length() == 0) {
+			String command = inputWindow.getText().trim();
+			String emptyString = "";
+			inputWindow.setText(emptyString);
+			RunLogic.Logic(command);
+			
+			if (command.length() == 0) {
 				feedbackWindow.setText("empty input");
 				return;
 			} else {
