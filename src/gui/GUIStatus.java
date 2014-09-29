@@ -1,4 +1,8 @@
-package logic;
+package gui;
+
+public enum class GUIViewMode{
+	
+}
 
 public class GUIStatus {
 	private int ViewMode;
