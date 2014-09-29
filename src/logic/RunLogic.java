@@ -52,6 +52,7 @@ public class RunLogic {
 	public static void Logic(String inputCommand){
 		// pass user command to CLI for autocorrection
 		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
+		initializeTest();
 		
 		// check whether the command is valid under current view mode
 		if(checkValid(userCommand)){
@@ -61,6 +62,16 @@ public class RunLogic {
 		};
 	}
 	
+	private static void initializeTest() {
+		// TODO Auto-generated method stub
+		GUI = new GUIStatus(VIEW_MODE.TASK, false, false, 0);
+		taskList = new ArrayList<Task>();
+		taskList.add(new Task("Test"));
+		trashbinList = new ArrayList<Task>();
+		currentDisplay = initialize(currentDisplay);
+		currentDisplay[1] = 0;
+	}
+
 	// check whether the command is valid under current view mode
 	private static boolean checkValid(CliToLog userCommand){
 		String command = userCommand.getCommand();
@@ -413,7 +424,11 @@ public class RunLogic {
 		// TODO Auto-generated method stub
 		ArrayList<Task> display = new ArrayList<Task>();
 		for(int i = 1; i <= MAX_DISPLAY_LINE; i++){
-			display.add(taskList.get(currentDisplay[i]));
+			if(currentDisplay[i] != -1){
+				display.add(taskList.get(currentDisplay[i]));
+			} else{
+				break;
+			}
 		}
 		passToGui = new DisplayConfiguration(GUI, display, INVALID_FEEDBACK, TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
