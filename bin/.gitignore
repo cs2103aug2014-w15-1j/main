@@ -1,0 +1,21 @@
+<<<<<<< HEAD
+/cli/
+<<<<<<< HEAD
+=======
+/.DS_Store
+<<<<<<< HEAD
+/data_store/
+=======
+>>>>>>> 5918829ee826c89dffb9bc01b53677d388a2b403
+>>>>>>> 62cc61d6a4ae073ba9b563e608874bffe119343c
+=======
+/data_store
+>>>>>>> de94cc54f5e0ebd1cf0dbce12a510907f1c66a4d
+/read_file
+>>>>>>> 04116731528f1d88f6ce9de10f06fed38fa96544
+/logic/
+=======
+/cli
+/logic
+/gui
+>>>>>>> 75e47cdbddbf6f68ed5809ddb5fe90187c9e667f
