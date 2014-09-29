@@ -3,11 +3,29 @@ package logic;
 import java.util.ArrayList;
 
 public class RunLogic {
+	private static String ADD_FEEDBACK = "New task added successfully!";
+	private static String DELETE_FEEDBACK = "Task deleted successfully!";
+	private static String READ_FEEDBACK = "";
+	private static String RENAME_FEEDBACK = "Task informaion updated!";
+	private static String RESCHEDULE_FEEDBACK = "Task informaion updated!";
+	private static String REPEAT_FEEDBACK = "Task informaion updated!";
+	private static String DESCRIBE_FEEDBACK = "Task informaion updated!";
+	private static String RESTORE_FEEDBACK = "Task restored to task list!";
+	private static String VIEW_FEEDBACK = "";
+	private static String UNDO_FEEDBACK = "";
+	private static String SEARCH_FEEDBACK = "";
+	private static String INVALID_FEEDBACK = "Invalid Command! Please check your command again!";
+	
+	private static String TITLE = "";
+	
+	private static int MAX_DISPLAY_LINE = 10;
+	
 	private static GUIStatus GUI;
 	private static LogicToGui passToGui;
 	private static LogicToStore passToStore;
-	private static ArrayList<String> taskList;
-	private static ArrayList<String> trashbinList;
+	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> trashbinList;
+	private static int currentTask;
 	
 	enum COMMAND_TYPE {
 		ADD_TASK, DELETE_TASK, READ_TASK, 
@@ -109,43 +127,89 @@ public class RunLogic {
 	
 
 	private static void addTask(CliToLogic userCommand) {
-		// TODO Auto-generated method stub
-		
+		Task newTask = new Task(userCommand.getArg1(), userCommand.getArg2(), userCommand.getArg3(),
+				userCommand.getArg4(), userCommand.getArg5(), userCommand.getArg6());
+		taskList.add(newTask);
+		if(!GUI.hasNext() && (taskList.size() % MAX_DISPLAY_LINE == 0)){
+			GUI.changeHasNext();
+		}
+		passToGui = new LogicToGui(GUI, taskList, ADD_FEEDBACK, TITLE, currentTask);
+		passToStore = new LogicToStore(taskList,trashbinList);
+		GuiAndStore(passToGui, passToStore);
 	}
 
+
 	private static void deleteTask(CliToLogic userCommand) {
-		// TODO Auto-generated method stub
-		
+		String deleteLine = userCommand.getArg1();
+		if(deleteLine.equalsIgnoreCase("all")){
+			trashbinList.addAll(taskList);
+			taskList.clear();
+			GUI = new GUIStatus(GUI.getMode(), false, false, 0);
+			passToGui = new LogicToGui(GUI, taskList, DELETE_FEEDBACK, TITLE, currentTask);
+			passToStore = new LogicToStore(taskList, trashbinList);
+		} else if(Integer.valueOf(deleteLine) >= taskList.size()){
+			passToGui = new LogicToGui(GUI, taskList, INVALID_FEEDBACK, TITLE, currentTask);
+			passToStore = new LogicToStore(taskList, trashbinList);
+		} else {
+			trashbinList.add(taskList.remove(Integer.valueOf(deleteLine) - 1));
+			if(GUI.hasNext() && (taskList.size() % MAX_DISPLAY_LINE == MAX_DISPLAY_LINE - 1)){
+				GUI.changeHasNext();
+				if(currentTask >= taskList.size()){
+					currentTask -= MAX_DISPLAY_LINE;
+				}
+			}
+			passToGui = new LogicToGui(GUI, taskList, DELETE_FEEDBACK, TITLE, currentTask);
+			passToStore = new LogicToStore(taskList, trashbinList);
+		}
+		GuiAndStore(passToGui, passToStore);
 	}
 
 	private static void readTask(CliToLogic userCommand) {
-		// TODO Auto-generated method stub
-		
+		currentTask = Integer.valueOf(userCommand.getArg1()) - 1;
+		GUI.changeCurretnTask(getModeNumber("TaskView"));
+		passToGui = new LogicToGui(GUI, taskList, READ_FEEDBACK, TITLE, currentTask);
+		passToStore = new LogicToStore(taskList,trashbinList);
+		GuiAndStore(passToGui, passToStore);
 	}
 
 	private static void rename(CliToLogic userCommand) {
-		// TODO Auto-generated method stub
-		
+		taskList.get(currentTask).rename(userCommand.getArg1());
+		passToGui = new LogicToGui(GUI, taskList, RENAME_FEEDBACK, TITLE, currentTask);
+		passToStore = new LogicToStore(taskList,trashbinList);
+		GuiAndStore(passToGui, passToStore);
 	}
 
 	private static void describe(CliToLogic userCommand) {
-		// TODO Auto-generated method stub
-		
+		taskList.get(currentTask).describe(userCommand.getArg1());
+		passToGui = new LogicToGui(GUI, taskList, DESCRIBE_FEEDBACK, TITLE, currentTask);
+		passToStore = new LogicToStore(taskList,trashbinList);
+		GuiAndStore(passToGui, passToStore);
 	}
 
 	private static void repeat(CliToLogic userCommand) {
-		// TODO Auto-generated method stub
+		taskList.get(currentTask).repeat(userCommand.getArg1(), userCommand.getArg2());
+		passToGui = new LogicToGui(GUI, taskList, REPEAT_FEEDBACK, TITLE, currentTask);
+		passToStore = new LogicToStore(taskList,trashbinList);
+		GuiAndStore(passToGui, passToStore);
 		
 	}
 
 	private static void reschedule(CliToLogic userCommand) {
-		// TODO Auto-generated method stub
+		taskList.get(currentTask).reschedule(userCommand.getArg1(), userCommand.getArg2());
+		passToGui = new LogicToGui(GUI, taskList, RESCHEDULE_FEEDBACK, TITLE, currentTask);
+		passToStore = new LogicToStore(taskList,trashbinList);
+		GuiAndStore(passToGui, passToStore);
 		
 	}
 
 	private static void view(CliToLogic userCommand) {
 		// TODO Auto-generated method stub
-		
+		String viewMode = userCommand.getArg1();
+		int modeNumber = getModeNumber(viewMode);
+		GUI.changeCurretnTask(modeNumber);
+		passToGui = new LogicToGui(GUI, taskList, VIEW_FEEDBACK, TITLE, currentTask);
+		passToStore = new LogicToStore(taskList,trashbinList);
+		GuiAndStore(passToGui, passToStore);
 	}
 
 	private static void undo() {
@@ -164,6 +228,16 @@ public class RunLogic {
 	}
 
 	private static void wrongCommand(CliToLogic userCommand){
+		// TODO Auto-generated method stub
+	}
+	
+	private static int getModeNumber(String viewMode) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	private static void GuiAndStore(LogicToGui passToGui, LogicToStore passToStore) {
+		// TODO Auto-generated method stub
 		
 	}
 	
