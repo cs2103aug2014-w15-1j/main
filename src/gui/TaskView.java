@@ -29,7 +29,6 @@ import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Dimension;
 
-
 public class TaskView extends JFrame {
 	
 	private TextArea mainWindow;
@@ -125,6 +124,7 @@ public class TaskView extends JFrame {
 				return;
 			} else {
 				feedbackWindow.setText("input received");
+				feedbackWindow.setBackground(new Color(153, 204, 0));
 			}
 		}
 	}
