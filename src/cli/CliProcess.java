@@ -18,12 +18,11 @@ public class CliProcess {
     /* Command line will be processed and
      * a pack or arguments will be passed on
      */
-	 @SuppressWarnings("unused")
-	private void takeInput(String s){ 
+	public CliToLog interpretCommand(String s){ 
 		    String[] inputLine = new String[7]; 
 		    inputLine = separate(s);
 		    //Index of array 0,1,2,3,4,5,6 as argument	
-		    executeCommand(inputLine);		   
+		    return doCommand(inputLine);		   
    }
    
    // Split into string into array of arguments 
@@ -63,41 +62,30 @@ public class CliProcess {
 		}
 	} 
    
-   private void executeCommand(String[] inputExecute){
+   private CliToLog doCommand(String[] inputExecute){
 	   COMMAND_TYPE userCommand;
 	   
 	   userCommand = determineCommandType(inputExecute[0]);
 	   
 	   switch(userCommand){
 	   case ADD:
-			add(inputExecute);
-			break;
+			return add(inputExecute);
 	   case UPDATE:
-			update(inputExecute);
-			break;
+			return update(inputExecute);
        case READ:
-            read(inputExecute);
-            break;
-
-        case DELETE:
-            delete(inputExecute);
-            break;
-
+            return read(inputExecute);
+       case DELETE:
+    	   	return delete(inputExecute);
         case VIEW:
-            view(inputExecute);
-            break;
-
+            return view(inputExecute);
 		case UNDO:
-			undo(inputExecute);
-			break;
+			return undo(inputExecute);
 		case NEXT:
-		    next(inputExecute);
-		    break;
+		    return next(inputExecute);
 		case EXIT:
-			exit(inputExecute);
-			break;
+			return exit(inputExecute);
 		default:
-			invalid(inputExecute);
+			return invalid(inputExecute);
 	   }
    }
    
