@@ -12,6 +12,7 @@ import java.util.Date;
 import data_store.DataStore;
 
 public class RunLogic {
+	// some feedback inormation format
 	private static String ADD_FEEDBACK = "New task added successfully!";
 	private static String DELETE_FEEDBACK = "Task deleted successfully!";
 	private static String READ_FEEDBACK = "";
@@ -25,16 +26,23 @@ public class RunLogic {
 	private static String SEARCH_FEEDBACK = ""; 
 	private static String INVALID_FEEDBACK = "Invalid Command! Please check your command again!";
 	
+	// title information
 	private static String TITLE = "";
 	
+	// the line number to display in GUI
 	private static int MAX_DISPLAY_LINE = 10;
 	
+	// keep track on GUI and File status
 	private static GUIStatus GUI;
-	private static DisplayConfiguration passToGui;
-	private static LogicToStore passToStore;
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
+	private static int[] currentDisplay = new int[MAX_DISPLAY_LINE + 1];
+
+	// informations needed to pass to GUI and data store
+	private static DisplayConfiguration passToGui;
+	private static LogicToStore passToStore;
 	
+	// all valid command type modified from CLI
 	enum COMMAND_TYPE {
 		ADD_TASK, DELETE_TASK, READ_TASK, 
 		RENAME, DESCRIBE, RESCHEDULE, REPEAT, 
@@ -42,7 +50,10 @@ public class RunLogic {
 	};
 	
 	public static void Logic(String inputCommand){
+		// pass user command to CLI for autocorrection
 		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
+		
+		// check whether the command is valid under current view mode
 		if(checkValid(userCommand)){
 			executeCommand(userCommand);
 		} else {
@@ -50,9 +61,11 @@ public class RunLogic {
 		};
 	}
 	
+	// check whether the command is valid under current view mode
 	private static boolean checkValid(CliToLog userCommand){
 		String command = userCommand.getCommand();
 		VIEW_MODE mode = GUI.getMode();
+		
 		switch(mode){
 		case DATE:
 			return (command.equalsIgnoreCase("add") 
@@ -135,7 +148,9 @@ public class RunLogic {
 	}
 	
 
+	// add a task to task list. update new GUI and File information
 	private static void addTask(CliToLog userCommand) {
+		// modify date information of task
 		Date startDate = null;
 		Date endDate = null;
 		if(userCommand.getArg5() != null && userCommand.getArg6() != null){
@@ -148,12 +163,19 @@ public class RunLogic {
 			startDate = new Date(startYear, startMonth, startDay);
 			endDate = new Date(endYear, endMonth, endDay);
 		}
+		
+		// update File
 		Task newTask = new Task(userCommand.getArg1(), userCommand.getArg2(), userCommand.getArg3(),
 				userCommand.getArg4(), startDate, endDate);
 		taskList.add(newTask);
+		
+		// update GUI view mode
 		GUI.changeCurretnTask((taskList.size() - 1) / MAX_DISPLAY_LINE);
 		GUI.changeViewMode(VIEW_MODE.TASK);
+		currentDisplay = initialize(currentDisplay);
+		currentDisplay[1] = GUI.getTaskIndex();
 		
+		// update GUI display information
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(newTask);
 		
@@ -162,20 +184,34 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
+	private static int[] initialize(int[] currentDisplay) {
+		// TODO Auto-generated method stub
+		for(int i = 0; i < currentDisplay.length; i++){
+			currentDisplay[i] = -1;
+		}
+		return currentDisplay;
+	}
 
+	// delete a certain task or delete or tasks
 	private static void deleteTask(CliToLog userCommand) {
 		String deleteLine = userCommand.getArg1();
 		if(deleteLine.equalsIgnoreCase("all")){
+		// delete all	
+			// update File
 			trashbinList.addAll(taskList);
 			taskList.clear();
+			
+			// update GUI view mode
 			GUI = new GUIStatus(GUI.getMode(), false, false, -1);
+			
 			passToGui = new DisplayConfiguration(GUI, taskList, DELETE_FEEDBACK, TITLE);
 			passToStore = new LogicToStore(taskList, trashbinList);
-		} else if(Integer.valueOf(deleteLine) > taskList.size()){
+		} else if(currentDisplay[Integer.valueOf(deleteLine)] == -1){
+		// delete certain task while the task does not exist
 			ArrayList<Task> display = new ArrayList<Task>();
-			for(int i = 0; i < MAX_DISPLAY_LINE; i++){
-				if((GUI.getTaskIndex() + i) >= taskList.size()){
-					display.add(taskList.get(GUI.getTaskIndex() + i));
+			for(int i = 1; i <= MAX_DISPLAY_LINE; i++){
+				if(currentDisplay[i] != -1){
+					display.add(taskList.get(currentDisplay[i]));
 				} else {
 					break;
 				}
@@ -183,38 +219,47 @@ public class RunLogic {
 			passToGui = new DisplayConfiguration(GUI, display, INVALID_FEEDBACK, TITLE);
 			passToStore = new LogicToStore(taskList, trashbinList);
 		} else {
-			trashbinList.add(taskList.remove(Integer.valueOf(deleteLine) - 1));
-			if(GUI.hasNext() && (taskList.size() % MAX_DISPLAY_LINE == MAX_DISPLAY_LINE - 1)){
-				GUI.changeHasNext(false);
-				if(GUI.getTaskIndex() >= taskList.size()){
-					GUI.changeCurretnTask(GUI.getTaskIndex() - MAX_DISPLAY_LINE);
-				}
-			}
+		// delete certain task
+			// update File
+			trashbinList.add(taskList.remove(currentDisplay[Integer.valueOf(deleteLine)]));
+			
+			// update GUI display information
 			ArrayList<Task> display = new ArrayList<Task>();
+			initialize(currentDisplay);
 			for(int i = 0; i < MAX_DISPLAY_LINE; i++){
-				if((GUI.getTaskIndex() + i) >= taskList.size()){
+				if((GUI.getTaskIndex() + i) < taskList.size()){
 					display.add(taskList.get(GUI.getTaskIndex() + i));
+					currentDisplay[i + 1] = GUI.getTaskIndex() + i;
 				} else {
 					break;
 				}
 			}
+			
+			// update GUI view mode
+			GUI.changeHasPrevious(GUI.getTaskIndex() != 0);
+			GUI.changeHasNext(GUI.getTaskIndex() + MAX_DISPLAY_LINE < taskList.size());
+			
 			passToGui = new DisplayConfiguration(GUI, display, DELETE_FEEDBACK, TITLE);
 			passToStore = new LogicToStore(taskList, trashbinList);
 		}
 		GuiAndStore(passToGui, passToStore);
 	}
 
+	// read details of a certain task
 	private static void readTask(CliToLog userCommand) {
 		GUI.changeCurretnTask(Integer.valueOf(userCommand.getArg1()) - 1);
 		GUI.changeViewMode(VIEW_MODE.TASK);
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
+		currentDisplay = initialize(currentDisplay);
+		currentDisplay[1] = GUI.getTaskIndex();
 		
 		passToGui = new DisplayConfiguration(GUI, display, READ_FEEDBACK, TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
-
+	
+	// update the name of a certain task 
 	private static void rename(CliToLog userCommand) {
 		taskList.get(GUI.getTaskIndex()).rename(userCommand.getArg1());
 		ArrayList<Task> display = new ArrayList<Task>();
@@ -225,6 +270,7 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
+	// update the description of a certain task
 	private static void describe(CliToLog userCommand) {
 		taskList.get(GUI.getTaskIndex()).describe(userCommand.getArg1());
 		ArrayList<Task> display = new ArrayList<Task>();
@@ -235,6 +281,7 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
+	// update the repeat times and dates of a certain task
 	private static void repeat(CliToLog userCommand) {
 		taskList.get(GUI.getTaskIndex()).repeat(userCommand.getArg1(), userCommand.getArg2());
 		ArrayList<Task> display = new ArrayList<Task>();
@@ -246,6 +293,7 @@ public class RunLogic {
 		
 	}
 
+	// update the time information of a certain task
 	private static void reschedule(CliToLog userCommand) {
 		int startYear = Integer.valueOf(userCommand.getArg1().substring(0,4));
 		int startMonth = Integer.valueOf(userCommand.getArg1().substring(4,6));
@@ -265,6 +313,7 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
+	// change view mode
 	private static void view(CliToLog userCommand) {
 		VIEW_MODE mode = determineViewMode(userCommand.getArg1());
 		ArrayList<Task> display;
@@ -291,15 +340,22 @@ public class RunLogic {
 		GuiAndStore(passToGui, passToStore);
 	}
 
+	// change view mode to the task list of a certain day
 	private static ArrayList<Task> viewDate(String Date) {
 		ArrayList<Task> display = new ArrayList<Task>();
 		int year = Integer.valueOf(Date.substring(0,4));
 		int month = Integer.valueOf(Date.substring(4,6));
 		int day = Integer.valueOf(Date.substring(6,8));
 		Date requiredDate = new Date(year, month, day);
-		for(Task task : taskList){
-			if(task.getStartDate().equals(requiredDate)){
-				display.add(task);
+		for(int i = 1, j = 0;  j < taskList.size(); j++){
+			if(taskList.get(j).getStartDate().equals(requiredDate)){
+				display.add(taskList.get(j));
+			}
+			if(i <= MAX_DISPLAY_LINE){
+				currentDisplay[i] = j;
+				i++;
+			} else {
+				break;
 			}
 		}
 		boolean hasNext = display.size() > MAX_DISPLAY_LINE;
@@ -307,8 +363,8 @@ public class RunLogic {
 		return display;
 	}
 
+	// change the view mode to the calendar of a certain month
 	private static ArrayList<Task> viewMonth(String Month) {
-		// TODO Auto-generated method stub
 		int requiredMonth = Integer.valueOf(Month);
 		ArrayList<Task> display = new ArrayList<Task>();
 		for(Task task : taskList){
@@ -321,6 +377,7 @@ public class RunLogic {
 		return display;
 	}
 
+	// change the view mode to trash bin
 	private static ArrayList<Task> viewBin() {
 		// TODO Auto-generated method stub
 		if(trashbinList.isEmpty()){
@@ -351,10 +408,18 @@ public class RunLogic {
 		// TODO Auto-generated method stub
 	}
 
+	// This method gives feedback when the user gives unreadable command
 	private static void wrongCommand(CliToLog userCommand){
 		// TODO Auto-generated method stub
+		ArrayList<Task> display = new ArrayList<Task>();
+		for(int i = 1; i <= MAX_DISPLAY_LINE; i++){
+			display.add(taskList.get(currentDisplay[i]));
+		}
+		passToGui = new DisplayConfiguration(GUI, display, INVALID_FEEDBACK, TITLE);
+		passToStore = new LogicToStore(taskList,trashbinList);
 	}
 	
+	// pass GUI and File information
 	private static void GuiAndStore(DisplayConfiguration passToGui, LogicToStore passToStore) {
 		DataStore.writeAllData(passToStore);
 		Display.display(passToGui);
@@ -390,7 +455,7 @@ public class RunLogic {
 			return COMMAND_TYPE.INVALID;
 		}
 	}
-	
+	// This method determine which view mode the user want to use
 	private static VIEW_MODE determineViewMode(String viewModeString) {
 		if (viewModeString.equalsIgnoreCase("DATE")) {
 			return VIEW_MODE.DATE;
