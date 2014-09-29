@@ -124,6 +124,7 @@ public class TaskView extends JFrame {
 				return;
 			} else {
 				feedbackWindow.setText("input received");
+				feedbackWindow.setBackground(new Color(153, 204, 0));
 			}
 		}
 	}

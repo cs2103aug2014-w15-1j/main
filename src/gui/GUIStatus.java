@@ -1,4 +1,4 @@
-package logic;
+package gui;
 
 public class GUIStatus {
 	private int ViewMode;

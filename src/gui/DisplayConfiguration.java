@@ -1,15 +1,17 @@
-package logic;
+package gui;
 
 import java.util.ArrayList;
 
-public class LogicToGui {
+import logic.Task;
+
+public class DisplayConfiguration {
 	private GUIStatus GUI;
 	private ArrayList<Task> TaskList;
 	private String feedback;
 	private String title;
 	private int currentTask;
 	
-	LogicToGui(){
+	DisplayConfiguration(){
 		this.GUI = new GUIStatus();
 		this.TaskList = null;
 		this.feedback = null;
@@ -17,7 +19,7 @@ public class LogicToGui {
 		this.currentTask = -1;
 	}
 	
-	LogicToGui(GUIStatus GUI, ArrayList<Task> taskList, String feedback, String title, int currentTask){
+	DisplayConfiguration(GUIStatus GUI, ArrayList<Task> taskList, String feedback, String title, int currentTask){
 		this.GUI = GUI;
 		this.TaskList = taskList;
 		this.feedback = feedback;
