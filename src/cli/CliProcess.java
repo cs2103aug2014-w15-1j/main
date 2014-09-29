@@ -1,12 +1,9 @@
 package cli;
 
-import java.util.*;
 
 public class CliProcess {
 
      private static final String NULLED = "null";
-     private static Scanner sc = new Scanner(System.in);
-
 	
 	 enum COMMAND_TYPE {
 		ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT,
@@ -18,8 +15,6 @@ public class CliProcess {
 		REPEAT, SEARCH;
 	}
    
-	 
-	
     /* Command line will be processed and
      * a pack or arguments will be passed on
      */
