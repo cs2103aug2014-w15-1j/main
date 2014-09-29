@@ -1,39 +1,36 @@
 package cli;
 
 
-import java.io.*;
-import java.util.*;
-
 public class CliProcess {
 
      private static final String NULLED = "null";
-     private static Scanner sc = new Scanner(System.in);
-
 	
 	 enum COMMAND_TYPE {
-		ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT,
+		ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT,
 		//UPDATE
 		RENAME, RESCHEDULE, DESCRIBE,
 		//VIEW
-		DAY, MONTH, BIN, NEXT;	
+		DATE, MONTH, BIN,
+		//
+		REPEAT, SEARCH;
 	}
    
-	 
-	
     /* Command line will be processed and
      * a pack or arguments will be passed on
      */
 	 @SuppressWarnings("unused")
 	private void takeInput(String s){ 
-		    String [] inputLine = separate(s);
-		    //Index of array 0,1,2,3,4 as argument	
+		    String[] inputLine = new String[7]; 
+		    inputLine = separate(s);
+		    //Index of array 0,1,2,3,4,5,6 as argument	
 		    executeCommand(inputLine);		   
    }
    
    // Split into string into array of arguments 
    private String[] separate(String s){
-	  //Split into array of index 0,1,2,3,4
-	  String[] inputSplit = sc.nextLine().split(" ", 5);
+	   String[] inputSplit = new String[7];
+	   //Split into array of index 0,1,2,3,4,5,6
+	  inputSplit = s.split(" ", 7);
 	  for (String stringNode : inputSplit) {
           if (stringNode == null) 
         	  stringNode = NULLED;
@@ -59,6 +56,8 @@ public class CliProcess {
 			return COMMAND_TYPE.READ;
 		} else if (commandTypeString.equalsIgnoreCase("undo")) {
 			return COMMAND_TYPE.UNDO;
+		} else if (commandTypeString.equalsIgnoreCase("next")) {
+			return COMMAND_TYPE.NEXT;
 		} else {
 			return COMMAND_TYPE.INVALID;
 		}
@@ -79,18 +78,27 @@ public class CliProcess {
        case READ:
             read(inputExecute);
             break;
-		case DELETE:
-		    delete(inputExecute);
-			break;
-		case VIEW:
+
+        case DELETE:
+            delete(inputExecute);
+            break;
+
+        case VIEW:
             view(inputExecute);
             break;
+
 		case UNDO:
 			undo(inputExecute);
+			break;
+		case NEXT:
+		    next(inputExecute);
+		    break;
+		case EXIT:
+			exit(inputExecute);
+			break;
 		default:
-			//throw an error if the command is not recognized
-			throw new Error("no idea");
-		}
+			invalid(inputExecute);
+	   }
    }
    
    /* Create a new entry
@@ -145,11 +153,12 @@ public class CliProcess {
 	 */
 	private String[] changeCommand(String s, String[] strArr){
 	   strArr[0] = s;
-	   for(int i = 1; i< 4; i++){
+	   for(int i = 1; i<6; i++){
 		   strArr[i]= strArr[i+1];
 	   }	   
 	   return strArr; 
 	}
+	
 	
 	/* Read details of a certain task
 	 * 
@@ -185,16 +194,52 @@ public class CliProcess {
 	 * Change command field
 	 */
 	private CliToLog view(String[] strArr){
-		String[] newS;
+		String[] newS = new String[7];
 		String s;
 		
 		s = identifyMode(strArr[1]);
-		newS = changeCommand(s, strArr);
+		
+		if(s.equals(COMMAND_TYPE.BIN.name())){
+			newS = changeViewCommand(s, strArr);
+		} else
+		if (s.equals(COMMAND_TYPE.NEXT.name())){
+			newS = changeCommand(s, strArr);		
+		} else{
+			newS = addViewCommand(s, strArr);
+		}		
 		
 		CliToLog commandPackage = new CliToLog(newS);
 		
 		return commandPackage;
 	}
+	
+	/* Add new command for View
+	 * 
+	 * Also shift down the arguments after new command
+	 * @argument 2 commands in total, array of strings to be changed
+	 */
+	private String[] addViewCommand(String s, String[] strArr){
+		//date, month
+		String temp = strArr[1];
+		strArr[2] = temp;
+		strArr[1] = s;
+		
+		return strArr;
+	}
+	
+	/* Change commands for Update
+	 * 
+	 * Also shift up the arguments after new command
+	 * @argument New command , array of strings to be changed
+	 */
+	private String[] changeViewCommand(String s, String[] strArr){
+		//bin
+		strArr[1] = s;
+		
+		return strArr;
+	}
+	
+	
 	
 	/* Function: View
 	 * To identify different modes for View 
@@ -203,22 +248,48 @@ public class CliProcess {
 	private String identifyMode(String s){
 		String sNew;
 		
-		if(s.equals("nextpage")){
+		if(s.equalsIgnoreCase("nextpage")){
 			sNew = COMMAND_TYPE.NEXT.name();
 		}else
-		if(s.equals("bin")){
+		if(s.equalsIgnoreCase("bin")){
 			sNew = COMMAND_TYPE.BIN.name();
 		}else
 		if(s.equalsIgnoreCase("jan") || s.equalsIgnoreCase("feb") || s.equalsIgnoreCase("mar") || s.equalsIgnoreCase("apr") || s.equalsIgnoreCase("may") || s.equalsIgnoreCase("june") ||
 				s.equalsIgnoreCase("jul") || s.equalsIgnoreCase("aug") || s.equalsIgnoreCase("sep") || s.equalsIgnoreCase("oct") ||s.equalsIgnoreCase("nov") || s.equalsIgnoreCase("dec")){
 			sNew = COMMAND_TYPE.MONTH.name();
 		}else{
-			sNew = COMMAND_TYPE.DAY.name();
+			//date
+			
+			sNew = COMMAND_TYPE.DATE.name();
 		}
 		
 		return sNew;
 	}
-
+    
+	/* Next page for current state of view
+	 * 
+	 */
+	private CliToLog next(String[] strArr){
+		CliToLog commandPackage = new CliToLog(strArr);
 		
+		return commandPackage;
+	}
+	
+	/* Invalid command was read
+	 * 
+	 */
+	private CliToLog invalid(String[] strArr){
+		CliToLog commandPackage = new CliToLog(strArr);
+		
+		return commandPackage;
+	}
+	
+	/* Exiting the program
+	 * 
+	 */
+	private CliToLog exit(String[] strArr){
+		CliToLog commandPackage = new CliToLog(strArr);
+		
+		return commandPackage;		
+	}
 }
-
