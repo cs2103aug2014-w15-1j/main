@@ -4,6 +4,7 @@ package cli;
 public class CliProcess {
 
      private static final String NULLED = "null";
+     private static final String SPLITSYMBOL = "-";
 	
 	 enum COMMAND_TYPE {
 		ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT,
@@ -26,13 +27,23 @@ public class CliProcess {
    
    // Split into string into array of arguments 
    private static String[] separate(String s){
-	   String[] inputSplit = s.split(" ", 7);
+	   String[] inputSplit = s.split(SPLITSYMBOL, 7);
 	   //Split into array of index 0,1,2,3,4,5,6
-	  for (String stringNode : inputSplit) {
-          if (stringNode == null) 
-        	  stringNode = NULLED;
-          }
-	  return inputSplit;
+	   if (inputSplit.length < 7) {
+	       String[] appendedStr = new String[7];
+	       for (int i = 0; i < inputSplit.length; i++) {
+	           appendedStr[i] = inputSplit[i];
+	       }
+	       
+	       for (int j = inputSplit.length - 1; j < 7; j++) {
+	           appendedStr[j] = NULLED;
+	       }
+	       return appendedStr;
+	   } else {
+	       return inputSplit;
+	   }
+	  
+	  
    }
    
    private static COMMAND_TYPE determineCommandType(String commandTypeString){
