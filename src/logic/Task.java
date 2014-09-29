@@ -7,6 +7,7 @@ public class Task {
 	private String repeatDays;
 	private String startDate;
 	private String endDate;
+	private final String DEVIDESYMBOL = "-";
 	
 	public Task(){
 		// empty constructor
@@ -88,5 +89,10 @@ public class Task {
 	public void repeat(String newRepeatTimes, String newRepeatDays){
 		this.repeatTimes = newRepeatTimes;
 		this.repeatDays = newRepeatDays;
+	}
+	
+	public String toString() {
+	    return this.name + DEVIDESYMBOL + this.description + DEVIDESYMBOL + this.repeatTimes +
+	           this.repeatDays + DEVIDESYMBOL + this.startDate + DEVIDESYMBOL + this.endDate;
 	}
 }
