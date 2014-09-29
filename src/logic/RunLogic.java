@@ -1,7 +1,7 @@
 package logic;
 
 import gui.DisplayConfiguration;
-import gui.GUIStatus;
+import gui.VIEW_MODE;
 
 import java.util.ArrayList;
 
@@ -47,8 +47,9 @@ public class RunLogic {
 	
 	private static boolean checkValid(CliToLogic userCommand){
 		String command = userCommand.getCommand();
-		switch(GUI.getMode()){
-		case 0:
+		VIEW_MODE mode = GUI.getMode();
+		switch(mode){
+		case DATE:
 			return (command.equalsIgnoreCase("add") 
 					|| command.equalsIgnoreCase("delete")
 					|| command.equalsIgnoreCase("read") 
@@ -56,7 +57,7 @@ public class RunLogic {
 					|| command.equalsIgnoreCase("undo")
 					|| command.equalsIgnoreCase("search")
 					|| command.equalsIgnoreCase("exit"));
-		case 1:
+		case TASK:
 			return (command.equalsIgnoreCase("rename") 
 					|| command.equalsIgnoreCase("describe")
 					|| command.equalsIgnoreCase("repeat") 
@@ -64,16 +65,16 @@ public class RunLogic {
 					|| command.equalsIgnoreCase("undo")
 					|| command.equalsIgnoreCase("search")
 					|| command.equalsIgnoreCase("exit"));
-		case 2:
+		case MONTH:
 			return  (command.equalsIgnoreCase("view")
 					|| command.equalsIgnoreCase("exit"));
-		case 3:
+		case TRASHBIN:
 			return (command.equalsIgnoreCase("delete")
 					|| command.equalsIgnoreCase("read") 
 					|| command.equalsIgnoreCase("view")
 					|| command.equalsIgnoreCase("restore")
 					|| command.equalsIgnoreCase("exit"));
-		case 4:
+		case UNDONE:
 			return (command.equalsIgnoreCase("delete")
 					|| command.equalsIgnoreCase("read") 
 					|| command.equalsIgnoreCase("view")
@@ -133,16 +134,12 @@ public class RunLogic {
 		Task newTask = new Task(userCommand.getArg1(), userCommand.getArg2(), userCommand.getArg3(),
 				userCommand.getArg4(), userCommand.getArg5(), userCommand.getArg6());
 		taskList.add(newTask);
-<<<<<<< HEAD
 		GUI.changeCurretnTask(taskList.size() - 1);
-		GUI.changeViewMode();
-		passToGui = new LogicToGui(GUI, taskList, ADD_FEEDBACK, TITLE, currentTask);
-=======
-		if(!GUI.hasNext() && (taskList.size() % MAX_DISPLAY_LINE == 0)){
-			GUI.changeHasNext();
-		}
+		GUI.changeViewMode(VIEW_MODE.TASK);
+		passToGui = new DisplayConfiguration(GUI, taskList.subList(taskList.size() - 1, taskList.size()), ADD_FEEDBACK, TITLE);
+
 		passToGui = new DisplayConfiguration(GUI, taskList, ADD_FEEDBACK, TITLE, currentTask);
->>>>>>> 2eca8e99ce5a85320b0e919e4620af2c580d1691
+
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}

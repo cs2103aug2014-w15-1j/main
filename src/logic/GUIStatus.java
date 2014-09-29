@@ -1,31 +1,23 @@
-package gui;
+package logic;
 
-public enum class GUIViewMode{
-	
-}
+import gui.VIEW_MODE;
 
 public class GUIStatus {
-	private int ViewMode;
+	private VIEW_MODE viewMode;
 	private boolean hasNext;
 	private boolean hasPrevious;
 	private int currentTask;
 	
-	GUIStatus(){
-		this.ViewMode = 0;
-		this.hasNext = false;
-		this.hasPrevious = false;
-		this.currentTask = 0;
-	}
-	
-	GUIStatus(int ViewMode, boolean hasNext, boolean hasPrevious, int curretnTask){
-		this.ViewMode = ViewMode;
+
+	GUIStatus(VIEW_MODE viewMode, boolean hasNext, boolean hasPrevious, int currentTask){
+		this.viewMode = viewMode;
 		this.hasNext = hasNext;
 		this.hasPrevious = hasPrevious;
-		this.currentTask = curretnTask;
+		this.currentTask = currentTask;
 	}
 	
-	public int getMode(){
-		return this.ViewMode ;
+	public VIEW_MODE getMode(){
+		return this.viewMode ;
 	}
 	
 	public boolean hasNext(){
@@ -36,11 +28,11 @@ public class GUIStatus {
 		return this.hasPrevious;
 	}
 	
-	public int getTask(){
+	public int getTaskIndex(){
 		return this.currentTask;
 	}
-	public void changeViewMode(int mode){
-		this.ViewMode = mode;
+	public void changeViewMode(VIEW_MODE mode){
+		this.viewMode = mode;
 	}
 	
 	public void changeHasNext(){

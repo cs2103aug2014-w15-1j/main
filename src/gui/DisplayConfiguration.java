@@ -2,6 +2,7 @@ package gui;
 
 import java.util.ArrayList;
 
+import logic.GUIStatus;
 import logic.Task;
 
 public class DisplayConfiguration {
