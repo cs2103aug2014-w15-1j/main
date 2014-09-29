@@ -1,6 +1,7 @@
 package logic;
 
 import gui.DisplayConfiguration;
+
 import gui.VIEW_MODE;
 
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ public class RunLogic {
 	private static LogicToStore passToStore;
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
-	private static int currentTask;
 	
 	enum COMMAND_TYPE {
 		ADD_TASK, DELETE_TASK, READ_TASK, 
@@ -68,7 +68,7 @@ public class RunLogic {
 		case MONTH:
 			return  (command.equalsIgnoreCase("view")
 					|| command.equalsIgnoreCase("exit"));
-		case TRASHBIN:
+		case BIN:
 			return (command.equalsIgnoreCase("delete")
 					|| command.equalsIgnoreCase("read") 
 					|| command.equalsIgnoreCase("view")
@@ -134,11 +134,13 @@ public class RunLogic {
 		Task newTask = new Task(userCommand.getArg1(), userCommand.getArg2(), userCommand.getArg3(),
 				userCommand.getArg4(), userCommand.getArg5(), userCommand.getArg6());
 		taskList.add(newTask);
-		GUI.changeCurretnTask(taskList.size() - 1);
+		GUI.changeCurretnTask((taskList.size() - 1) / MAX_DISPLAY_LINE);
 		GUI.changeViewMode(VIEW_MODE.TASK);
-		passToGui = new DisplayConfiguration(GUI, taskList.subList(taskList.size() - 1, taskList.size()), ADD_FEEDBACK, TITLE);
-
-		passToGui = new DisplayConfiguration(GUI, taskList, ADD_FEEDBACK, TITLE, currentTask);
+		
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(newTask);
+		
+		passToGui = new DisplayConfiguration(GUI, display, ADD_FEEDBACK, TITLE);
 
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
@@ -150,62 +152,91 @@ public class RunLogic {
 		if(deleteLine.equalsIgnoreCase("all")){
 			trashbinList.addAll(taskList);
 			taskList.clear();
-			GUI = new GUIStatus(GUI.getMode(), false, false, 0);
-			passToGui = new DisplayConfiguration(GUI, taskList, DELETE_FEEDBACK, TITLE, currentTask);
+			GUI = new GUIStatus(GUI.getMode(), false, false, -1);
+			passToGui = new DisplayConfiguration(GUI, taskList, DELETE_FEEDBACK, TITLE);
 			passToStore = new LogicToStore(taskList, trashbinList);
-		} else if(Integer.valueOf(deleteLine) >= taskList.size()){
-			passToGui = new DisplayConfiguration(GUI, taskList, INVALID_FEEDBACK, TITLE, currentTask);
+		} else if(Integer.valueOf(deleteLine) > taskList.size()){
+			ArrayList<Task> display = new ArrayList<Task>();
+			for(int i = 0; i < MAX_DISPLAY_LINE; i++){
+				if((GUI.getTaskIndex() + i) >= taskList.size()){
+					display.add(taskList.get(GUI.getTaskIndex() + i));
+				} else {
+					break;
+				}
+			}
+			passToGui = new DisplayConfiguration(GUI, display, INVALID_FEEDBACK, TITLE);
 			passToStore = new LogicToStore(taskList, trashbinList);
 		} else {
 			trashbinList.add(taskList.remove(Integer.valueOf(deleteLine) - 1));
 			if(GUI.hasNext() && (taskList.size() % MAX_DISPLAY_LINE == MAX_DISPLAY_LINE - 1)){
 				GUI.changeHasNext();
-				if(currentTask >= taskList.size()){
-					currentTask -= MAX_DISPLAY_LINE;
+				if(GUI.getTaskIndex() >= taskList.size()){
+					GUI.changeCurretnTask(GUI.getTaskIndex() - MAX_DISPLAY_LINE);
 				}
 			}
-			passToGui = new DisplayConfiguration(GUI, taskList, DELETE_FEEDBACK, TITLE, currentTask);
+			ArrayList<Task> display = new ArrayList<Task>();
+			for(int i = 0; i < MAX_DISPLAY_LINE; i++){
+				if((GUI.getTaskIndex() + i) >= taskList.size()){
+					display.add(taskList.get(GUI.getTaskIndex() + i));
+				} else {
+					break;
+				}
+			}
+			passToGui = new DisplayConfiguration(GUI, display, DELETE_FEEDBACK, TITLE);
 			passToStore = new LogicToStore(taskList, trashbinList);
 		}
 		GuiAndStore(passToGui, passToStore);
 	}
 
 	private static void readTask(CliToLogic userCommand) {
-		currentTask = Integer.valueOf(userCommand.getArg1()) - 1;
-		GUI.changeCurretnTask(getModeNumber("TaskView"));
-		passToGui = new DisplayConfiguration(GUI, taskList, READ_FEEDBACK, TITLE, currentTask);
+		GUI.changeCurretnTask(Integer.valueOf(userCommand.getArg1()) - 1);
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(taskList.get(GUI.getTaskIndex()));
+		
+		passToGui = new DisplayConfiguration(GUI, display, READ_FEEDBACK, TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
 
 	private static void rename(CliToLogic userCommand) {
-		taskList.get(currentTask).rename(userCommand.getArg1());
-		passToGui = new DisplayConfiguration(GUI, taskList, RENAME_FEEDBACK, TITLE, currentTask);
+		taskList.get(GUI.getTaskIndex()).rename(userCommand.getArg1());
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(taskList.get(GUI.getTaskIndex()));
+		
+		passToGui = new DisplayConfiguration(GUI, display, RENAME_FEEDBACK, TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
 
 	private static void describe(CliToLogic userCommand) {
-		taskList.get(currentTask).describe(userCommand.getArg1());
-		passToGui = new DisplayConfiguration(GUI, taskList, DESCRIBE_FEEDBACK, TITLE, currentTask);
+		taskList.get(GUI.getTaskIndex()).describe(userCommand.getArg1());
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(taskList.get(GUI.getTaskIndex()));
+		
+		passToGui = new DisplayConfiguration(GUI, display, DESCRIBE_FEEDBACK, TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
 
 	private static void repeat(CliToLogic userCommand) {
-		taskList.get(currentTask).repeat(userCommand.getArg1(), userCommand.getArg2());
-		passToGui = new DisplayConfiguration(GUI, taskList, REPEAT_FEEDBACK, TITLE, currentTask);
+		taskList.get(GUI.getTaskIndex()).repeat(userCommand.getArg1(), userCommand.getArg2());
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(taskList.get(GUI.getTaskIndex()));
+		
+		passToGui = new DisplayConfiguration(GUI, display, REPEAT_FEEDBACK, TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 		
 	}
 
 	private static void reschedule(CliToLogic userCommand) {
-		taskList.get(currentTask).reschedule(userCommand.getArg1(), userCommand.getArg2());
-		passToGui = new DisplayConfiguration(GUI, taskList, RESCHEDULE_FEEDBACK, TITLE, currentTask);
+		taskList.get(GUI.getTaskIndex()).reschedule(userCommand.getArg1(), userCommand.getArg2());
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(taskList.get(GUI.getTaskIndex()));
+		
+		passToGui = new DisplayConfiguration(GUI, display, RESCHEDULE_FEEDBACK, TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
-		
 	}
 
 	private static void view(CliToLogic userCommand) {
@@ -213,7 +244,7 @@ public class RunLogic {
 		String viewMode = userCommand.getArg1();
 		int modeNumber = getModeNumber(viewMode);
 		GUI.changeCurretnTask(modeNumber);
-		passToGui = new DisplayConfiguration(GUI, taskList, VIEW_FEEDBACK, TITLE, currentTask);
+		passToGui = new DisplayConfiguration(GUI, taskList, VIEW_FEEDBACK, TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
