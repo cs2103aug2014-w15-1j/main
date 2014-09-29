@@ -41,8 +41,7 @@ public class RunLogic {
 	};
 	
 	public static void Logic(String inputCommand){
-		
-		CliToLog userCommand = interpretCommand(inputCommand);
+		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
 		if(checkValid(userCommand)){
 			executeCommand(userCommand);
 		} else {

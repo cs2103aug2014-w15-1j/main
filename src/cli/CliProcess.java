@@ -18,7 +18,7 @@ public class CliProcess {
     /* Command line will be processed and
      * a pack or arguments will be passed on
      */
-	public CliToLog interpretCommand(String s){ 
+	public static CliToLog interpretCommand(String s){ 
 		    String[] inputLine = new String[7]; 
 		    inputLine = separate(s);
 		    //Index of array 0,1,2,3,4,5,6 as argument	
@@ -26,7 +26,7 @@ public class CliProcess {
    }
    
    // Split into string into array of arguments 
-   private String[] separate(String s){
+   private static String[] separate(String s){
 	   String[] inputSplit = new String[7];
 	   //Split into array of index 0,1,2,3,4,5,6
 	  inputSplit = s.split(" ", 7);
@@ -37,7 +37,7 @@ public class CliProcess {
 	  return inputSplit;
    }
    
-   private COMMAND_TYPE determineCommandType(String commandTypeString){
+   private static COMMAND_TYPE determineCommandType(String commandTypeString){
 	   if (commandTypeString == null)
 			throw new Error("COMMAND_TYPE type string cannot be null!");
 
@@ -62,7 +62,7 @@ public class CliProcess {
 		}
 	} 
    
-   private CliToLog doCommand(String[] inputExecute){
+   private static CliToLog doCommand(String[] inputExecute){
 	   COMMAND_TYPE userCommand;
 	   
 	   userCommand = determineCommandType(inputExecute[0]);
@@ -92,7 +92,7 @@ public class CliProcess {
    /* Create a new entry
     * 
     */
-   private CliToLog add(String[] strArr){
+   private static CliToLog add(String[] strArr){
 	   CliToLog commandPackage = new CliToLog(strArr);
 	   
 	   return commandPackage;
@@ -102,7 +102,7 @@ public class CliProcess {
     * 
     * Change command field
     */
-   private CliToLog update(String[] strArr){
+   private static CliToLog update(String[] strArr){
 	   String[] newS = null;
 	   String s;
 	   
@@ -118,7 +118,7 @@ public class CliProcess {
 	 * To identify the field to update
 	 * 
 	 */
-	private String identifyField(String s){
+	private static String identifyField(String s){
 		String sNew = null;
 		
 		//Check field to be changed
@@ -139,7 +139,7 @@ public class CliProcess {
 	 * Also shift up the arguments after new command
 	 * @argument New command , array of strings to be changed
 	 */
-	private String[] changeCommand(String s, String[] strArr){
+	private static String[] changeCommand(String s, String[] strArr){
 	   strArr[0] = s;
 	   for(int i = 1; i<6; i++){
 		   strArr[i]= strArr[i+1];
@@ -154,13 +154,13 @@ public class CliProcess {
 	 * To open up an indexed view
 	 * @argument strArr[1] will be an index, need to be converted to integer
 	 */
-	private CliToLog read(String[] strArr){
+	private static CliToLog read(String[] strArr){
 		CliToLog commandPackage = new CliToLog(strArr);
 		
 		return commandPackage;
 	}
 	
-	private CliToLog undo(String[] strArr){
+	private static CliToLog undo(String[] strArr){
 		CliToLog commandPackage = new CliToLog(strArr);
 		
 		return commandPackage;		
@@ -170,7 +170,7 @@ public class CliProcess {
 	 * 
 	 *  @argument strArr[1] will be an index, need to be converted to integer
 	 */
-	private CliToLog delete(String[] strArr){
+	private static CliToLog delete(String[] strArr){
 		CliToLog commandPackage = new CliToLog(strArr);
 		
 		return commandPackage;
@@ -181,7 +181,7 @@ public class CliProcess {
 	 * Different modes available
 	 * Change command field
 	 */
-	private CliToLog view(String[] strArr){
+	private static CliToLog view(String[] strArr){
 		String[] newS = new String[7];
 		String s;
 		
@@ -206,7 +206,7 @@ public class CliProcess {
 	 * Also shift down the arguments after new command
 	 * @argument 2 commands in total, array of strings to be changed
 	 */
-	private String[] addViewCommand(String s, String[] strArr){
+	private static String[] addViewCommand(String s, String[] strArr){
 		//date, month
 		String temp = strArr[1];
 		strArr[2] = temp;
@@ -220,7 +220,7 @@ public class CliProcess {
 	 * Also shift up the arguments after new command
 	 * @argument New command , array of strings to be changed
 	 */
-	private String[] changeViewCommand(String s, String[] strArr){
+	private static String[] changeViewCommand(String s, String[] strArr){
 		//bin
 		strArr[1] = s;
 		
@@ -233,7 +233,7 @@ public class CliProcess {
 	 * To identify different modes for View 
 	 * 
 	 */
-	private String identifyMode(String s){
+	private static String identifyMode(String s){
 		String sNew;
 		
 		if(s.equalsIgnoreCase("nextpage")){
@@ -257,7 +257,7 @@ public class CliProcess {
 	/* Next page for current state of view
 	 * 
 	 */
-	private CliToLog next(String[] strArr){
+	private static CliToLog next(String[] strArr){
 		CliToLog commandPackage = new CliToLog(strArr);
 		
 		return commandPackage;
@@ -266,7 +266,7 @@ public class CliProcess {
 	/* Invalid command was read
 	 * 
 	 */
-	private CliToLog invalid(String[] strArr){
+	private static CliToLog invalid(String[] strArr){
 		CliToLog commandPackage = new CliToLog(strArr);
 		
 		return commandPackage;
@@ -275,7 +275,7 @@ public class CliProcess {
 	/* Exiting the program
 	 * 
 	 */
-	private CliToLog exit(String[] strArr){
+	private static CliToLog exit(String[] strArr){
 		CliToLog commandPackage = new CliToLog(strArr);
 		
 		return commandPackage;		
