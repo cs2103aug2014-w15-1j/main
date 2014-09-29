@@ -6,6 +6,8 @@ import gui.VIEW_MODE;
 
 import cli.CliToLog;
 
+import cli.CliProcess;
+
 import java.util.ArrayList;
 
 public class RunLogic {
@@ -39,8 +41,7 @@ public class RunLogic {
 	};
 	
 	public static void Logic(String inputCommand){
-		
-		CliToLog userCommand = initializeCommand(inputCommand);
+		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
 		if(checkValid(userCommand)){
 			executeCommand(userCommand);
 		} else {

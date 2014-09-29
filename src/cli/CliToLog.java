@@ -26,6 +26,10 @@ public class CliToLog{
 
 		}
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2e5eed5584bfc13bd4baa9b058516a8e7418ce20
 		public String getCommand(){
 			return commandFirst;
 		}
