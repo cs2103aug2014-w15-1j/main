@@ -10,7 +10,6 @@ public class DisplayConfiguration {
 	private boolean isPageInvolved;
 	private boolean hasNextPage;
 	private boolean hasPreviousPage;
-	private int currentTaskIndex;
 	
 	private ArrayList<Task> TaskList;
 	private String feedback;
@@ -20,13 +19,17 @@ public class DisplayConfiguration {
 		this.mode = status.getMode();
 		this.hasNextPage = status.hasNextPage();
 		this.hasPreviousPage = status.hasPreviousPage();
+		setIsPageInvolved();
 		
 		this.TaskList = taskList;
 		this.feedback = feedback;
 		this.title = title;
 	}
 	
-	
+	/**
+	 * method setIsPageInvolved: check if the nextPage and previousPage should  
+	 * 							 be involved in this view mode or not
+	 */
 	private void setIsPageInvolved() {
 		switch(mode) {
 			case DATE:
@@ -40,11 +43,11 @@ public class DisplayConfiguration {
 			case TASK:
 				isPageInvolved = false;
 			default:
-				throw new Error("invalid view Mode");
+				throw new Error("Invalid View Mode");
 		}
-			
-		
 	}
+	
+	
 	public boolean isPageInvolved(){
 		return isPageInvolved;
 	}
@@ -60,4 +63,5 @@ public class DisplayConfiguration {
 	public String getTitle(){
 		return this.title;
 	}
+	
 }
