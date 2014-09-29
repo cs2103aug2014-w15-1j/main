@@ -1,14 +1,15 @@
 package logic;
 
+import gui.Display;
 import gui.DisplayConfiguration;
-
 import gui.VIEW_MODE;
-
 import cli.CliToLog;
-
 import cli.CliProcess;
 
 import java.util.ArrayList;
+import java.util.Date;
+
+import data_store.DataStore;
 
 public class RunLogic {
 	private static String ADD_FEEDBACK = "New task added successfully!";
@@ -21,7 +22,7 @@ public class RunLogic {
 	private static String RESTORE_FEEDBACK = "Task restored to task list!";
 	private static String VIEW_FEEDBACK = "";
 	private static String UNDO_FEEDBACK = "";
-	private static String SEARCH_FEEDBACK = "";
+	private static String SEARCH_FEEDBACK = ""; 
 	private static String INVALID_FEEDBACK = "Invalid Command! Please check your command again!";
 	
 	private static String TITLE = "";
@@ -135,8 +136,20 @@ public class RunLogic {
 	
 
 	private static void addTask(CliToLog userCommand) {
+		Date startDate = null;
+		Date endDate = null;
+		if(userCommand.getArg5() != null && userCommand.getArg6() != null){
+			int startYear = Integer.valueOf(userCommand.getArg5().substring(0,4));
+			int startMonth = Integer.valueOf(userCommand.getArg5().substring(4,6));
+			int startDay = Integer.valueOf(userCommand.getArg5().substring(6,8));
+			int endYear = Integer.valueOf(userCommand.getArg6().substring(0,4));
+			int endMonth = Integer.valueOf(userCommand.getArg6().substring(4,6));
+			int endDay = Integer.valueOf(userCommand.getArg6().substring(6,8));
+			startDate = new Date(startYear, startMonth, startDay);
+			endDate = new Date(endYear, endMonth, endDay);
+		}
 		Task newTask = new Task(userCommand.getArg1(), userCommand.getArg2(), userCommand.getArg3(),
-				userCommand.getArg4(), userCommand.getArg5(), userCommand.getArg6());
+				userCommand.getArg4(), startDate, endDate);
 		taskList.add(newTask);
 		GUI.changeCurretnTask((taskList.size() - 1) / MAX_DISPLAY_LINE);
 		GUI.changeViewMode(VIEW_MODE.TASK);
@@ -145,7 +158,6 @@ public class RunLogic {
 		display.add(newTask);
 		
 		passToGui = new DisplayConfiguration(GUI, display, ADD_FEEDBACK, TITLE);
-
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
@@ -173,7 +185,7 @@ public class RunLogic {
 		} else {
 			trashbinList.add(taskList.remove(Integer.valueOf(deleteLine) - 1));
 			if(GUI.hasNext() && (taskList.size() % MAX_DISPLAY_LINE == MAX_DISPLAY_LINE - 1)){
-				GUI.changeHasNext();
+				GUI.changeHasNext(false);
 				if(GUI.getTaskIndex() >= taskList.size()){
 					GUI.changeCurretnTask(GUI.getTaskIndex() - MAX_DISPLAY_LINE);
 				}
@@ -194,6 +206,7 @@ public class RunLogic {
 
 	private static void readTask(CliToLog userCommand) {
 		GUI.changeCurretnTask(Integer.valueOf(userCommand.getArg1()) - 1);
+		GUI.changeViewMode(VIEW_MODE.TASK);
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -234,7 +247,16 @@ public class RunLogic {
 	}
 
 	private static void reschedule(CliToLog userCommand) {
-		taskList.get(GUI.getTaskIndex()).reschedule(userCommand.getArg1(), userCommand.getArg2());
+		int startYear = Integer.valueOf(userCommand.getArg1().substring(0,4));
+		int startMonth = Integer.valueOf(userCommand.getArg1().substring(4,6));
+		int startDay = Integer.valueOf(userCommand.getArg1().substring(6,8));
+		int endYear = Integer.valueOf(userCommand.getArg2().substring(0,4));
+		int endMonth = Integer.valueOf(userCommand.getArg2().substring(4,6));
+		int endDay = Integer.valueOf(userCommand.getArg2().substring(6,8));
+		Date startDate = new Date(startYear, startMonth, startDay);
+		Date endDate = new Date(endYear, endMonth, endDay);
+		taskList.get(GUI.getTaskIndex()).reschedule(startDate, endDate);
+		
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -244,13 +266,75 @@ public class RunLogic {
 	}
 
 	private static void view(CliToLog userCommand) {
-		// TODO Auto-generated method stub
-		String viewMode = userCommand.getArg1();
-		int modeNumber = getModeNumber(viewMode);
-		GUI.changeCurretnTask(modeNumber);
-		passToGui = new DisplayConfiguration(GUI, taskList, VIEW_FEEDBACK, TITLE);
+		VIEW_MODE mode = determineViewMode(userCommand.getArg1());
+		ArrayList<Task> display;
+		switch (mode) {
+		case DATE:
+			display = viewDate(userCommand.getArg2());
+			break;
+		case MONTH:
+			display = viewMonth(userCommand.getArg2());
+			break;
+		case BIN:
+			display = viewBin();
+			break;
+		case UNDONE:
+			display = viewUndone();
+			break;
+		default:
+			//throw an error if the mode is not recognized
+			throw new Error("Unrecognized view mode");
+		}
+		
+		passToGui = new DisplayConfiguration(GUI, display, VIEW_FEEDBACK, TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
+	}
+
+	private static ArrayList<Task> viewDate(String Date) {
+		ArrayList<Task> display = new ArrayList<Task>();
+		int year = Integer.valueOf(Date.substring(0,4));
+		int month = Integer.valueOf(Date.substring(4,6));
+		int day = Integer.valueOf(Date.substring(6,8));
+		Date requiredDate = new Date(year, month, day);
+		for(Task task : taskList){
+			if(task.getStartDate().equals(requiredDate)){
+				display.add(task);
+			}
+		}
+		boolean hasNext = display.size() > MAX_DISPLAY_LINE;
+		GUI = new GUIStatus(VIEW_MODE.DATE, hasNext, false, 0);
+		return display;
+	}
+
+	private static ArrayList<Task> viewMonth(String Month) {
+		// TODO Auto-generated method stub
+		int requiredMonth = Integer.valueOf(Month);
+		ArrayList<Task> display = new ArrayList<Task>();
+		for(Task task : taskList){
+			if(task.getEndDate().getMonth() == requiredMonth){
+				display.add(task);
+			}
+		}
+		boolean hasNext = display.size() > MAX_DISPLAY_LINE;
+		GUI = new GUIStatus(VIEW_MODE.MONTH, hasNext, false, 0);
+		return display;
+	}
+
+	private static ArrayList<Task> viewBin() {
+		// TODO Auto-generated method stub
+		if(trashbinList.isEmpty()){
+			GUI = new GUIStatus(VIEW_MODE.BIN, false, false, -1);
+		} else {
+			boolean hasNext = trashbinList.size() > MAX_DISPLAY_LINE;
+			GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, false, 0);
+		}
+		return trashbinList;
+	}
+
+	private static ArrayList<Task> viewUndone() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private static void undo() {
@@ -272,14 +356,9 @@ public class RunLogic {
 		// TODO Auto-generated method stub
 	}
 	
-	private static int getModeNumber(String viewMode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
 	private static void GuiAndStore(DisplayConfiguration passToGui, LogicToStore passToStore) {
-		// TODO Auto-generated method stub
-		
+		DataStore.writeAllData(passToStore);
+		Display.display(passToGui);
 	}
 	
 	// This method determine which command the user want to use
@@ -310,6 +389,18 @@ public class RunLogic {
 			return COMMAND_TYPE.EXIT;
 		} else {
 			return COMMAND_TYPE.INVALID;
+		}
+	}
+	
+	private static VIEW_MODE determineViewMode(String viewModeString) {
+		if (viewModeString.equalsIgnoreCase("DATE")) {
+			return VIEW_MODE.DATE;
+		} else if (viewModeString.equalsIgnoreCase("MONTH")) {
+			return VIEW_MODE.MONTH;
+		} else if (viewModeString.equalsIgnoreCase("BIN")) {
+			return VIEW_MODE.BIN;
+		} else {
+			return VIEW_MODE.UNDONE;
 		}
 	}
 }

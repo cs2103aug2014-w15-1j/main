@@ -35,12 +35,12 @@ public class GUIStatus {
 		this.viewMode = mode;
 	}
 	
-	public void changeHasNext(){
-		this.hasNext = !this.hasNext;
+	public void changeHasNext(boolean hasNext){
+		this.hasNext = hasNext;
 	}
 	
-	public void changeHasPrevious(){
-		this.hasPrevious = !this.hasPrevious;
+	public void changeHasPrevious(boolean hasPrevious){
+		this.hasPrevious = hasPrevious;
 	}
 	
 	public void changeCurretnTask(int task){
