@@ -1,12 +1,14 @@
 package logic;
 
+import java.util.Date;
+
 public class Task {
 	private String name;
 	private String description;
 	private String repeatTimes;
 	private String repeatDays;
-	private String startDate;
-	private String endDate;
+	private Date startDate;
+	private Date endDate;
 	private final String DEVIDESYMBOL = "-";
 	
 	public Task(){
@@ -40,7 +42,7 @@ public class Task {
 		this.endDate = null;
 	}
 	
-	public Task(String name, String description, String repeatTimes, String repeatDays, String startDate, String endDate){
+	public Task(String name, String description, String repeatTimes, String repeatDays, Date startDate, Date endDate){
 		this.name = name;
 		this.description = description;
 		this.repeatTimes = repeatTimes;
@@ -65,11 +67,11 @@ public class Task {
 		return this.repeatDays;
 	}
 	
-	public String getStartDate(){
+	public Date getStartDate(){
 		return this.startDate;
 	}
 	
-	public String getEndDate(){
+	public Date getEndDate(){
 		return this.endDate;
 	}
 	
@@ -77,7 +79,7 @@ public class Task {
 		this.name = newName;
 	}
 	
-	public void reschedule(String newStartDate, String newEndDate){
+	public void reschedule(Date newStartDate, Date newEndDate){
 		this.startDate = newStartDate;
 		this.endDate = newEndDate;
 	}
@@ -93,6 +95,6 @@ public class Task {
 	
 	public String toString() {
 	    return this.name + DEVIDESYMBOL + this.description + DEVIDESYMBOL + this.repeatTimes +
-	           this.repeatDays + DEVIDESYMBOL + this.startDate + DEVIDESYMBOL + this.endDate;
+	           this.repeatDays + DEVIDESYMBOL + this.startDate.toString() + DEVIDESYMBOL + this.endDate.toString();
 	}
 }
