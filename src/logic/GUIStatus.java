@@ -1,53 +1,48 @@
 package logic;
 
+import gui.VIEW_MODE;
+
 public class GUIStatus {
-	private int ViewMode;
-	private boolean hasNext;
-	private boolean hasPrevious;
-	private int currentTask;
+	private VIEW_MODE mode ;
+	private boolean hasNextPage;
+	private boolean hasPreviousPage;
+	private int currentTaskIndex;
 	
-	GUIStatus(){
-		this.ViewMode = 0;
-		this.hasNext = false;
-		this.hasPrevious = false;
-		this.currentTask = 0;
+	GUIStatus(VIEW_MODE mode, boolean hasNextPage, boolean hasPrevious, int curretnTask){
+		this.mode = mode;
+		this.hasNextPage = hasNextPage;
+		this.hasPreviousPage = hasPreviousPage;
+		this.currentTaskIndex = curretnTask;
 	}
 	
-	GUIStatus(int ViewMode, boolean hasNext, boolean hasPrevious, int curretnTask){
-		this.ViewMode = ViewMode;
-		this.hasNext = hasNext;
-		this.hasPrevious = hasPrevious;
-		this.currentTask = curretnTask;
+	public VIEW_MODE getMode(){
+		return this.mode ;
 	}
 	
-	public int getMode(){
-		return this.ViewMode ;
+	public boolean hasNextPage(){
+		return this.hasNextPage;
 	}
 	
-	public boolean hasNext(){
-		return this.hasNext;
-	}
-	
-	public boolean hasPrevious(){
-		return this.hasPrevious;
+	public boolean hasPreviousPage(){
+		return this.hasPreviousPage;
 	}
 	
 	public int getTask(){
-		return this.currentTask;
+		return this.currentTaskIndex;
 	}
 	public void changeViewMode(int mode){
-		this.ViewMode = mode;
+		this.mode = mode;
 	}
 	
-	public void changeHasNext(){
-		this.hasNext = !this.hasNext;
+	public void FlipHasNextPage(){
+		this.hasNextPage = !this.hasNextPage;
 	}
 	
-	public void changeHasPrevious(){
-		this.hasPrevious = !this.hasPrevious;
+	public void changeHasPreviousPage(){
+		this.hasPreviousPage = !this.hasPreviousPage;
 	}
 	
 	public void changeCurretnTask(int task){
-		this.currentTask = task;
+		this.currentTaskIndex = task;
 	}
 }
