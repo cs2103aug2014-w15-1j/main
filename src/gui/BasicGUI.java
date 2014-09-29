@@ -127,13 +127,6 @@ public class BasicGUI extends JFrame {
 			inputWindow.setText(emptyString);
 			RunLogic.Logic(command);
 			
-			if (command.length() == 0) {
-				feedbackWindow.setText("empty input");
-				return;
-			} else {
-				feedbackWindow.setText("input received");
-				feedbackWindow.setBackground(new Color(153, 204, 0));
-			}
 		}
 	}
 	

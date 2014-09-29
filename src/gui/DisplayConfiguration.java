@@ -34,16 +34,21 @@ public class DisplayConfiguration {
 		switch(mode) {
 			case DATE:
 				isPageInvolved = true;
+				break;
 			case MONTH:
 				isPageInvolved = true;
+				break;
 			case UNDONE:
 				isPageInvolved = true;
+				break;
 			case BIN:
 				isPageInvolved = true;
+				break;
 			case TASK:
 				isPageInvolved = false;
+				break;
 			default:
-				throw new Error("Invalid View Mode");
+				throw new Error("Invalid View Mode" + mode);
 		}
 	}
 	
