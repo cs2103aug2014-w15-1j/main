@@ -4,7 +4,8 @@ package cli;
 public class CliProcess {
 
      private static final String NULLED = "null";
-     private static final String SPLITSYMBOL = "-";
+     private static final String SPLITSYMBOL = "=";
+     private static final String SPLITDATE = "-";
 	
 	 enum COMMAND_TYPE {
 		ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT,
@@ -32,7 +33,14 @@ public class CliProcess {
 	   if (inputSplit.length < 7) {
 	       String[] appendedStr = new String[7];
 	       for (int i = 0; i < inputSplit.length; i++) {
-	           appendedStr[i] = inputSplit[i];
+	           if (i == 5 || i == 6) {
+	               // make date
+	               String[] splitDate = inputSplit[i].split(SPLITDATE);
+	               String resultDate = splitDate[0] + splitDate[1] + splitDate[2];
+	               appendedStr[i] = resultDate;
+	           } else {
+	               appendedStr[i] = inputSplit[i];
+	           }
 	       }
 	       
 	       for (int j = inputSplit.length - 1; j < 7; j++) {
