@@ -61,7 +61,7 @@ public class DisplayConfiguration {
 			case BIN:
 				isPageInvolved = true;
 				break;
-			case TASK:
+			case TASK_DETAIL:
 				isPageInvolved = false;
 				break;
 			default:
@@ -113,8 +113,8 @@ public class DisplayConfiguration {
 	public boolean hasPreviousPage(){
 		return this.hasPreviousPage;
 	}
-	private boolean isTaskView(){
-		return mode == VIEW_MODE.TASK;
+	public boolean isTaskView(){
+		return mode == VIEW_MODE.TASK_DETAIL;
 	}
 	
 }

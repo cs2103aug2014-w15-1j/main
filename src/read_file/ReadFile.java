@@ -3,15 +3,22 @@ package read_file;
 import logic.Task;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Date;
 
+import data_store.DataStore;
+
 public class ReadFile {
 	
-	private static final String EVENTFILENAME = "Taskfile.txt";
-	private static final String TRASHFILENAME = "Trashfile.txt";
-	
+    private static final String SOLARIS_OS = "Mac OS X";
+    private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
+    private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
+    
+    private static final String TRASH_NAME_WINDOWS = "c:\\Users\\Trashfile.txt";
+    private static final String EVENT_NAME_WINDOWS = "c:\\Users\\Taskfile.txt";
+    
 	private final String SEPERATESIMBOL = "=";
 	private final String READTASKERROR = "Error while reading task file line by line:";
 	private final String READTRASHERROR = "Error while reading trash file line by line:";
@@ -27,8 +34,17 @@ public class ReadFile {
 	 * get event ArrayList<Task>
 	 */
 	public ArrayList<Task> getEventTask() {
+	    String systemOS = this.getOS();
+        if (systemOS.equals(SOLARIS_OS)) {
+            return getOSEventTask(EVENT_NAME_SOLARIS);
+        } else {
+            return getOSEventTask(EVENT_NAME_WINDOWS);
+        }
+    }
+	
+	private ArrayList<Task> getOSEventTask(String fileName) {
 		try {
-			FileReader inputFile = new FileReader(EVENTFILENAME);
+			FileReader inputFile = new FileReader(fileName);
 			BufferedReader bufferReader = new BufferedReader(inputFile);
 			String line;
 
@@ -40,7 +56,11 @@ public class ReadFile {
 			
 			return this.EVENTTASK;
 
-		} catch (Exception e) {
+		} catch (FileNotFoundException e) {
+            DataStore.initializeFile(); 
+            return null;
+            
+        } catch (Exception e) {
 			System.out.println(READTASKERROR + e.getMessage());  
 			return null;
 		}
@@ -49,9 +69,18 @@ public class ReadFile {
 	/**
      * get trash ArrayList<Task>
      */
-    public ArrayList<Task> getTrashFile() {
+	public ArrayList<Task> getTrashFile() {
+        String systemOS = this.getOS();
+        if (systemOS.equals(SOLARIS_OS)) {
+            return getOSTrashFile(TRASH_NAME_SOLARIS);
+        } else {
+            return getOSTrashFile(TRASH_NAME_WINDOWS);
+        }
+    }
+	
+    private ArrayList<Task> getOSTrashFile(String fileName) {
         try {
-            FileReader inputFile = new FileReader(TRASHFILENAME);
+            FileReader inputFile = new FileReader(fileName);
             BufferedReader bufferReader = new BufferedReader(inputFile);
             String line;
 
@@ -63,8 +92,12 @@ public class ReadFile {
             
             return this.TRASHFILE;
 
+        } catch (FileNotFoundException e) {
+            DataStore.initializeFile(); 
+            return null;
+            
         } catch (Exception e) {
-            System.out.println(READTRASHERROR + e.getMessage());  
+            System.out.println(READTRASHERROR + e.getMessage()); 
             return null;
         }
     }
@@ -92,9 +125,8 @@ public class ReadFile {
 		return curTask;
 	}
 	
-	public static void main(String[] args) {
-	    ReadFile rf = new ReadFile();
-	    rf.getTrashFile();
-	}
+	private String getOS() {
+        return System.getProperty("os.name");
+    }
 
 }
