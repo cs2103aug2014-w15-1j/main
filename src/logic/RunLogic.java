@@ -12,9 +12,6 @@ import java.util.Date;
 
 public class RunLogic {
 
-	
-
-	
 	// keep track on GUI and File status
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
@@ -33,10 +30,16 @@ public class RunLogic {
 		NEXT, PREVIOUS
 	};
 	
+	public static void initialize(GUIStatus initialGUI, ArrayList<Task> initialTaskList, ArrayList<Task> initialTrashbinList, int[] initialDisplay) {
+		GUI = initialGUI;
+		taskList = initialTaskList;
+		trashbinList = initialTrashbinList;
+		currentDisplay = initialDisplay;
+	}
+	
 	public static void Logic(String inputCommand){
 		// pass user command to CLI for auto-correction
 		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
-		//initialize();
 		
 		// check whether the command is valid under current view mode
 		if(checkValid(userCommand)){
@@ -44,13 +47,6 @@ public class RunLogic {
 		} else {
 			wrongCommand(userCommand);
 		};
-	}
-	
-	public static void initialize(GUIStatus initialGUI, ArrayList<Task> initialTaskList, ArrayList<Task> initialTrashbinList, int[] initialDisplay) {
-		GUI = initialGUI;
-		taskList = initialTaskList;
-		trashbinList = initialTrashbinList;
-		currentDisplay = initialDisplay;
 	}
 
 	// check whether the command is valid under current view mode
