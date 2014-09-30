@@ -9,6 +9,9 @@ public class Display {
 	static BasicGUI frame; 
 	
 	public static void display(DisplayConfiguration confg){
+		if(frame == null) {
+			lauch();
+		}
 		System.out.println(confg.getTitle());
 		frame.setTitleText(confg.getTitle());
 		frame.setFeedbackText(confg.getFeedback());
@@ -16,6 +19,8 @@ public class Display {
 		
 	}
 	public static String processMainText(DisplayConfiguration confg){
+		
+		
 		String str = "";
 		ArrayList<Task> taskList = confg.getTaskList();
 		if(confg.isTaskView()){
