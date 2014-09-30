@@ -15,7 +15,7 @@ public class RunLogicTest {
 
 	@Before
 	public void setUp() throws Exception {
-		GUIStatus initialGUI = new GUIStatus(VIEW_MODE.TASK, false, false, 0);
+		GUIStatus initialGUI = new GUIStatus(VIEW_MODE.TASK_DETAIL, false, false, 0);
 		ArrayList<Task> initialTaskList = new ArrayList<Task>();
 		initialTaskList.add(new Task("Tast1"));
 		ArrayList<Task> initialTrashbinList = new ArrayList<Task>();
