@@ -15,7 +15,7 @@ public class RunLogicTest {
 
 	@Before
 	public void setUp() throws Exception {
-		GUIStatus initialGUI = new GUIStatus(VIEW_MODE.TASK_DETAIL, false, false, 0);
+		GUIStatus initialGUI = new GUIStatus(VIEW_MODE.TASK_DETAIL, false, false, 0, "20140930");
 		ArrayList<Task> initialTaskList = new ArrayList<Task>();
 		initialTaskList.add(new Task("Tast1"));
 		ArrayList<Task> initialTrashbinList = new ArrayList<Task>();
@@ -24,7 +24,7 @@ public class RunLogicTest {
 			i = -1;
 		}
 		initialDisplay[1] = 0;
-		RunLogic.initialize(initialGUI, initialTaskList, initialTrashbinList, initialDisplay, "20140930");
+		RunLogic.initialize(initialGUI, initialTaskList, initialTrashbinList, initialDisplay);
 	}
 
 	@After
