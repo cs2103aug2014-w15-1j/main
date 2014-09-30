@@ -12,7 +12,7 @@ import gui.VIEW_MODE;
 
 public class StartUp {
 	// title information
-	public static String TITLE = "";
+	public static String TITLE = "title";
 	
 	// some feedback information format
 	public static String ADD_FEEDBACK = "New task added successfully!";

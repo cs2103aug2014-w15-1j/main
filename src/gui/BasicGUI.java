@@ -31,6 +31,11 @@ import javax.swing.JToolBar;
 import javax.swing.JLayeredPane;
 import java.awt.Frame;
 import java.awt.Dialog.ModalExclusionType;
+import java.awt.ComponentOrientation;
+import java.awt.FlowLayout;
+import java.awt.SystemColor;
+import javax.swing.UIManager;
+import javax.swing.BoxLayout;
 
 /**
  * class BasicGUI: contains the basic structure of GUI
@@ -60,8 +65,8 @@ public class BasicGUI extends JFrame {
 	private JDesktopPane desktopPanel;
 	private JPanel FeedbackPanel;
 	private JTextField feedbackWindow;
-	private JLayeredPane layeredPaneForMain;
-	private TextArea mainWindow;
+	private JPanel mainPanel;
+	private JTextArea mainWindow;
 
 	private JPanel inputPanel;
 	private JTextField inputWindow;
@@ -149,6 +154,7 @@ public class BasicGUI extends JFrame {
 
 	private void constructHelperPane() {
 		toolBar = new JToolBar();
+		toolBar.setBorder(null);
 		toolBar.setFloatable(false);
 		toolBar.setSize(new Dimension(2314, 0));
 		toolBar.setRollover(true);
@@ -202,21 +208,30 @@ public class BasicGUI extends JFrame {
 		feedbackWindow.setText("Task Added!");
 		feedbackWindow.setColumns(20);
 
-		layeredPaneForMain = new JLayeredPane();
-		desktopPanel.add(layeredPaneForMain, BorderLayout.NORTH);
-
-		mainWindow = new TextArea();
-		mainWindow.setBounds(0, 0, 380, 215);
-		layeredPaneForMain.add(mainWindow);
-		mainWindow.setEditable(false);
-		mainWindow.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-			}
-		});
-		mainWindow.setForeground(new Color(0, 0, 0));
-		mainWindow.setText("Do some thing!\nDo some thing more interesting!");
-		mainWindow.setBackground(Color.WHITE);
+		mainPanel = new JPanel();
+		mainPanel.setRequestFocusEnabled(false);
+		mainPanel.setOpaque(false);
+		mainPanel.setDoubleBuffered(false);
+		mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		mainPanel.setBackground(Color.PINK);
+		mainPanel.setBorder(null);
+		desktopPanel.add(mainPanel, BorderLayout.CENTER);
+				mainPanel.setLayout(new BorderLayout(0, 0));
+		
+				mainWindow = new JTextArea();
+				mainWindow.setFocusable(false);
+				mainWindow.setEditable(false);
+				mainWindow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+				mainPanel.add(mainWindow);
+				mainWindow.setFont(new Font("Calibri", Font.PLAIN, 12));
+				mainWindow.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyPressed(KeyEvent e) {
+					}
+				});
+				mainWindow.setForeground(UIManager.getColor("Button.darkShadow"));
+				mainWindow.setText("Do some thing!Do some thing!\nDo some thing more interesting!\nDo some thing more interesting!Do some thing!\nDo some thing more interesting!Do some thing!Do some thing!\nDo some thing more interesting!\nDo some thing more interesting!Do some thing!\nDo some thing more interesting!Do some thing!Do some thing!\nDo some thing more interesting!\nDo some thing more interesting!Do some thing!\nDo some thing more interesting!Do some thing!Do some thing!\nDo some thing more interesting!\nDo some thing more interesting!Do some thing!\nDo some thing more interesting!");
+				mainWindow.setBackground(new Color(102, 102, 204));
 	}
 
 	private void constructContentPane() {
