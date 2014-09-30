@@ -201,7 +201,7 @@ public class CliProcess {
 
         s = strArr[1];
 
-        if(s.equalsIgnoreCase("bin")){
+        if(s.equalsIgnoreCase("tasklist")){
             //assigned BIN
             s = COMMAND_TYPE.BIN.name();
             newS = changeViewCommand(s, strArr);
