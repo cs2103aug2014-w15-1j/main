@@ -1,2 +1,2 @@
-Test Name=Buy New Birthday Gift=twice a day=1 month=2014-8-2=2014-9-4
-Test Name=Buy New Birthday Gift=twice a day=1 month=2014-8-2=2014-9-4
+New Event=Something Discription=Once a day=Twice a year=2014-07-09
+New Event=Something Discription=Once a day=Twice a year=2014-07-09
