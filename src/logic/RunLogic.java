@@ -10,6 +10,8 @@ import cli.CliProcess;
 import java.util.ArrayList;
 import java.util.Date;
 
+import data_store.DataStore;
+
 public class RunLogic {
 
 	// keep track on GUI and File status
@@ -484,6 +486,7 @@ public class RunLogic {
 	// change view mode to view the whole task list
 	private static ArrayList<Task> viewAllTask() {
 		ArrayList<Task> display = new ArrayList<Task>();
+		System.out.println(taskList.isEmpty());
 		if(taskList.isEmpty()){
 			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, GUI.getDate());
 			currentDisplay = initializeDisplayList(currentDisplay);
@@ -499,7 +502,7 @@ public class RunLogic {
 					break;
 				}
 			}
-			boolean hasPrevious = GUI.getTaskIndex() > 0;
+			boolean hasPrevious = (currentDisplay[1] > 0);
 			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 		}
 		return display;
@@ -531,6 +534,8 @@ public class RunLogic {
 			display = viewDate(GUI.getDate());
 		} else if(GUI.getMode().equals(VIEW_MODE.UNDONE)){
 			display = viewUndone();
+		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
+			display = viewAllTask();
 		}
 		passToGui = new DisplayConfiguration(GUI, display, StartUp.NEXT_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
@@ -579,7 +584,7 @@ public class RunLogic {
 	
 	// pass GUI and File information
 	private static void GuiAndStore(DisplayConfiguration passToGui, LogicToStore passToStore) {
-		//DataStore.writeAllData(passToStore);
+		DataStore.writeAllData(passToStore);
 		Display.display(passToGui);
 	}
 	
@@ -605,6 +610,10 @@ public class RunLogic {
 			return COMMAND_TYPE.VIEW_MODE;
 		} else if (commandTypeString.equalsIgnoreCase("undo")) {
 			return COMMAND_TYPE.UNDO;
+		} else if (commandTypeString.equalsIgnoreCase("next")) {
+			return COMMAND_TYPE.NEXT;
+		} else if (commandTypeString.equalsIgnoreCase("previous")) {
+			return COMMAND_TYPE.PREVIOUS;
 		} else if (commandTypeString.equalsIgnoreCase("search")) {
 			return COMMAND_TYPE.SEARCH;
 		} else if (commandTypeString.equalsIgnoreCase("exit")) {

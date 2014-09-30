@@ -203,8 +203,8 @@ public class CliProcess {
 
         if(s.equalsIgnoreCase("tasklist")){
             //assigned BIN
-            s = COMMAND_TYPE.BIN.name();
-            newS = changeViewCommand(s, strArr);
+            s = COMMAND_TYPE.VIEW.name();
+            newS = changeViewCommand("tasklist", strArr);
         } 		
         else{
             //returned DATE or MONTH
