@@ -71,7 +71,8 @@ public class RunLogic {
 					|| command.equalsIgnoreCase("search")
 					|| command.equalsIgnoreCase("exit"));
 		case TASK:
-			return (command.equalsIgnoreCase("rename") 
+			return (command.equalsIgnoreCase("view")
+					||command.equalsIgnoreCase("rename") 
 					|| command.equalsIgnoreCase("describe")
 					|| command.equalsIgnoreCase("repeat") 
 					|| command.equalsIgnoreCase("reschedule")
