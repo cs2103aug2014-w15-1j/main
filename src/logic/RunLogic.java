@@ -55,6 +55,16 @@ public class RunLogic {
 		VIEW_MODE mode = GUI.getMode();
 		
 		switch(mode){
+		case TASK_LIST:
+			return (command.equalsIgnoreCase("add") 
+					|| command.equalsIgnoreCase("delete")
+					|| command.equalsIgnoreCase("read") 
+					|| command.equalsIgnoreCase("view")
+					|| command.equalsIgnoreCase("undo")
+					|| command.equalsIgnoreCase("search")
+					|| command.equalsIgnoreCase("exit")
+					|| (command.equalsIgnoreCase("next") && GUI.hasNext())
+					|| (command.equalsIgnoreCase("previous") && GUI.hasPrevious()));
 		case DATE:
 			return (command.equalsIgnoreCase("add") 
 					|| command.equalsIgnoreCase("delete")

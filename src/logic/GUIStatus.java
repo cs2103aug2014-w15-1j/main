@@ -7,7 +7,7 @@ public class GUIStatus {
 	private boolean hasNext;
 	private boolean hasPrevious;
 	private int currentTask;
-	private static String date;
+	private  String date;
 
 	public GUIStatus(VIEW_MODE viewMode, boolean hasNext, boolean hasPrevious, int currentTask, String date){
 		this.viewMode = viewMode;

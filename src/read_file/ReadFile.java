@@ -16,8 +16,8 @@ public class ReadFile {
     private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
     private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
     
-    private static final String TRASH_NAME_WINDOWS = "c:\\Program Files\\Trashfile.txt";
-    private static final String EVENT_NAME_WINDOWS = "c:\\Program Files\\Taskfile.txt";
+    private static final String TRASH_NAME_WINDOWS = "E:\\Trashfile.txt";
+    private static final String EVENT_NAME_WINDOWS = "E:\\Taskfile.txt";
     
 	private final String SEPERATESIMBOL = "=";
 	private final String READTASKERROR = "Error while reading task file line by line:";
@@ -25,6 +25,8 @@ public class ReadFile {
 	
 	private ArrayList<Task> EVENTTASK;
     private ArrayList<Task> TRASHFILE;
+    
+    private ArrayList<Task> EMPTYDATA = new ArrayList<Task>();
 	
 	public ReadFile() {
 		this.EVENTTASK = new ArrayList<Task>();
@@ -47,10 +49,10 @@ public class ReadFile {
 		try {
 			FileReader inputFile = new FileReader(fileName);
 			BufferedReader bufferReader = new BufferedReader(inputFile);
-			String line;
+			String line = bufferReader.readLine();
 
 			// Read file line by line and store them into temperal ArrayList
-			while ((line = bufferReader.readLine()) != null) {
+			while ( line != null && !line.isEmpty()) {
 				this.EVENTTASK.add(makeTask(line));
 			}
 			bufferReader.close();
@@ -59,7 +61,7 @@ public class ReadFile {
 
 		} catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return getEventTask();
+            return EMPTYDATA;
             
         } catch (Exception e) {
 			System.out.println(READTASKERROR + e.getMessage());  
@@ -83,10 +85,10 @@ public class ReadFile {
         try {
             FileReader inputFile = new FileReader(fileName);
             BufferedReader bufferReader = new BufferedReader(inputFile);
-            String line;
+            String line = bufferReader.readLine();
 
             // Read file line by line and store them into temporal ArrayList
-            while ((line = bufferReader.readLine()) != null) {
+            while (line != null && !line.isEmpty()) {
                 this.TRASHFILE.add(makeTask(line));
             }
             bufferReader.close();
@@ -95,7 +97,7 @@ public class ReadFile {
 
         } catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return getTrashFile();
+            return EMPTYDATA;
             
         } catch (Exception e) {
             System.out.println(READTRASHERROR + e.getMessage()); 
