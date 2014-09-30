@@ -14,7 +14,7 @@ public class StartUp {
 	// title information
 	public static String TITLE = "";
 	
-	// some feedback inormation format
+	// some feedback information format
 	public static String ADD_FEEDBACK = "New task added successfully!";
 	public static String DELETE_FEEDBACK = "Task deleted successfully!";
 	public static String READ_FEEDBACK = "";
@@ -30,7 +30,7 @@ public class StartUp {
 	public static String START_FEEDBACK = "Start!";
 	
 	// the line number to display in GUI
-	public static int MAX_DISPLAY_LINE = 10;
+	public static int MAX_DISPLAY_LINE = 5;
 	
 	public static void main(String[] args) {
 		ReadFile rf = new ReadFile();
@@ -50,11 +50,11 @@ public class StartUp {
 		} else {
 			initialDisplay = initialTasks;
 			for(int i = 1; i <= initialDisplay.size(); i++){
-				initialDisplayIndex[i] = i;
+				initialDisplayIndex[i] = i - 1;
 			}
 		}
-		GUIStatus initialGui = new GUIStatus(VIEW_MODE.TASK, hasNext, false, 0);
-		RunLogic.initialize(initialGui, initialTasks, initialTrashbin, initialDisplayIndex);
+		GUIStatus initialGui = new GUIStatus(VIEW_MODE.DATE, hasNext, false, 0);
+		RunLogic.initialize(initialGui, initialTasks, initialTrashbin, initialDisplayIndex, "20140930");
 		
 		DisplayConfiguration initialDisConfig = new DisplayConfiguration(initialGui, initialDisplay, START_FEEDBACK, TITLE);
 		Display.display(initialDisConfig);
