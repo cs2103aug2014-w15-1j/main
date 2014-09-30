@@ -16,12 +16,13 @@ public class ReadFile {
     private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
     private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
     
-    private static final String TRASH_NAME_WINDOWS = "c:\\Users\\Trashfile.txt";
-    private static final String EVENT_NAME_WINDOWS = "c:\\Users\\Taskfile.txt";
+    private static final String TRASH_NAME_WINDOWS = "c:\\用户\\Trashfile.txt";
+    private static final String EVENT_NAME_WINDOWS = "c:\\用户\\Taskfile.txt";
     
 	private final String SEPERATESIMBOL = "=";
 	private final String READTASKERROR = "Error while reading task file line by line:";
 	private final String READTRASHERROR = "Error while reading trash file line by line:";
+	
 	private ArrayList<Task> EVENTTASK;
     private ArrayList<Task> TRASHFILE;
 	
