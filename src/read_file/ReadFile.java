@@ -49,9 +49,6 @@ public class ReadFile {
 			String line;
 
 			// Read file line by line and store them into temperal ArrayList
-			// See Line
-			line = bufferReader.readLine();
-			
 			while ((line = bufferReader.readLine()) != null) {
 				this.EVENTTASK.add(makeTask(line));
 			}
@@ -87,10 +84,7 @@ public class ReadFile {
             BufferedReader bufferReader = new BufferedReader(inputFile);
             String line;
 
-            // Read file line by line and store them into temperal ArrayList
-            // See Line
-            line = bufferReader.readLine();
-            
+            // Read file line by line and store them into temporal ArrayList
             while ((line = bufferReader.readLine()) != null) {
                 this.TRASHFILE.add(makeTask(line));
             }
@@ -134,5 +128,4 @@ public class ReadFile {
 	private String getOS() {
         return System.getProperty("os.name");
     }
-
 }
