@@ -30,6 +30,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JToolBar;
 import javax.swing.JLayeredPane;
 import java.awt.Frame;
+import java.awt.Dialog.ModalExclusionType;
 
 /**
  * class BasicGUI: contains the basic structure of GUI
@@ -102,11 +103,10 @@ public class BasicGUI extends JFrame {
 	 * method BasicGUI: constructor of GUI 
 	 */
 	public BasicGUI() {
-		setState(Frame.ICONIFIED);
 		setUndecorated(true);
+		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		getContentPane().setFocusTraversalPolicyProvider(true);
 		setRootPaneCheckingEnabled(false);
-		setResizable(false);
 		setVisible(true);
 		setOpacity(0.8f);
 		constructContentPane();
