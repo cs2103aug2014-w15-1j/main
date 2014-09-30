@@ -22,18 +22,21 @@ import java.awt.Cursor;
 import javax.swing.SwingConstants;
 
 import java.awt.Font;
-
 import java.awt.Dimension;
 
 import logic.RunLogic;
+
 import javax.swing.JDesktopPane;
+import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JLayeredPane;
+
 import java.awt.Frame;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.ComponentOrientation;
 import java.awt.FlowLayout;
 import java.awt.SystemColor;
+
 import javax.swing.UIManager;
 import javax.swing.BoxLayout;
 
@@ -66,7 +69,7 @@ public class BasicGUI extends JFrame {
 	private JPanel FeedbackPanel;
 	private JTextField feedbackWindow;
 	private JPanel mainPanel;
-	private JTextArea mainWindow;
+	private JTextPane mainWindow;
 
 	private JPanel inputPanel;
 	private JTextField inputWindow;
@@ -218,19 +221,21 @@ public class BasicGUI extends JFrame {
 		desktopPanel.add(mainPanel, BorderLayout.CENTER);
 				mainPanel.setLayout(new BorderLayout(0, 0));
 		
-				mainWindow = new JTextArea();
+				mainWindow = new JTextPane();
+				mainWindow.setBorder(null);
+				mainWindow.setContentType("text/html");
 				mainWindow.setFocusable(false);
 				mainWindow.setEditable(false);
 				mainWindow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 				mainPanel.add(mainWindow);
-				mainWindow.setFont(new Font("Calibri", Font.PLAIN, 12));
+				mainWindow.setFont(new Font("Calibri", Font.PLAIN, 16));
 				mainWindow.addKeyListener(new KeyAdapter() {
 					@Override
 					public void keyPressed(KeyEvent e) {
 					}
 				});
 				mainWindow.setForeground(UIManager.getColor("Button.darkShadow"));
-				mainWindow.setText("Do some thing!Do some thing!\nDo some thing more interesting!\nDo some thing more interesting!Do some thing!\nDo some thing more interesting!Do some thing!Do some thing!\nDo some thing more interesting!\nDo some thing more interesting!Do some thing!\nDo some thing more interesting!Do some thing!Do some thing!\nDo some thing more interesting!\nDo some thing more interesting!Do some thing!\nDo some thing more interesting!Do some thing!Do some thing!\nDo some thing more interesting!\nDo some thing more interesting!Do some thing!\nDo some thing more interesting!");
+				mainWindow.setText("<html><li>Hi</li></html>");
 				mainWindow.setBackground(new Color(102, 102, 204));
 	}
 
