@@ -55,7 +55,7 @@ public class StartUp {
 				initialDisplayIndex[i] = i - 1;
 			}
 		}
-		GUIStatus initialGui = new GUIStatus(VIEW_MODE.DATE, hasNext, false, 0, "20140930");
+		GUIStatus initialGui = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, false, 0, "20140930");
 		RunLogic.initialize(initialGui, initialTasks, initialTrashbin, initialDisplayIndex);
 		
 		DisplayConfiguration initialDisConfig = new DisplayConfiguration(initialGui, initialDisplay, START_FEEDBACK, TITLE);
