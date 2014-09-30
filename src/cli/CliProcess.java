@@ -3,7 +3,7 @@ package cli;
 
 public class CliProcess {
 
-    private static final String NULLED = "null";
+    private static final String NULLED = null;
     private static final String SPLITSYMBOL = "=";
     private static final String SPLITDATE = "-";
 
