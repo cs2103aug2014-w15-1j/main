@@ -104,6 +104,9 @@ public class DataStore {
 	    return System.getProperty("os.name");
 	}
 	
+	/**
+	 * Initializing Trash by creating a empty trash file
+	 * */
 	private static void initializeTrash() {
 	    String systemOS = getOS();
         if (systemOS.equals(SOLARIS_OS)) {
@@ -113,6 +116,9 @@ public class DataStore {
         }
 	}
 	
+	/**
+	 * Initializing Task by creating a empty task file
+     * */
 	private static void initializeTask() {
         String systemOS = getOS();
         if (systemOS.equals(SOLARIS_OS)) {
