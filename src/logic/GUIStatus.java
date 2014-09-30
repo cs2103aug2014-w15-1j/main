@@ -7,13 +7,14 @@ public class GUIStatus {
 	private boolean hasNext;
 	private boolean hasPrevious;
 	private int currentTask;
-	
+	private static String date;
 
-	public GUIStatus(VIEW_MODE viewMode, boolean hasNext, boolean hasPrevious, int currentTask){
+	public GUIStatus(VIEW_MODE viewMode, boolean hasNext, boolean hasPrevious, int currentTask, String date){
 		this.viewMode = viewMode;
 		this.hasNext = hasNext;
 		this.hasPrevious = hasPrevious;
 		this.currentTask = currentTask;
+		this.date = date;
 	}
 	
 	public VIEW_MODE getMode(){
@@ -31,6 +32,11 @@ public class GUIStatus {
 	public int getTaskIndex(){
 		return this.currentTask;
 	}
+	
+	public String getDate(){
+		return this.date;
+	}
+	
 	public void changeViewMode(VIEW_MODE mode){
 		this.viewMode = mode;
 	}
@@ -45,5 +51,9 @@ public class GUIStatus {
 	
 	public void changeCurretnTask(int task){
 		this.currentTask = task;
+	}
+	
+	public void changeDate(String newDate){
+		this.date = newDate;
 	}
 }

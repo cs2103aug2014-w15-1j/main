@@ -16,12 +16,13 @@ public class ReadFile {
     private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
     private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
     
-    private static final String TRASH_NAME_WINDOWS = "c:\\Users\\Trashfile.txt";
-    private static final String EVENT_NAME_WINDOWS = "c:\\Users\\Taskfile.txt";
+    private static final String TRASH_NAME_WINDOWS = "c:\\Program Files\\Trashfile.txt";
+    private static final String EVENT_NAME_WINDOWS = "c:\\Program Files\\Taskfile.txt";
     
 	private final String SEPERATESIMBOL = "=";
 	private final String READTASKERROR = "Error while reading task file line by line:";
 	private final String READTRASHERROR = "Error while reading trash file line by line:";
+	
 	private ArrayList<Task> EVENTTASK;
     private ArrayList<Task> TRASHFILE;
 	
@@ -49,9 +50,6 @@ public class ReadFile {
 			String line;
 
 			// Read file line by line and store them into temperal ArrayList
-			// See Line
-			line = bufferReader.readLine();
-			
 			while ((line = bufferReader.readLine()) != null) {
 				this.EVENTTASK.add(makeTask(line));
 			}
@@ -87,10 +85,7 @@ public class ReadFile {
             BufferedReader bufferReader = new BufferedReader(inputFile);
             String line;
 
-            // Read file line by line and store them into temperal ArrayList
-            // See Line
-            line = bufferReader.readLine();
-            
+            // Read file line by line and store them into temporal ArrayList
             while ((line = bufferReader.readLine()) != null) {
                 this.TRASHFILE.add(makeTask(line));
             }
@@ -134,5 +129,4 @@ public class ReadFile {
 	private String getOS() {
         return System.getProperty("os.name");
     }
-
 }
