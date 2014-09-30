@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 
 import logic.GUIStatus;
+import logic.RunLogic;
 import logic.Task;
 import read_file.ReadFile;
 import gui.Display;
@@ -36,15 +37,25 @@ public class StartUp {
 		ArrayList<Task> initialTasks = rf.getEventTask();
 		ArrayList<Task> initialTrashbin = rf.getTrashFile();
 		ArrayList<Task> initialDisplay = new ArrayList<Task>();
+		int[] initialDisplayIndex = new int[MAX_DISPLAY_LINE];
+		for(int i : initialDisplayIndex){
+			i = -1;
+		}
 		boolean hasNext = initialTasks.size() > MAX_DISPLAY_LINE;
 		if(hasNext){
 			for(int i = 0; i < MAX_DISPLAY_LINE; i++){
 				initialDisplay.add(initialTasks.get(i));
+				initialDisplayIndex[i + 1] = i;
 			}
 		} else {
 			initialDisplay = initialTasks;
+			for(int i = 1; i <= initialDisplay.size(); i++){
+				initialDisplayIndex[i] = i;
+			}
 		}
 		GUIStatus initialGui = new GUIStatus(VIEW_MODE.TASK, hasNext, false, 0);
+		RunLogic.initialize(initialGui, initialTasks, initialTrashbin, initialDisplayIndex);
+		
 		DisplayConfiguration initialDisConfig = new DisplayConfiguration(initialGui, initialDisplay, START_FEEDBACK, TITLE);
 		Display.display(initialDisConfig);
 	}
