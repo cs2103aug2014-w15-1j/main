@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 Test Name=Buy New Birthday Gift=twice a day=1 month=2014-7-6=2014-7-1
 Test Name=Buy New Birthday Gift=twice a day=1 month=2014-7-6=2014-7-1
+=======
+Test Name=Buy New Birthday Gift=twice a day=1 month=2014-8-6=2014-8-5
+Test Name=Buy New Birthday Gift=twice a day=1 month=2014-8-6=2014-8-5
+>>>>>>> 190d4cdeec4daa2cff12e96fe872b0b2a003b082
