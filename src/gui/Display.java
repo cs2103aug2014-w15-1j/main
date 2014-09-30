@@ -9,6 +9,7 @@ public class Display {
 	static BasicGUI frame; 
 	
 	public static void display(DisplayConfiguration confg){
+		System.out.println(confg.getTitle());
 		frame.setTitleText(confg.getTitle());
 		frame.setFeedbackText(confg.getFeedback());
 		frame.setMainText(processMainText(confg));
