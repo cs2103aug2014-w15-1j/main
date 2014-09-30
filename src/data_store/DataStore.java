@@ -25,8 +25,8 @@ public class DataStore {
 	private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
 	private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
 	
-	private static final String TRASH_NAME_WINDOWS = "c:\\Users\\Trashfile.txt";
-    private static final String EVENT_NAME_WINDOWS = "c:\\Users\\Taskfile.txt";
+	private static final String TRASH_NAME_WINDOWS = "c:\\用户\\Trashfile.txt";
+    private static final String EVENT_NAME_WINDOWS = "c:\\用户\\Taskfile.txt";
 	
 	private static final String EMPTY_DATA = "";
 	private static final String SEPERATESIMBOL = "=";
