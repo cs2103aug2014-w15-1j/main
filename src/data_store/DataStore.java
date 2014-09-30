@@ -18,8 +18,13 @@ public class DataStore {
 	private static final String TRASHERROR = " Trash file writing error ";
 	private static final String EVENTERROR = " Event file writing error ";
 	
-	private static final String TRASHFILENAME = "Trashfile.txt";
-	private static final String EVENTFILENAME = "Taskfile.txt";
+	private static final String SOLARIS_OS = "Mac OS X";
+	private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
+	private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
+	
+	private static final String TRASH_NAME_WINDOWS = "c:\\Users\\Trashfile.txt";
+    private static final String EVENT_NAME_WINDOWS = "c:\\Users\\Taskfile.txt";
+	
 	
 	private static final String SEPERATESIMBOL = "=";
 	
@@ -32,11 +37,17 @@ public class DataStore {
 	}
 
 	public static void writeTrash(ArrayList<Task> trashData) {
-		writeFile(TRASHFILENAME, trashData, TRASHERROR);
+	    String systemOS = getOS();
+	    if (systemOS.equals(SOLARIS_OS)) {
+	        writeFile(TRASH_NAME_SOLARIS, trashData, TRASHERROR);
+	    }
 	}
 	
 	public static void writeTask(ArrayList<Task> fileData) {
-		writeFile(EVENTFILENAME, fileData, EVENTERROR);
+	    String systemOS = getOS();
+        if (systemOS.equals(SOLARIS_OS)) {
+            writeFile(EVENT_NAME_SOLARIS, fileData, EVENTERROR);
+        }
 	}
 	
 	/**
@@ -76,5 +87,9 @@ public class DataStore {
 	
 	protected static String toSentence(Task taskLine) {
 	    return taskLine.toPersonalString();
+	}
+	
+	private static String getOS() {
+	    return System.getProperty("os.name");
 	}
 }

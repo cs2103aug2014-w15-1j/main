@@ -27,7 +27,7 @@ public class Display {
 				throw new Error("taskList does not contain one task exactly");
 			}
 			Task task = taskList.get(0);
-			String blueItalicOpen = "<i font color=\'green\'>";
+			String blueItalicOpen = "<i font color=green>";
 			String blueItalicClose = "</i> ";
 			String name = blueItalicOpen + "Name" + blueItalicClose;
 			String description = blueItalicOpen + "description"
@@ -41,13 +41,13 @@ public class Display {
 					+ "\n" + "</html>";
 
 		} else {
-			String liOpen = "<li font color=\"blue\">";
+			String liOpen = "<li font color=blue>";
 			String liClose = "</li>";
 			String body = "";
 			for (int i = 0; i < taskList.size(); i++) {
 				body += liOpen + taskList.get(i).getName() + liClose + "\n";
 			}
-			str = "<html>" + "<ol>" + body + "</ol>" + "</html>";
+			str = "<html>" + "<ol>" + "\n" + body + "\n" + "</ol>" + "</html>";
 		}
 		return str;
 	}
