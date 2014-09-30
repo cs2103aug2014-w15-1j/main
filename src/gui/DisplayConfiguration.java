@@ -31,7 +31,7 @@ public class DisplayConfiguration {
 	 * ===================== END OF PRIVATE FIELD =========================
 	 * ====================================================================
 	 */
-	
+
 	/*
 	 * ====================================================================
 	 * ===================== START OF PUBLIC METHOD =======================
@@ -68,17 +68,17 @@ public class DisplayConfiguration {
 	public String getFeedbackString() {
 		return this.feedback;
 	}
-	
+
 	public String getTitleString() {
 		return this.title;
 	}
-	
+
 	/*
 	 * ====================================================================
 	 * ===================== END OF PUBLIC METHOD =========================
 	 * ====================================================================
 	 */
-	
+
 	/**
 	 * method setIsPageInvolved: check if the nextPage and previousPage should
 	 * be involved in this view mode or not
@@ -104,7 +104,7 @@ public class DisplayConfiguration {
 			isPageInvolved = true;
 			break;
 		default:
-			throw new Error("Invalid View Mode:"  + mode);
+			throw new Error("Invalid View Mode:" + mode);
 		}
 	}
 
@@ -137,7 +137,7 @@ public class DisplayConfiguration {
 
 	/**
 	 * method processTaskDetailText: convert a certain task into text\html
-
+	 * 
 	 * string with all necessary attributes displayed.
 	 * 
 	 * @param task
@@ -150,30 +150,27 @@ public class DisplayConfiguration {
 		String attrClose = "</i>";
 		String infoOpen = "<big font color = " + infoFontColor + ">";
 		String infoClose = "</big>";
-		
-		
+
 		String nameInfo = infoOpen + task.getName() + infoClose;
 		String descriptionInfo = infoOpen + task.getDescription() + infoClose;
 		String startDateInfo = infoOpen + task.getStartDate() + infoClose;
 		String endDateInfo = infoOpen + task.getEndDate() + infoClose;
-		
+
 		String nameAttr = attrOpen + "Name: " + attrClose;
 		String descriptionAttr = attrOpen + "description: " + attrClose;
 		String StartDateAttr = attrOpen + "startTime: " + attrClose;
 		String endDateAttr = attrOpen + "endTime: " + attrClose;
 
 		String output = "<html>" + nameAttr + nameInfo + "<br>"
-				+ descriptionAttr + descriptionInfo + "<br>"
-				+ StartDateAttr + startDateInfo + "<br>" + endDateAttr
-				+ endDateInfo + "<br>" + "</html>";
+				+ descriptionAttr + descriptionInfo + "<br>" + StartDateAttr
+				+ startDateInfo + "<br>" + endDateAttr + endDateInfo + "<br>"
+				+ "</html>";
 		return output;
 
 	}
 
-	public String getTaskListString() {
-		return processTaskListText(getTaskList());
-	}
 
+	
 	protected ArrayList<Task> getTaskList() {
 		return this.TaskList;
 	}
