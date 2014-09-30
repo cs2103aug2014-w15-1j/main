@@ -38,8 +38,8 @@ public class StartUp {
 		ArrayList<Task> initialTrashbin = rf.getTrashFile();
 		ArrayList<Task> initialDisplay = new ArrayList<Task>();
 		int[] initialDisplayIndex = new int[MAX_DISPLAY_LINE];
-		for(int i : initialDisplayIndex){
-			i = -1;
+		for(int i = 0; i < initialDisplayIndex.length; i++){
+			initialDisplayIndex[i] = -1;
 		}
 		boolean hasNext = initialTasks.size() > MAX_DISPLAY_LINE;
 		if(hasNext){
