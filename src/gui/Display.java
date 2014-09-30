@@ -1,10 +1,5 @@
 package gui;
 
-import java.awt.EventQueue;
-import java.util.ArrayList;
-
-import logic.Task;
-
 public class Display {
 	static BasicGUI gFrame;
 
@@ -12,12 +7,10 @@ public class Display {
 		if (gFrame == null) {
 			lauch();
 		}
-		gFrame.setTitleText(confg.getTitle());
-		gFrame.setFeedbackText(confg.getFeedback());
-		gFrame.setMainText(confg.getContentString());
-
+		gFrame.setTitleText(confg.getTitleString());
+		gFrame.setFeedbackText(confg.getFeedbackString());
+		gFrame.setMainText(confg.getTaskString());
 	}
-
 
 	public static void lauch() {
 		gFrame = new BasicGUI();

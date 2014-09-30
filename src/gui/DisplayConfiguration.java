@@ -31,6 +31,12 @@ public class DisplayConfiguration {
 	 * ===================== END OF PRIVATE FIELD =========================
 	 * ====================================================================
 	 */
+	
+	/*
+	 * ====================================================================
+	 * ===================== START OF PUBLIC METHOD =======================
+	 * ====================================================================
+	 */
 	public DisplayConfiguration(GUIStatus status, ArrayList<Task> taskList,
 			String feedback, String title) {
 		this.mode = status.getMode();
@@ -43,7 +49,7 @@ public class DisplayConfiguration {
 		this.title = title;
 	}
 
-	public String getContentString() {
+	public String getTaskString() {
 		ArrayList<Task> taskList = getTaskList();
 		switch (mode) {
 		case TASK_DETAIL:
@@ -59,6 +65,20 @@ public class DisplayConfiguration {
 		}
 	}
 
+	public String getFeedbackString() {
+		return this.feedback;
+	}
+	
+	public String getTitleString() {
+		return this.title;
+	}
+	
+	/*
+	 * ====================================================================
+	 * ===================== END OF PUBLIC METHOD =========================
+	 * ====================================================================
+	 */
+	
 	/**
 	 * method setIsPageInvolved: check if the nextPage and previousPage should
 	 * be involved in this view mode or not
@@ -114,6 +134,7 @@ public class DisplayConfiguration {
 
 	/**
 	 * method processTaskDetailText: convert a certain task into text\html
+
 	 * string with all necessary attributes displayed.
 	 * 
 	 * @param task
@@ -154,28 +175,15 @@ public class DisplayConfiguration {
 		return this.TaskList;
 	}
 
-	String getFeedback() {
-		return this.feedback;
-	}
-
-	public String getTitle() {
-		return this.title;
-	}
-
-	public boolean hasNextPage() {
+	private boolean hasNextPage() {
 		return this.hasNextPage;
 	}
 
-	public boolean isPageInvolved() {
+	private boolean isPageInvolved() {
 		return isPageInvolved;
 	}
 
-	public boolean hasPreviousPage() {
+	private boolean hasPreviousPage() {
 		return this.hasPreviousPage;
 	}
-
-	public boolean isTaskView() {
-		return mode == VIEW_MODE.TASK_DETAIL;
-	}
-
 }
