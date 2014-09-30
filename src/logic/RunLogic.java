@@ -477,7 +477,7 @@ public class RunLogic {
 	
 	// pass GUI and File information
 	private static void GuiAndStore(DisplayConfiguration passToGui, LogicToStore passToStore) {
-		DataStore.writeAllData(passToStore);
+		//DataStore.writeAllData(passToStore);
 		Display.display(passToGui);
 	}
 	
