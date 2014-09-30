@@ -49,6 +49,9 @@ public class ReadFile {
 			String line;
 
 			// Read file line by line and store them into temperal ArrayList
+			// See Line
+			line = bufferReader.readLine();
+			
 			while ((line = bufferReader.readLine()) != null) {
 				this.EVENTTASK.add(makeTask(line));
 			}
@@ -58,7 +61,7 @@ public class ReadFile {
 
 		} catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return null;
+            return getEventTask();
             
         } catch (Exception e) {
 			System.out.println(READTASKERROR + e.getMessage());  
@@ -85,6 +88,9 @@ public class ReadFile {
             String line;
 
             // Read file line by line and store them into temperal ArrayList
+            // See Line
+            line = bufferReader.readLine();
+            
             while ((line = bufferReader.readLine()) != null) {
                 this.TRASHFILE.add(makeTask(line));
             }
@@ -94,7 +100,7 @@ public class ReadFile {
 
         } catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return null;
+            return getTrashFile();
             
         } catch (Exception e) {
             System.out.println(READTRASHERROR + e.getMessage()); 
