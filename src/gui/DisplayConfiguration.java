@@ -12,6 +12,11 @@ import logic.Task;
  * which contains all needed information for display
  */
 public class DisplayConfiguration {
+	/*
+	 * ====================================================================
+	 * ===================== Start OF PRIVATE FIELD =======================
+	 * ====================================================================
+	 */
 	private VIEW_MODE mode;
 	private boolean isPageInvolved;
 	private boolean hasNextPage;
@@ -20,7 +25,11 @@ public class DisplayConfiguration {
 	private ArrayList<Task> TaskList;
 	private String feedback;
 	private String title;
-	
+	/*
+	 * ====================================================================
+	 * ===================== END OF PRIVATE FIELD =========================
+	 * ====================================================================
+	 */
 	public DisplayConfiguration(GUIStatus status, ArrayList<Task> taskList, String feedback, String title){
 		this.mode = status.getMode();
 		this.hasNextPage = status.hasNext();
@@ -31,6 +40,8 @@ public class DisplayConfiguration {
 		this.feedback = feedback;
 		this.title = title;
 	}
+	
+	
 	
 	/**
 	 * method setIsPageInvolved: check if the nextPage and previousPage should  
@@ -58,16 +69,34 @@ public class DisplayConfiguration {
 		}
 	}
 	
-	
-	public boolean isPageInvolved(){
-		return isPageInvolved;
+	/**
+	 * method processTaskListText: 
+	 * @param taskList
+	 * @return corresponding text in html format
+	 */
+	private String processTaskListText(ArrayList<Task> taskList){
+		String fontColor = "blue";
+		String liOpen = "<li font color=+" + taskList + "+>";
+		String liClose = "</li>";
+		String body = "";
+		for (int i = 0; i < taskList.size(); i++) {
+			body += liOpen + taskList.get(i).getName() + liClose + "\n";
+		}
+		String output = "<html>" + "<ol>" + "\n" + body + "\n" + "</ol>" + "</html>";
+		return output;
+		
 	}
 	
-	public ArrayList<Task> getTaskList(){
+	public String getTaskListString(){
+		return processTaskListText(getTaskList());
+	}
+	
+	protected ArrayList<Task> getTaskList(){
 		return this.TaskList;
 	}
 	
-	public String getFeedback(){
+	
+	String getFeedback(){
 		return this.feedback;
 	}
 	
@@ -77,10 +106,14 @@ public class DisplayConfiguration {
 	public boolean hasNextPage(){
 		return this.hasNextPage;
 	}
+	public boolean isPageInvolved(){
+		return isPageInvolved;
+	}
+	
 	public boolean hasPreviousPage(){
 		return this.hasPreviousPage;
 	}
-	public boolean isTaskView(){
+	private boolean isTaskView(){
 		return mode == VIEW_MODE.TASK;
 	}
 	

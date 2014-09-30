@@ -35,10 +35,10 @@ public class Display {
 			String StartDate = blueItalicOpen + "startTime" + blueItalicClose;
 			String endDate = blueItalicOpen + "endTime" + blueItalicClose;
 
-			str = "<html>" + name + task.getName() + "\n" + description
-					+ task.getDescription() + "\n" + StartDate
-					+ task.getStartDate() + "\n" + endDate + task.getEndDate()
-					+ "\n" + "</html>";
+			str = "<html>" + name + task.getName() + "<br>" + description
+					+ task.getDescription() + "<br>" + StartDate
+					+ task.getStartDate() + "<br>" + endDate + task.getEndDate()
+					+ "<br>" + "</html>";
 
 		} else {
 			String liOpen = "<li font color=blue>";

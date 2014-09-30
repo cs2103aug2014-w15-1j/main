@@ -39,6 +39,7 @@ import java.awt.SystemColor;
 
 import javax.swing.UIManager;
 import javax.swing.BoxLayout;
+import java.awt.Window.Type;
 
 /**
  * class BasicGUI: contains the basic structure of GUI
@@ -86,21 +87,7 @@ public class BasicGUI extends JFrame {
 	 * ====================================================================
 	 */
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					BasicGUI frame = new BasicGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 	/*
 	 * ====================================================================
 	 * ===================== START OF PUBLIC METHOD =======================
@@ -111,12 +98,10 @@ public class BasicGUI extends JFrame {
 	 * method BasicGUI: constructor of GUI 
 	 */
 	public BasicGUI() {
-		setUndecorated(true);
+		setType(Type.UTILITY);
 		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		getContentPane().setFocusTraversalPolicyProvider(true);
-		setRootPaneCheckingEnabled(false);
 		setVisible(true);
-		setOpacity(0.8f);
 		constructContentPane();
 		constructTitlePane();
 		constructBodyPane();
@@ -236,7 +221,7 @@ public class BasicGUI extends JFrame {
 				});
 				mainWindow.setForeground(UIManager.getColor("Button.darkShadow"));
 				mainWindow.setText("<html><li>Hi</li></html>");
-				mainWindow.setBackground(new Color(102, 102, 204));
+				mainWindow.setBackground(Color.WHITE);
 	}
 
 	private void constructContentPane() {
