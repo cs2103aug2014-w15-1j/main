@@ -9,7 +9,7 @@ public class GUIStatus {
 	private int currentTask;
 	
 
-	GUIStatus(VIEW_MODE viewMode, boolean hasNext, boolean hasPrevious, int currentTask){
+	public GUIStatus(VIEW_MODE viewMode, boolean hasNext, boolean hasPrevious, int currentTask){
 		this.viewMode = viewMode;
 		this.hasNext = hasNext;
 		this.hasPrevious = hasPrevious;
