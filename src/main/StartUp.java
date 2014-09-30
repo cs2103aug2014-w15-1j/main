@@ -26,7 +26,7 @@ public class StartUp {
 	public static String VIEW_FEEDBACK = "View mode changed!";
 	public static String UNDO_FEEDBACK = "Command undo!";
 	public static String SEARCH_FEEDBACK = "Search rsults!"; 
-	public static String INVALID_FEEDBACK = "Invalid Command! Please check your command again!";
+	public static String INVALID_FEEDBACK = "Invalid Command!";
 	public static String START_FEEDBACK = "Start!";
 	public static String NEXT_FEEDBACK = "Next page!";
 	public static String PREVIOUS_FEEDBACK = "Previous page!";

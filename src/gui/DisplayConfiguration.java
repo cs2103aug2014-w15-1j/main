@@ -105,8 +105,7 @@ public class DisplayConfiguration {
 			output = "<html>" + "<ol>" + body + "</ol>" + "</html>";
 
 		} else {
-			output = "<html>" + "<center>" + "EMPTY" + "</center>"
-					+ "</html>";
+			output = "<html>" + "<center>" + "EMPTY" + "</center>" + "</html>";
 		}
 
 		return output;
@@ -127,18 +126,22 @@ public class DisplayConfiguration {
 		String attrClose = "</i>";
 		String infoOpen = "<big font color = " + infoFontColor + ">";
 		String infoClose = "</big>";
-		String name = attrOpen + infoOpen + "Name" + infoClose + attrClose;
-		String description = attrOpen + infoOpen + "description" + infoClose
-				+ attrClose;
-		String StartDate = attrOpen + infoOpen + "startTime" + infoClose
-				+ attrClose;
-		String endDate = attrOpen + infoOpen + "endTime" + infoClose
-				+ attrClose;
+		
+		
+		String nameInfo = infoOpen + task.getName() + infoClose;
+		String descriptionInfo = infoOpen + task.getDescription() + infoClose;
+		String startDateInfo = infoOpen + task.getStartDate() + infoClose;
+		String endDateInfo = infoOpen + task.getEndDate() + infoClose;
+		
+		String nameAttr = attrOpen + "Name: " + attrClose;
+		String descriptionAttr = attrOpen + "description: " + attrClose;
+		String StartDateAttr = attrOpen + "startTime: " + attrClose;
+		String endDateAttr = attrOpen + "endTime: " + attrClose;
 
-		String output = "<html>" + name + task.getName() + "<br>" + description
-				+ task.getDescription() + "<br>" + StartDate
-				+ task.getStartDate() + "<br>" + endDate + task.getEndDate()
-				+ "<br>" + "</html>";
+		String output = "<html>" + nameAttr + nameInfo + "<br>"
+				+ descriptionAttr + descriptionInfo + "<br>"
+				+ StartDateAttr + startDateInfo + "<br>" + endDateAttr
+				+ endDateInfo + "<br>" + "</html>";
 		return output;
 
 	}
