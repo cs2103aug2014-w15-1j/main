@@ -42,7 +42,7 @@ public class CliProcess {
             }
         }
 
-        for (int j = inputSplit.length; j < 7; j++) {
+        for (int j = inputSplit.length - 1; j < 7; j++) {
             appendedStr[j] = NULLED;
         }
         return appendedStr;
@@ -289,5 +289,11 @@ public class CliProcess {
         CliToLog commandPackage = new CliToLog(strArr);
 
         return commandPackage;		
+    }
+    
+    public static String[] testSeparate(String s){
+    	String[] inputLine = separate(s);
+    	
+    	return inputLine;
     }
 }
