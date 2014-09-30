@@ -3,7 +3,7 @@ package cli;
 
 public class CliProcess {
 
-     private static final String NULLED = "null";
+     private static final String NULLED = "n";
 	
 	 enum COMMAND_TYPE {
 		ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT,
@@ -278,5 +278,15 @@ public class CliProcess {
 		CliToLog commandPackage = new CliToLog(strArr);
 		
 		return commandPackage;		
+	}
+
+   /*
+    *  J-unit test public method: separate()
+    */
+	public static String[] testSeparate(String s){
+		String[] inputSplit;
+		inputSplit = separate(s);
+		
+		return inputSplit;
 	}
 }
