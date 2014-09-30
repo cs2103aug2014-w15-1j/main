@@ -1,5 +1,6 @@
 package logic;
 
+import main.StartUp;
 import gui.Display;
 import gui.DisplayConfiguration;
 import gui.VIEW_MODE;
@@ -12,31 +13,15 @@ import java.util.Date;
 import data_store.DataStore;
 
 public class RunLogic {
-	// some feedback inormation format
-	private static String ADD_FEEDBACK = "New task added successfully!";
-	private static String DELETE_FEEDBACK = "Task deleted successfully!";
-	private static String READ_FEEDBACK = "";
-	private static String RENAME_FEEDBACK = "Task informaion updated!";
-	private static String RESCHEDULE_FEEDBACK = "Task informaion updated!";
-	private static String REPEAT_FEEDBACK = "Task informaion updated!";
-	private static String DESCRIBE_FEEDBACK = "Task informaion updated!";
-	private static String RESTORE_FEEDBACK = "Task restored to task list!";
-	private static String VIEW_FEEDBACK = "";
-	private static String UNDO_FEEDBACK = "";
-	private static String SEARCH_FEEDBACK = ""; 
-	private static String INVALID_FEEDBACK = "Invalid Command! Please check your command again!";
+
 	
-	// title information
-	private static String TITLE = "";
-	
-	// the line number to display in GUI
-	private static int MAX_DISPLAY_LINE = 10;
+
 	
 	// keep track on GUI and File status
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
-	private static int[] currentDisplay = new int[MAX_DISPLAY_LINE + 1];
+	private static int[] currentDisplay = new int[StartUp.MAX_DISPLAY_LINE + 1];
 
 	// informations needed to pass to GUI and data store
 	private static DisplayConfiguration passToGui;
@@ -52,7 +37,7 @@ public class RunLogic {
 	public static void Logic(String inputCommand){
 		// pass user command to CLI for autocorrection
 		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
-		initializeTest();
+		//initialize();
 		
 		// check whether the command is valid under current view mode
 		if(checkValid(userCommand)){
@@ -62,14 +47,11 @@ public class RunLogic {
 		};
 	}
 	
-	private static void initializeTest() {
-		// TODO Auto-generated method stub
-		GUI = new GUIStatus(VIEW_MODE.TASK, false, false, 0);
-		taskList = new ArrayList<Task>();
-		taskList.add(new Task("Test"));
-		trashbinList = new ArrayList<Task>();
-		currentDisplay = initialize(currentDisplay);
-		currentDisplay[1] = 0;
+	public static void initialize(GUIStatus initialGUI, ArrayList<Task> initialTaskList, ArrayList<Task> initialTrashbinList, int[] initialDisplay) {
+		GUI = initialGUI;
+		taskList = initialTaskList;
+		trashbinList = initialTrashbinList;
+		currentDisplay = initialDisplay;
 	}
 
 	// check whether the command is valid under current view mode
@@ -181,22 +163,21 @@ public class RunLogic {
 		taskList.add(newTask);
 		
 		// update GUI view mode
-		GUI.changeCurretnTask((taskList.size() - 1) / MAX_DISPLAY_LINE);
+		GUI.changeCurretnTask((taskList.size() - 1) / StartUp.MAX_DISPLAY_LINE);
 		GUI.changeViewMode(VIEW_MODE.TASK);
-		currentDisplay = initialize(currentDisplay);
+		currentDisplay = initializeDisplayList(currentDisplay);
 		currentDisplay[1] = GUI.getTaskIndex();
 		
 		// update GUI display information
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(newTask);
 		
-		passToGui = new DisplayConfiguration(GUI, display, ADD_FEEDBACK, TITLE);
+		passToGui = new DisplayConfiguration(GUI, display, StartUp.ADD_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
 
-	private static int[] initialize(int[] currentDisplay) {
-		// TODO Auto-generated method stub
+	private static int[] initializeDisplayList(int[] currentDisplay) {
 		for(int i = 0; i < currentDisplay.length; i++){
 			currentDisplay[i] = -1;
 		}
@@ -215,19 +196,19 @@ public class RunLogic {
 			// update GUI view mode
 			GUI = new GUIStatus(GUI.getMode(), false, false, -1);
 			
-			passToGui = new DisplayConfiguration(GUI, taskList, DELETE_FEEDBACK, TITLE);
+			passToGui = new DisplayConfiguration(GUI, taskList, StartUp.DELETE_FEEDBACK, StartUp.TITLE);
 			passToStore = new LogicToStore(taskList, trashbinList);
 		} else if(currentDisplay[Integer.valueOf(deleteLine)] == -1){
 		// delete certain task while the task does not exist
 			ArrayList<Task> display = new ArrayList<Task>();
-			for(int i = 1; i <= MAX_DISPLAY_LINE; i++){
+			for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
 				if(currentDisplay[i] != -1){
 					display.add(taskList.get(currentDisplay[i]));
 				} else {
 					break;
 				}
 			}
-			passToGui = new DisplayConfiguration(GUI, display, INVALID_FEEDBACK, TITLE);
+			passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
 			passToStore = new LogicToStore(taskList, trashbinList);
 		} else {
 		// delete certain task
@@ -236,8 +217,8 @@ public class RunLogic {
 			
 			// update GUI display information
 			ArrayList<Task> display = new ArrayList<Task>();
-			initialize(currentDisplay);
-			for(int i = 0; i < MAX_DISPLAY_LINE; i++){
+			initializeDisplayList(currentDisplay);
+			for(int i = 0; i < StartUp.MAX_DISPLAY_LINE; i++){
 				if((GUI.getTaskIndex() + i) < taskList.size()){
 					display.add(taskList.get(GUI.getTaskIndex() + i));
 					currentDisplay[i + 1] = GUI.getTaskIndex() + i;
@@ -248,9 +229,9 @@ public class RunLogic {
 			
 			// update GUI view mode
 			GUI.changeHasPrevious(GUI.getTaskIndex() != 0);
-			GUI.changeHasNext(GUI.getTaskIndex() + MAX_DISPLAY_LINE < taskList.size());
+			GUI.changeHasNext(GUI.getTaskIndex() + StartUp.MAX_DISPLAY_LINE < taskList.size());
 			
-			passToGui = new DisplayConfiguration(GUI, display, DELETE_FEEDBACK, TITLE);
+			passToGui = new DisplayConfiguration(GUI, display, StartUp.DELETE_FEEDBACK, StartUp.TITLE);
 			passToStore = new LogicToStore(taskList, trashbinList);
 		}
 		GuiAndStore(passToGui, passToStore);
@@ -262,10 +243,10 @@ public class RunLogic {
 		GUI.changeViewMode(VIEW_MODE.TASK);
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
-		currentDisplay = initialize(currentDisplay);
+		currentDisplay = initializeDisplayList(currentDisplay);
 		currentDisplay[1] = GUI.getTaskIndex();
 		
-		passToGui = new DisplayConfiguration(GUI, display, READ_FEEDBACK, TITLE);
+		passToGui = new DisplayConfiguration(GUI, display, StartUp.READ_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
@@ -276,7 +257,7 @@ public class RunLogic {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		passToGui = new DisplayConfiguration(GUI, display, RENAME_FEEDBACK, TITLE);
+		passToGui = new DisplayConfiguration(GUI, display, StartUp.RENAME_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
@@ -287,7 +268,7 @@ public class RunLogic {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		passToGui = new DisplayConfiguration(GUI, display, DESCRIBE_FEEDBACK, TITLE);
+		passToGui = new DisplayConfiguration(GUI, display, StartUp.DESCRIBE_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
@@ -298,7 +279,7 @@ public class RunLogic {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		passToGui = new DisplayConfiguration(GUI, display, REPEAT_FEEDBACK, TITLE);
+		passToGui = new DisplayConfiguration(GUI, display, StartUp.REPEAT_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 		
@@ -319,7 +300,7 @@ public class RunLogic {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		passToGui = new DisplayConfiguration(GUI, display, RESCHEDULE_FEEDBACK, TITLE);
+		passToGui = new DisplayConfiguration(GUI, display, StartUp.RESCHEDULE_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
@@ -346,7 +327,7 @@ public class RunLogic {
 			throw new Error("Unrecognized view mode");
 		}
 		
-		passToGui = new DisplayConfiguration(GUI, display, VIEW_FEEDBACK, TITLE);
+		passToGui = new DisplayConfiguration(GUI, display, StartUp.VIEW_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
@@ -362,14 +343,14 @@ public class RunLogic {
 			if(taskList.get(j).getStartDate().equals(requiredDate)){
 				display.add(taskList.get(j));
 			}
-			if(i <= MAX_DISPLAY_LINE){
+			if(i <= StartUp.MAX_DISPLAY_LINE){
 				currentDisplay[i] = j;
 				i++;
 			} else {
 				break;
 			}
 		}
-		boolean hasNext = display.size() > MAX_DISPLAY_LINE;
+		boolean hasNext = display.size() > StartUp.MAX_DISPLAY_LINE;
 		GUI = new GUIStatus(VIEW_MODE.DATE, hasNext, false, 0);
 		return display;
 	}
@@ -383,18 +364,17 @@ public class RunLogic {
 				display.add(task);
 			}
 		}
-		boolean hasNext = display.size() > MAX_DISPLAY_LINE;
+		boolean hasNext = display.size() > StartUp.MAX_DISPLAY_LINE;
 		GUI = new GUIStatus(VIEW_MODE.MONTH, hasNext, false, 0);
 		return display;
 	}
 
 	// change the view mode to trash bin
 	private static ArrayList<Task> viewBin() {
-		// TODO Auto-generated method stub
 		if(trashbinList.isEmpty()){
 			GUI = new GUIStatus(VIEW_MODE.BIN, false, false, -1);
 		} else {
-			boolean hasNext = trashbinList.size() > MAX_DISPLAY_LINE;
+			boolean hasNext = trashbinList.size() > StartUp.MAX_DISPLAY_LINE;
 			GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, false, 0);
 		}
 		return trashbinList;
@@ -421,17 +401,17 @@ public class RunLogic {
 
 	// This method gives feedback when the user gives unreadable command
 	private static void wrongCommand(CliToLog userCommand){
-		// TODO Auto-generated method stub
 		ArrayList<Task> display = new ArrayList<Task>();
-		for(int i = 1; i <= MAX_DISPLAY_LINE; i++){
+		for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
 			if(currentDisplay[i] != -1){
 				display.add(taskList.get(currentDisplay[i]));
 			} else{
 				break;
 			}
 		}
-		passToGui = new DisplayConfiguration(GUI, display, INVALID_FEEDBACK, TITLE);
+		passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
+		GuiAndStore(passToGui, passToStore);
 	}
 	
 	// pass GUI and File information
@@ -481,5 +461,9 @@ public class RunLogic {
 		} else {
 			return VIEW_MODE.UNDONE;
 		}
+	}
+	
+	public void test(){
+		
 	}
 }
