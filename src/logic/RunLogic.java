@@ -481,6 +481,7 @@ public class RunLogic {
 		return null;
 	}
 	
+	// change view mode to view the whole task list
 	private static ArrayList<Task> viewAllTask() {
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(taskList.isEmpty()){
