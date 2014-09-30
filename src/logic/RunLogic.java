@@ -74,7 +74,8 @@ public class RunLogic {
 					|| (command.equalsIgnoreCase("next") && GUI.hasNext())
 					|| (command.equalsIgnoreCase("previous") && GUI.hasPrevious()));
 		case TASK_DETAIL:
-			return (command.equalsIgnoreCase("view")
+			return (command.equalsIgnoreCase("add")
+					|| command.equalsIgnoreCase("view")
 					||command.equalsIgnoreCase("rename") 
 					|| command.equalsIgnoreCase("describe")
 					|| command.equalsIgnoreCase("repeat") 
