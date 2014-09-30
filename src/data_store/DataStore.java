@@ -18,6 +18,9 @@ public class DataStore {
 	private static final String TRASHERROR = " Trash file writing error ";
 	private static final String EVENTERROR = " Event file writing error ";
 	
+	private static final String TRASHINITERROR = " Trash file initializing writing error ";
+    private static final String EVENTINITERROR = " Event file initializing writing error ";
+	
 	private static final String SOLARIS_OS = "Mac OS X";
 	private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
 	private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
@@ -91,7 +94,6 @@ public class DataStore {
 	 */
 	protected static void writeLineAL(ArrayList<Task> data, PrintWriter fileOut) {
 		for (int i = 0; i < data.size(); i++) {
-		    String sentence = toSentence(data.get(i));
 			fileOut.println(toSentence(data.get(i))); 
 		}
 	}
@@ -110,9 +112,9 @@ public class DataStore {
 	private static void initializeTrash() {
 	    String systemOS = getOS();
         if (systemOS.equals(SOLARIS_OS)) {
-            initalizeWriter(TRASH_NAME_SOLARIS, TRASHERROR);
+            initalizeWriter(TRASH_NAME_SOLARIS, TRASHINITERROR);
         } else {
-            initalizeWriter(TRASH_NAME_WINDOWS, TRASHERROR);
+            initalizeWriter(TRASH_NAME_WINDOWS, TRASHINITERROR);
         }
 	}
 	
@@ -122,9 +124,9 @@ public class DataStore {
 	private static void initializeTask() {
         String systemOS = getOS();
         if (systemOS.equals(SOLARIS_OS)) {
-            initalizeWriter(EVENT_NAME_SOLARIS, TRASHERROR);
+            initalizeWriter(EVENT_NAME_SOLARIS, EVENTINITERROR);
         } else {
-            initalizeWriter(EVENT_NAME_WINDOWS, TRASHERROR);
+            initalizeWriter(EVENT_NAME_WINDOWS, EVENTINITERROR);
         }
     }
 	

@@ -58,7 +58,7 @@ public class ReadFile {
 
 		} catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return null;
+            return getEventTask();
             
         } catch (Exception e) {
 			System.out.println(READTASKERROR + e.getMessage());  
@@ -84,7 +84,7 @@ public class ReadFile {
             BufferedReader bufferReader = new BufferedReader(inputFile);
             String line;
 
-            // Read file line by line and store them into temperal ArrayList
+            // Read file line by line and store them into temporal ArrayList
             while ((line = bufferReader.readLine()) != null) {
                 this.TRASHFILE.add(makeTask(line));
             }
@@ -94,7 +94,7 @@ public class ReadFile {
 
         } catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return null;
+            return getTrashFile();
             
         } catch (Exception e) {
             System.out.println(READTRASHERROR + e.getMessage()); 
@@ -128,5 +128,4 @@ public class ReadFile {
 	private String getOS() {
         return System.getProperty("os.name");
     }
-
 }

@@ -7,81 +7,172 @@ import logic.Task;
 
 /**
  * class DisplayConfiguration
- * @author JJ
- * This class is an package of data passed from LOGIC TO GUI
- * which contains all needed information for display
+ * 
+ * @author JJ This class is an package of data passed from LOGIC TO GUI which
+ *         contains all needed information for display
  */
 public class DisplayConfiguration {
+	/*
+	 * ====================================================================
+	 * ===================== Start OF PRIVATE FIELD =======================
+	 * ====================================================================
+	 */
 	private VIEW_MODE mode;
 	private boolean isPageInvolved;
 	private boolean hasNextPage;
 	private boolean hasPreviousPage;
-	
+
 	private ArrayList<Task> TaskList;
 	private String feedback;
 	private String title;
-	
-	public DisplayConfiguration(GUIStatus status, ArrayList<Task> taskList, String feedback, String title){
+
+	/*
+	 * ====================================================================
+	 * ===================== END OF PRIVATE FIELD =========================
+	 * ====================================================================
+	 */
+	public DisplayConfiguration(GUIStatus status, ArrayList<Task> taskList,
+			String feedback, String title) {
 		this.mode = status.getMode();
 		this.hasNextPage = status.hasNext();
 		this.hasPreviousPage = status.hasPrevious();
 		setIsPageInvolved();
-		
+
 		this.TaskList = taskList;
 		this.feedback = feedback;
 		this.title = title;
 	}
-	
-	/**
-	 * method setIsPageInvolved: check if the nextPage and previousPage should  
-	 * 							 be involved in this view mode or not
-	 */
-	private void setIsPageInvolved() {
-		switch(mode) {
-			case DATE:
-				isPageInvolved = true;
-				break;
-			case MONTH:
-				isPageInvolved = true;
-				break;
-			case UNDONE:
-				isPageInvolved = true;
-				break;
-			case BIN:
-				isPageInvolved = true;
-				break;
-			case TASK_DETAIL:
-				isPageInvolved = false;
-				break;
-			default:
-				throw new Error("Invalid View Mode" + mode);
+
+	public String getContentString() {
+		ArrayList<Task> taskList = getTaskList();
+		switch (mode) {
+		case TASK_DETAIL:
+			if (taskList.size() != 1) {
+				throw new Error("taskList does not contain one task exactly");
+			}
+			Task task = taskList.get(0);
+			return processTaskDetailText(task);
+		case MONTH:
+			throw new Error("not supported yet");
+		default:
+			return processTaskListText(taskList);
 		}
 	}
-	
-	
-	public boolean isPageInvolved(){
-		return isPageInvolved;
+
+	/**
+	 * method setIsPageInvolved: check if the nextPage and previousPage should
+	 * be involved in this view mode or not
+	 */
+	private void setIsPageInvolved() {
+		switch (mode) {
+		case DATE:
+			isPageInvolved = true;
+			break;
+		case MONTH:
+			isPageInvolved = true;
+			break;
+		case UNDONE:
+			isPageInvolved = true;
+			break;
+		case BIN:
+			isPageInvolved = true;
+			break;
+		case TASK_DETAIL:
+			isPageInvolved = false;
+			break;
+		default:
+			throw new Error("Invalid View Mode" + mode);
+		}
 	}
-	
-	public ArrayList<Task> getTaskList(){
+
+	/**
+	 * method processTaskListText: convert a list of task into text\html string
+	 * with only name displayed in an ordered list
+	 * 
+	 * @param taskList
+	 * @return corresponding string in text\html format
+	 */
+	private String processTaskListText(ArrayList<Task> taskList) {
+		String output = "";
+		if (taskList.size() > 0) {
+			String fontColor = "blue";
+			String taskOpen = "<li font color=" + fontColor + ">";
+			String taskClose = "</li>";
+			String body = "";
+			for (int i = 0; i < taskList.size(); i++) {
+				body += taskOpen + taskList.get(i).getName() + taskClose;
+			}
+			output = "<html>" + "<ol>" + body + "</ol>" + "</html>";
+
+		} else {
+			output = "<html>" + "<center>" + "EMPTY" + "</center>"
+					+ "</html>";
+		}
+
+		return output;
+
+	}
+
+	/**
+	 * method processTaskDetailText: convert a certain task into text\html
+	 * string with all necessary attributes displayed.
+	 * 
+	 * @param task
+	 * @return corresponding string in text\html format
+	 */
+	private String processTaskDetailText(Task task) {
+		String attrFontColor = "black";
+		String infoFontColor = "green";
+		String attrOpen = "<i font color=" + attrFontColor + ">";
+		String attrClose = "</i>";
+		String infoOpen = "<big font color = " + infoFontColor + ">";
+		String infoClose = "</big>";
+		String name = attrOpen + infoOpen + "Name" + infoClose + attrClose;
+		String description = attrOpen + infoOpen + "description" + infoClose
+				+ attrClose;
+		String StartDate = attrOpen + infoOpen + "startTime" + infoClose
+				+ attrClose;
+		String endDate = attrOpen + infoOpen + "endTime" + infoClose
+				+ attrClose;
+
+		String output = "<html>" + name + task.getName() + "<br>" + description
+				+ task.getDescription() + "<br>" + StartDate
+				+ task.getStartDate() + "<br>" + endDate + task.getEndDate()
+				+ "<br>" + "</html>";
+		return output;
+
+	}
+
+	public String getTaskListString() {
+		return processTaskListText(getTaskList());
+	}
+
+	protected ArrayList<Task> getTaskList() {
 		return this.TaskList;
 	}
-	
-	public String getFeedback(){
+
+	String getFeedback() {
 		return this.feedback;
 	}
-	
-	public String getTitle(){
+
+	public String getTitle() {
 		return this.title;
 	}
-	public boolean hasNextPage(){
+
+	public boolean hasNextPage() {
 		return this.hasNextPage;
 	}
-	public boolean hasPreviousPage(){
+
+	public boolean isPageInvolved() {
+		return isPageInvolved;
+	}
+
+	public boolean hasPreviousPage() {
 		return this.hasPreviousPage;
 	}
-	public boolean isTaskView(){
+
+	public boolean isTaskView() {
 		return mode == VIEW_MODE.TASK_DETAIL;
 	}
-	
+
 }
