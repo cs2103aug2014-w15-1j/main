@@ -1,2 +1,0 @@
-Test Name=Buy New Birthday Gift=twice a day=1 month=2014-8-3=2014-9-0
-Test Name=Buy New Birthday Gift=twice a day=1 month=2014-8-3=2014-9-0
