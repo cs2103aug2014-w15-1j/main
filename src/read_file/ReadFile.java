@@ -3,9 +3,12 @@ package read_file;
 import logic.Task;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Date;
+
+import data_store.DataStore;
 
 public class ReadFile {
 	
@@ -53,7 +56,11 @@ public class ReadFile {
 			
 			return this.EVENTTASK;
 
-		} catch (Exception e) {
+		} catch (FileNotFoundException e) {
+            DataStore.initializeFile(); 
+            return null;
+            
+        } catch (Exception e) {
 			System.out.println(READTASKERROR + e.getMessage());  
 			return null;
 		}
@@ -85,8 +92,12 @@ public class ReadFile {
             
             return this.TRASHFILE;
 
+        } catch (FileNotFoundException e) {
+            DataStore.initializeFile(); 
+            return null;
+            
         } catch (Exception e) {
-            System.out.println(READTRASHERROR + e.getMessage());  
+            System.out.println(READTRASHERROR + e.getMessage()); 
             return null;
         }
     }

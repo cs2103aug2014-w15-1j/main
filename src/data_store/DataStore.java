@@ -25,7 +25,7 @@ public class DataStore {
 	private static final String TRASH_NAME_WINDOWS = "c:\\Users\\Trashfile.txt";
     private static final String EVENT_NAME_WINDOWS = "c:\\Users\\Taskfile.txt";
 	
-	
+	private static final String EMPTY_DATA = "";
 	private static final String SEPERATESIMBOL = "=";
 	
 	/**
@@ -40,6 +40,8 @@ public class DataStore {
 	    String systemOS = getOS();
 	    if (systemOS.equals(SOLARIS_OS)) {
 	        writeFile(TRASH_NAME_SOLARIS, trashData, TRASHERROR);
+	    } else {
+	        writeFile(TRASH_NAME_WINDOWS, trashData, TRASHERROR);
 	    }
 	}
 	
@@ -47,8 +49,18 @@ public class DataStore {
 	    String systemOS = getOS();
         if (systemOS.equals(SOLARIS_OS)) {
             writeFile(EVENT_NAME_SOLARIS, fileData, EVENTERROR);
+        } else {
+            writeFile(EVENT_NAME_WINDOWS, fileData, EVENTERROR);
         }
 	}
+	
+	/**Initializing file for the start of the program
+     * */
+    public static void initializeFile() {
+        // Initialize Empty Data
+        initializeTrash();
+        initializeTask();
+    }
 	
 	/**
 	 * Writing to specific file
@@ -80,7 +92,6 @@ public class DataStore {
 	protected static void writeLineAL(ArrayList<Task> data, PrintWriter fileOut) {
 		for (int i = 0; i < data.size(); i++) {
 		    String sentence = toSentence(data.get(i));
-		    PrintWriter seeWriter = fileOut;
 			fileOut.println(toSentence(data.get(i))); 
 		}
 	}
@@ -91,5 +102,36 @@ public class DataStore {
 	
 	private static String getOS() {
 	    return System.getProperty("os.name");
+	}
+	
+	private static void initializeTrash() {
+	    String systemOS = getOS();
+        if (systemOS.equals(SOLARIS_OS)) {
+            initalizeWriter(TRASH_NAME_SOLARIS, TRASHERROR);
+        } else {
+            initalizeWriter(TRASH_NAME_WINDOWS, TRASHERROR);
+        }
+	}
+	
+	private static void initializeTask() {
+        String systemOS = getOS();
+        if (systemOS.equals(SOLARIS_OS)) {
+            initalizeWriter(EVENT_NAME_SOLARIS, TRASHERROR);
+        } else {
+            initalizeWriter(EVENT_NAME_WINDOWS, TRASHERROR);
+        }
+    }
+	
+	private static void initalizeWriter(String fileName, String errorMesg) {
+	    try {
+            FileWriter fw = new FileWriter (fileName);
+            BufferedWriter bw = new BufferedWriter (fw);
+            PrintWriter fileOut = new PrintWriter (bw);
+            fileOut.println(EMPTY_DATA);
+            fileOut.close();
+        }
+        catch (Exception e) {
+            System.out.println(errorMesg + e.toString());
+        }
 	}
 }
