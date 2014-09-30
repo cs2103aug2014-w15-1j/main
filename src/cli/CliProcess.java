@@ -290,4 +290,10 @@ public class CliProcess {
 
         return commandPackage;		
     }
+    
+    public static String[] testSeparate(String s){
+    	String[] inputLine = separate(s);
+    	
+    	return inputLine;
+    }
 }
