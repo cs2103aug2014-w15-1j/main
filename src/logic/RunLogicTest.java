@@ -24,7 +24,7 @@ public class RunLogicTest {
 			i = -1;
 		}
 		initialDisplay[1] = 0;
-		RunLogic.initialize(initialGUI, initialTaskList, initialTrashbinList, initialDisplay);
+		RunLogic.initialize(initialGUI, initialTaskList, initialTrashbinList, initialDisplay, "20140930");
 	}
 
 	@After

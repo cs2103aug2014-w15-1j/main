@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import logic.GUIStatus;
 import logic.Task;
 
+/**
+ * class DisplayConfiguration
+ * @author JJ
+ * This class is an package of data passed from LOGIC TO GUI
+ * which contains all needed information for display
+ */
 public class DisplayConfiguration {
 	private VIEW_MODE mode;
 	private boolean isPageInvolved;
