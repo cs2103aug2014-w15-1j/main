@@ -47,10 +47,10 @@ public class ReadFile {
 		try {
 			FileReader inputFile = new FileReader(fileName);
 			BufferedReader bufferReader = new BufferedReader(inputFile);
-			String line;
+			String line = bufferReader.readLine();
 
 			// Read file line by line and store them into temperal ArrayList
-			while ((line = bufferReader.readLine()) != null) {
+			while ( line != null && !line.isEmpty()) {
 				this.EVENTTASK.add(makeTask(line));
 			}
 			bufferReader.close();
@@ -83,10 +83,10 @@ public class ReadFile {
         try {
             FileReader inputFile = new FileReader(fileName);
             BufferedReader bufferReader = new BufferedReader(inputFile);
-            String line;
+            String line = bufferReader.readLine();
 
             // Read file line by line and store them into temporal ArrayList
-            while ((line = bufferReader.readLine()) != null) {
+            while (line != null && !line.isEmpty()) {
                 this.TRASHFILE.add(makeTask(line));
             }
             bufferReader.close();
