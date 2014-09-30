@@ -29,6 +29,7 @@ import logic.RunLogic;
 import javax.swing.JDesktopPane;
 import javax.swing.JToolBar;
 import javax.swing.JLayeredPane;
+import java.awt.Frame;
 
 /**
  * class BasicGUI: contains the basic structure of GUI
@@ -67,8 +68,8 @@ public class BasicGUI extends JFrame {
 	// constants for FRAME initialization (unit in pixel)
 	private final static int TOP_LEFT_X_VALUE = 100;
 	private final static int TOP_LEFT_Y_VALUE = 100;
-	private final static int FRAME_WIDTH = 100;
-	private final static int FRAME_HEIGHT = 100;
+	private final static int FRAME_WIDTH = 400;
+	private final static int FRAME_HEIGHT = 500;
 	
 	/*
 	 * ====================================================================
@@ -101,6 +102,13 @@ public class BasicGUI extends JFrame {
 	 * method BasicGUI: constructor of GUI 
 	 */
 	public BasicGUI() {
+		setState(Frame.ICONIFIED);
+		setUndecorated(true);
+		getContentPane().setFocusTraversalPolicyProvider(true);
+		setRootPaneCheckingEnabled(false);
+		setResizable(false);
+		setVisible(true);
+		setOpacity(0.8f);
 		constructContentPane();
 		constructTitlePane();
 		constructBodyPane();
