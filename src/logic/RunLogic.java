@@ -48,11 +48,12 @@ public class RunLogic {
 		};
 	}
 	
-	public static void initialize(GUIStatus initialGUI, ArrayList<Task> initialTaskList, ArrayList<Task> initialTrashbinList, int[] initialDisplay) {
+	public static void initialize(GUIStatus initialGUI, ArrayList<Task> initialTaskList, ArrayList<Task> initialTrashbinList, int[] initialDisplay, String initialDate) {
 		GUI = initialGUI;
 		taskList = initialTaskList;
 		trashbinList = initialTrashbinList;
 		currentDisplay = initialDisplay;
+		date = initialDate;
 	}
 
 	// check whether the command is valid under current view mode
@@ -164,7 +165,7 @@ public class RunLogic {
 		taskList.add(newTask);
 		
 		// update GUI view mode
-		GUI.changeCurretnTask((taskList.size() - 1) / StartUp.MAX_DISPLAY_LINE);
+		GUI.changeCurretnTask((taskList.size() - 1));
 		GUI.changeViewMode(VIEW_MODE.TASK);
 		currentDisplay = initializeDisplayList(currentDisplay);
 		currentDisplay[1] = GUI.getTaskIndex();
