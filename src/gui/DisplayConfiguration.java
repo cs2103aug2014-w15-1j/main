@@ -100,6 +100,8 @@ public class DisplayConfiguration {
 		case TASK_DETAIL:
 			isPageInvolved = false;
 			break;
+		case TASK_LIST:
+			isPageInvolved = true;
 		default:
 			throw new Error("Invalid View Mode" + mode);
 		}
