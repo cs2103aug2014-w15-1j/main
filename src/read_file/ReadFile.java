@@ -25,6 +25,8 @@ public class ReadFile {
 	
 	private ArrayList<Task> EVENTTASK;
     private ArrayList<Task> TRASHFILE;
+    
+    private ArrayList<Task> EMPTYDATA = new ArrayList<Task>();
 	
 	public ReadFile() {
 		this.EVENTTASK = new ArrayList<Task>();
@@ -59,7 +61,7 @@ public class ReadFile {
 
 		} catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return getEventTask();
+            return EMPTYDATA;
             
         } catch (Exception e) {
 			System.out.println(READTASKERROR + e.getMessage());  
@@ -95,7 +97,7 @@ public class ReadFile {
 
         } catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return getTrashFile();
+            return EMPTYDATA;
             
         } catch (Exception e) {
             System.out.println(READTRASHERROR + e.getMessage()); 
