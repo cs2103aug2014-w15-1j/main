@@ -11,6 +11,8 @@ public class Task {
 	private Date endDate;
 	private final String DEVIDESYMBOL = "=";
 	private final String DATESPLIT = "-";
+	private final String EMPTYDATE = "2000-01-01";
+    
 	
 	public Task(){
 		// empty constructor
@@ -95,8 +97,18 @@ public class Task {
 	}
 	
 	public String toPersonalString() {
-	    String startDateStr = "" + this.startDate.getYear() + DATESPLIT + this.startDate.getMonth() + DATESPLIT + this.startDate.getDay();
-	    String endDateStr =   "" + this.endDate.getYear()  + DATESPLIT + this.endDate.getMonth()  + DATESPLIT + this.endDate.getDay();
+	    String startDateStr;
+	    String endDateStr;
+	    if (this.startDate == null) {
+	        startDateStr = EMPTYDATE;
+	    } else {
+	        startDateStr = "" + this.startDate.getYear() + DATESPLIT + this.startDate.getMonth() + DATESPLIT + this.startDate.getDay();
+	    }
+	    if (this.endDate == null) {
+	        endDateStr = EMPTYDATE;
+	    } else {
+	        endDateStr =   "" + this.endDate.getYear()  + DATESPLIT + this.endDate.getMonth()  + DATESPLIT + this.endDate.getDay();
+	    }
 	    return this.name + DEVIDESYMBOL + this.description + DEVIDESYMBOL + this.repeatTimes + DEVIDESYMBOL + 
 	           this.repeatDays + DEVIDESYMBOL + startDateStr + DEVIDESYMBOL + endDateStr;
 	}

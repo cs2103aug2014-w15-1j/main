@@ -16,14 +16,17 @@ public class ReadFile {
     private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
     private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
     
-    private static final String TRASH_NAME_WINDOWS = "c:\\Users\\Trashfile.txt";
-    private static final String EVENT_NAME_WINDOWS = "c:\\Users\\Taskfile.txt";
+    private static final String TRASH_NAME_WINDOWS = "E:\\Trashfile.txt";
+    private static final String EVENT_NAME_WINDOWS = "E:\\Taskfile.txt";
     
 	private final String SEPERATESIMBOL = "=";
 	private final String READTASKERROR = "Error while reading task file line by line:";
 	private final String READTRASHERROR = "Error while reading trash file line by line:";
+	
 	private ArrayList<Task> EVENTTASK;
     private ArrayList<Task> TRASHFILE;
+    
+    private ArrayList<Task> EMPTYDATA = new ArrayList<Task>();
 	
 	public ReadFile() {
 		this.EVENTTASK = new ArrayList<Task>();
@@ -46,19 +49,24 @@ public class ReadFile {
 		try {
 			FileReader inputFile = new FileReader(fileName);
 			BufferedReader bufferReader = new BufferedReader(inputFile);
-			String line;
+			String line = bufferReader.readLine();
 
 			// Read file line by line and store them into temperal ArrayList
-			while ((line = bufferReader.readLine()) != null) {
-				this.EVENTTASK.add(makeTask(line));
-			}
+			if (line != null) {
+                if (!line.isEmpty()) {
+                    while (line != null) {
+                        this.EVENTTASK.add(makeTask(line));
+                        line = bufferReader.readLine();
+                    }
+                }
+            }
 			bufferReader.close();
 			
 			return this.EVENTTASK;
 
 		} catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return null;
+            return EMPTYDATA;
             
         } catch (Exception e) {
 			System.out.println(READTASKERROR + e.getMessage());  
@@ -82,11 +90,16 @@ public class ReadFile {
         try {
             FileReader inputFile = new FileReader(fileName);
             BufferedReader bufferReader = new BufferedReader(inputFile);
-            String line;
+            String line = bufferReader.readLine();
 
-            // Read file line by line and store them into temperal ArrayList
-            while ((line = bufferReader.readLine()) != null) {
-                this.TRASHFILE.add(makeTask(line));
+            // Read file line by line and store them into temporal ArrayList
+            if (line != null) {
+                if (!line.isEmpty()) {
+                    while (line != null) {
+                        this.TRASHFILE.add(makeTask(line));
+                        line = bufferReader.readLine();
+                    }
+                }
             }
             bufferReader.close();
             
@@ -94,7 +107,7 @@ public class ReadFile {
 
         } catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
-            return null;
+            return EMPTYDATA;
             
         } catch (Exception e) {
             System.out.println(READTRASHERROR + e.getMessage()); 
@@ -128,5 +141,4 @@ public class ReadFile {
 	private String getOS() {
         return System.getProperty("os.name");
     }
-
 }

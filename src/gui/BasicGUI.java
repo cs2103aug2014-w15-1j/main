@@ -50,13 +50,12 @@ import java.awt.Window.Type;
  *         field.
  */
 public class BasicGUI extends JFrame {
-	
+
 	/*
 	 * ====================================================================
 	 * ===================== START OF PRIVATE FIELD =======================
 	 * ====================================================================
 	 */
-	
 
 	private static final long serialVersionUID = 1L;
 
@@ -80,22 +79,21 @@ public class BasicGUI extends JFrame {
 	private final static int TOP_LEFT_Y_VALUE = 100;
 	private final static int FRAME_WIDTH = 400;
 	private final static int FRAME_HEIGHT = 500;
-	
+
 	/*
 	 * ====================================================================
 	 * ===================== END OF PRIVATE FIELD =========================
 	 * ====================================================================
 	 */
-	
-	
+
 	/*
 	 * ====================================================================
 	 * ===================== START OF PUBLIC METHOD =======================
 	 * ====================================================================
 	 */
-	
+
 	/**
-	 * method BasicGUI: constructor of GUI 
+	 * method BasicGUI: constructor of GUI
 	 */
 	public BasicGUI() {
 		setType(Type.UTILITY);
@@ -108,7 +106,7 @@ public class BasicGUI extends JFrame {
 		constructHelperPane();
 		constructInputPane();
 	}
-	
+
 	public void setTitleText(String text) {
 		titleWindow.setText(text);
 	}
@@ -120,7 +118,6 @@ public class BasicGUI extends JFrame {
 	public void setMainText(String text) {
 		mainWindow.setText(text);
 	}
-
 
 	/*
 	 * ====================================================================
@@ -204,24 +201,24 @@ public class BasicGUI extends JFrame {
 		mainPanel.setBackground(Color.PINK);
 		mainPanel.setBorder(null);
 		desktopPanel.add(mainPanel, BorderLayout.CENTER);
-				mainPanel.setLayout(new BorderLayout(0, 0));
-		
-				mainWindow = new JTextPane();
-				mainWindow.setBorder(null);
-				mainWindow.setContentType("text/html");
-				mainWindow.setFocusable(false);
-				mainWindow.setEditable(false);
-				mainWindow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-				mainPanel.add(mainWindow);
-				mainWindow.setFont(new Font("Calibri", Font.PLAIN, 16));
-				mainWindow.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyPressed(KeyEvent e) {
-					}
-				});
-				mainWindow.setForeground(UIManager.getColor("Button.darkShadow"));
-				mainWindow.setText("<html><li>Hi</li></html>");
-				mainWindow.setBackground(Color.WHITE);
+		mainPanel.setLayout(new BorderLayout(0, 0));
+
+		mainWindow = new JTextPane();
+		mainWindow.setBorder(null);
+		mainWindow.setContentType("text/html");
+		mainWindow.setFocusable(false);
+		mainWindow.setEditable(false);
+		mainWindow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		mainPanel.add(mainWindow);
+		mainWindow.setFont(new Font("Calibri", Font.PLAIN, 16));
+		mainWindow.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		mainWindow.setForeground(UIManager.getColor("Button.darkShadow"));
+		mainWindow.setText("<html><li>Hi</li></html>");
+		mainWindow.setBackground(Color.WHITE);
 	}
 
 	private void constructContentPane() {
@@ -245,6 +242,5 @@ public class BasicGUI extends JFrame {
 
 		}
 	}
-
 
 }

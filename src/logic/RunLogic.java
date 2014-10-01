@@ -14,15 +14,11 @@ import data_store.DataStore;
 
 public class RunLogic {
 
-	
-
-	
 	// keep track on GUI and File status
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay = new int[StartUp.MAX_DISPLAY_LINE + 1];
-	private static String date;
 
 	// informations needed to pass to GUI and data store
 	private static DisplayConfiguration passToGui;
@@ -36,10 +32,16 @@ public class RunLogic {
 		NEXT, PREVIOUS
 	};
 	
+	public static void initialize(GUIStatus initialGUI, ArrayList<Task> initialTaskList, ArrayList<Task> initialTrashbinList, int[] initialDisplay) {
+		GUI = initialGUI;
+		taskList = initialTaskList;
+		trashbinList = initialTrashbinList;
+		currentDisplay = initialDisplay;
+	}
+	
 	public static void Logic(String inputCommand){
-		// pass user command to CLI for autocorrection
+		// pass user command to CLI for auto-correction
 		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
-		//initialize();
 		
 		// check whether the command is valid under current view mode
 		if(checkValid(userCommand)){
@@ -48,14 +50,6 @@ public class RunLogic {
 			wrongCommand(userCommand);
 		};
 	}
-	
-	public static void initialize(GUIStatus initialGUI, ArrayList<Task> initialTaskList, ArrayList<Task> initialTrashbinList, int[] initialDisplay, String initialDate) {
-		GUI = initialGUI;
-		taskList = initialTaskList;
-		trashbinList = initialTrashbinList;
-		currentDisplay = initialDisplay;
-		date = initialDate;
-	}
 
 	// check whether the command is valid under current view mode
 	private static boolean checkValid(CliToLog userCommand){
@@ -63,6 +57,16 @@ public class RunLogic {
 		VIEW_MODE mode = GUI.getMode();
 		
 		switch(mode){
+		case TASK_LIST:
+			return (command.equalsIgnoreCase("add") 
+					|| command.equalsIgnoreCase("delete")
+					|| command.equalsIgnoreCase("read") 
+					|| command.equalsIgnoreCase("view")
+					|| command.equalsIgnoreCase("undo")
+					|| command.equalsIgnoreCase("search")
+					|| command.equalsIgnoreCase("exit")
+					|| (command.equalsIgnoreCase("next") && GUI.hasNext())
+					|| (command.equalsIgnoreCase("previous") && GUI.hasPrevious()));
 		case DATE:
 			return (command.equalsIgnoreCase("add") 
 					|| command.equalsIgnoreCase("delete")
@@ -80,6 +84,7 @@ public class RunLogic {
 					|| command.equalsIgnoreCase("describe")
 					|| command.equalsIgnoreCase("repeat") 
 					|| command.equalsIgnoreCase("reschedule")
+					|| command.equalsIgnoreCase("restore")
 					|| command.equalsIgnoreCase("undo")
 					|| command.equalsIgnoreCase("search")
 					|| command.equalsIgnoreCase("exit"));
@@ -207,7 +212,7 @@ public class RunLogic {
 				GUI.changeCurretnTask(-1);
 				passToGui = new DisplayConfiguration(GUI, display, StartUp.DELETE_FEEDBACK, StartUp.TITLE);
 				passToStore = new LogicToStore(taskList, trashbinList);
-			} else if(currentDisplay[Integer.valueOf(deleteLine)] == -1) {
+			} else if(Integer.valueOf(deleteLine) > StartUp.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1) {
 				display = viewBin();
 				passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
 				passToStore = new LogicToStore(taskList, trashbinList);
@@ -226,16 +231,16 @@ public class RunLogic {
 						break;
 					}
 				}
-				display = viewDate(date);
+				display = viewDate(GUI.getDate());
 				passToGui = new DisplayConfiguration(GUI, display, StartUp.DELETE_FEEDBACK, StartUp.TITLE);
 				passToStore = new LogicToStore(taskList, trashbinList);
-			} else if(currentDisplay[Integer.valueOf(deleteLine)] == -1) {
-				display = viewDate(date);
+			} else if(Integer.valueOf(deleteLine) > StartUp.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1) {
+				display = viewDate(GUI.getDate());
 				passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
 				passToStore = new LogicToStore(taskList, trashbinList);
 			} else {
 				trashbinList.add(taskList.remove(currentDisplay[Integer.valueOf(deleteLine)]));
-				display = viewDate(date);
+				display = viewDate(GUI.getDate());
 				passToGui = new DisplayConfiguration(GUI, display, StartUp.DELETE_FEEDBACK, StartUp.TITLE);
 				passToStore = new LogicToStore(taskList, trashbinList);
 			}
@@ -247,11 +252,11 @@ public class RunLogic {
 					taskList.clear();
 					
 					// update GUI view mode
-					GUI = new GUIStatus(GUI.getMode(), false, false, -1);
+					GUI = new GUIStatus(GUI.getMode(), false, false, -1, GUI.getDate());
 					
 					passToGui = new DisplayConfiguration(GUI, taskList, StartUp.DELETE_FEEDBACK, StartUp.TITLE);
 					passToStore = new LogicToStore(taskList, trashbinList);
-				} else if(currentDisplay[Integer.valueOf(deleteLine)] == -1){
+				} else if(Integer.valueOf(deleteLine) > StartUp.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1){
 				// delete certain task while the task does not exist
 					
 					for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
@@ -294,28 +299,52 @@ public class RunLogic {
 
 	// read details of a certain task
 	private static void readTask(CliToLog userCommand) {
-		String readLine = userCommand.getArg1();
+		int readLine = Integer.valueOf(userCommand.getArg1());
 		ArrayList<Task> display = new ArrayList<Task>();
-		if(currentDisplay[Integer.valueOf(readLine)] == -1){
-			for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
-				if(currentDisplay[i] != -1){
-					display.add(taskList.get(currentDisplay[i]));
-				} else {
-					break;
+		if(GUI.getMode().equals(VIEW_MODE.BIN)){
+			if(readLine > StartUp.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
+				for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
+					if(currentDisplay[i] != -1){
+						display.add(trashbinList.get(currentDisplay[i]));
+					} else {
+						break;
+					}
 				}
+				passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
+				passToStore = new LogicToStore(taskList, trashbinList);
+			} else {
+				GUI.changeCurretnTask(currentDisplay[readLine]);
+				GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
+				
+				display.add(trashbinList.get(GUI.getTaskIndex()));
+				currentDisplay = initializeDisplayList(currentDisplay);
+				currentDisplay[1] = GUI.getTaskIndex();
+				
+				passToGui = new DisplayConfiguration(GUI, display, StartUp.READ_FEEDBACK, StartUp.TITLE);
+				passToStore = new LogicToStore(taskList,trashbinList);
 			}
-			passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
-			passToStore = new LogicToStore(taskList, trashbinList);
 		} else {
-			GUI.changeCurretnTask(Integer.valueOf(userCommand.getArg1()) - 1);
-			GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
-			
-			display.add(taskList.get(GUI.getTaskIndex()));
-			currentDisplay = initializeDisplayList(currentDisplay);
-			currentDisplay[1] = GUI.getTaskIndex();
-			
-			passToGui = new DisplayConfiguration(GUI, display, StartUp.READ_FEEDBACK, StartUp.TITLE);
-			passToStore = new LogicToStore(taskList,trashbinList);
+			if(readLine > StartUp.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
+				for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
+					if(currentDisplay[i] != -1){
+						display.add(taskList.get(currentDisplay[i]));
+					} else {
+						break;
+					}
+				}
+				passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
+				passToStore = new LogicToStore(taskList, trashbinList);
+			} else {
+				GUI.changeCurretnTask(currentDisplay[readLine]);
+				GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
+				
+				display.add(taskList.get(GUI.getTaskIndex()));
+				currentDisplay = initializeDisplayList(currentDisplay);
+				currentDisplay[1] = GUI.getTaskIndex();
+				
+				passToGui = new DisplayConfiguration(GUI, display, StartUp.READ_FEEDBACK, StartUp.TITLE);
+				passToStore = new LogicToStore(taskList,trashbinList);
+			}
 		}
 		GuiAndStore(passToGui, passToStore);
 	}
@@ -409,7 +438,7 @@ public class RunLogic {
 
 	// change view mode to the task list of a certain day
 	private static ArrayList<Task> viewDate(String Date) {
-		date = Date;
+		GUI.changeDate(Date);
 		ArrayList<Task> display = new ArrayList<Task>();
 		int year = Integer.valueOf(Date.substring(0,4));
 		int month = Integer.valueOf(Date.substring(4,6));
@@ -429,14 +458,14 @@ public class RunLogic {
 			}	
 		}
 		boolean hasPrevious = GUI.getTaskIndex() > 0;
-		GUI = new GUIStatus(VIEW_MODE.DATE, hasNext, hasPrevious, currentDisplay[1]);
+		GUI = new GUIStatus(VIEW_MODE.DATE, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 		return display;
 	}
 
 	// change the view mode to the calendar of a certain month
 	// not finished yet
 	private static ArrayList<Task> viewMonth(String Month) {
-		date = Month;
+		GUI.changeDate(Month);
 		int requiredMonth = Integer.valueOf(Month);
 		ArrayList<Task> display = new ArrayList<Task>();
 		for(Task task : taskList){
@@ -445,16 +474,16 @@ public class RunLogic {
 			}
 		}
 		boolean hasNext = display.size() > StartUp.MAX_DISPLAY_LINE;
-		GUI = new GUIStatus(VIEW_MODE.MONTH, hasNext, false, 0);
+		GUI = new GUIStatus(VIEW_MODE.MONTH, hasNext, false, 0, GUI.getDate());
 		return display;
 	}
 
 	// change the view mode to trash bin
 	private static ArrayList<Task> viewBin() {
 		ArrayList<Task> display = new ArrayList<Task>();
+		currentDisplay = initializeDisplayList(currentDisplay);
 		if(trashbinList.isEmpty()){
-			GUI = new GUIStatus(VIEW_MODE.BIN, false, false, -1);
-			currentDisplay = initializeDisplayList(currentDisplay);
+			GUI = new GUIStatus(VIEW_MODE.BIN, false, false, -1, GUI.getDate());
 		} else {
 			boolean hasNext = false;
 			for(int i = 1, j = GUI.getTaskIndex();  j < trashbinList.size(); j++){
@@ -467,8 +496,9 @@ public class RunLogic {
 					break;
 				}
 			}
-			boolean hasPrevious = GUI.getTaskIndex() > 0;
-			GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, hasPrevious, currentDisplay[1]);
+			boolean hasPrevious = (currentDisplay[1] > 0);
+			GUI.changeCurretnTask(currentDisplay[1]);
+			GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 		}
 		return display;
 	}
@@ -479,12 +509,12 @@ public class RunLogic {
 		return null;
 	}
 	
+	// change view mode to view the whole task list
 	private static ArrayList<Task> viewAllTask() {
-		// TODO Auto-generated method stub
 		ArrayList<Task> display = new ArrayList<Task>();
+		currentDisplay = initializeDisplayList(currentDisplay);
 		if(taskList.isEmpty()){
-			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1);
-			currentDisplay = initializeDisplayList(currentDisplay);
+			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, GUI.getDate());
 		} else {
 			boolean hasNext = false;
 			for(int i = 1, j = GUI.getTaskIndex();  j < taskList.size(); j++){
@@ -497,13 +527,14 @@ public class RunLogic {
 					break;
 				}
 			}
-			boolean hasPrevious = GUI.getTaskIndex() > 0;
-			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, currentDisplay[1]);
+			boolean hasPrevious = (currentDisplay[1] > 0);
+			GUI.changeCurretnTask(currentDisplay[1]);
+			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 		}
 		return display;
 	}
 	
-
+	// not finish yet
 	private static void previous() {
 		// TODO Auto-generated method stub
 		GUI.changeCurretnTask(GUI.getTaskIndex() - StartUp.MAX_DISPLAY_LINE);
@@ -511,9 +542,11 @@ public class RunLogic {
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			display = viewBin();
 		} else if(GUI.getMode().equals(VIEW_MODE.DATE)){
-			display = viewDate(date);
+			display = viewDate(GUI.getDate());
 		} else if(GUI.getMode().equals(VIEW_MODE.UNDONE)){
 			display = viewUndone();
+		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
+			display = viewAllTask();
 		}
 		passToGui = new DisplayConfiguration(GUI, display, StartUp.PREVIOUS_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
@@ -526,25 +559,72 @@ public class RunLogic {
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			display = viewBin();
 		} else if(GUI.getMode().equals(VIEW_MODE.DATE)){
-			display = viewDate(date);
+			display = viewDate(GUI.getDate());
 		} else if(GUI.getMode().equals(VIEW_MODE.UNDONE)){
 			display = viewUndone();
+		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
+			display = viewAllTask();
 		}
 		passToGui = new DisplayConfiguration(GUI, display, StartUp.NEXT_FEEDBACK, StartUp.TITLE);
 		passToStore = new LogicToStore(taskList,trashbinList);
 		GuiAndStore(passToGui, passToStore);
 	}
-
+	
+	// not finish yet
 	private static void undo() {
 		// TODO Auto-generated method stub
 		
 	}
 
+	// not finish yet
 	private static void restore(CliToLog userCommand) {
 		// TODO Auto-generated method stub
-		
+		ArrayList<Task> display = new ArrayList<Task>();
+		if(GUI.getMode().equals(VIEW_MODE.BIN)){
+			int restoreLine = Integer.valueOf(userCommand.getArg1());
+			if(restoreLine > StartUp.MAX_DISPLAY_LINE || currentDisplay[restoreLine] == -1){
+				for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
+					if(currentDisplay[i] != -1){
+						display.add(trashbinList.get(currentDisplay[i]));
+					} else {
+						break;
+					}
+				}
+				passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
+				passToStore = new LogicToStore(taskList, trashbinList);
+			} else {
+				taskList.add(trashbinList.remove(currentDisplay[restoreLine]));
+				currentDisplay = initializeDisplayList(currentDisplay);
+				
+				boolean hasNext = false;
+				for(int i = 1, j = GUI.getTaskIndex();  j < trashbinList.size(); j++){
+					if(i <= StartUp.MAX_DISPLAY_LINE){
+						display.add(trashbinList.get(j));
+						currentDisplay[i] = j;
+						i++;
+					} else {
+						hasNext = true;
+						break;
+					}
+				}
+				boolean hasPrevious = GUI.getTaskIndex() > 0;
+				GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
+				
+				passToGui = new DisplayConfiguration(GUI, display, StartUp.RESTORE_FEEDBACK, StartUp.TITLE);
+				passToStore = new LogicToStore(taskList,trashbinList);
+			}
+		} else if(GUI.getMode().equals(VIEW_MODE.TASK_DETAIL)) {
+			taskList.add(trashbinList.remove(currentDisplay[1]));
+			currentDisplay[1] = taskList.size() - 1;
+			GUI.changeCurretnTask(currentDisplay[1]);
+			display.add(taskList.get(GUI.getTaskIndex()));
+			passToGui = new DisplayConfiguration(GUI, display, StartUp.RESTORE_FEEDBACK, StartUp.TITLE);
+			passToStore = new LogicToStore(taskList,trashbinList);
+		}
+		GuiAndStore(passToGui, passToStore);
 	}
 
+	// not finish yet
 	private static void search(CliToLog userCommand) {
 		// TODO Auto-generated method stub
 	}
@@ -552,16 +632,29 @@ public class RunLogic {
 	// This method gives feedback when the user gives unreadable command
 	private static void wrongCommand(CliToLog userCommand){
 		ArrayList<Task> display = new ArrayList<Task>();
-		for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
-			if(currentDisplay[i] != -1){
-				display.add(taskList.get(currentDisplay[i]));
-			} else{
-				break;
+		if(GUI.getMode().equals(VIEW_MODE.BIN)){
+			for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
+				if(currentDisplay[i] != -1){
+					display.add(trashbinList.get(currentDisplay[i]));
+				} else{
+					break;
+				}
 			}
+			passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
+			passToStore = new LogicToStore(taskList,trashbinList);
+			GuiAndStore(passToGui, passToStore);
+		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
+			for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
+				if(currentDisplay[i] != -1){
+					display.add(taskList.get(currentDisplay[i]));
+				} else{
+					break;
+				}
+			}
+			passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
+			passToStore = new LogicToStore(taskList,trashbinList);
+			GuiAndStore(passToGui, passToStore);
 		}
-		passToGui = new DisplayConfiguration(GUI, display, StartUp.INVALID_FEEDBACK, StartUp.TITLE);
-		passToStore = new LogicToStore(taskList,trashbinList);
-		GuiAndStore(passToGui, passToStore);
 	}
 	
 
@@ -574,7 +667,7 @@ public class RunLogic {
 	
 	// pass GUI and File information
 	private static void GuiAndStore(DisplayConfiguration passToGui, LogicToStore passToStore) {
-		//DataStore.writeAllData(passToStore);
+		DataStore.writeAllData(passToStore);
 		Display.display(passToGui);
 	}
 	
@@ -600,6 +693,10 @@ public class RunLogic {
 			return COMMAND_TYPE.VIEW_MODE;
 		} else if (commandTypeString.equalsIgnoreCase("undo")) {
 			return COMMAND_TYPE.UNDO;
+		} else if (commandTypeString.equalsIgnoreCase("next")) {
+			return COMMAND_TYPE.NEXT;
+		} else if (commandTypeString.equalsIgnoreCase("previous")) {
+			return COMMAND_TYPE.PREVIOUS;
 		} else if (commandTypeString.equalsIgnoreCase("search")) {
 			return COMMAND_TYPE.SEARCH;
 		} else if (commandTypeString.equalsIgnoreCase("exit")) {

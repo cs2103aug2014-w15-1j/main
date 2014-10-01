@@ -42,7 +42,7 @@ public class CliProcess {
             }
         }
 
-        for (int j = inputSplit.length - 1; j < 7; j++) {
+        for (int j = inputSplit.length; j < 7; j++) {
             appendedStr[j] = NULLED;
         }
         return appendedStr;
@@ -201,11 +201,14 @@ public class CliProcess {
 
         s = strArr[1];
 
-        if(s.equalsIgnoreCase("bin")){
+        if(s.equalsIgnoreCase("tasklist")){
             //assigned BIN
-            s = COMMAND_TYPE.BIN.name();
-            newS = changeViewCommand(s, strArr);
-        } 		
+            s = COMMAND_TYPE.VIEW.name();
+            newS = changeViewCommand("tasklist", strArr);
+        } 	else if(s.equalsIgnoreCase("bin")){
+        	s = COMMAND_TYPE.VIEW.name();
+            newS = changeViewCommand("bin", strArr);
+        }	
         else{
             //returned DATE or MONTH
             s = identifyMode(strArr[1]);
