@@ -1,20 +1,20 @@
 package gui;
 
 public class Display {
-	static BasicGUI gFrame;
+	static BasicGUI gui;
 
 	public static void display(DisplayConfiguration confg) {
-		if (gFrame == null) {
+		if (gui == null) {
 			lauch();
 		}
-		gFrame.setTitleText(confg.getTitleString());
-		gFrame.setFeedbackText(confg.getFeedbackString());
-		gFrame.setMainText(confg.getTaskString());
+		gui.setTitleText(confg.getTitleString());
+		gui.setFeedbackText(confg.getFeedbackString());
+		gui.setMainText(confg.getTaskString());
 	}
 
 	public static void lauch() {
-		gFrame = new BasicGUI();
-		gFrame.setVisible(true);
+		gui = new BasicGUI();
+		gui.setVisible(true);
 
 	}
 
