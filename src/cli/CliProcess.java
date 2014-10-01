@@ -291,6 +291,9 @@ public class CliProcess {
         return commandPackage;		
     }
     
+    /* J-unit testing
+     * 
+     */
     public static String[] testSeparate(String s){
     	String[] inputLine = separate(s);
     	
