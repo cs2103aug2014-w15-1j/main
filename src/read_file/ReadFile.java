@@ -52,9 +52,14 @@ public class ReadFile {
 			String line = bufferReader.readLine();
 
 			// Read file line by line and store them into temperal ArrayList
-			while ( line != null && !line.isEmpty()) {
-				this.EVENTTASK.add(makeTask(line));
-			}
+			if (line != null) {
+                if (!line.isEmpty()) {
+                    while (line != null) {
+                        this.EVENTTASK.add(makeTask(line));
+                        line = bufferReader.readLine();
+                    }
+                }
+            }
 			bufferReader.close();
 			
 			return this.EVENTTASK;
@@ -88,8 +93,13 @@ public class ReadFile {
             String line = bufferReader.readLine();
 
             // Read file line by line and store them into temporal ArrayList
-            while (line != null && !line.isEmpty()) {
-                this.TRASHFILE.add(makeTask(line));
+            if (line != null) {
+                if (!line.isEmpty()) {
+                    while (line != null) {
+                        this.TRASHFILE.add(makeTask(line));
+                        line = bufferReader.readLine();
+                    }
+                }
             }
             bufferReader.close();
             

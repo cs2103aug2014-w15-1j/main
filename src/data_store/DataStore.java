@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * This class stores data to file by passing (String)filename
@@ -28,7 +29,7 @@ public class DataStore {
 	private static final String TRASH_NAME_WINDOWS = "E:\\Trashfile.txt";
     private static final String EVENT_NAME_WINDOWS = "E:\\Taskfile.txt";
 	
-	private static final String EMPTY_DATA = "";
+    private static final String EMPTY_DATA = "NAME=DISCIP=RETIME=REDATE=2000-01-01=2000-01-01";
 	private static final String SEPERATESIMBOL = "=";
 	
 	/**
@@ -76,6 +77,7 @@ public class DataStore {
 		    FileWriter fw = new FileWriter (fileName);
 			BufferedWriter bw = new BufferedWriter (fw);
 			PrintWriter fileOut = new PrintWriter (bw);
+			PrintWriter seeFO = fileOut;
 			writeLineAL(data, fileOut);
 			fileOut.close();
 		}
@@ -93,6 +95,9 @@ public class DataStore {
 	 *            (PrintWriter) of the file
 	 */
 	protected static void writeLineAL(ArrayList<Task> data, PrintWriter fileOut) {
+	    int seeSize = data.size();
+	    String seeName = data.get(0).getName();
+	    Date seeDate = data.get(0).getStartDate();
 		for (int i = 0; i < data.size(); i++) {
 			fileOut.println(toSentence(data.get(i))); 
 		}
