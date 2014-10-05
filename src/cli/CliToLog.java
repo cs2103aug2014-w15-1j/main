@@ -13,17 +13,17 @@ public class CliToLog{
         this.command = command;
     }
     
-    public CliToLog(String command, String taskDiscrib) {
+    public CliToLog(String command, String taskDescribe) {
         this.command = command;
-        this.taskDiscrib = taskDiscrib;
+        this.taskDiscrib = taskDescribe;
     }
 
     public CliToLog(String command, String taskTitle, 
-            String taskDiscrib, String rpDate, 
+            String taskDescribe, String rpDate, 
             String startDay, String endDay) {
         this.command = command;
         this.taskTitle = taskTitle;
-        this.taskDiscrib = taskDiscrib;
+        this.taskDiscrib = taskDescribe;
         this.rpDate = rpDate;
         this.startDay = startDay;
         this.endDay = endDay;
@@ -37,7 +37,7 @@ public class CliToLog{
         return this.taskTitle;
     }
 
-    public String getDiscribtion(){
+    public String getDiscription(){
         return this.taskDiscrib;
     }
 

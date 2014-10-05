@@ -24,8 +24,9 @@ public class CliProcess {
 
     private static final String SPLITSYMBOL = "\"";
     private static final String SPLIT_DATE = "-";
-    private static final String SPACE = "_";
+    private static final String SPACE = " ";
     private static final String EMPTY_STR = "";
+    private static final String EMPTY_DIS = "EMPTY DISCRIPTION";
     private static final int DATE_LENGTH = 8;
     private static final int INDEX_NOT_EXIST = -1;
 
@@ -63,12 +64,11 @@ public class CliProcess {
         int getCommandEnd = rawString.indexOf(SPACE);
         if (getCommandEnd == INDEX_NOT_EXIST) {
             getCommand = rawString;
-            getSubInfo = rawString.substring(getCommandEnd + 1, rawString.length());
+            getSubInfo = null;
         } else {
             getCommand = rawString.substring(0, getCommandEnd);
-            getSubInfo = null;
+            getSubInfo = rawString.substring(getCommandEnd + 1, rawString.length());
         }
-       
         
         if (getCommand.equalsIgnoreCase("add")) {
             return new CmdInfoPair(COMMAND_TYPE.ADD, getSubInfo);
@@ -141,7 +141,7 @@ public class CliProcess {
     
     private static CliToLog add(String subInfoStr) {
        String taskTitle;
-       String taskDiscrib;
+       String taskDescription;
        String basicInfo;
        String getRpDay;
        String startDay = EMPTY_STR;
@@ -163,13 +163,17 @@ public class CliProcess {
        }
        
        // Split quotation mark contents with other contents
-       if (countSymbol < 4) {
-           System.err.println("Error at CLI: Quotation mark unclosed");
+       if (countSymbol == 1 || countSymbol == 3) {
+           System.err.println("Error at CLI: Quotation mark unclosed or missing title/discription");
+           return makeInvalid();
+       } else if (countSymbol == 2) {
+           System.err.println("Error at CLI: Missing discription/title is not recommended");
+           //taskDescription = EMPTY_DIS;
            return makeInvalid();
        } else if (countSymbol == 4){
-           taskTitle = subInfoStr.substring(symbolIndex[0], symbolIndex[1]);
-           basicInfo = subInfoStr.substring(symbolIndex[1], symbolIndex[2]);
-           taskDiscrib = subInfoStr.substring(symbolIndex[2], symbolIndex[3]);
+           taskTitle = subInfoStr.substring(symbolIndex[0]+1, symbolIndex[1]);
+           basicInfo = subInfoStr.substring(symbolIndex[1]+1, symbolIndex[2]);
+           taskDescription = subInfoStr.substring(symbolIndex[2]+1, symbolIndex[3]);
            
            if (basicInfo.startsWith(SPACE)) {
                basicInfo = basicInfo.substring(1, basicInfo.length());
@@ -205,11 +209,11 @@ public class CliProcess {
                }
               
                return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
-                                   taskDiscrib, getRpDay, 
+                                   taskDescription, getRpDay, 
                                    startDay, endDay);
                
            } else {
-               System.err.println("Error at CLI: Invalid task information");
+               System.err.println("Error at CLI: Invalid task information, check repeat time/start day/end day");
                return makeInvalid();
            }
        } else {
