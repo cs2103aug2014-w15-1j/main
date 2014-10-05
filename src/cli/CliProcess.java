@@ -27,6 +27,8 @@ public class CliProcess {
     private static final String SPACE = " ";
     private static final String EMPTY_STR = "";
     private static final String EMPTY_DIS = "EMPTY DISCRIPTION";
+    private static final String EMPTY_DATE = "20010101";
+    
     private static final int DATE_LENGTH = 8;
     private static final int INDEX_NOT_EXIST = -1;
 
@@ -35,7 +37,7 @@ public class CliProcess {
         //UPDATE
         RENAME, RESCHEDULE, DESCRIBE,
         //VIEW_MODE
-        DATE, MONTH, BIN,
+        TASKLIST, BIN,
         //
         REPEAT, SEARCH;
     }
@@ -138,14 +140,13 @@ public class CliProcess {
         return resultCMD;
     }
     
-    
+    /**
+     * Interpret "add" command and get its sub-information
+     * */
     private static CliToLog add(String subInfoStr) {
        String taskTitle;
        String taskDescription;
        String basicInfo;
-       String getRpDay;
-       String startDay = EMPTY_STR;
-       String endDay = EMPTY_STR;
        
        int[] symbolIndex = new int[4];
        int countSymbol = 0;
@@ -167,55 +168,17 @@ public class CliProcess {
            System.err.println("Error at CLI: Quotation mark unclosed or missing title/discription");
            return makeInvalid();
        } else if (countSymbol == 2) {
-           System.err.println("Error at CLI: Missing discription/title is not recommended");
-           //taskDescription = EMPTY_DIS;
-           return makeInvalid();
+           taskTitle = subInfoStr.substring(symbolIndex[0]+1, symbolIndex[1]);
+           basicInfo = subInfoStr.substring(symbolIndex[1]+1, symbolIndex[2]);
+           taskDescription = EMPTY_DIS;
+           return makeAddCTL(taskTitle, basicInfo, taskDescription);
+           
        } else if (countSymbol == 4){
            taskTitle = subInfoStr.substring(symbolIndex[0]+1, symbolIndex[1]);
            basicInfo = subInfoStr.substring(symbolIndex[1]+1, symbolIndex[2]);
            taskDescription = subInfoStr.substring(symbolIndex[2]+1, symbolIndex[3]);
+           return makeAddCTL(taskTitle, basicInfo, taskDescription);
            
-           if (basicInfo.startsWith(SPACE)) {
-               basicInfo = basicInfo.substring(1, basicInfo.length());
-           }
-           
-           String[] component = basicInfo.split(SPACE);
-           // Split task information
-           if (component.length == 3) {
-               
-               getRpDay = component[0];
-               String rawStartDay = component[1];
-               String rawEndDay = component[2];
-               
-               // Split date information
-               String[] startDayArr = rawStartDay.split(SPLIT_DATE);
-               for (int i = 0; i < startDayArr.length; i++) {
-                   startDay += startDayArr[i];
-               }
-               
-               if (startDay.length() != DATE_LENGTH) {
-                   System.err.println("Error at CLI: Invalid start date");
-                   return makeInvalid();
-               }
-               
-               String[] endDayArr = rawEndDay.split(SPLIT_DATE);
-               for (int i = 0; i < endDayArr.length; i++) {
-                   endDay += endDayArr[i];
-               }
-               
-               if (endDay.length() != DATE_LENGTH) {
-                   System.err.println("Error at CLI: Invalid end date");
-                   return makeInvalid();
-               }
-              
-               return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
-                                   taskDescription, getRpDay, 
-                                   startDay, endDay);
-               
-           } else {
-               System.err.println("Error at CLI: Invalid task information, check repeat time/start day/end day");
-               return makeInvalid();
-           }
        } else {
            System.err.println("Error at CLI: Input task contain unexpected quotation mark");
            return makeInvalid();
@@ -223,15 +186,75 @@ public class CliProcess {
     }
     
     /**
-     * Make a CliToLog with command = "invalid"
+     * Make a CTL object for add, insert 3 component separately into the CTL
      * */
-    private static CliToLog makeInvalid() {
-        return new CliToLog(COMMAND_TYPE.INVALID.name());
+    private static CliToLog makeAddCTL(String taskTitle, String basicInfo, String taskDescription) {
+        CliToLog completeCTL;
+        if (basicInfo.startsWith(SPACE)) {
+            basicInfo = basicInfo.substring(1, basicInfo.length());
+        }
+        String[] component = basicInfo.split(SPACE);
+        if (component.length == 3) {
+            completeCTL = makeCompleteCTL(taskTitle, basicInfo, taskDescription, component); 
+            return completeCTL;
+        } else {
+            System.err.println("Error at CLI: Invalid task information, check repeat time/start day/end day");
+            return makeInvalid();
+        }
+    }
+    
+    
+    /**
+     * Insert all the basic information into CTL, make a complete CTL;
+     * */
+    private static CliToLog makeCompleteCTL(String taskTitle, String basicInfo, 
+                                            String taskDescription, String[] component) {
+        String getRpDay;
+        String startDay = EMPTY_STR;
+        String endDay = EMPTY_STR;
+        
+        getRpDay = component[0];
+        String rawStartDay = component[1];
+        String rawEndDay = component[2];
+        
+        startDay = makeDay(rawStartDay);
+        endDay = makeDay(rawEndDay);
+        
+        if (startDay.equals(EMPTY_DATE) || endDay.equals(EMPTY_DATE)) {
+            System.err.println("Error at CLI: Invalid date input");
+            return makeInvalid();
+        }
+       
+        return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
+                            taskDescription, getRpDay, 
+                            startDay, endDay);
+    }
+    
+    /**
+     * Split date information, standardize them to YYYYMMDD;
+     * 
+     * @param rawDay
+     *          String of date
+     * */
+    private static String makeDay(String rawDay) {
+        String resultDay = EMPTY_STR;
+        String[] startDayArr = rawDay.split(SPLIT_DATE);
+        for (int i = 0; i < startDayArr.length; i++) {
+            resultDay += startDayArr[i];
+        }
+        
+        if (resultDay.length() != DATE_LENGTH) {
+            resultDay = EMPTY_DATE;
+        }
+        return resultDay;
     }
     
     /**
      * To change/update a field in an input
      * Change command field
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
      */
     private static CliToLog update(String subInfoStr){
         String updateField;
@@ -257,6 +280,9 @@ public class CliProcess {
     /**
      * Function: Update
      * To identify the field to update
+     * 
+     * @param inputField
+     *          Targeted update field of information on one specific task
      */
     private static String identifyField(String inputField){
         String updateField = null;
@@ -276,9 +302,9 @@ public class CliProcess {
 
     /** 
      * Read details of a certain task
-     * Precondition: (View) identifyMode() must be called before this
-     * To open up an indexed view
-     * @argument strArr[1] will be an index, need to be converted to integer
+     * 
+     * @param readTarget
+     *          Target reading index
      */
     private static CliToLog read(String readTarget){
         CliToLog commandPackage = new CliToLog(COMMAND_TYPE.READ.name(), readTarget);
@@ -291,29 +317,45 @@ public class CliProcess {
      */
     private static CliToLog undo(){
         CliToLog commandPackage = new CliToLog(COMMAND_TYPE.UNDO.name());
-
+        
         return commandPackage;		
     }
 
     /** 
      * Delete a certain task
      * 
-     *  @argument strArr[1] will be an index, need to be converted to integer
+     * @param deletIndex
+     *          Index to be deleted
      */
     private static CliToLog delete(String deleteIndex){
         CliToLog commandPackage = new CliToLog(COMMAND_TYPE.DELETE.name(), deleteIndex);
 
         return commandPackage;
     }
+    
+    /**
+     * Make a CliToLog with command = "invalid"
+     * */
+    private static CliToLog makeInvalid() {
+        return new CliToLog(COMMAND_TYPE.INVALID.name());
+    }
 
     /** 
-     * View a page of items
-     * Different modes available
-     * Change command field
+     * Switch to different view model
+     * 
+     * @param viewTarget
+     *          Targeted viewing model
      */
     private static CliToLog view(String viewTarget){
-        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.VIEW.name(), viewTarget);
-        return commandPackage;
+        if (viewTarget.equalsIgnoreCase(COMMAND_TYPE.TASKLIST.name()) ||
+            viewTarget.equalsIgnoreCase(COMMAND_TYPE.BIN.name())) {
+            
+            CliToLog commandPackage = new CliToLog(COMMAND_TYPE.VIEW.name(), viewTarget);
+            return commandPackage;
+        } else {
+            System.err.println("Error at CLI: Invalid view mode input");
+            return makeInvalid();
+        }
     }
 
     /** 
