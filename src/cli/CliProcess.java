@@ -23,9 +23,10 @@ public class CliProcess {
     public static CliToLog interpretCommand(String s){ 
         String[] inputLine = separate(s);
         //Index of array 0,1,2,3,4,5,6 as argument	
-        return doCommand(inputLine);		   
+        CliToLog interpretedCm = makeCommand(inputLine);
+        return interpretedCm;	   
     }
-
+    
     // Split into string into array of arguments 
     private static String[] separate(String s){
         String[] inputSplit = s.split(SPLITSYMBOL, 7);
@@ -41,39 +42,13 @@ public class CliProcess {
                 appendedStr[i] = inputSplit[i];
             }
         }
-
         for (int j = inputSplit.length; j < 7; j++) {
             appendedStr[j] = NULLED;
         }
         return appendedStr;
     }
-
-    private static COMMAND_TYPE determineCommandType(String commandTypeString){
-        if (commandTypeString == null)
-            throw new Error("COMMAND_TYPE type string cannot be null!");
-
-        if (commandTypeString.equalsIgnoreCase("add")) {
-            return COMMAND_TYPE.ADD;
-        } else if (commandTypeString.equalsIgnoreCase("delete")) {
-            return COMMAND_TYPE.DELETE;
-        } else if (commandTypeString.equalsIgnoreCase("update")) {
-            return COMMAND_TYPE.UPDATE;
-        } else if (commandTypeString.equalsIgnoreCase("exit")) {
-            return COMMAND_TYPE.EXIT;
-        } else if (commandTypeString.equalsIgnoreCase("view")) {
-            return COMMAND_TYPE.VIEW;
-        } else if (commandTypeString.equalsIgnoreCase("read")) {
-            return COMMAND_TYPE.READ;
-        } else if (commandTypeString.equalsIgnoreCase("undo")) {
-            return COMMAND_TYPE.UNDO;
-        } else if (commandTypeString.equalsIgnoreCase("next")) {
-            return COMMAND_TYPE.NEXT;
-        } else {
-            return COMMAND_TYPE.INVALID;
-        }
-    } 
-
-    private static CliToLog doCommand(String[] inputExecute){
+    
+    private static CliToLog makeCommand(String[] inputExecute){
         COMMAND_TYPE userCommand;
 
         userCommand = determineCommandType(inputExecute[0]);
@@ -99,7 +74,33 @@ public class CliProcess {
             return invalid(inputExecute);
         }
     }
+    
+ 
 
+    private static COMMAND_TYPE determineCommandType(String commandTypeString){
+        if (commandTypeString == null)
+            throw new Error("COMMAND_TYPE type string cannot be null!");
+
+        if (commandTypeString.equalsIgnoreCase("add")) {
+            return COMMAND_TYPE.ADD;
+        } else if (commandTypeString.equalsIgnoreCase("delete")) {
+            return COMMAND_TYPE.DELETE;
+        } else if (commandTypeString.equalsIgnoreCase("update")) {
+            return COMMAND_TYPE.UPDATE;
+        } else if (commandTypeString.equalsIgnoreCase("exit")) {
+            return COMMAND_TYPE.EXIT;
+        } else if (commandTypeString.equalsIgnoreCase("view")) {
+            return COMMAND_TYPE.VIEW;
+        } else if (commandTypeString.equalsIgnoreCase("read")) {
+            return COMMAND_TYPE.READ;
+        } else if (commandTypeString.equalsIgnoreCase("undo")) {
+            return COMMAND_TYPE.UNDO;
+        } else if (commandTypeString.equalsIgnoreCase("next")) {
+            return COMMAND_TYPE.NEXT;
+        } else {
+            return COMMAND_TYPE.INVALID;
+        }
+    } 
     /* Create a new entry
      * 
      */
