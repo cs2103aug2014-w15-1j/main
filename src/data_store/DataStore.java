@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import logic.Task;
 import logic.LogicToStore;
 
-import error_handle.ErrorMSG;
 
 /**
  * This class stores data to file by passing (String)filename

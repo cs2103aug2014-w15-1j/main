@@ -9,7 +9,6 @@ import java.util.Date;
 import data_store.DataStore;
 import data_store.SystemInfo;
 import logic.Task;
-import error_handle.ErrorMSG;
 
 /**
  * This class read task files and trash files and return them in ArrayList<Task>

@@ -1,24 +1,6 @@
 package cli;
 
-import cli.CliProcess.COMMAND_TYPE;
-
-class CmdInfoPair {
-    private COMMAND_TYPE cmd;
-    private String subInfo;
-    
-    public CmdInfoPair(COMMAND_TYPE cmd, String subInfo) {
-        this.cmd = cmd;
-        this.subInfo = subInfo;
-    }
-    
-    public COMMAND_TYPE getCMD() {
-        return this.cmd;
-    }
-    
-    public String getSubInfo() {
-        return this.subInfo;
-    }
-}
+import java.util.ArrayList;
 
 public class CliProcess {
 
@@ -28,18 +10,18 @@ public class CliProcess {
     private static final String EMPTY_STR = "";
     private static final String EMPTY_DIS = "EMPTY DISCRIPTION";
     private static final String EMPTY_DATE = "20010101";
-    
+
     private static final int DATE_LENGTH = 8;
     private static final int INDEX_NOT_EXIST = -1;
 
     enum COMMAND_TYPE {
-        ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT, PREVIOUS,
-        //UPDATE
-        RENAME, RESCHEDULE, DESCRIBE,
-        //VIEW_MODE
+        ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT, PREVIOUS, SEARCH,
+        // VIEW_MODE
         TASKLIST, BIN,
-        //
-        REPEAT, SEARCH;
+        // UPDATE
+        RENAME, RESCHEDULE, DESCRIBE,
+        // UPDATE_FIELD
+        NAME, DISCRIPTION, DATE, DAY;
     }
 
     /**
@@ -50,10 +32,10 @@ public class CliProcess {
     public static CliToLog interpretCommand(String s){ 
         CmdInfoPair getCmdPair = makeCmdPair(s);
         CliToLog interpretedCm = transformCmd(getCmdPair);
-        
+
         return interpretedCm;	   
     }
-   
+
     /**
      * Interpret strings by their own commands
      * 
@@ -62,7 +44,7 @@ public class CliProcess {
     private static CmdInfoPair makeCmdPair(String rawString){
         String getCommand;
         String getSubInfo;
-        
+
         int getCommandEnd = rawString.indexOf(SPACE);
         if (getCommandEnd == INDEX_NOT_EXIST) {
             getCommand = rawString;
@@ -71,32 +53,32 @@ public class CliProcess {
             getCommand = rawString.substring(0, getCommandEnd);
             getSubInfo = rawString.substring(getCommandEnd + 1, rawString.length());
         }
-        
-        if (getCommand.equalsIgnoreCase("add")) {
+
+        if (getCommand.equalsIgnoreCase(COMMAND_TYPE.ADD.name())) {
             return new CmdInfoPair(COMMAND_TYPE.ADD, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase("update")) {
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.UPDATE.name())) {
             return new CmdInfoPair(COMMAND_TYPE.UPDATE, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase("delete")) {
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.DELETE.name())) {
             return new CmdInfoPair(COMMAND_TYPE.DELETE, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase("read")) {
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.READ.name())) {
             return new CmdInfoPair(COMMAND_TYPE.READ, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase("view")) {
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.VIEW.name())) {
             return new CmdInfoPair(COMMAND_TYPE.VIEW, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase("next")) {
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.NEXT.name())) {
             return new CmdInfoPair(COMMAND_TYPE.NEXT, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase("previous")) {
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.PREVIOUS.name())) {
             return new CmdInfoPair(COMMAND_TYPE.PREVIOUS, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase("undo")) {
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.UNDO.name())) {
             return new CmdInfoPair(COMMAND_TYPE.UNDO, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase("search")) {
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.SEARCH.name())) {
             return new CmdInfoPair(COMMAND_TYPE.SEARCH, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase("exit")) {
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.EXIT.name())) {
             return new CmdInfoPair(COMMAND_TYPE.EXIT, getSubInfo);
         } else {
             return new CmdInfoPair(COMMAND_TYPE.INVALID, getSubInfo);
         }
     }
-    
+
     /**
      * Transform string command into corresponding CliToLog objects
      * */
@@ -104,7 +86,7 @@ public class CliProcess {
         CliToLog resultCMD;
         COMMAND_TYPE getCMD = infoPair.getCMD();
         String subInfoStr = infoPair.getSubInfo();
-        
+
         switch(getCMD){
         case ADD:
             resultCMD = add(subInfoStr);
@@ -139,52 +121,61 @@ public class CliProcess {
         }
         return resultCMD;
     }
-    
+
     /**
      * Interpret "add" command and get its sub-information
+     * Split quotation mark contents with other contents
      * */
     private static CliToLog add(String subInfoStr) {
-       String taskTitle;
-       String taskDescription;
-       String basicInfo;
-       
-       int[] symbolIndex = new int[4];
-       int countSymbol = 0;
-       String curStr;
-       
-       // Count quotation mark, see if miss any
-       for(int i = 0; i < subInfoStr.length(); i ++) {
-           curStr = subInfoStr.substring(i, i+1);
-           if (countSymbol == 4) {
-               break;
-           } else if (curStr.equals(SPLITSYMBOL)) {
-               symbolIndex[countSymbol] = i;
-               countSymbol++;
-           }
-       }
-       
-       // Split quotation mark contents with other contents
-       if (countSymbol == 1 || countSymbol == 3) {
-           System.err.println("Error at CLI: Quotation mark unclosed or missing title/discription");
-           return makeInvalid();
-       } else if (countSymbol == 2) {
-           taskTitle = subInfoStr.substring(symbolIndex[0]+1, symbolIndex[1]);
-           basicInfo = subInfoStr.substring(symbolIndex[1]+1, symbolIndex[2]);
-           taskDescription = EMPTY_DIS;
-           return makeAddCTL(taskTitle, basicInfo, taskDescription);
-           
-       } else if (countSymbol == 4){
-           taskTitle = subInfoStr.substring(symbolIndex[0]+1, symbolIndex[1]);
-           basicInfo = subInfoStr.substring(symbolIndex[1]+1, symbolIndex[2]);
-           taskDescription = subInfoStr.substring(symbolIndex[2]+1, symbolIndex[3]);
-           return makeAddCTL(taskTitle, basicInfo, taskDescription);
-           
-       } else {
-           System.err.println("Error at CLI: Input task contain unexpected quotation mark");
-           return makeInvalid();
-       }
+        String taskTitle;
+        String taskDescription;
+        String basicInfo;
+        ArrayList<Integer> symbolIndex = getQuoteMark(subInfoStr);
+        int markNumber = symbolIndex.size();
+
+        if (markNumber == 1 || markNumber == 3) {
+            popError(ErrorMSG.QUOTATION_UNCLOSE_ERR);
+            return makeInvalid();
+
+        } else if (markNumber == 2) {
+            taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
+            basicInfo = subInfoStr.substring(symbolIndex.get(1) + 1, symbolIndex.get(2));
+            taskDescription = EMPTY_DIS;
+            return makeAddCTL(taskTitle, basicInfo, taskDescription);
+
+        } else if (markNumber == 4){
+            taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
+            basicInfo = subInfoStr.substring(symbolIndex.get(1) + 1, symbolIndex.get(2));
+            taskDescription = subInfoStr.substring(symbolIndex.get(2)+1, symbolIndex.get(3));
+            return makeAddCTL(taskTitle, basicInfo, taskDescription);
+
+        } else {
+            popError(ErrorMSG.UNEXPECTED_QUOTATION_ERR);
+            return makeInvalid();
+        }
     }
-    
+
+    /**
+     * Return index of quotation mark in raw input String
+     * */
+
+    private static ArrayList<Integer> getQuoteMark(String subInfoStr) {
+        ArrayList<Integer> quotationIndex = new ArrayList<Integer>();
+        String curStr;
+        int countSymbol = 0;
+        for(int i = 0; i < subInfoStr.length(); i ++) {
+            curStr = subInfoStr.substring(i, i+1);
+            if (countSymbol == 4) {
+                break;
+            } else if (curStr.equals(SPLITSYMBOL)) {
+                quotationIndex.add(i);
+                countSymbol++;
+            }
+        }
+
+        return quotationIndex;
+    }
+
     /**
      * Make a CTL object for add, insert 3 component separately into the CTL
      * */
@@ -193,43 +184,43 @@ public class CliProcess {
         if (basicInfo.startsWith(SPACE)) {
             basicInfo = basicInfo.substring(1, basicInfo.length());
         }
+        
         String[] component = basicInfo.split(SPACE);
         if (component.length == 3) {
             completeCTL = makeCompleteCTL(taskTitle, basicInfo, taskDescription, component); 
             return completeCTL;
         } else {
-            System.err.println("Error at CLI: Invalid task information, check repeat time/start day/end day");
+            popError(ErrorMSG.TASK_INFO_ERR);
             return makeInvalid();
         }
     }
-    
-    
+
     /**
      * Insert all the basic information into CTL, make a complete CTL;
      * */
     private static CliToLog makeCompleteCTL(String taskTitle, String basicInfo, 
-                                            String taskDescription, String[] component) {
+            String taskDescription, String[] component) {
         String getRpDay;
         String startDay = EMPTY_STR;
         String endDay = EMPTY_STR;
-        
+
         getRpDay = component[0];
         String rawStartDay = component[1];
         String rawEndDay = component[2];
-        
+
         startDay = makeDay(rawStartDay);
         endDay = makeDay(rawEndDay);
-        
+
         if (startDay.equals(EMPTY_DATE) || endDay.equals(EMPTY_DATE)) {
-            System.err.println("Error at CLI: Invalid date input");
+            popError(ErrorMSG.INPUT_DATE_ERR);
             return makeInvalid();
         }
-       
+
         return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
                             taskDescription, getRpDay, 
                             startDay, endDay);
     }
-    
+
     /**
      * Split date information, standardize them to YYYYMMDD;
      * 
@@ -242,13 +233,13 @@ public class CliProcess {
         for (int i = 0; i < startDayArr.length; i++) {
             resultDay += startDayArr[i];
         }
-        
+
         if (resultDay.length() != DATE_LENGTH) {
             resultDay = EMPTY_DATE;
         }
         return resultDay;
     }
-    
+
     /**
      * To change/update a field in an input
      * Change command field
@@ -260,17 +251,17 @@ public class CliProcess {
         String updateField;
         String newContent;
         String[] component = subInfoStr.split(SPLITSYMBOL);
-        
+
         // Check update input contents validity
         if (component.length != 2) {
-            System.err.println("Error at CLI: Invalid update input");
+            popError(ErrorMSG.UPDATE_INPUT_ERR);
             return makeInvalid();
         } else {
             updateField = component[0];
             if (updateField.endsWith(SPACE)) {
                 updateField = updateField.substring(0, updateField.length()-1);
             }
-            
+
             updateField = identifyField(updateField);
             newContent = component[1];
             return new CliToLog(updateField, newContent);
@@ -288,15 +279,17 @@ public class CliProcess {
         String updateField = null;
 
         //Check field to be changed
-        if (inputField.equals("name")){
+        if (inputField.equalsIgnoreCase(COMMAND_TYPE.NAME.name())){
             updateField = COMMAND_TYPE.RENAME.name();
-        }else
-            if (inputField.equals("date") || inputField.equals("day")){
-                updateField = COMMAND_TYPE.RESCHEDULE.name();
-            }else
-                if (inputField.equals("description")){
-                    updateField = COMMAND_TYPE.DESCRIBE.name();
-                }
+        } else if (inputField.equals(COMMAND_TYPE.DATE.name()) || 
+                   inputField.equals(COMMAND_TYPE.DAY.name())){
+            updateField = COMMAND_TYPE.RESCHEDULE.name();
+        } else if (inputField.equals(COMMAND_TYPE.DISCRIPTION.name())){
+            updateField = COMMAND_TYPE.DESCRIBE.name();
+        } else {
+            updateField = COMMAND_TYPE.INVALID.name();
+            popError(ErrorMSG.UPDATE_FIELD_ERR);
+        }
         return updateField;
     }
 
@@ -317,7 +310,7 @@ public class CliProcess {
      */
     private static CliToLog undo(){
         CliToLog commandPackage = new CliToLog(COMMAND_TYPE.UNDO.name());
-        
+
         return commandPackage;		
     }
 
@@ -332,7 +325,7 @@ public class CliProcess {
 
         return commandPackage;
     }
-    
+
     /**
      * Make a CliToLog with command = "invalid"
      * */
@@ -348,12 +341,12 @@ public class CliProcess {
      */
     private static CliToLog view(String viewTarget){
         if (viewTarget.equalsIgnoreCase(COMMAND_TYPE.TASKLIST.name()) ||
-            viewTarget.equalsIgnoreCase(COMMAND_TYPE.BIN.name())) {
-            
+                viewTarget.equalsIgnoreCase(COMMAND_TYPE.BIN.name())) {
+
             CliToLog commandPackage = new CliToLog(COMMAND_TYPE.VIEW.name(), viewTarget);
             return commandPackage;
         } else {
-            System.err.println("Error at CLI: Invalid view mode input");
+            popError(ErrorMSG.VIEW_MODE_ERR);
             return makeInvalid();
         }
     }
@@ -366,7 +359,7 @@ public class CliProcess {
 
         return commandPackage;
     }
-    
+
     /** 
      * Previous page for current state of view
      */
@@ -383,5 +376,12 @@ public class CliProcess {
         CliToLog commandPackage = new CliToLog(COMMAND_TYPE.EXIT.name());
 
         return commandPackage;		
+    }
+    
+    /**
+     * Print out error
+     * */
+    private static void popError(String errorMSG) {
+        System.err.println(errorMSG);
     }
 }
