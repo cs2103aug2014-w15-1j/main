@@ -6,7 +6,7 @@ import gui.VIEW_MODE;
 import java.util.ArrayList;
 import java.util.Date;
 
-import main.StartUp;
+import gui.StartUp;
 import cli.CliToLog;
 
 public class Execute {
@@ -92,20 +92,19 @@ public class Execute {
 		// modify date information of task
 		Date startDate = null;
 		Date endDate = null;
-		if(userCommand.getArg5() != null && userCommand.getArg6() != null){
-			int startYear = Integer.valueOf(userCommand.getArg5().substring(0,4));
-			int startMonth = Integer.valueOf(userCommand.getArg5().substring(4,6));
-			int startDay = Integer.valueOf(userCommand.getArg5().substring(6,8));
-			int endYear = Integer.valueOf(userCommand.getArg6().substring(0,4));
-			int endMonth = Integer.valueOf(userCommand.getArg6().substring(4,6));
-			int endDay = Integer.valueOf(userCommand.getArg6().substring(6,8));
+		if(userCommand.getStartDay() != null && userCommand.getEndDay() != null){
+			int startYear = Integer.valueOf(userCommand.getStartDay().substring(0,4));
+			int startMonth = Integer.valueOf(userCommand.getStartDay().substring(4,6));
+			int startDay = Integer.valueOf(userCommand.getStartDay().substring(6,8));
+			int endYear = Integer.valueOf(userCommand.getEndDay().substring(0,4));
+			int endMonth = Integer.valueOf(userCommand.getEndDay().substring(4,6));
+			int endDay = Integer.valueOf(userCommand.getEndDay().substring(6,8));
 			startDate = new Date(startYear, startMonth, startDay);
 			endDate = new Date(endYear, endMonth, endDay);
 		}
 		
 		// update File
-		Task newTask = new Task(userCommand.getArg1(), userCommand.getArg2(), userCommand.getArg3(),
-				userCommand.getArg4(), startDate, endDate);
+		Task newTask = new Task(userCommand.getTitle(), userCommand.getDiscription(), userCommand.getRPdate(), startDate, endDate);
 		taskList.add(newTask);
 		
 		// update GUI view mode
@@ -126,7 +125,7 @@ public class Execute {
 
 	// delete a certain task or delete or tasks
 	private static void deleteTask(CliToLog userCommand) {
-		String deleteLine = userCommand.getArg1();
+		String deleteLine = userCommand.getTitle();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			if(deleteLine.equalsIgnoreCase("all")){
@@ -222,7 +221,7 @@ public class Execute {
 
 	// read details of a certain task
 	private static void readTask(CliToLog userCommand) {
-		int readLine = Integer.valueOf(userCommand.getArg1());
+		int readLine = Integer.valueOf(userCommand.getTitle());
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			if(readLine > StartUp.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
@@ -274,7 +273,7 @@ public class Execute {
 	
 	// update the name of a certain task 
 	private static void rename(CliToLog userCommand) {
-		taskList.get(GUI.getTaskIndex()).rename(userCommand.getArg1());
+		taskList.get(GUI.getTaskIndex()).rename(userCommand.getTitle());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -285,7 +284,7 @@ public class Execute {
 
 	// update the description of a certain task
 	private static void describe(CliToLog userCommand) {
-		taskList.get(GUI.getTaskIndex()).describe(userCommand.getArg1());
+		taskList.get(GUI.getTaskIndex()).describe(userCommand.getTitle());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -296,7 +295,7 @@ public class Execute {
 
 	// update the repeat times and dates of a certain task
 	private static void repeat(CliToLog userCommand) {
-		taskList.get(GUI.getTaskIndex()).repeat(userCommand.getArg1(), userCommand.getArg2());
+		taskList.get(GUI.getTaskIndex()).repeat( userCommand.getRPdate());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -308,12 +307,12 @@ public class Execute {
 
 	// update the time information of a certain task
 	private static void reschedule(CliToLog userCommand) {
-		int startYear = Integer.valueOf(userCommand.getArg1().substring(0,4));
-		int startMonth = Integer.valueOf(userCommand.getArg1().substring(4,6));
-		int startDay = Integer.valueOf(userCommand.getArg1().substring(6,8));
-		int endYear = Integer.valueOf(userCommand.getArg2().substring(0,4));
-		int endMonth = Integer.valueOf(userCommand.getArg2().substring(4,6));
-		int endDay = Integer.valueOf(userCommand.getArg2().substring(6,8));
+		int startYear = Integer.valueOf(userCommand.getTitle().substring(0,4));
+		int startMonth = Integer.valueOf(userCommand.getTitle().substring(4,6));
+		int startDay = Integer.valueOf(userCommand.getTitle().substring(6,8));
+		int endYear = Integer.valueOf(userCommand.getDiscription().substring(0,4));
+		int endMonth = Integer.valueOf(userCommand.getDiscription().substring(4,6));
+		int endDay = Integer.valueOf(userCommand.getDiscription().substring(6,8));
 		Date startDate = new Date(startYear, startMonth, startDay);
 		Date endDate = new Date(endYear, endMonth, endDay);
 		taskList.get(GUI.getTaskIndex()).reschedule(startDate, endDate);
@@ -329,14 +328,14 @@ public class Execute {
 	// change view mode
 	private static void view(CliToLog userCommand) {
 		GUI.changeCurretnTask(0);
-		VIEW_MODE mode = determineViewMode(userCommand.getArg1());
+		VIEW_MODE mode = determineViewMode(userCommand.getTitle());
 		ArrayList<Task> display;
 		switch (mode) {
 		case DATE:
-			display = viewDate(userCommand.getArg2());
+			display = viewDate(userCommand.getDiscription());
 			break;
 		case MONTH:
-			display = viewMonth(userCommand.getArg2());
+			display = viewMonth(userCommand.getDiscription());
 			break;
 		case BIN:
 			display = viewBin();
@@ -504,7 +503,7 @@ public class Execute {
 		// TODO Auto-generated method stub
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
-			int restoreLine = Integer.valueOf(userCommand.getArg1());
+			int restoreLine = Integer.valueOf(userCommand.getTitle());
 			if(restoreLine > StartUp.MAX_DISPLAY_LINE || currentDisplay[restoreLine] == -1){
 				for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
 					if(currentDisplay[i] != -1){

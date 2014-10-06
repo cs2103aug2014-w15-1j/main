@@ -1,4 +1,4 @@
-package main;
+package gui;
 
 import java.util.ArrayList;
 
@@ -6,9 +6,6 @@ import logic.GUIStatus;
 import logic.RunLogic;
 import logic.Task;
 import read_file.ReadFile;
-import gui.Display;
-import gui.DisplayConfiguration;
-import gui.VIEW_MODE;
 
 public class StartUp {
 	// title information

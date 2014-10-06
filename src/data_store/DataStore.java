@@ -1,36 +1,19 @@
 package data_store;
 
-import logic.Task;
-import logic.LogicToStore;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
+
+import logic.Task;
+import logic.LogicToStore;
+
 
 /**
  * This class stores data to file by passing (String)filename
- * Initialization with parameter (ArrayList<String>) data is required
  * */
 
 public class DataStore {
-	
-	private static final String TRASHERROR = " Trash file writing error ";
-	private static final String EVENTERROR = " Event file writing error ";
-	
-	private static final String TRASHINITERROR = " Trash file initializing writing error ";
-    private static final String EVENTINITERROR = " Event file initializing writing error ";
-	
-	private static final String SOLARIS_OS = "Mac OS X";
-	private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
-	private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
-	
-	private static final String TRASH_NAME_WINDOWS = "E:\\Trashfile.txt";
-    private static final String EVENT_NAME_WINDOWS = "E:\\Taskfile.txt";
-	
-    private static final String EMPTY_DATA = "NAME=DISCIP=RETIME=REDATE=2000-01-01=2000-01-01";
-	private static final String SEPERATESIMBOL = "=";
 	
 	/**
 	 * Writing all data to distinctive file
@@ -42,26 +25,33 @@ public class DataStore {
 
 	public static void writeTrash(ArrayList<Task> trashData) {
 	    String systemOS = getOS();
-	    if (systemOS.equals(SOLARIS_OS)) {
-	        writeFile(TRASH_NAME_SOLARIS, trashData, TRASHERROR);
+	    if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
+	        writeFile(trashData, 
+	                  SystemInfo.TRASH_NAME_SOLARIS,
+	                  ErrorMSG.WRITE_TRASHERROR);
 	    } else {
-	        writeFile(TRASH_NAME_WINDOWS, trashData, TRASHERROR);
+	        writeFile(trashData,
+	                  SystemInfo.TRASH_NAME_WINDOWS,
+	                  ErrorMSG.WRITE_TRASHERROR);
 	    }
 	}
 	
-	public static void writeTask(ArrayList<Task> fileData) {
+	public static void writeTask(ArrayList<Task> taskData) {
 	    String systemOS = getOS();
-        if (systemOS.equals(SOLARIS_OS)) {
-            writeFile(EVENT_NAME_SOLARIS, fileData, EVENTERROR);
+        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
+            writeFile(taskData, 
+                      SystemInfo.EVENT_NAME_SOLARIS, 
+                      ErrorMSG.WRITE_EVENTERROR);
         } else {
-            writeFile(EVENT_NAME_WINDOWS, fileData, EVENTERROR);
+            writeFile(taskData, 
+                      SystemInfo.EVENT_NAME_WINDOWS, 
+                      ErrorMSG.WRITE_EVENTERROR);
         }
 	}
 	
-	/**Initializing file for the start of the program
+	/**Initializing files with empty data
      * */
     public static void initializeFile() {
-        // Initialize Empty Data
         initializeTrash();
         initializeTask();
     }
@@ -72,16 +62,17 @@ public class DataStore {
 	 * @param fileName
 	 *            is the (String) name of the event file
 	 */
-	protected static void writeFile(String fileName, ArrayList<Task> data, String errorMesg) {
+	protected static void writeFile(ArrayList<Task> data,
+	                                String fileName,
+	                                String errorMesg) {
 		try {
 		    FileWriter fw = new FileWriter (fileName);
 			BufferedWriter bw = new BufferedWriter (fw);
 			PrintWriter fileOut = new PrintWriter (bw);
-			PrintWriter seeFO = fileOut;
 			writeLineAL(data, fileOut);
 			fileOut.close();
-		}
-		catch (Exception e) {
+			
+		} catch (Exception e) {
 			System.out.println(errorMesg + e.toString());
 		}
 	}
@@ -95,20 +86,9 @@ public class DataStore {
 	 *            (PrintWriter) of the file
 	 */
 	protected static void writeLineAL(ArrayList<Task> data, PrintWriter fileOut) {
-	    int seeSize = data.size();
-	    String seeName = data.get(0).getName();
-	    Date seeDate = data.get(0).getStartDate();
 		for (int i = 0; i < data.size(); i++) {
 			fileOut.println(toSentence(data.get(i))); 
 		}
-	}
-	
-	protected static String toSentence(Task taskLine) {
-	    return taskLine.toPersonalString();
-	}
-	
-	private static String getOS() {
-	    return System.getProperty("os.name");
 	}
 	
 	/**
@@ -116,10 +96,10 @@ public class DataStore {
 	 * */
 	private static void initializeTrash() {
 	    String systemOS = getOS();
-        if (systemOS.equals(SOLARIS_OS)) {
-            initalizeWriter(TRASH_NAME_SOLARIS, TRASHINITERROR);
+        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
+            initalizeWriter(SystemInfo.TRASH_NAME_SOLARIS, ErrorMSG.TRASH_INITERROR);
         } else {
-            initalizeWriter(TRASH_NAME_WINDOWS, TRASHINITERROR);
+            initalizeWriter(SystemInfo.TRASH_NAME_WINDOWS, ErrorMSG.TRASH_INITERROR);
         }
 	}
 	
@@ -128,10 +108,10 @@ public class DataStore {
      * */
 	private static void initializeTask() {
         String systemOS = getOS();
-        if (systemOS.equals(SOLARIS_OS)) {
-            initalizeWriter(EVENT_NAME_SOLARIS, EVENTINITERROR);
+        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
+            initalizeWriter(SystemInfo.EVENT_NAME_SOLARIS, ErrorMSG.TASK_INITERROR);
         } else {
-            initalizeWriter(EVENT_NAME_WINDOWS, EVENTINITERROR);
+            initalizeWriter(SystemInfo.EVENT_NAME_WINDOWS, ErrorMSG.TASK_INITERROR);
         }
     }
 	
@@ -140,11 +120,21 @@ public class DataStore {
             FileWriter fw = new FileWriter (fileName);
             BufferedWriter bw = new BufferedWriter (fw);
             PrintWriter fileOut = new PrintWriter (bw);
-            fileOut.println(EMPTY_DATA);
+            fileOut.println(SystemInfo.INIT_EMPTY_DATA);
             fileOut.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(errorMesg + e.toString());
         }
 	}
+	
+	/**
+	 * Helper functions
+	 * */
+	protected static String toSentence(Task taskLine) {
+        return taskLine.toPersonalString();
+    }
+    
+    private static String getOS() {
+        return System.getProperty(SystemInfo.OS_NAME);
+    }
 }

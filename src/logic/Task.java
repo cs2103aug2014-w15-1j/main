@@ -5,7 +5,6 @@ import java.util.Date;
 public class Task {
 	private String name;
 	private String description;
-	private String repeatTimes;
 	private String repeatDays;
 	private Date startDate;
 	private Date endDate;
@@ -21,7 +20,6 @@ public class Task {
 	public Task(String name){
 		this.name = name;
 		this.description = null;
-		this.repeatTimes = null;
 		this.repeatDays = null;
 		this.startDate = null;
 		this.endDate = null;
@@ -30,25 +28,22 @@ public class Task {
 	public Task(String name, String description){
 		this.name = name;
 		this.description = description;
-		this.repeatTimes = null;
 		this.repeatDays = null;
 		this.startDate = null;
 		this.endDate = null;
 	}
 	
-	public Task(String name, String description, String repeatTimes, String repeatDays){
+	public Task(String name, String description, String repeatDays){
 		this.name = name;
 		this.description = description;
-		this.repeatTimes = repeatTimes;
 		this.repeatDays = repeatDays;
 		this.startDate = null;
 		this.endDate = null;
 	}
 	
-	public Task(String name, String description, String repeatTimes, String repeatDays, Date startDate, Date endDate){
+	public Task(String name, String description, String repeatDays, Date startDate, Date endDate){
 		this.name = name;
 		this.description = description;
-		this.repeatTimes = repeatTimes;
 		this.repeatDays = repeatDays;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -60,10 +55,6 @@ public class Task {
 	
 	public String getDescription(){
 		return this.description;
-	}
-	
-	public String getRepeatTimes(){
-		return this.repeatTimes;
 	}
 	
 	public String getRepeatDays(){
@@ -91,8 +82,7 @@ public class Task {
 		this.description = newDescription;
 	}
 	
-	public void repeat(String newRepeatTimes, String newRepeatDays){
-		this.repeatTimes = newRepeatTimes;
+	public void repeat(String newRepeatDays){
 		this.repeatDays = newRepeatDays;
 	}
 	
@@ -109,7 +99,7 @@ public class Task {
 	    } else {
 	        endDateStr =   "" + this.endDate.getYear()  + DATESPLIT + this.endDate.getMonth()  + DATESPLIT + this.endDate.getDay();
 	    }
-	    return this.name + DEVIDESYMBOL + this.description + DEVIDESYMBOL + this.repeatTimes + DEVIDESYMBOL + 
+	    return this.name + DEVIDESYMBOL + this.description + DEVIDESYMBOL + DEVIDESYMBOL + 
 	           this.repeatDays + DEVIDESYMBOL + startDateStr + DEVIDESYMBOL + endDateStr;
 	}
 }

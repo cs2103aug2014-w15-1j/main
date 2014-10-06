@@ -1,9 +1,8 @@
 package logic;
 
-import main.StartUp;
+import gui.StartUp;
 import cli.CliToLog;
 import cli.CliProcess;
-
 import java.util.ArrayList;
 
 public class RunLogic {
