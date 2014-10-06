@@ -1,6 +1,6 @@
-/logic/
-/cli/
-/gui/
-/data_store/
-/read_file
+/cli
+/data_store
+/gui
+/logic
 /main
+/read_file
