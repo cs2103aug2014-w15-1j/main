@@ -25,7 +25,7 @@ public class DataStoreTest {
     Date endDate = new Date(2014, 9, 22);
 
 
-    private   Task testTask = new Task(name, description, repeatTimes, 
+    private   Task testTask = new Task(name, description, 
                                        repeatDays, startDate, endDate);
 
     private   ArrayList<Task> TestTasks = new ArrayList<Task>();

@@ -1,18 +1,14 @@
 package logic;
 
 import java.util.Date;
+import data_store.SystemInfo;
 
 public class Task {
 	private String name;
 	private String description;
-	private String repeatTimes;
 	private String repeatDays;
 	private Date startDate;
 	private Date endDate;
-	private final String DEVIDESYMBOL = "=";
-	private final String DATESPLIT = "-";
-	private final String EMPTYDATE = "2000-01-01";
-    
 	
 	public Task(){
 		// empty constructor
@@ -21,7 +17,6 @@ public class Task {
 	public Task(String name){
 		this.name = name;
 		this.description = null;
-		this.repeatTimes = null;
 		this.repeatDays = null;
 		this.startDate = null;
 		this.endDate = null;
@@ -30,25 +25,22 @@ public class Task {
 	public Task(String name, String description){
 		this.name = name;
 		this.description = description;
-		this.repeatTimes = null;
 		this.repeatDays = null;
 		this.startDate = null;
 		this.endDate = null;
 	}
 	
-	public Task(String name, String description, String repeatTimes, String repeatDays){
+	public Task(String name, String description, String repeatDays){
 		this.name = name;
 		this.description = description;
-		this.repeatTimes = repeatTimes;
 		this.repeatDays = repeatDays;
 		this.startDate = null;
 		this.endDate = null;
 	}
 	
-	public Task(String name, String description, String repeatTimes, String repeatDays, Date startDate, Date endDate){
+	public Task(String name, String description, String repeatDays, Date startDate, Date endDate){
 		this.name = name;
 		this.description = description;
-		this.repeatTimes = repeatTimes;
 		this.repeatDays = repeatDays;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -60,10 +52,6 @@ public class Task {
 	
 	public String getDescription(){
 		return this.description;
-	}
-	
-	public String getRepeatTimes(){
-		return this.repeatTimes;
 	}
 	
 	public String getRepeatDays(){
@@ -91,25 +79,31 @@ public class Task {
 		this.description = newDescription;
 	}
 	
-	public void repeat(String newRepeatTimes, String newRepeatDays){
-		this.repeatTimes = newRepeatTimes;
+	public void repeat(String newRepeatDays){
 		this.repeatDays = newRepeatDays;
 	}
 	
-	public String toPersonalString() {
+	@SuppressWarnings("deprecation")
+    public String toPersonalString() {
 	    String startDateStr;
 	    String endDateStr;
 	    if (this.startDate == null) {
-	        startDateStr = EMPTYDATE;
+	        startDateStr = SystemInfo.EMPTYDATE;
 	    } else {
-	        startDateStr = "" + this.startDate.getYear() + DATESPLIT + this.startDate.getMonth() + DATESPLIT + this.startDate.getDay();
+	        startDateStr = "" + this.startDate.getYear() + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            this.startDate.getMonth() + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            this.startDate.getDay();
 	    }
 	    if (this.endDate == null) {
-	        endDateStr = EMPTYDATE;
+	        endDateStr = SystemInfo.EMPTYDATE;
 	    } else {
-	        endDateStr =   "" + this.endDate.getYear()  + DATESPLIT + this.endDate.getMonth()  + DATESPLIT + this.endDate.getDay();
+	        endDateStr =   "" + this.endDate.getYear()  + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            this.endDate.getMonth()  + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            this.endDate.getDay();
 	    }
-	    return this.name + DEVIDESYMBOL + this.description + DEVIDESYMBOL + this.repeatTimes + DEVIDESYMBOL + 
-	           this.repeatDays + DEVIDESYMBOL + startDateStr + DEVIDESYMBOL + endDateStr;
+	    return this.name + SystemInfo.SEPERATESIMBOL + this.description + 
+	           SystemInfo.SEPERATESIMBOL + this.repeatDays + 
+	           SystemInfo.SEPERATESIMBOL + startDateStr + 
+	           SystemInfo.SEPERATESIMBOL + endDateStr;
 	}
 }

@@ -1,7 +1,5 @@
 package read_file;
 
-import logic.Task;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -9,50 +7,63 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import data_store.DataStore;
+import data_store.SystemInfo;
+import logic.Task;
 
+/**
+ * This class read task files and trash files and return them in ArrayList<Task>
+ * */
 public class ReadFile {
-	
-    private static final String SOLARIS_OS = "Mac OS X";
-    private static final String TRASH_NAME_SOLARIS = "/Users/shared/Trashfile.txt";
-    private static final String EVENT_NAME_SOLARIS = "/Users/shared/Taskfile.txt";
-    
-    private static final String TRASH_NAME_WINDOWS = "E:\\Trashfile.txt";
-    private static final String EVENT_NAME_WINDOWS = "E:\\Taskfile.txt";
-    
-	private final String SEPERATESIMBOL = "=";
-	private final String READTASKERROR = "Error while reading task file line by line:";
-	private final String READTRASHERROR = "Error while reading trash file line by line:";
-	
-	private ArrayList<Task> EVENTTASK;
+
+    private ArrayList<Task> EVENTTASK;
     private ArrayList<Task> TRASHFILE;
-    
+
     private ArrayList<Task> EMPTYDATA = new ArrayList<Task>();
-	
-	public ReadFile() {
-		this.EVENTTASK = new ArrayList<Task>();
-		this.TRASHFILE = new ArrayList<Task>();
-	}
-	
-	/**
-	 * get event ArrayList<Task>
-	 */
-	public ArrayList<Task> getEventTask() {
-	    String systemOS = this.getOS();
-        if (systemOS.equals(SOLARIS_OS)) {
-            return getOSEventTask(EVENT_NAME_SOLARIS);
+
+    public ReadFile() {
+        this.EVENTTASK = new ArrayList<Task>();
+        this.TRASHFILE = new ArrayList<Task>();
+    }
+
+    /**
+     * get event ArrayList<Task>
+     */
+    public ArrayList<Task> getEventTask() {
+        String systemOS = this.getOS();
+        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
+            return getOSEventTask(SystemInfo.EVENT_NAME_SOLARIS);
         } else {
-            return getOSEventTask(EVENT_NAME_WINDOWS);
+            return getOSEventTask(SystemInfo.EVENT_NAME_WINDOWS);
         }
     }
-	
-	private ArrayList<Task> getOSEventTask(String fileName) {
-		try {
-			FileReader inputFile = new FileReader(fileName);
-			BufferedReader bufferReader = new BufferedReader(inputFile);
-			String line = bufferReader.readLine();
 
-			// Read file line by line and store them into temperal ArrayList
-			if (line != null) {
+    /**
+     * get trash ArrayList<Task>
+     */
+    public ArrayList<Task> getTrashFile() {
+        String systemOS = this.getOS();
+        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
+            return getOSTrashFile(SystemInfo.TRASH_NAME_SOLARIS);
+        } else {
+            return getOSTrashFile(SystemInfo.TRASH_NAME_WINDOWS);
+        }
+    }
+
+    /** 
+     * Read tasks file line by line and store them into temporal ArrayList
+     * 
+     * @param
+     *     fileName, is the file name of target reading file
+     * @return
+     *     return null if not no file exist, else return file content
+     */
+    private ArrayList<Task> getOSEventTask(String fileName) {
+        try {
+            FileReader inputFile = new FileReader(fileName);
+            BufferedReader bufferReader = new BufferedReader(inputFile);
+            String line = bufferReader.readLine();
+
+            if (line != null) {
                 if (!line.isEmpty()) {
                     while (line != null) {
                         this.EVENTTASK.add(makeTask(line));
@@ -60,39 +71,34 @@ public class ReadFile {
                     }
                 }
             }
-			bufferReader.close();
-			
-			return this.EVENTTASK;
+            bufferReader.close();
 
-		} catch (FileNotFoundException e) {
+            return this.EVENTTASK;
+
+        } catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
             return EMPTYDATA;
-            
+
         } catch (Exception e) {
-			System.out.println(READTASKERROR + e.getMessage());  
-			return null;
-		}
-	}
-	
-	/**
-     * get trash ArrayList<Task>
-     */
-	public ArrayList<Task> getTrashFile() {
-        String systemOS = this.getOS();
-        if (systemOS.equals(SOLARIS_OS)) {
-            return getOSTrashFile(TRASH_NAME_SOLARIS);
-        } else {
-            return getOSTrashFile(TRASH_NAME_WINDOWS);
+            System.out.println(ErrorMSG.READ_TASKERROR + e.getMessage());  
+            return null;
         }
     }
-	
+
+    /** 
+     * Read trash file line by line and store them into temporal ArrayList
+     * 
+     * @param
+     *     fileName, is the file name of target reading file
+     * @return
+     *     return null if not no file exist, else return file content
+     */
     private ArrayList<Task> getOSTrashFile(String fileName) {
         try {
             FileReader inputFile = new FileReader(fileName);
             BufferedReader bufferReader = new BufferedReader(inputFile);
             String line = bufferReader.readLine();
 
-            // Read file line by line and store them into temporal ArrayList
             if (line != null) {
                 if (!line.isEmpty()) {
                     while (line != null) {
@@ -102,43 +108,62 @@ public class ReadFile {
                 }
             }
             bufferReader.close();
-            
+
             return this.TRASHFILE;
 
         } catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
             return EMPTYDATA;
-            
+
         } catch (Exception e) {
-            System.out.println(READTRASHERROR + e.getMessage()); 
+            System.out.println(ErrorMSG.READ_TRASHERROR + e.getMessage()); 
             return null;
         }
     }
-	
-	/**
-	 * create a event
-	 */
-	protected Task makeTask(String taskString) {
-		String[] tempoTaskSplit = taskString.split(SEPERATESIMBOL);
-		
-		String[] startDateStr = tempoTaskSplit[4].split("-");
-		Date startDate = new Date(Integer.parseInt(startDateStr[0]),
-		                          Integer.parseInt(startDateStr[1]),
-		                          Integer.parseInt(startDateStr[2]));
-		
-		String[] endDateStr = tempoTaskSplit[5].split("-");
-        Date endDate = new Date(Integer.parseInt(endDateStr[0]),
-                                Integer.parseInt(endDateStr[1]),
-                                Integer.parseInt(endDateStr[2]));
+
+    /**
+     * create a event
+     * @return
+     *      Return a Task object if local file format valid
+     *      Else return null
+     */
+    private Task makeTask(String taskString) {
+
+        String[] tempoTaskSplit = taskString.split(SystemInfo.SEPERATESIMBOL);
         
-		Task curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
-								tempoTaskSplit[2], tempoTaskSplit[3],
-								startDate, endDate);
-		
-		return curTask;
-	}
-	
-	private String getOS() {
-        return System.getProperty("os.name");
+        if (tempoTaskSplit.length == 5) {
+            String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
+            Date startDate = dateMaker(startDateStr);
+    
+            String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);
+            Date endDate = dateMaker(endDateStr);
+    
+            Task curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+                    tempoTaskSplit[2], startDate, endDate);
+            return curTask;
+        } else {
+            ErrorGenerator.popError(ErrorMSG.TASK_FORMAT_ERR);
+            return null;
+        }
+    }
+
+    /**
+     * Make a Date object
+     * */
+    @SuppressWarnings("deprecation")
+    private Date dateMaker(String[] dateInfo) {
+        try {
+            return new Date(Integer.parseInt(dateInfo[0]),
+                    Integer.parseInt(dateInfo[1]),
+                    Integer.parseInt(dateInfo[2]));
+
+        } catch (IndexOutOfBoundsException e) {
+            System.err.println(ErrorMSG.DATE_MAKE_ERROR);
+            return null;
+        }
+    }
+
+    private String getOS() {
+        return System.getProperty(SystemInfo.OS_NAME);
     }
 }

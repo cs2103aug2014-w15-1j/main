@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
+import gui.StartUp;
 import gui.VIEW_MODE;
-import main.StartUp;
 
 import org.junit.After;
 import org.junit.Before;

@@ -1,8 +1,8 @@
 package logic;
 
-import main.StartUp;
 import gui.Display;
 import gui.DisplayConfiguration;
+import gui.StartUp;
 import gui.VIEW_MODE;
 import cli.CliToLog;
 import cli.CliProcess;

@@ -1,298 +1,385 @@
 package cli;
 
+import java.util.ArrayList;
 
 public class CliProcess {
 
-    private static final String NULLED = null;
-    private static final String SPLITSYMBOL = "=";
-    private static final String SPLITDATE = "-";
-
     enum COMMAND_TYPE {
-        ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT,
-        //UPDATE
+        ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT, PREVIOUS, SEARCH,
+        // VIEW_MODE
+        TASKLIST, BIN,
+        // UPDATE
         RENAME, RESCHEDULE, DESCRIBE,
-        //VIEW_MODE
-        DATE, MONTH, BIN,
-        //
-        REPEAT, SEARCH;
+        // UPDATE_FIELD
+        NAME, DISCRIPTION, DATE, DAY;
     }
 
-    /* Command line will be processed and
-     * a pack or arguments will be passed on
-     */
-    public static CliToLog interpretCommand(String s){ 
-        String[] inputLine = separate(s);
-        //Index of array 0,1,2,3,4,5,6 as argument	
-        return doCommand(inputLine);		   
+    /**
+     * Interpret input string to an executable command
+     * 
+     * @return CliToLog which contains corrsponding information
+     * */
+    public static CliToLog interpretCommand(String inputString){
+        if (noInvalidKeys(inputString)) {
+            CmdInfoPair getCmdPair = makeCmdPair(inputString);
+            CliToLog interpretedCm = transformCmd(getCmdPair);
+            return interpretedCm;
+            
+        } else {
+            ErrorGenerator.popError(ErrorMSG.INPUT_SYMBOL_ERR);
+            return makeInvalid();
+        }
+    }
+    
+    /**
+     * Check if input contains invalid symbols
+     * */
+    private static boolean noInvalidKeys(String inputString) {
+        return !inputString.contains(ParserKeys.INVALID_SYMBOL);
     }
 
-    // Split into string into array of arguments 
-    private static String[] separate(String s){
-        String[] inputSplit = s.split(SPLITSYMBOL, 7);
-        //Split into array of index 0,1,2,3,4,5,6
-        String[] appendedStr = new String[7];
-        for (int i = 0; i < inputSplit.length; i++) {
-            if (i == 5 || i == 6) {
-                // make date
-                String[] splitDate = inputSplit[i].split(SPLITDATE);
-                String resultDate = splitDate[0] + splitDate[1] + splitDate[2];
-                appendedStr[i] = resultDate;
-            } else {
-                appendedStr[i] = inputSplit[i];
+    /**
+     * Interpret strings by their own commands
+     * 
+     * @return a pair of Command and its sub-information
+     * */
+    private static CmdInfoPair makeCmdPair(String rawString){
+        String getCommand;
+        String getSubInfo;
+
+        int getCommandEnd = rawString.indexOf(ParserKeys.SPACE);
+        if (getCommandEnd == ParserKeys.INDEX_NOT_EXIST) {
+            getCommand = rawString;
+            getSubInfo = null;
+        } else {
+            getCommand = rawString.substring(0, getCommandEnd);
+            getSubInfo = rawString.substring(getCommandEnd + 1, rawString.length());
+        }
+
+        if (getCommand.equalsIgnoreCase(COMMAND_TYPE.ADD.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.ADD, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.UPDATE.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.UPDATE, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.DELETE.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.DELETE, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.READ.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.READ, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.VIEW.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.VIEW, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.NEXT.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.NEXT, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.PREVIOUS.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.PREVIOUS, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.UNDO.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.UNDO, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.SEARCH.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.SEARCH, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.EXIT.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.EXIT, getSubInfo);
+        } else {
+            return new CmdInfoPair(COMMAND_TYPE.INVALID, getSubInfo);
+        }
+    }
+
+    /**
+     * Transform string command into corresponding CliToLog objects
+     * */
+    private static CliToLog transformCmd(CmdInfoPair infoPair){
+        CliToLog resultCMD;
+        COMMAND_TYPE getCMD = infoPair.getCMD();
+        String subInfoStr = infoPair.getSubInfo();
+
+        switch(getCMD){
+        case ADD:
+            resultCMD = add(subInfoStr);
+            break;
+        case UPDATE:
+            resultCMD = update(subInfoStr);
+            break;
+        case READ:
+            resultCMD = read(subInfoStr);
+            break;
+        case DELETE:
+            resultCMD = delete(subInfoStr);
+            break;
+        case VIEW:
+            resultCMD = view(subInfoStr);
+            break;
+        case UNDO:
+            resultCMD = undo();
+            break;
+        case NEXT:
+            resultCMD = next();
+            break;
+        case PREVIOUS:
+            resultCMD = previous();
+            break;
+        case EXIT:
+            resultCMD = exit();
+            break;
+        default:
+            resultCMD = makeInvalid();
+            break;
+        }
+        return resultCMD;
+    }
+
+    /**
+     * Interpret "add" command and get its sub-information
+     * Split quotation mark contents with other contents
+     * */
+    private static CliToLog add(String subInfoStr) {
+        String taskTitle;
+        String taskDescription;
+        String basicInfo;
+        ArrayList<Integer> symbolIndex = getQuoteMark(subInfoStr);
+        int markNumber = symbolIndex.size();
+
+        if (markNumber == 1 || markNumber == 3) {
+            ErrorGenerator.popError(ErrorMSG.QUOTATION_UNCLOSE_ERR);
+            return makeInvalid();
+
+        } else if (markNumber == 2) {
+            taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
+            basicInfo = subInfoStr.substring(symbolIndex.get(1) + 1, symbolIndex.get(2));
+            taskDescription = ParserKeys.EMPTY_DIS;
+            return makeAddCTL(taskTitle, basicInfo, taskDescription);
+
+        } else if (markNumber == 4){
+            taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
+            basicInfo = subInfoStr.substring(symbolIndex.get(1) + 1, symbolIndex.get(2));
+            taskDescription = subInfoStr.substring(symbolIndex.get(2)+1, symbolIndex.get(3));
+            return makeAddCTL(taskTitle, basicInfo, taskDescription);
+
+        } else {
+            ErrorGenerator.popError(ErrorMSG.UNEXPECTED_QUOTATION_ERR);
+            return makeInvalid();
+        }
+    }
+
+    /**
+     * Return index of quotation mark in raw input String
+     * */
+
+    private static ArrayList<Integer> getQuoteMark(String subInfoStr) {
+        ArrayList<Integer> quotationIndex = new ArrayList<Integer>();
+        String curStr;
+        int countSymbol = 0;
+        for(int i = 0; i < subInfoStr.length(); i ++) {
+            curStr = subInfoStr.substring(i, i+1);
+            if (countSymbol == 4) {
+                break;
+            } else if (curStr.equals(ParserKeys.SPLITSYMBOL)) {
+                quotationIndex.add(i);
+                countSymbol++;
             }
         }
 
-        for (int j = inputSplit.length; j < 7; j++) {
-            appendedStr[j] = NULLED;
-        }
-        return appendedStr;
+        return quotationIndex;
     }
 
-    private static COMMAND_TYPE determineCommandType(String commandTypeString){
-        if (commandTypeString == null)
-            throw new Error("COMMAND_TYPE type string cannot be null!");
-
-        if (commandTypeString.equalsIgnoreCase("add")) {
-            return COMMAND_TYPE.ADD;
-        } else if (commandTypeString.equalsIgnoreCase("delete")) {
-            return COMMAND_TYPE.DELETE;
-        } else if (commandTypeString.equalsIgnoreCase("update")) {
-            return COMMAND_TYPE.UPDATE;
-        } else if (commandTypeString.equalsIgnoreCase("exit")) {
-            return COMMAND_TYPE.EXIT;
-        } else if (commandTypeString.equalsIgnoreCase("view")) {
-            return COMMAND_TYPE.VIEW;
-        } else if (commandTypeString.equalsIgnoreCase("read")) {
-            return COMMAND_TYPE.READ;
-        } else if (commandTypeString.equalsIgnoreCase("undo")) {
-            return COMMAND_TYPE.UNDO;
-        } else if (commandTypeString.equalsIgnoreCase("next")) {
-            return COMMAND_TYPE.NEXT;
+    /**
+     * Make a CTL object for add, insert 3 component separately into the CTL
+     * */
+    private static CliToLog makeAddCTL(String taskTitle, String basicInfo, String taskDescription) {
+        CliToLog completeCTL;
+        if (basicInfo.startsWith(ParserKeys.SPACE)) {
+            basicInfo = basicInfo.substring(1, basicInfo.length());
+        }
+        
+        String[] component = basicInfo.split(ParserKeys.SPACE);
+        if (component.length == 3) {
+            completeCTL = makeCompleteCTL(taskTitle, basicInfo, taskDescription, component); 
+            return completeCTL;
         } else {
-            return COMMAND_TYPE.INVALID;
-        }
-    } 
-
-    private static CliToLog doCommand(String[] inputExecute){
-        COMMAND_TYPE userCommand;
-
-        userCommand = determineCommandType(inputExecute[0]);
-
-        switch(userCommand){
-        case ADD:
-            return add(inputExecute);
-        case UPDATE:
-            return update(inputExecute);
-        case READ:
-            return read(inputExecute);
-        case DELETE:
-            return delete(inputExecute);
-        case VIEW:
-            return view(inputExecute);
-        case UNDO:
-            return undo(inputExecute);
-        case NEXT:
-            return next(inputExecute);
-        case EXIT:
-            return exit(inputExecute);
-        default:
-            return invalid(inputExecute);
+            ErrorGenerator.popError(ErrorMSG.TASK_INFO_ERR);
+            return makeInvalid();
         }
     }
 
-    /* Create a new entry
-     * 
-     */
-    private static CliToLog add(String[] strArr){
-        CliToLog commandPackage = new CliToLog(strArr);
+    /**
+     * Insert all the basic information into CTL, make a complete CTL;
+     * */
+    private static CliToLog makeCompleteCTL(String taskTitle, String basicInfo, 
+            String taskDescription, String[] component) {
+        String getRpDay;
+        String startDay = ParserKeys.EMPTY_STR;
+        String endDay = ParserKeys.EMPTY_STR;
 
-        return commandPackage;
+        getRpDay = component[0];
+        String rawStartDay = component[1];
+        String rawEndDay = component[2];
+
+        startDay = makeDay(rawStartDay);
+        endDay = makeDay(rawEndDay);
+
+        if (startDay.equals(ParserKeys.EMPTY_DATE) || endDay.equals(ParserKeys.EMPTY_DATE)) {
+            ErrorGenerator.popError(ErrorMSG.INPUT_DATE_ERR);
+            return makeInvalid();
+        }
+
+        return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
+                            taskDescription, getRpDay, 
+                            startDay, endDay);
     }
 
-    /* To change/update a field in an input
+    /**
+     * Split date information, standardize them to YYYYMMDD;
      * 
+     * @param rawDay
+     *          String of date
+     * */
+    private static String makeDay(String rawDay) {
+        String resultDay = ParserKeys.EMPTY_STR;
+        String[] startDayArr = rawDay.split(ParserKeys.SPLIT_DATE);
+        for (int i = 0; i < startDayArr.length; i++) {
+            resultDay += startDayArr[i];
+        }
+
+        if (resultDay.length() != ParserKeys.DATE_LENGTH) {
+            resultDay = ParserKeys.EMPTY_DATE;
+        }
+        return resultDay;
+    }
+
+    /**
+     * To change/update a field in an input
      * Change command field
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
      */
-    private static CliToLog update(String[] strArr){
-        String[] newS = null;
-        String s;
+    private static CliToLog update(String subInfoStr){
+        String updateField;
+        String newContent;
+        String[] component = subInfoStr.split(ParserKeys.SPLITSYMBOL);
 
-        s = identifyField(strArr[1]);
-        newS = changeUpdateCommand(s,strArr);
+        // Check update input contents validity
+        if (component.length != 2) {
+            ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
+            return makeInvalid();
+        } else {
+            updateField = component[0];
+            if (updateField.endsWith(ParserKeys.SPACE)) {
+                updateField = updateField.substring(0, updateField.length()-1);
+            }
 
-        CliToLog commandPackage = new CliToLog(newS); 
-
-        return commandPackage;
+            updateField = identifyField(updateField);
+            newContent = component[1];
+            return new CliToLog(updateField, newContent);
+        }
     }
 
-    /* Function: Update
+    /**
+     * Function: Update
      * To identify the field to update
      * 
+     * @param inputField
+     *          Targeted update field of information on one specific task
      */
-    private static String identifyField(String s){
-        String sNew = null;
+    private static String identifyField(String inputField){
+        String updateField = null;
 
         //Check field to be changed
-        if (s.equals("name")){
-            sNew = COMMAND_TYPE.RENAME.name();
-        }else
-            if (s.equals("date") || s.equals("day")){
-                sNew = COMMAND_TYPE.RESCHEDULE.name();
-            }else
-                if (s.equals("description")){
-                    sNew = COMMAND_TYPE.DESCRIBE.name();
-                }
-        return sNew;
-    }
-
-    /* Change commands for Update
-     * 
-     * Also shift up the arguments after new command
-     * @argument New command , array of strings to be changed
-     */
-    private static String[] changeUpdateCommand(String s, String[] strArr){
-        strArr[0] = s;
-        for(int i = 1; i<6; i++){
-            strArr[i]= strArr[i+1];
-        }	   
-        return strArr; 
-    }
-
-
-    /* Read details of a certain task
-     * 
-     * Precondition: (View) identifyMode() must be called before this
-     * To open up an indexed view
-     * @argument strArr[1] will be an index, need to be converted to integer
-     */
-    private static CliToLog read(String[] strArr){
-        CliToLog commandPackage = new CliToLog(strArr);
-
-        return commandPackage;
-    }
-
-    /* Undo the previous action
-     * 
-     */
-    private static CliToLog undo(String[] strArr){
-        CliToLog commandPackage = new CliToLog(strArr);
-
-        return commandPackage;		
-    }
-
-    /* Delete a certain task
-     * 
-     *  @argument strArr[1] will be an index, need to be converted to integer
-     */
-    private static CliToLog delete(String[] strArr){
-        CliToLog commandPackage = new CliToLog(strArr);
-
-        return commandPackage;
-    }
-
-    /* View a page of items
-     * 
-     * Different modes available
-     * Change command field
-     */
-    private static CliToLog view(String[] strArr){
-        String[] newS = new String[7];
-        String s;
-
-        s = strArr[1];
-
-        if(s.equalsIgnoreCase("tasklist")){
-            //assigned BIN
-            s = COMMAND_TYPE.VIEW.name();
-            newS = changeViewCommand("tasklist", strArr);
-        } 	else if(s.equalsIgnoreCase("bin")){
-        	s = COMMAND_TYPE.VIEW.name();
-            newS = changeViewCommand("bin", strArr);
-        }	
-        else{
-            //returned DATE or MONTH
-            s = identifyMode(strArr[1]);
-
-            newS = addViewCommand(s, strArr);
-        }		
-
-        CliToLog commandPackage = new CliToLog(newS);
-
-        return commandPackage;
-    }
-
-    /* Insert new command for View (on top of VIEW)
-     * 
-     * VIEW MONTH or VIEW DATE
-     * @argument 2 commands in total
-     */
-    private static String[] addViewCommand(String s, String[] strArr){
-        //take out the actual month/date
-        String temp = strArr[1];
-        //assign to next argument
-        strArr[2] = temp;
-
-        strArr[1] = s;
-
-        return strArr;
-    }
-
-    /* Change commands for View Bin
-     * 
-     * bin string to COMMAND_TYPE BIN string
-     */
-    private static String[] changeViewCommand(String s, String[] strArr){
-        //bin
-        strArr[1] = s;
-
-        return strArr;
-    }
-
-    /* Function: View
-     * To identify different Date mode or Month mode for View 
-     * 
-     */
-    private static String identifyMode(String s){
-        String sNew;
-
-        //month
-        if(s.equalsIgnoreCase("jan") || s.equalsIgnoreCase("feb") || s.equalsIgnoreCase("mar") || s.equalsIgnoreCase("apr") || s.equalsIgnoreCase("may") || s.equalsIgnoreCase("june") ||
-                s.equalsIgnoreCase("jul") || s.equalsIgnoreCase("aug") || s.equalsIgnoreCase("sep") || s.equalsIgnoreCase("oct") ||s.equalsIgnoreCase("nov") || s.equalsIgnoreCase("dec")){
-            sNew = COMMAND_TYPE.MONTH.name();
-        }else{
-            //date
-            sNew = COMMAND_TYPE.DATE.name();
+        if (inputField.equalsIgnoreCase(COMMAND_TYPE.NAME.name())){
+            updateField = COMMAND_TYPE.RENAME.name();
+        } else if (inputField.equals(COMMAND_TYPE.DATE.name()) || 
+                   inputField.equals(COMMAND_TYPE.DAY.name())){
+            updateField = COMMAND_TYPE.RESCHEDULE.name();
+        } else if (inputField.equals(COMMAND_TYPE.DISCRIPTION.name())){
+            updateField = COMMAND_TYPE.DESCRIBE.name();
+        } else {
+            updateField = COMMAND_TYPE.INVALID.name();
+            ErrorGenerator.popError(ErrorMSG.UPDATE_FIELD_ERR);
         }
-
-        return sNew;
+        return updateField;
     }
 
-    /* Next page for current state of view
+    /** 
+     * Read details of a certain task
      * 
+     * @param readTarget
+     *          Target reading index
      */
-    private static CliToLog next(String[] strArr){
-        CliToLog commandPackage = new CliToLog(strArr);
+    private static CliToLog read(String readTarget){
+        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.READ.name(), readTarget);
 
         return commandPackage;
     }
 
-    /* Invalid command was read
-     * 
+    /**
+     * Undo the previous action
      */
-    private static CliToLog invalid(String[] strArr){
-        CliToLog commandPackage = new CliToLog(strArr);
-
-        return commandPackage;
-    }
-
-    /* Exiting the program
-     * 
-     */
-    private static CliToLog exit(String[] strArr){
-        CliToLog commandPackage = new CliToLog(strArr);
+    private static CliToLog undo(){
+        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.UNDO.name());
 
         return commandPackage;		
     }
+
+    /** 
+     * Delete a certain task
+     * 
+     * @param deletIndex
+     *          Index to be deleted
+     */
+    private static CliToLog delete(String deleteIndex){
+        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.DELETE.name(), deleteIndex);
+
+        return commandPackage;
+    }
+
+    /**
+     * Make a CliToLog with command = "invalid"
+     * */
+    private static CliToLog makeInvalid() {
+        return new CliToLog(COMMAND_TYPE.INVALID.name());
+    }
+
+    /** 
+     * Switch to different view model
+     * 
+     * @param viewTarget
+     *          Targeted viewing model
+     */
+    private static CliToLog view(String viewTarget){
+        if (viewTarget.equalsIgnoreCase(COMMAND_TYPE.TASKLIST.name()) ||
+                viewTarget.equalsIgnoreCase(COMMAND_TYPE.BIN.name())) {
+
+            CliToLog commandPackage = new CliToLog(COMMAND_TYPE.VIEW.name(), viewTarget);
+            return commandPackage;
+        } else {
+            ErrorGenerator.popError(ErrorMSG.VIEW_MODE_ERR);
+            return makeInvalid();
+        }
+    }
+
+    /** 
+     * Next page for current state of view
+     */
+    private static CliToLog next(){
+        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.NEXT.name());
+
+        return commandPackage;
+    }
+
+    /** 
+     * Previous page for current state of view
+     */
+    private static CliToLog previous(){
+        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.PREVIOUS.name());
+
+        return commandPackage;
+    }
+
+    /** 
+     * Exiting the program
+     */
+    private static CliToLog exit(){
+        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.EXIT.name());
+
+        return commandPackage;		
+    }
+<<<<<<< HEAD
     
     /* J-unit testing
      * 
@@ -302,4 +389,6 @@ public class CliProcess {
     	
     	return inputLine;
     }
+=======
+>>>>>>> aa0bd93c6cab3de1d7cde55c25369c3b6133e9b8
 }

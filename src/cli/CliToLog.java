@@ -1,58 +1,56 @@
 package cli;
 
 public class CliToLog{
-		
-		private String commandFirst;
-		
-		/* Assigned from an array of strings behind command word
-		 * 
-		 * Maximum number of arguments for any command is 4
-		 */
-		private String argument1;
-		private String argument2;
-		private String argument3;
-		private String argument4;
-		private String argument5;
-		private String argument6;
-		
-		public CliToLog(String[] input) {
-			this.commandFirst = input[0];
-			this.argument1 = input[1];
-			this.argument2 = input[2];
-			this.argument3 = input[3];
-			this.argument4 = input[4];	
-			this.argument5 = input[5];
-			this.argument6 = input[6];
 
-		}
+    private String command;
+    private String taskTitle;
+    private String taskDiscrib;
+    private String rpDate;
+    private String startDay;
+    private String endDay;
+    
+    public CliToLog(String command) {
+        this.command = command;
+    }
+    
+    public CliToLog(String command, String taskDescribe) {
+        this.command = command;
+        this.taskDiscrib = taskDescribe;
+    }
 
-		public String getCommand(){
-			return commandFirst;
-		}
-		
-		public String getArg1(){
-			return this.argument1;
-		}
-		
-		public String getArg2(){
-			return this.argument2;
-		}
-		
-		public String getArg3(){
-		   return this.argument3;
-		}
-		
-		public String getArg4(){
-			return this.argument4;
-		}
-		
-		public String getArg5(){
-			return this.argument5;
-		}
-		
-		public String getArg6(){
-			return this.argument6;
-		}
+    public CliToLog(String command, String taskTitle, 
+            String taskDescribe, String rpDate, 
+            String startDay, String endDay) {
+        this.command = command;
+        this.taskTitle = taskTitle;
+        this.taskDiscrib = taskDescribe;
+        this.rpDate = rpDate;
+        this.startDay = startDay;
+        this.endDay = endDay;
+    }
 
-	}
+    public String getCommand(){
+        return this.command;
+    }
+
+    public String getTitle(){
+        return this.taskTitle;
+    }
+
+    public String getDiscription(){
+        return this.taskDiscrib;
+    }
+
+    public String getRPdate(){
+        return this.rpDate;
+    }
+
+    public String getStartDay(){
+        return this.startDay;
+    }
+
+    public String getEndDay(){
+        return this.endDay;
+    }
+}
 
