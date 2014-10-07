@@ -9,3 +9,12 @@ class ErrorMSG {
     public static final String UPDATE_FIELD_ERR = "Error at CLI: Invalid update field";
     public static final String VIEW_MODE_ERR = "Error at CLI: Invalid view mode input";
 }
+
+class ErrorGenerator {
+    /**
+     * Print out error
+     * */
+    public static void popError(String errorMSG) {
+        System.err.println(errorMSG);
+    }
+}

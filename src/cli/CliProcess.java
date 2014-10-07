@@ -9,7 +9,7 @@ public class CliProcess {
     private static final String SPACE = " ";
     private static final String EMPTY_STR = "";
     private static final String EMPTY_DIS = "EMPTY DISCRIPTION";
-    private static final String EMPTY_DATE = "20010101";
+    private static final String EMPTY_DATE = "20000101";
 
     private static final int DATE_LENGTH = 8;
     private static final int INDEX_NOT_EXIST = -1;
@@ -134,7 +134,7 @@ public class CliProcess {
         int markNumber = symbolIndex.size();
 
         if (markNumber == 1 || markNumber == 3) {
-            popError(ErrorMSG.QUOTATION_UNCLOSE_ERR);
+            ErrorGenerator.popError(ErrorMSG.QUOTATION_UNCLOSE_ERR);
             return makeInvalid();
 
         } else if (markNumber == 2) {
@@ -150,7 +150,7 @@ public class CliProcess {
             return makeAddCTL(taskTitle, basicInfo, taskDescription);
 
         } else {
-            popError(ErrorMSG.UNEXPECTED_QUOTATION_ERR);
+            ErrorGenerator.popError(ErrorMSG.UNEXPECTED_QUOTATION_ERR);
             return makeInvalid();
         }
     }
@@ -190,7 +190,7 @@ public class CliProcess {
             completeCTL = makeCompleteCTL(taskTitle, basicInfo, taskDescription, component); 
             return completeCTL;
         } else {
-            popError(ErrorMSG.TASK_INFO_ERR);
+            ErrorGenerator.popError(ErrorMSG.TASK_INFO_ERR);
             return makeInvalid();
         }
     }
@@ -212,7 +212,7 @@ public class CliProcess {
         endDay = makeDay(rawEndDay);
 
         if (startDay.equals(EMPTY_DATE) || endDay.equals(EMPTY_DATE)) {
-            popError(ErrorMSG.INPUT_DATE_ERR);
+            ErrorGenerator.popError(ErrorMSG.INPUT_DATE_ERR);
             return makeInvalid();
         }
 
@@ -254,7 +254,7 @@ public class CliProcess {
 
         // Check update input contents validity
         if (component.length != 2) {
-            popError(ErrorMSG.UPDATE_INPUT_ERR);
+            ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
             return makeInvalid();
         } else {
             updateField = component[0];
@@ -288,7 +288,7 @@ public class CliProcess {
             updateField = COMMAND_TYPE.DESCRIBE.name();
         } else {
             updateField = COMMAND_TYPE.INVALID.name();
-            popError(ErrorMSG.UPDATE_FIELD_ERR);
+            ErrorGenerator.popError(ErrorMSG.UPDATE_FIELD_ERR);
         }
         return updateField;
     }
@@ -346,7 +346,7 @@ public class CliProcess {
             CliToLog commandPackage = new CliToLog(COMMAND_TYPE.VIEW.name(), viewTarget);
             return commandPackage;
         } else {
-            popError(ErrorMSG.VIEW_MODE_ERR);
+            ErrorGenerator.popError(ErrorMSG.VIEW_MODE_ERR);
             return makeInvalid();
         }
     }
@@ -376,12 +376,5 @@ public class CliProcess {
         CliToLog commandPackage = new CliToLog(COMMAND_TYPE.EXIT.name());
 
         return commandPackage;		
-    }
-    
-    /**
-     * Print out error
-     * */
-    private static void popError(String errorMSG) {
-        System.err.println(errorMSG);
     }
 }
