@@ -17,7 +17,7 @@ public class CliProcess {
     /**
      * Interpret input string to an executable command
      * 
-     * @return CliToLog which contains corrsponding information
+     * @return CliToLog which contains corresponding information
      * */
     public static CliToLog interpretCommand(String inputString){
         if (noInvalidKeys(inputString)) {
@@ -379,16 +379,4 @@ public class CliProcess {
 
         return commandPackage;		
     }
-<<<<<<< HEAD
-    
-    /* J-unit testing
-     * 
-     */
-    public static String[] testSeparate(String s){
-    	String[] inputLine = separate(s);
-    	
-    	return inputLine;
-    }
-=======
->>>>>>> aa0bd93c6cab3de1d7cde55c25369c3b6133e9b8
 }
