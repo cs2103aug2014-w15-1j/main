@@ -140,15 +140,21 @@ public class CliProcess {
             return makeInvalid();
 
         } else if (markNumber == 2) {
+        	taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
+        	 basicInfo = ParserKeys.EMPTY_DATE + " " + ParserKeys.EMPTY_DATE +  " " + ParserKeys.EMPTY_DATE;
+        	 taskDescription = ParserKeys.EMPTY_DIS;
+        	 return makeAddCTL(taskTitle, basicInfo, taskDescription);
+        	 
+        } else if (markNumber == 4) {
             taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
-            basicInfo = subInfoStr.substring(symbolIndex.get(1) + 1, symbolIndex.get(2));
+            basicInfo = subInfoStr.substring(symbolIndex.get(2) + 1, symbolIndex.get(3));
             taskDescription = ParserKeys.EMPTY_DIS;
             return makeAddCTL(taskTitle, basicInfo, taskDescription);
 
-        } else if (markNumber == 4){
+        } else if (markNumber == 6){
             taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
-            basicInfo = subInfoStr.substring(symbolIndex.get(1) + 1, symbolIndex.get(2));
-            taskDescription = subInfoStr.substring(symbolIndex.get(2)+1, symbolIndex.get(3));
+            basicInfo = subInfoStr.substring(symbolIndex.get(2) + 1, symbolIndex.get(3));
+            taskDescription = subInfoStr.substring(symbolIndex.get(3)+1, symbolIndex.get(5));
             return makeAddCTL(taskTitle, basicInfo, taskDescription);
 
         } else {
@@ -212,12 +218,12 @@ public class CliProcess {
 
         startDay = makeDay(rawStartDay);
         endDay = makeDay(rawEndDay);
-
+/*
         if (startDay.equals(ParserKeys.EMPTY_DATE) || endDay.equals(ParserKeys.EMPTY_DATE)) {
             ErrorGenerator.popError(ErrorMSG.INPUT_DATE_ERR);
             return makeInvalid();
         }
-
+*/
         return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
                             taskDescription, getRpDay, 
                             startDay, endDay);

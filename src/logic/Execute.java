@@ -88,6 +88,7 @@ public class Execute {
 	}
 
 	// add a task to task list. update new GUI and File information
+	@SuppressWarnings("deprecation")
 	private static void addTask(CliToLog userCommand) {
 		// modify date information of task
 		Date startDate = null;
@@ -125,7 +126,7 @@ public class Execute {
 
 	// delete a certain task or delete or tasks
 	private static void deleteTask(CliToLog userCommand) {
-		String deleteLine = userCommand.getTitle();
+		String deleteLine = userCommand.getDiscription();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			if(deleteLine.equalsIgnoreCase("all")){
@@ -221,7 +222,7 @@ public class Execute {
 
 	// read details of a certain task
 	private static void readTask(CliToLog userCommand) {
-		int readLine = Integer.valueOf(userCommand.getTitle());
+		int readLine = Integer.valueOf(userCommand.getDiscription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			if(readLine > StartUp.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
@@ -306,6 +307,7 @@ public class Execute {
 	}
 
 	// update the time information of a certain task
+	@SuppressWarnings("deprecation")
 	private static void reschedule(CliToLog userCommand) {
 		int startYear = Integer.valueOf(userCommand.getTitle().substring(0,4));
 		int startMonth = Integer.valueOf(userCommand.getTitle().substring(4,6));
@@ -328,7 +330,7 @@ public class Execute {
 	// change view mode
 	private static void view(CliToLog userCommand) {
 		GUI.changeCurretnTask(0);
-		VIEW_MODE mode = determineViewMode(userCommand.getTitle());
+		VIEW_MODE mode = determineViewMode(userCommand.getDiscription());
 		ArrayList<Task> display;
 		switch (mode) {
 		case DATE:
@@ -359,6 +361,7 @@ public class Execute {
 
 
 	// change view mode to the task list of a certain day
+	@SuppressWarnings("deprecation")
 	private static ArrayList<Task> viewDate(String Date) {
 		GUI.changeDate(Date);
 		ArrayList<Task> display = new ArrayList<Task>();
@@ -386,6 +389,7 @@ public class Execute {
 
 	// change the view mode to the calendar of a certain month
 	// not finished yet
+	@SuppressWarnings("deprecation")
 	private static ArrayList<Task> viewMonth(String Month) {
 		GUI.changeDate(Month);
 		int requiredMonth = Integer.valueOf(Month);
@@ -557,6 +561,7 @@ public class Execute {
 
 	// This method gives feedback when the user gives unreadable command
 	public static void wrongCommand(CliToLog userCommand){
+		initialize();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
@@ -581,6 +586,8 @@ public class Execute {
 			passToStore = new LogicToStore(taskList,trashbinList);
 			 
 		}
+		update();
+		GuiAndStorage.GuiAndStore(passToGui, passToStore);
 	}
 	
 
