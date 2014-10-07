@@ -4,16 +4,6 @@ import java.util.ArrayList;
 
 public class CliProcess {
 
-    private static final String SPLITSYMBOL = "\"";
-    private static final String SPLIT_DATE = "-";
-    private static final String SPACE = " ";
-    private static final String EMPTY_STR = "";
-    private static final String EMPTY_DIS = "EMPTY DISCRIPTION";
-    private static final String EMPTY_DATE = "20010101";
-
-    private static final int DATE_LENGTH = 8;
-    private static final int INDEX_NOT_EXIST = -1;
-
     enum COMMAND_TYPE {
         ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT, PREVIOUS, SEARCH,
         // VIEW_MODE
@@ -27,13 +17,25 @@ public class CliProcess {
     /**
      * Interpret input string to an executable command
      * 
-     * @return CliToLog which contains corrsponding information
+     * @return CliToLog which contains corresponding information
      * */
-    public static CliToLog interpretCommand(String s){ 
-        CmdInfoPair getCmdPair = makeCmdPair(s);
-        CliToLog interpretedCm = transformCmd(getCmdPair);
-
-        return interpretedCm;	   
+    public static CliToLog interpretCommand(String inputString){
+        if (noInvalidKeys(inputString)) {
+            CmdInfoPair getCmdPair = makeCmdPair(inputString);
+            CliToLog interpretedCm = transformCmd(getCmdPair);
+            return interpretedCm;
+            
+        } else {
+            ErrorGenerator.popError(ErrorMSG.INPUT_SYMBOL_ERR);
+            return makeInvalid();
+        }
+    }
+    
+    /**
+     * Check if input contains invalid symbols
+     * */
+    private static boolean noInvalidKeys(String inputString) {
+        return !inputString.contains(ParserKeys.INVALID_SYMBOL);
     }
 
     /**
@@ -45,8 +47,8 @@ public class CliProcess {
         String getCommand;
         String getSubInfo;
 
-        int getCommandEnd = rawString.indexOf(SPACE);
-        if (getCommandEnd == INDEX_NOT_EXIST) {
+        int getCommandEnd = rawString.indexOf(ParserKeys.SPACE);
+        if (getCommandEnd == ParserKeys.INDEX_NOT_EXIST) {
             getCommand = rawString;
             getSubInfo = null;
         } else {
@@ -134,13 +136,13 @@ public class CliProcess {
         int markNumber = symbolIndex.size();
 
         if (markNumber == 1 || markNumber == 3) {
-            popError(ErrorMSG.QUOTATION_UNCLOSE_ERR);
+            ErrorGenerator.popError(ErrorMSG.QUOTATION_UNCLOSE_ERR);
             return makeInvalid();
 
         } else if (markNumber == 2) {
             taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
             basicInfo = subInfoStr.substring(symbolIndex.get(1) + 1, symbolIndex.get(2));
-            taskDescription = EMPTY_DIS;
+            taskDescription = ParserKeys.EMPTY_DIS;
             return makeAddCTL(taskTitle, basicInfo, taskDescription);
 
         } else if (markNumber == 4){
@@ -150,7 +152,7 @@ public class CliProcess {
             return makeAddCTL(taskTitle, basicInfo, taskDescription);
 
         } else {
-            popError(ErrorMSG.UNEXPECTED_QUOTATION_ERR);
+            ErrorGenerator.popError(ErrorMSG.UNEXPECTED_QUOTATION_ERR);
             return makeInvalid();
         }
     }
@@ -167,7 +169,7 @@ public class CliProcess {
             curStr = subInfoStr.substring(i, i+1);
             if (countSymbol == 4) {
                 break;
-            } else if (curStr.equals(SPLITSYMBOL)) {
+            } else if (curStr.equals(ParserKeys.SPLITSYMBOL)) {
                 quotationIndex.add(i);
                 countSymbol++;
             }
@@ -181,16 +183,16 @@ public class CliProcess {
      * */
     private static CliToLog makeAddCTL(String taskTitle, String basicInfo, String taskDescription) {
         CliToLog completeCTL;
-        if (basicInfo.startsWith(SPACE)) {
+        if (basicInfo.startsWith(ParserKeys.SPACE)) {
             basicInfo = basicInfo.substring(1, basicInfo.length());
         }
         
-        String[] component = basicInfo.split(SPACE);
+        String[] component = basicInfo.split(ParserKeys.SPACE);
         if (component.length == 3) {
             completeCTL = makeCompleteCTL(taskTitle, basicInfo, taskDescription, component); 
             return completeCTL;
         } else {
-            popError(ErrorMSG.TASK_INFO_ERR);
+            ErrorGenerator.popError(ErrorMSG.TASK_INFO_ERR);
             return makeInvalid();
         }
     }
@@ -201,8 +203,8 @@ public class CliProcess {
     private static CliToLog makeCompleteCTL(String taskTitle, String basicInfo, 
             String taskDescription, String[] component) {
         String getRpDay;
-        String startDay = EMPTY_STR;
-        String endDay = EMPTY_STR;
+        String startDay = ParserKeys.EMPTY_STR;
+        String endDay = ParserKeys.EMPTY_STR;
 
         getRpDay = component[0];
         String rawStartDay = component[1];
@@ -211,8 +213,8 @@ public class CliProcess {
         startDay = makeDay(rawStartDay);
         endDay = makeDay(rawEndDay);
 
-        if (startDay.equals(EMPTY_DATE) || endDay.equals(EMPTY_DATE)) {
-            popError(ErrorMSG.INPUT_DATE_ERR);
+        if (startDay.equals(ParserKeys.EMPTY_DATE) || endDay.equals(ParserKeys.EMPTY_DATE)) {
+            ErrorGenerator.popError(ErrorMSG.INPUT_DATE_ERR);
             return makeInvalid();
         }
 
@@ -228,14 +230,14 @@ public class CliProcess {
      *          String of date
      * */
     private static String makeDay(String rawDay) {
-        String resultDay = EMPTY_STR;
-        String[] startDayArr = rawDay.split(SPLIT_DATE);
+        String resultDay = ParserKeys.EMPTY_STR;
+        String[] startDayArr = rawDay.split(ParserKeys.SPLIT_DATE);
         for (int i = 0; i < startDayArr.length; i++) {
             resultDay += startDayArr[i];
         }
 
-        if (resultDay.length() != DATE_LENGTH) {
-            resultDay = EMPTY_DATE;
+        if (resultDay.length() != ParserKeys.DATE_LENGTH) {
+            resultDay = ParserKeys.EMPTY_DATE;
         }
         return resultDay;
     }
@@ -250,15 +252,15 @@ public class CliProcess {
     private static CliToLog update(String subInfoStr){
         String updateField;
         String newContent;
-        String[] component = subInfoStr.split(SPLITSYMBOL);
+        String[] component = subInfoStr.split(ParserKeys.SPLITSYMBOL);
 
         // Check update input contents validity
         if (component.length != 2) {
-            popError(ErrorMSG.UPDATE_INPUT_ERR);
+            ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
             return makeInvalid();
         } else {
             updateField = component[0];
-            if (updateField.endsWith(SPACE)) {
+            if (updateField.endsWith(ParserKeys.SPACE)) {
                 updateField = updateField.substring(0, updateField.length()-1);
             }
 
@@ -288,7 +290,7 @@ public class CliProcess {
             updateField = COMMAND_TYPE.DESCRIBE.name();
         } else {
             updateField = COMMAND_TYPE.INVALID.name();
-            popError(ErrorMSG.UPDATE_FIELD_ERR);
+            ErrorGenerator.popError(ErrorMSG.UPDATE_FIELD_ERR);
         }
         return updateField;
     }
@@ -346,7 +348,7 @@ public class CliProcess {
             CliToLog commandPackage = new CliToLog(COMMAND_TYPE.VIEW.name(), viewTarget);
             return commandPackage;
         } else {
-            popError(ErrorMSG.VIEW_MODE_ERR);
+            ErrorGenerator.popError(ErrorMSG.VIEW_MODE_ERR);
             return makeInvalid();
         }
     }
@@ -376,12 +378,5 @@ public class CliProcess {
         CliToLog commandPackage = new CliToLog(COMMAND_TYPE.EXIT.name());
 
         return commandPackage;		
-    }
-    
-    /**
-     * Print out error
-     * */
-    private static void popError(String errorMSG) {
-        System.err.println(errorMSG);
     }
 }
