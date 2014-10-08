@@ -17,5 +17,8 @@ public class Display {
 		gui.setVisible(true);
 
 	}
+	public static void main(String[] args){
+		lauch();
+	}
 
 }

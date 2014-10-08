@@ -558,6 +558,7 @@ public class Execute {
 	// This method gives feedback when the user gives unreadable command
 	public static void wrongCommand(CliToLog userCommand){
 		ArrayList<Task> display = new ArrayList<Task>();
+		System.out.println(GUI == null);
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
 				if(currentDisplay[i] != -1){

@@ -79,7 +79,6 @@ public class BasicGUI extends JFrame {
 	private final static int TOP_LEFT_Y_VALUE = 100;
 	private final static int FRAME_WIDTH = 400;
 	private final static int FRAME_HEIGHT = 500;
-	private JDesktopPane desktopPane;
 
 	/*
 	 * ====================================================================
@@ -139,9 +138,6 @@ public class BasicGUI extends JFrame {
 	}
 
 	private void constructHelperPane() {
-		
-		desktopPane = new JDesktopPane();
-		getContentPane().add(desktopPane, BorderLayout.WEST);
 		toolBar = new JToolBar();
 		toolBar.setBorder(null);
 		toolBar.setFloatable(false);
@@ -240,6 +236,7 @@ public class BasicGUI extends JFrame {
 	class inputHit implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String command = inputWindow.getText().trim();
+			System.out.println(command);
 			String emptyString = "";
 			inputWindow.setText(emptyString);
 			RunLogic.Logic(command);
