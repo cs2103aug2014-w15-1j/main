@@ -44,7 +44,7 @@ public class RunLogic {
 		return new DisplayConfiguration(GUI, initialDisplay, FeedbackFormat.START_FEEDBACK, TitleFormat.TITLE);
 	}
 	
-	public static DisplayConfiguration Logic(String inputCommand){
+	public static DisplayConfiguration logic(String inputCommand){
 		// pass user command to CLI for auto-correction
 		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
 		

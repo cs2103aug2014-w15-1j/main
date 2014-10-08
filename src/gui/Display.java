@@ -15,7 +15,7 @@ public class Display {
 	public static void start(){
 		gui = new BasicGUI();
 		gui.setVisible(true);
-		DisoplayConfiguration confg= gui.initializeLogic();
+		DisplayConfiguration confg= gui.initializeLogic();
 		display(confg);
 	}
 	public static void main(String[] args){
