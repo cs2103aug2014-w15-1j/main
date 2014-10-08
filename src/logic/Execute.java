@@ -8,6 +8,7 @@ import java.util.Date;
 
 import gui.StartUp;
 import cli.CliToLog;
+import data_store.DataStore;
 
 public class Execute {
 	private static GUIStatus GUI;
@@ -18,7 +19,7 @@ public class Execute {
 	private static DisplayConfiguration passToGui;
 	private static LogicToStore passToStore;
 	
-	public static void executeCommand(CliToLog userCommand){
+	public static DisplayConfiguration executeCommand(CliToLog userCommand){
 		initialize();
 		COMMAND_TYPE commandType = determineCommandType(userCommand.getCommand());
 		
@@ -70,7 +71,8 @@ public class Execute {
 		}
 		
 		update();
-		GuiAndStorage.GuiAndStore(passToGui, passToStore);
+		DataStore.writeAllData(passToStore);
+		return passToGui;
 	}
 	
 	private static void initialize(){
@@ -562,7 +564,7 @@ public class Execute {
 
 
 	// This method gives feedback when the user gives unreadable command
-	public static void wrongCommand(CliToLog userCommand){
+	public static DisplayConfiguration wrongCommand(CliToLog userCommand){
 		initialize();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
@@ -589,7 +591,8 @@ public class Execute {
 			 
 		}
 		update();
-		GuiAndStorage.GuiAndStore(passToGui, passToStore);
+		DataStore.writeAllData(passToStore);
+		return passToGui;
 	}
 	
 

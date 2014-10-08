@@ -1,9 +1,14 @@
 package logic;
 
+import gui.DisplayConfiguration;
 import gui.StartUp;
+import gui.VIEW_MODE;
 import cli.CliToLog;
 import cli.CliProcess;
+
 import java.util.ArrayList;
+
+import read_file.ReadFile;
 
 public class RunLogic {
 
@@ -13,23 +18,43 @@ public class RunLogic {
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay = new int[StartUp.MAX_DISPLAY_LINE + 1];
 	
-	public static void initialize(GUIStatus initialGUI, ArrayList<Task> initialTaskList, ArrayList<Task> initialTrashbinList, int[] initialDisplay) {
-		GUI = initialGUI;
-		taskList = initialTaskList;
-		trashbinList = initialTrashbinList;
-		currentDisplay = initialDisplay;
+	public static DisplayConfiguration initialize() {
+		ReadFile rf = new ReadFile();
+		taskList = rf.getEventTask();
+		trashbinList = rf.getTrashFile();
+		currentDisplay = new int[StartUp.MAX_DISPLAY_LINE + 1];
+		
+		ArrayList<Task> initialDisplay = new ArrayList<Task>();
+		for(int i = 0; i < currentDisplay.length; i++){
+			currentDisplay[i] = -1;
+		}
+		boolean hasNext = taskList.size() > StartUp.MAX_DISPLAY_LINE;
+		if(hasNext){
+			for(int i = 0; i < StartUp.MAX_DISPLAY_LINE; i++){
+				initialDisplay.add(taskList.get(i));
+				currentDisplay[i + 1] = i;
+			}
+		} else {
+			initialDisplay = taskList;
+			for(int i = 1; i <= initialDisplay.size(); i++){
+				currentDisplay[i] = i - 1;
+			}
+		}
+		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, false, taskList.size() - 1, "20140930");
+
+		return new DisplayConfiguration(GUI, initialDisplay, StartUp.START_FEEDBACK, StartUp.TITLE);
 	}
 	
-	public static void Logic(String inputCommand){
+	public static DisplayConfiguration Logic(String inputCommand){
 		// pass user command to CLI for auto-correction
 		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
 		
 		// check whether the command is valid under current view mode
 		if(CheckCommandValid.checkValid(userCommand)){
-			Execute.executeCommand(userCommand);
+			 return Execute.executeCommand(userCommand);
 		} else {
-			Execute.wrongCommand(userCommand);
-		};
+			 return Execute.wrongCommand(userCommand);
+		}
 	}
 	
 	public static GUIStatus getGuiStatus(){

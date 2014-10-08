@@ -1,4 +1,6 @@
+/.DS_Store
 /cli
 /data_store
 /gui
 /logic
+/read_file
