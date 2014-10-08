@@ -210,13 +210,13 @@ public class BasicGUI extends JFrame {
 		mainWindow.setEditable(false);
 		mainWindow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		mainPanel.add(mainWindow);
-		mainWindow.setFont(new Font("Calibri", Font.PLAIN, 16));
+		mainWindow.setFont(new Font("Calibri", Font.PLAIN, 29));
 		mainWindow.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 			}
 		});
-		mainWindow.setForeground(UIManager.getColor("Button.darkShadow"));
+		mainWindow.setForeground(Color.BLACK);
 		mainWindow.setText("<html><li>Hi</li></html>");
 		mainWindow.setBackground(Color.WHITE);
 	}

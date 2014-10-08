@@ -119,8 +119,8 @@ public class DisplayConfiguration {
 		String output = "";
 		if (taskList.size() > 0) {
 			String fontColor = "blue";
-			String taskOpen = "<li font color=" + fontColor + ">";
-			String taskClose = "</li>";
+			String taskOpen = "<li><font size=+2 font color=" + fontColor + ">";
+			String taskClose = "</font>";
 			String body = "";
 			for (int i = 0; i < taskList.size(); i++) {
 				body += taskOpen + taskList.get(i).getName() + taskClose;
@@ -146,22 +146,23 @@ public class DisplayConfiguration {
 	private String processTaskDetailText(Task task) {
 		String attrFontColor = "black";
 		String infoFontColor = "green";
-		String attrOpen = "<i font color=" + attrFontColor + ">";
-		String attrClose = "</i>";
-		String infoOpen = "<big font color = " + infoFontColor + ">";
-		String infoClose = "</big>";
+		String attrOpen = "<i><font size=+1 color=" + attrFontColor + ">";
+		String attrClose = "</font>";
+		String infoOpen = "<i><font size=+1 color = " + infoFontColor + ">";
+		String infoClose = "</i>";
+		String newLine = "<br>";
 
 		String nameInfo = infoOpen + task.getName() + infoClose;
 		String descriptionInfo = infoOpen + task.getDescription() + infoClose;
-		String startDateInfo = infoOpen + task.getStartDate() + infoClose;
-		String endDateInfo = infoOpen + task.getEndDate() + infoClose;
+		String startDateInfo = infoOpen + task.getStartDate().toLocaleString() + infoClose;
+		String endDateInfo = infoOpen + task.getEndDate().toLocaleString() + infoClose;
 
 		String nameAttr = attrOpen + "Name: " + attrClose;
 		String descriptionAttr = attrOpen + "description: " + attrClose;
 		String StartDateAttr = attrOpen + "startTime: " + attrClose;
 		String endDateAttr = attrOpen + "endTime: " + attrClose;
 
-		String output = "<html>" + nameAttr + nameInfo + "<br>"
+		String output = "<html>" + newLine  + nameAttr + nameInfo + "<br>"
 				+ descriptionAttr + descriptionInfo + "<br>" + StartDateAttr
 				+ startDateInfo + "<br>" + endDateAttr + endDateInfo + "<br>"
 				+ "</html>";
