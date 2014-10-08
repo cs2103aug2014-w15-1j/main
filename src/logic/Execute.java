@@ -507,7 +507,7 @@ public class Execute {
 		// TODO Auto-generated method stub
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
-			int restoreLine = Integer.valueOf(userCommand.getTitle());
+			int restoreLine = Integer.valueOf(userCommand.getDiscription());
 			if(restoreLine > StartUp.MAX_DISPLAY_LINE || currentDisplay[restoreLine] == -1){
 				for(int i = 1; i <= StartUp.MAX_DISPLAY_LINE; i++){
 					if(currentDisplay[i] != -1){

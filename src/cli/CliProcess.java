@@ -123,6 +123,7 @@ public class CliProcess {
             break;
         case RESTORE:
         	resultCMD = restore(subInfoStr);
+        	break;
         default:
             resultCMD = makeInvalid();
             break;
