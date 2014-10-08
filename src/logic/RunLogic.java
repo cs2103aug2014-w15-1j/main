@@ -1,7 +1,6 @@
 package logic;
 
 import gui.DisplayConfiguration;
-import gui.StartUp;
 import gui.VIEW_MODE;
 import cli.CliToLog;
 import cli.CliProcess;
@@ -16,21 +15,21 @@ public class RunLogic {
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
-	private static int[] currentDisplay = new int[StartUp.MAX_DISPLAY_LINE + 1];
+	private static int[] currentDisplay = new int[Constant.MAX_DISPLAY_LINE + 1];
 	
 	public static DisplayConfiguration initialize() {
 		ReadFile rf = new ReadFile();
 		taskList = rf.getEventTask();
 		trashbinList = rf.getTrashFile();
-		currentDisplay = new int[StartUp.MAX_DISPLAY_LINE + 1];
+		currentDisplay = new int[Constant.MAX_DISPLAY_LINE + 1];
 		
 		ArrayList<Task> initialDisplay = new ArrayList<Task>();
 		for(int i = 0; i < currentDisplay.length; i++){
 			currentDisplay[i] = -1;
 		}
-		boolean hasNext = taskList.size() > StartUp.MAX_DISPLAY_LINE;
+		boolean hasNext = taskList.size() > Constant.MAX_DISPLAY_LINE;
 		if(hasNext){
-			for(int i = 0; i < StartUp.MAX_DISPLAY_LINE; i++){
+			for(int i = 0; i < Constant.MAX_DISPLAY_LINE; i++){
 				initialDisplay.add(taskList.get(i));
 				currentDisplay[i + 1] = i;
 			}
@@ -42,7 +41,7 @@ public class RunLogic {
 		}
 		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, false, taskList.size() - 1, "20140930");
 
-		return new DisplayConfiguration(GUI, initialDisplay, StartUp.START_FEEDBACK, StartUp.TITLE);
+		return new DisplayConfiguration(GUI, initialDisplay, FeedbackFormat.START_FEEDBACK, TitleFormat.TITLE);
 	}
 	
 	public static DisplayConfiguration Logic(String inputCommand){
