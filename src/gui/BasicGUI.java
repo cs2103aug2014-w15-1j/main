@@ -236,7 +236,6 @@ public class BasicGUI extends JFrame {
 	class inputHit implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String command = inputWindow.getText().trim();
-			System.out.println(command);
 			String emptyString = "";
 			inputWindow.setText(emptyString);
 			RunLogic.Logic(command);
