@@ -1,0 +1,9 @@
+package logic;
+
+// all valid command type modified from CLI
+ public enum COMMAND_TYPE {
+	ADD_TASK, DELETE_TASK, READ_TASK, 
+	RENAME, DESCRIBE, RESCHEDULE, REPEAT, 
+	RESTORE, VIEW_MODE, UNDO, SEARCH, EXIT, INVALID,
+	NEXT, PREVIOUS
+};

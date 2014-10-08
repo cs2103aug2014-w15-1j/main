@@ -101,6 +101,7 @@ public class Task {
 	                            this.endDate.getMonth()  + SystemInfo.SPLIT_DATE_SYMBOL + 
 	                            this.endDate.getDay();
 	    }
+
 	    return this.name + SystemInfo.SEPERATESIMBOL + this.description + 
 	           SystemInfo.SEPERATESIMBOL + this.repeatDays + 
 	           SystemInfo.SEPERATESIMBOL + startDateStr + 

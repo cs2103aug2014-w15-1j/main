@@ -1,5 +1,4 @@
-/cli/
-/data_store/
-/gui/
-/logic/
-/read_file/
+/cli
+/data_store
+/gui
+/logic
