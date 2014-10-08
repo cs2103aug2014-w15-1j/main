@@ -5,20 +5,21 @@ public class Display {
 
 	public static void display(DisplayConfiguration confg) {
 		if (gui == null) {
-			lauch();
+			start();
 		}
 		gui.setTitleText(confg.getTitleString());
 		gui.setFeedbackText(confg.getFeedbackString());
 		gui.setMainText(confg.getTaskString());
 	}
 
-	public static void lauch() {
+	public static void start(){
 		gui = new BasicGUI();
 		gui.setVisible(true);
-
+		DisoplayConfiguration confg= gui.initializeLogic();
+		display(confg);
 	}
 	public static void main(String[] args){
-		lauch();
+		start();
 	}
 
 }

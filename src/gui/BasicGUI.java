@@ -118,7 +118,10 @@ public class BasicGUI extends JFrame {
 	public void setMainText(String text) {
 		mainWindow.setText(text);
 	}
-
+	public void initializeLogic(){
+		
+	}
+	
 	/*
 	 * ====================================================================
 	 * ===================== END OF PUBLIC METHOD =========================
@@ -238,7 +241,7 @@ public class BasicGUI extends JFrame {
 			String command = inputWindow.getText().trim();
 			String emptyString = "";
 			inputWindow.setText(emptyString);
-			RunLogic.Logic(command);
+			Display.display(RunLogic.Logic(command));
 
 		}
 	}
