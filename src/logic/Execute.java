@@ -274,7 +274,7 @@ public class Execute {
 	
 	// update the name of a certain task 
 	private static void rename(CliToLog userCommand) {
-		taskList.get(GUI.getTaskIndex()).rename(userCommand.getTitle());
+		taskList.get(GUI.getTaskIndex()).rename(userCommand.getDiscription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -285,7 +285,7 @@ public class Execute {
 
 	// update the description of a certain task
 	private static void describe(CliToLog userCommand) {
-		taskList.get(GUI.getTaskIndex()).describe(userCommand.getTitle());
+		taskList.get(GUI.getTaskIndex()).describe(userCommand.getDiscription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -296,6 +296,7 @@ public class Execute {
 
 	// update the repeat times and dates of a certain task
 	private static void repeat(CliToLog userCommand) {
+		// TODO Auto-generated method stub
 		taskList.get(GUI.getTaskIndex()).repeat( userCommand.getRPdate());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
@@ -309,6 +310,7 @@ public class Execute {
 	// update the time information of a certain task
 	@SuppressWarnings("deprecation")
 	private static void reschedule(CliToLog userCommand) {
+		// TODO Auto-generated method stub
 		int startYear = Integer.valueOf(userCommand.getTitle().substring(0,4));
 		int startMonth = Integer.valueOf(userCommand.getTitle().substring(4,6));
 		int startDay = Integer.valueOf(userCommand.getTitle().substring(6,8));

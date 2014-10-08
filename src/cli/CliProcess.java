@@ -11,7 +11,7 @@ public class CliProcess {
         // from bin
         RESTORE,
         // UPDATE
-        RENAME, RESCHEDULE, DESCRIBE,
+        RENAME, RESCHEDULE, DESCRIBE, REPEAT,
         // UPDATE_FIELD
         NAME, DISCRIPTION, DATE, DAY;
     }
@@ -62,6 +62,14 @@ public class CliProcess {
             return new CmdInfoPair(COMMAND_TYPE.ADD, getSubInfo);
         } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.UPDATE.name())) {
             return new CmdInfoPair(COMMAND_TYPE.UPDATE, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.RENAME.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.RENAME, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.DESCRIBE.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.DESCRIBE, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.RESCHEDULE.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.RESCHEDULE, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.REPEAT.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.REPEAT, getSubInfo);
         } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.DELETE.name())) {
             return new CmdInfoPair(COMMAND_TYPE.DELETE, getSubInfo);
         } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.READ.name())) {
@@ -100,6 +108,18 @@ public class CliProcess {
         case UPDATE:
             resultCMD = update(subInfoStr);
             break;
+        case RENAME:
+            resultCMD = rename(subInfoStr);
+            break;
+        case RESCHEDULE:
+            resultCMD = reschedule(subInfoStr);
+            break;
+        case DESCRIBE:
+            resultCMD = describe(subInfoStr);
+            break;
+        case REPEAT:
+            resultCMD = repeat(subInfoStr);
+            break;
         case READ:
             resultCMD = read(subInfoStr);
             break;
@@ -131,7 +151,31 @@ public class CliProcess {
         return resultCMD;
     }
 
-    /**
+    private static CliToLog rename(String subInfoStr) {
+    	if(subInfoStr.isEmpty()){
+    		return makeInvalid();
+    	}
+		return new CliToLog(COMMAND_TYPE.RENAME.name(), subInfoStr);
+	}
+
+	private static CliToLog describe(String subInfoStr) {
+    	if(subInfoStr.isEmpty()){
+    		return makeInvalid();
+    	}
+		return new CliToLog(COMMAND_TYPE.DESCRIBE.name(), subInfoStr);
+	}
+
+	private static CliToLog reschedule(String subInfoStr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static CliToLog repeat(String subInfoStr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
      * Interpret "add" command and get its sub-information
      * Split quotation mark contents with other contents
      * */
@@ -263,10 +307,40 @@ public class CliProcess {
      *              String of sub-information following the update command
      */
     private static CliToLog update(String subInfoStr){
+    	// TODO Auto-generated method stub
+       String getUpdateItem;
+       String getUpdateInfo;
+
+        int getCommandEnd = subInfoStr.indexOf(ParserKeys.SPACE);
+        if (getCommandEnd == ParserKeys.INDEX_NOT_EXIST) {
+        	ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
+            return makeInvalid();
+        } else {
+        	getUpdateItem = subInfoStr.substring(0, getCommandEnd).trim().toLowerCase();
+        	getUpdateInfo = subInfoStr.substring(getCommandEnd + 1, subInfoStr.length());
+        }
+        
+        if (getUpdateItem.equalsIgnoreCase("name")){
+        	return rename(getUpdateInfo);
+        } else if (getUpdateItem.equalsIgnoreCase("description")){
+        	return describe(getUpdateInfo);
+        } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.RESCHEDULE.name())){
+        	return reschedule(getUpdateInfo);
+        } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.REPEAT.name())){
+        	return repeat(getUpdateInfo);
+        } else {
+        	ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
+            return makeInvalid();
+        }
+             
+        
+        
+        /*
+        
         String updateField;
         String newContent;
         String[] component = subInfoStr.split(ParserKeys.SPLITSYMBOL);
-
+        
         // Check update input contents validity
         if (component.length != 2) {
             ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
@@ -280,8 +354,9 @@ public class CliProcess {
             updateField = identifyField(updateField);
             newContent = component[1];
             return new CliToLog(updateField, newContent);
-        }
+        }*/
     }
+
 
     /**
      * Function: Update
@@ -290,7 +365,7 @@ public class CliProcess {
      * @param inputField
      *          Targeted update field of information on one specific task
      */
-    private static String identifyField(String inputField){
+ /*   private static String identifyField(String inputField){
         String updateField = null;
 
         //Check field to be changed
@@ -307,6 +382,7 @@ public class CliProcess {
         }
         return updateField;
     }
+*/
 
     /** 
      * Read details of a certain task
