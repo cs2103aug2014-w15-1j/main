@@ -198,14 +198,14 @@ public class CliProcess {
         	 
         } else if (markNumber == 4) {
             taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
-            basicInfo = subInfoStr.substring(symbolIndex.get(2) + 1, symbolIndex.get(3));
-            taskDescription = ParserKeys.EMPTY_DIS;
+            taskDescription = subInfoStr.substring(symbolIndex.get(2) + 1, symbolIndex.get(3));
+            basicInfo = ParserKeys.EMPTY_DATE + " " + ParserKeys.EMPTY_DATE +  " " + ParserKeys.EMPTY_DATE;
             return makeAddCTL(taskTitle, basicInfo, taskDescription);
 
         } else if (markNumber == 6){
             taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
-            basicInfo = subInfoStr.substring(symbolIndex.get(2) + 1, symbolIndex.get(3));
-            taskDescription = subInfoStr.substring(symbolIndex.get(3)+1, symbolIndex.get(5));
+            taskDescription = subInfoStr.substring(symbolIndex.get(2) + 1, symbolIndex.get(3));
+            basicInfo = subInfoStr.substring(symbolIndex.get(3)+1, symbolIndex.get(5));
             return makeAddCTL(taskTitle, basicInfo, taskDescription);
 
         } else {
