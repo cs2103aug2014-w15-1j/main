@@ -39,7 +39,7 @@ public class RunLogic {
 				currentDisplay[i] = i - 1;
 			}
 		}
-		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, false, taskList.size() - 1, "20140930");
+		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, false, currentDisplay[1], "20140930");
 
 		return new DisplayConfiguration(GUI, initialDisplay, FeedbackFormat.START_FEEDBACK, TitleFormat.TITLE);
 	}

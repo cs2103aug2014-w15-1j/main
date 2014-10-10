@@ -37,28 +37,31 @@ public class CheckCommandValid {
 					|| command.equalsIgnoreCase("describe")
 					|| command.equalsIgnoreCase("repeat")
 					|| command.equalsIgnoreCase("reschedule")
-					|| command.equalsIgnoreCase("restore")
 					|| command.equalsIgnoreCase("undo")
-					|| command.equalsIgnoreCase("search") || command
-						.equalsIgnoreCase("exit"));
+					|| command.equalsIgnoreCase("search") 
+					|| command.equalsIgnoreCase("exit"));
 		case MONTH:
-			return (command.equalsIgnoreCase("view") || command
-					.equalsIgnoreCase("exit"));
+			return (command.equalsIgnoreCase("view") 
+					|| command.equalsIgnoreCase("exit"));
 		case BIN:
 			return (command.equalsIgnoreCase("delete")
 					|| command.equalsIgnoreCase("read")
 					|| command.equalsIgnoreCase("view")
 					|| command.equalsIgnoreCase("restore")
 					|| command.equalsIgnoreCase("exit")
-					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) || (command
-					.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) 
+					|| (command.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+		case BIN_DETAIL:
+			return (command.equalsIgnoreCase("restore")
+					|| command.equalsIgnoreCase("view")
+					|| command.equalsIgnoreCase("exit"));
 		case UNDONE:
 			return (command.equalsIgnoreCase("delete")
 					|| command.equalsIgnoreCase("read")
 					|| command.equalsIgnoreCase("view")
 					|| command.equalsIgnoreCase("exit")
-					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) || (command
-					.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) 
+					|| (command.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
 		default:
 			return false;
 		}

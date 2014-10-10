@@ -51,12 +51,19 @@ public class DisplayConfiguration {
 
 	public String getTaskString() {
 		ArrayList<Task> taskList = getTaskList();
+		Task task;
 		switch (mode) {
 		case TASK_DETAIL:
 			if (taskList.size() != 1) {
 				throw new Error("taskList does not contain one task exactly");
 			}
-			Task task = taskList.get(0);
+			task = taskList.get(0);
+			return processTaskDetailText(task);
+		case BIN_DETAIL:
+			if (taskList.size() != 1) {
+				throw new Error("taskList does not contain one task exactly");
+			}
+			task = taskList.get(0);
 			return processTaskDetailText(task);
 		case MONTH:
 			throw new Error("not supported yet");
@@ -98,6 +105,9 @@ public class DisplayConfiguration {
 			isPageInvolved = true;
 			break;
 		case TASK_DETAIL:
+			isPageInvolved = false;
+			break;
+		case BIN_DETAIL:
 			isPageInvolved = false;
 			break;
 		case TASK_LIST:

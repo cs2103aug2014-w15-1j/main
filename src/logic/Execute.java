@@ -119,8 +119,7 @@ public class Execute {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(newTask);
 		
-		passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.ADD_FEEDBACK, TitleFormat.TITLE);
-		passToStore = new LogicToStore(taskList,trashbinList);
+		constructBridges(display, FeedbackFormat.ADD_FEEDBACK, TitleFormat.TITLE);
 		 
 	}
 
@@ -134,17 +133,14 @@ public class Execute {
 				trashbinList.clear(); 
 				currentDisplay = initializeDisplayList(currentDisplay);
 				GUI.changeCurretnTask(-1);
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList, trashbinList);
+				constructBridges( display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);	
 			} else if(Integer.valueOf(deleteLine) > Constant.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1) {
 				display = viewBin();
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList, trashbinList);
+				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
 			} else {
 				trashbinList.remove(currentDisplay[Integer.valueOf(deleteLine)]);
 				display = viewBin();
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList, trashbinList);
+				constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
 			}
 		} else if(GUI.getMode().equals(VIEW_MODE.DATE)) {
 			if(deleteLine.equalsIgnoreCase("all")){
@@ -156,17 +152,14 @@ public class Execute {
 					}
 				}
 				display = viewDate(GUI.getDate());
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList, trashbinList);
+				constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
 			} else if(Integer.valueOf(deleteLine) > Constant.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1) {
 				display = viewDate(GUI.getDate());
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList, trashbinList);
+				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
 			} else {
 				trashbinList.add(taskList.remove(currentDisplay[Integer.valueOf(deleteLine)]));
 				display = viewDate(GUI.getDate());
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList, trashbinList);
+				constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
 			}
 		} else {
 			if(deleteLine.equalsIgnoreCase("all")){
@@ -178,8 +171,7 @@ public class Execute {
 					// update GUI view mode
 					GUI = new GUIStatus(GUI.getMode(), false, false, -1, GUI.getDate());
 					
-					passToGui = new DisplayConfiguration(GUI, taskList, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
-					passToStore = new LogicToStore(taskList, trashbinList);
+					constructBridges(taskList, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
 				} else if(Integer.valueOf(deleteLine) > Constant.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1){
 				// delete certain task while the task does not exist
 					
@@ -190,8 +182,8 @@ public class Execute {
 							break;
 						}
 					}
-					passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
-					passToStore = new LogicToStore(taskList, trashbinList);
+					constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+					
 				} else {
 				// delete certain task
 					// update File
@@ -213,8 +205,8 @@ public class Execute {
 					GUI.changeHasPrevious(GUI.getTaskIndex() != 0);
 					GUI.changeHasNext(GUI.getTaskIndex() + Constant.MAX_DISPLAY_LINE < taskList.size());
 					
-					passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
-					passToStore = new LogicToStore(taskList, trashbinList);
+					constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
+					
 				}
 		}
 		
@@ -234,18 +226,17 @@ public class Execute {
 						break;
 					}
 				}
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList, trashbinList);
+				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+				
 			} else {
 				GUI.changeCurretnTask(currentDisplay[readLine]);
-				GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
+				GUI.changeViewMode(VIEW_MODE.BIN_DETAIL);
 				
 				display.add(trashbinList.get(GUI.getTaskIndex()));
 				currentDisplay = initializeDisplayList(currentDisplay);
 				currentDisplay[1] = GUI.getTaskIndex();
 				
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.READ_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList,trashbinList);
+				constructBridges(display, FeedbackFormat.READ_FEEDBACK, TitleFormat.TITLE);
 			}
 		} else {
 			if(readLine > Constant.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
@@ -256,8 +247,8 @@ public class Execute {
 						break;
 					}
 				}
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList, trashbinList);
+				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+				
 			} else {
 				GUI.changeCurretnTask(currentDisplay[readLine]);
 				GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
@@ -266,8 +257,8 @@ public class Execute {
 				currentDisplay = initializeDisplayList(currentDisplay);
 				currentDisplay[1] = GUI.getTaskIndex();
 				
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.READ_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList,trashbinList);
+				constructBridges(display, FeedbackFormat.READ_FEEDBACK, TitleFormat.TITLE);
+				
 			}
 		}
 		 
@@ -279,8 +270,7 @@ public class Execute {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.RENAME_FEEDBACK, TitleFormat.TITLE);
-		passToStore = new LogicToStore(taskList,trashbinList);
+		constructBridges(display, FeedbackFormat.RENAME_FEEDBACK, TitleFormat.TITLE);
 		 
 	}
 
@@ -290,8 +280,7 @@ public class Execute {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.DESCRIBE_FEEDBACK, TitleFormat.TITLE);
-		passToStore = new LogicToStore(taskList,trashbinList);
+		constructBridges(display, FeedbackFormat.DESCRIBE_FEEDBACK, TitleFormat.TITLE);
 		 
 	}
 
@@ -302,8 +291,7 @@ public class Execute {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.REPEAT_FEEDBACK, TitleFormat.TITLE);
-		passToStore = new LogicToStore(taskList,trashbinList);
+		constructBridges(display, FeedbackFormat.REPEAT_FEEDBACK, TitleFormat.TITLE);
 		 
 		
 	}
@@ -325,8 +313,7 @@ public class Execute {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.RESCHEDULE_FEEDBACK, TitleFormat.TITLE);
-		passToStore = new LogicToStore(taskList,trashbinList);
+		constructBridges(display, FeedbackFormat.RESCHEDULE_FEEDBACK, TitleFormat.TITLE);
 		 
 	}
 
@@ -356,9 +343,7 @@ public class Execute {
 			throw new Error("Unrecognized view mode");
 		}
 		
-		passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.VIEW_FEEDBACK, TitleFormat.TITLE);
-		passToStore = new LogicToStore(taskList,trashbinList);
-		 
+		constructBridges(display, FeedbackFormat.VIEW_FEEDBACK, TitleFormat.TITLE);		 
 	}
 
 
@@ -477,8 +462,7 @@ public class Execute {
 		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
 			display = viewAllTask();
 		}
-		passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.PREVIOUS_FEEDBACK, TitleFormat.TITLE);
-		passToStore = new LogicToStore(taskList,trashbinList);
+		constructBridges(display, FeedbackFormat.PREVIOUS_FEEDBACK, TitleFormat.TITLE);
 		 
 	}
 
@@ -494,8 +478,7 @@ public class Execute {
 		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
 			display = viewAllTask();
 		}
-		passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.NEXT_FEEDBACK, TitleFormat.TITLE);
-		passToStore = new LogicToStore(taskList,trashbinList);
+		constructBridges(display, FeedbackFormat.NEXT_FEEDBACK, TitleFormat.TITLE);
 		 
 	}
 	
@@ -519,8 +502,8 @@ public class Execute {
 						break;
 					}
 				}
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList, trashbinList);
+				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+				
 			} else {
 				taskList.add(trashbinList.remove(currentDisplay[restoreLine]));
 				currentDisplay = initializeDisplayList(currentDisplay);
@@ -539,16 +522,15 @@ public class Execute {
 				boolean hasPrevious = GUI.getTaskIndex() > 0;
 				GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 				
-				passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.RESTORE_FEEDBACK, TitleFormat.TITLE);
-				passToStore = new LogicToStore(taskList,trashbinList);
+				constructBridges(display, FeedbackFormat.RESTORE_FEEDBACK, TitleFormat.TITLE);
+				
 			}
-		} else if(GUI.getMode().equals(VIEW_MODE.TASK_DETAIL)) {
+		} else if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)) {
 			taskList.add(trashbinList.remove(currentDisplay[1]));
 			currentDisplay[1] = taskList.size() - 1;
 			GUI.changeCurretnTask(currentDisplay[1]);
 			display.add(taskList.get(GUI.getTaskIndex()));
-			passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.RESTORE_FEEDBACK, TitleFormat.TITLE);
-			passToStore = new LogicToStore(taskList,trashbinList);
+			constructBridges(display, FeedbackFormat.RESTORE_FEEDBACK, TitleFormat.TITLE);
 		}
 		 
 	}
@@ -574,8 +556,7 @@ public class Execute {
 					break;
 				}
 			}
-			passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
-			passToStore = new LogicToStore(taskList,trashbinList);
+			
 			 
 		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
 			for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
@@ -585,10 +566,14 @@ public class Execute {
 					break;
 				}
 			}
-			passToGui = new DisplayConfiguration(GUI, display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
-			passToStore = new LogicToStore(taskList,trashbinList);
+			
 			 
+		} else if (GUI.getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			display.add(taskList.get(currentDisplay[1]));
+		} else if (GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			display.add(trashbinList.get(currentDisplay[1]));
 		}
+		constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
 		update();
 		DataStore.writeAllData(passToStore);
 		return passToGui;
@@ -653,5 +638,10 @@ public class Execute {
 			currentDisplay[i] = -1;
 		}
 		return currentDisplay;
+	}
+	
+	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
+		passToGui = new DisplayConfiguration(GUI, display, feedback, title);
+		passToStore = new LogicToStore(taskList,trashbinList);
 	}
 }
