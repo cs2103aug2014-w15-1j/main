@@ -1,6 +1,5 @@
 package logic;
 
-import gui.DisplayConfiguration;
 import gui.VIEW_MODE;
 
 import java.util.ArrayList;
@@ -15,10 +14,10 @@ public class Execute {
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay;
 	
-	private static DisplayConfiguration passToGui;
+	private static DisplayInfo passToGui;
 	private static LogicToStore passToStore;
 	
-	public static DisplayConfiguration executeCommand(Command userCommand){
+	public static DisplayInfo executeCommand(Command userCommand){
 		initialize();
 		COMMAND_TYPE commandType = determineCommandType(userCommand.getCommand());
 		
@@ -556,7 +555,7 @@ public class Execute {
 
 
 	// This method gives feedback when the user gives unreadable command
-	public static DisplayConfiguration wrongCommand(Command userCommand){
+	public static DisplayInfo wrongCommand(Command userCommand){
 		initialize();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
@@ -654,7 +653,7 @@ public class Execute {
 	}
 	
 	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
-		passToGui = new DisplayConfiguration(GUI, display, feedback, title);
+		passToGui = new DisplayInfo(GUI, display, feedback, title);
 		passToStore = new LogicToStore(taskList,trashbinList);
 	}
 }

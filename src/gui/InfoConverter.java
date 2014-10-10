@@ -2,30 +2,18 @@ package gui;
 
 import java.util.ArrayList;
 
+import logic.DisplayInfo;
 import logic.GUIStatus;
 import logic.Task;
 
-/**
- * class DisplayConfiguration
- * 
- * @author JJ This class is an package of data passed from LOGIC TO GUI which
- *         contains all needed information for display
- */
-public class DisplayConfiguration {
+public class InfoConverter  {
+
 	/*
 	 * ====================================================================
 	 * ===================== Start OF PRIVATE FIELD =======================
 	 * ====================================================================
 	 */
-	private VIEW_MODE mode;
-	private boolean isPageInvolved;
-	private boolean hasNextPage;
-	private boolean hasPreviousPage;
-
-	private ArrayList<Task> TaskList;
-	private String feedback;
-	private String title;
-
+	private DisplayInfo info;
 	/*
 	 * ====================================================================
 	 * ===================== END OF PRIVATE FIELD =========================
@@ -37,22 +25,34 @@ public class DisplayConfiguration {
 	 * ===================== START OF PUBLIC METHOD =======================
 	 * ====================================================================
 	 */
-	public DisplayConfiguration(GUIStatus status, ArrayList<Task> taskList,
-			String feedback, String title) {
-		this.mode = status.getMode();
-		this.hasNextPage = status.hasNext();
-		this.hasPreviousPage = status.hasPrevious();
-		setIsPageInvolved();
-
-		this.TaskList = taskList;
-		this.feedback = feedback;
-		this.title = title;
+	public InfoConverter(DisplayInfo info){
+		this.info = info;
 	}
 
+	public boolean hasNextPage() {
+		return info.hasNextPage();
+	}
+
+	public boolean isPageInvolved() {
+		return info.isPageInvolved();
+	}
+
+	public boolean hasPreviousPage() {
+		return this.hasPreviousPage();
+	}
+	
+	public String getFeedbackString() {
+		return info.getFeedbackString();
+	}
+
+	public String getTitleString() {
+		return info.getTitleString();
+	}
+	
 	public String getTaskString() {
-		ArrayList<Task> taskList = getTaskList();
+		ArrayList<Task> taskList = info.getTaskList();
 		Task task;
-		switch (mode) {
+		switch (info.getViewMode()) {
 		case TASK_DETAIL:
 			if (taskList.size() != 1) {
 				throw new Error("taskList does not contain one task exactly");
@@ -72,52 +72,15 @@ public class DisplayConfiguration {
 		}
 	}
 
-	public String getFeedbackString() {
-		return this.feedback;
-	}
-
-	public String getTitleString() {
-		return this.title;
-	}
-
+	
+	
 	/*
 	 * ====================================================================
 	 * ===================== END OF PUBLIC METHOD =========================
 	 * ====================================================================
 	 */
 
-	/**
-	 * method setIsPageInvolved: check if the nextPage and previousPage should
-	 * be involved in this view mode or not
-	 */
-	private void setIsPageInvolved() {
-		switch (mode) {
-		case DATE:
-			isPageInvolved = true;
-			break;
-		case MONTH:
-			isPageInvolved = true;
-			break;
-		case UNDONE:
-			isPageInvolved = true;
-			break;
-		case BIN:
-			isPageInvolved = true;
-			break;
-		case TASK_DETAIL:
-			isPageInvolved = false;
-			break;
-		case BIN_DETAIL:
-			isPageInvolved = false;
-			break;
-		case TASK_LIST:
-			isPageInvolved = true;
-			break;
-		default:
-			throw new Error("Invalid View Mode:" + mode);
-		}
-	}
-
+	
 	/**
 	 * method processTaskListText: convert a list of task into text\html string
 	 * with only name displayed in an ordered list
@@ -181,20 +144,6 @@ public class DisplayConfiguration {
 	}
 
 
-	
-	protected ArrayList<Task> getTaskList() {
-		return this.TaskList;
-	}
 
-	private boolean hasNextPage() {
-		return this.hasNextPage;
-	}
 
-	private boolean isPageInvolved() {
-		return isPageInvolved;
-	}
-
-	private boolean hasPreviousPage() {
-		return this.hasPreviousPage;
-	}
 }

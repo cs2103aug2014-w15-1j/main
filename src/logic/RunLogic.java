@@ -1,9 +1,8 @@
 package logic;
 
-import gui.DisplayConfiguration;
-import gui.VIEW_MODE;
 import cli.Command;
 import cli.CliProcess;
+import gui.VIEW_MODE;
 
 import java.util.ArrayList;
 
@@ -17,7 +16,7 @@ public class RunLogic {
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay = new int[Constant.MAX_DISPLAY_LINE + 1];
 	
-	public static DisplayConfiguration initialize() {
+	public static DisplayInfo initialize() {
 		ReadFile rf = new ReadFile();
 		taskList = rf.getEventTask();
 		trashbinList = rf.getTrashFile();
@@ -41,10 +40,10 @@ public class RunLogic {
 		}
 		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, false, currentDisplay[1], "20140930");
 
-		return new DisplayConfiguration(GUI, initialDisplay, FeedbackFormat.START_FEEDBACK, TitleFormat.TITLE);
+		return new DisplayInfo(GUI, initialDisplay, FeedbackFormat.START_FEEDBACK, TitleFormat.TITLE);
 	}
 	
-	public static DisplayConfiguration logic(String inputCommand){
+	public static DisplayInfo logic(String inputCommand){
 		// pass user command to CLI for auto-correction
 		Command userCommand = CliProcess.interpretCommand(inputCommand);
 		

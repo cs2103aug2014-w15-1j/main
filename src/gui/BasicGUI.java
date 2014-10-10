@@ -44,12 +44,14 @@ import java.awt.Window.Type;
 /**
  * class BasicGUI: contains the basic structure of GUI
  * 
- * @author JJ GUI is mainly constructs by 4 container: titlePanel(for title),
+ * @author JJ 
+ * 		   GUI is mainly constructs by 4 container: titlePanel(for title),
  *         desktopPanel(for main), toolBar(for helper) and inputPanel(for input)
  *         And inside each container, there exist a hierarchy of container and
  *         field.
+ *         Note: singleton pattern is applied in this class
  */
-public class BasicGUI extends JFrame {
+public class BasicGui extends JFrame {
 
 	/*
 	 * ====================================================================
@@ -58,6 +60,7 @@ public class BasicGUI extends JFrame {
 	 */
 
 	private static final long serialVersionUID = 1L;
+	private static BasicGui theOne;
 
 	private JPanel titlePanel;
 	private TextField titleWindow;
@@ -95,7 +98,7 @@ public class BasicGUI extends JFrame {
 	/**
 	 * method BasicGUI: constructor of GUI
 	 */
-	public BasicGUI() {
+	private BasicGui() {
 		setType(Type.UTILITY);
 		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		getContentPane().setFocusTraversalPolicyProvider(true);
@@ -105,6 +108,13 @@ public class BasicGUI extends JFrame {
 		constructBodyPane();
 		constructHelperPane();
 		constructInputPane();
+	}
+
+	public static BasicGui getInstance() {
+		if(theOne == null) {
+			theOne = new BasicGui();
+		}
+		return theOne;
 	}
 
 	public void setTitleText(String text) {
@@ -117,10 +127,6 @@ public class BasicGUI extends JFrame {
 
 	public void setMainText(String text) {
 		mainWindow.setText(text);
-	}
-
-	public DisplayConfiguration initializeLogic() {
-		return RunLogic.initialize();
 	}
 
 
@@ -137,7 +143,7 @@ public class BasicGUI extends JFrame {
 		inputWindow = new JTextField();
 		inputPanel.add(inputWindow);
 		inputWindow.setBackground(Color.WHITE);
-		inputWindow.addActionListener(new inputHit());
+		inputWindow.addActionListener(new EnterKeyListener(inputWindow));
 		inputWindow.setText("Input");
 		inputWindow.setColumns(30);
 	}
@@ -234,18 +240,6 @@ public class BasicGUI extends JFrame {
 		setBounds(TOP_LEFT_X_VALUE, TOP_LEFT_Y_VALUE, FRAME_WIDTH, FRAME_HEIGHT);
 	}
 
-	/**
-	 * method inputHit: a action listener for the enter key hit in input if the
-	 * user hit the enter key, the input message will be send to logic
-	 */
-	class inputHit implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			String command = inputWindow.getText().trim();
-			String emptyString = "";
-			inputWindow.setText(emptyString);
-			DisplayController.display(RunLogic.logic(command));
-
-		}
-	}
+	
 
 }
