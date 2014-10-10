@@ -487,10 +487,10 @@ public class Execute {
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
 			display = viewBin();
-		} else if (GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+		} else if (GUI.getMode().equals(VIEW_MODE.TASK_DETAIL)){
 			display = viewAllTask();
 		}
-		constructBridges(display, FeedbackFormat.NEXT_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, FeedbackFormat.VIEW_FEEDBACK, TitleFormat.TITLE);
 	}
 	
 	// not finish yet
@@ -620,6 +620,8 @@ public class Execute {
 			return COMMAND_TYPE.PREVIOUS;
 		} else if (commandTypeString.equalsIgnoreCase("search")) {
 			return COMMAND_TYPE.SEARCH;
+		} else if (commandTypeString.equalsIgnoreCase("back")) {
+			return COMMAND_TYPE.BACK;
 		} else if (commandTypeString.equalsIgnoreCase("exit")) {
 			return COMMAND_TYPE.EXIT;
 		} else {
