@@ -18,8 +18,8 @@ public class CheckCommandValid {
 					|| command.equalsIgnoreCase("undo")
 					|| command.equalsIgnoreCase("search")
 					|| command.equalsIgnoreCase("exit")
-					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) || (command
-					.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) 
+					|| (command.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
 		case DATE:
 			return (command.equalsIgnoreCase("add")
 					|| command.equalsIgnoreCase("delete")
@@ -28,8 +28,8 @@ public class CheckCommandValid {
 					|| command.equalsIgnoreCase("undo")
 					|| command.equalsIgnoreCase("search")
 					|| command.equalsIgnoreCase("exit")
-					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) || (command
-					.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) 
+					|| (command.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
 		case TASK_DETAIL:
 			return (command.equalsIgnoreCase("add")
 					|| command.equalsIgnoreCase("view")
@@ -39,7 +39,8 @@ public class CheckCommandValid {
 					|| command.equalsIgnoreCase("reschedule")
 					|| command.equalsIgnoreCase("undo")
 					|| command.equalsIgnoreCase("search") 
-					|| command.equalsIgnoreCase("exit"));
+					|| command.equalsIgnoreCase("exit")
+					|| command.equalsIgnoreCase("back"));
 		case MONTH:
 			return (command.equalsIgnoreCase("view") 
 					|| command.equalsIgnoreCase("exit"));
@@ -54,6 +55,7 @@ public class CheckCommandValid {
 		case BIN_DETAIL:
 			return (command.equalsIgnoreCase("restore")
 					|| command.equalsIgnoreCase("view")
+					|| command.equalsIgnoreCase("back")
 					|| command.equalsIgnoreCase("exit"));
 		case UNDONE:
 			return (command.equalsIgnoreCase("delete")

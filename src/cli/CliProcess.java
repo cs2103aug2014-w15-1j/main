@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class CliProcess {
 
     enum COMMAND_TYPE {
-        ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT, PREVIOUS, SEARCH,
+        ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT, PREVIOUS, SEARCH, BACK,
         // VIEW_MODE
         TASKLIST, BIN, 
         // from bin
@@ -84,6 +84,8 @@ public class CliProcess {
             return new CmdInfoPair(COMMAND_TYPE.UNDO, getSubInfo);
         } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.SEARCH.name())) {
             return new CmdInfoPair(COMMAND_TYPE.SEARCH, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.BACK.name())) {
+            return new CmdInfoPair(COMMAND_TYPE.BACK, getSubInfo);
         } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.EXIT.name())) {
             return new CmdInfoPair(COMMAND_TYPE.EXIT, getSubInfo);
         } else if (getCommand.equalsIgnoreCase(COMMAND_TYPE.RESTORE.name())) {
@@ -143,6 +145,9 @@ public class CliProcess {
             break;
         case RESTORE:
         	resultCMD = restore(subInfoStr);
+        	break;
+        case BACK:
+        	resultCMD = back();
         	break;
         default:
             resultCMD = makeInvalid();
@@ -470,6 +475,12 @@ public class CliProcess {
         Command commandPackage = new Command(COMMAND_TYPE.RESTORE.name(), restoreTarget);
 
         return commandPackage;
+    }
+    
+    private static Command back(){
+    	Command commandPackage = new Command(COMMAND_TYPE.BACK.name());
+    	
+    	return commandPackage;
     }
     
     /** 

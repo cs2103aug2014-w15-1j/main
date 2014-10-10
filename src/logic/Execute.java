@@ -62,6 +62,9 @@ public class Execute {
 			case SEARCH:
 				search(userCommand);
 				break;
+			case BACK:
+				back();
+				break;
 			case EXIT:
 				System.exit(0);
 			default:
@@ -161,7 +164,7 @@ public class Execute {
 				display = viewDate(GUI.getDate());
 				constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
 			}
-		} else {
+		} else if (GUI.getMode().equals(VIEW_MODE.TASK_LIST)) {
 			if(deleteLine.equalsIgnoreCase("all")){
 				// delete all	
 					// update File
@@ -174,7 +177,6 @@ public class Execute {
 					constructBridges(taskList, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
 				} else if(Integer.valueOf(deleteLine) > Constant.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1){
 				// delete certain task while the task does not exist
-					
 					for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
 						if(currentDisplay[i] != -1){
 							display.add(taskList.get(currentDisplay[i]));
@@ -203,10 +205,8 @@ public class Execute {
 					
 					// update GUI view mode
 					GUI.changeHasPrevious(GUI.getTaskIndex() != 0);
-					GUI.changeHasNext(GUI.getTaskIndex() + Constant.MAX_DISPLAY_LINE < taskList.size());
-					
+					GUI.changeHasNext(GUI.getTaskIndex() + Constant.MAX_DISPLAY_LINE < taskList.size());	
 					constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
-					
 				}
 		}
 		
@@ -482,6 +482,17 @@ public class Execute {
 		 
 	}
 	
+	private static void back(){
+		GUI.changeCurretnTask(GUI.getTaskIndex() - GUI.getTaskIndex() % Constant.MAX_DISPLAY_LINE);
+		ArrayList<Task> display = new ArrayList<Task>();
+		if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			display = viewBin();
+		} else if (GUI.getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			display = viewAllTask();
+		}
+		constructBridges(display, FeedbackFormat.VIEW_FEEDBACK, TitleFormat.TITLE);
+	}
+	
 	// not finish yet
 	private static void undo() {
 		// TODO Auto-generated method stub
@@ -609,6 +620,8 @@ public class Execute {
 			return COMMAND_TYPE.PREVIOUS;
 		} else if (commandTypeString.equalsIgnoreCase("search")) {
 			return COMMAND_TYPE.SEARCH;
+		} else if (commandTypeString.equalsIgnoreCase("back")) {
+			return COMMAND_TYPE.BACK;
 		} else if (commandTypeString.equalsIgnoreCase("exit")) {
 			return COMMAND_TYPE.EXIT;
 		} else {
