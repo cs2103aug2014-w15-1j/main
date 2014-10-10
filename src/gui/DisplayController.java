@@ -1,6 +1,6 @@
 package gui;
 
-public class Display {
+public class DisplayController {
 	static BasicGUI gui;
 
 	public static void display(DisplayConfiguration confg) {

@@ -6,7 +6,7 @@ import gui.VIEW_MODE;
 import java.util.ArrayList;
 import java.util.Date;
 
-import cli.CliToLog;
+import cli.Command;
 import data_store.DataStore;
 
 public class Execute {
@@ -18,7 +18,7 @@ public class Execute {
 	private static DisplayConfiguration passToGui;
 	private static LogicToStore passToStore;
 	
-	public static DisplayConfiguration executeCommand(CliToLog userCommand){
+	public static DisplayConfiguration executeCommand(Command userCommand){
 		initialize();
 		COMMAND_TYPE commandType = determineCommandType(userCommand.getCommand());
 		
@@ -90,7 +90,7 @@ public class Execute {
 
 	// add a task to task list. update new GUI and File information
 	@SuppressWarnings("deprecation")
-	private static void addTask(CliToLog userCommand) {
+	private static void addTask(Command userCommand) {
 		// modify date information of task
 		Date startDate = null;
 		Date endDate = null;
@@ -125,7 +125,7 @@ public class Execute {
 
 
 	// delete a certain task or delete or tasks
-	private static void deleteTask(CliToLog userCommand) {
+	private static void deleteTask(Command userCommand) {
 		String deleteLine = userCommand.getDiscription();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
@@ -214,7 +214,7 @@ public class Execute {
 	}
 
 	// read details of a certain task
-	private static void readTask(CliToLog userCommand) {
+	private static void readTask(Command userCommand) {
 		int readLine = Integer.valueOf(userCommand.getDiscription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
@@ -265,7 +265,7 @@ public class Execute {
 	}
 	
 	// update the name of a certain task 
-	private static void rename(CliToLog userCommand) {
+	private static void rename(Command userCommand) {
 		taskList.get(GUI.getTaskIndex()).rename(userCommand.getDiscription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
@@ -275,7 +275,7 @@ public class Execute {
 	}
 
 	// update the description of a certain task
-	private static void describe(CliToLog userCommand) {
+	private static void describe(Command userCommand) {
 		taskList.get(GUI.getTaskIndex()).describe(userCommand.getDiscription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
@@ -285,7 +285,7 @@ public class Execute {
 	}
 
 	// update the repeat times and dates of a certain task
-	private static void repeat(CliToLog userCommand) {
+	private static void repeat(Command userCommand) {
 		// TODO Auto-generated method stub
 		taskList.get(GUI.getTaskIndex()).repeat( userCommand.getRPdate());
 		ArrayList<Task> display = new ArrayList<Task>();
@@ -298,7 +298,7 @@ public class Execute {
 
 	// update the time information of a certain task
 	@SuppressWarnings("deprecation")
-	private static void reschedule(CliToLog userCommand) {
+	private static void reschedule(Command userCommand) {
 		// TODO Auto-generated method stub
 		int startYear = Integer.valueOf(userCommand.getTitle().substring(0,4));
 		int startMonth = Integer.valueOf(userCommand.getTitle().substring(4,6));
@@ -318,7 +318,7 @@ public class Execute {
 	}
 
 	// change view mode
-	private static void view(CliToLog userCommand) {
+	private static void view(Command userCommand) {
 		GUI.changeCurretnTask(0);
 		VIEW_MODE mode = determineViewMode(userCommand.getDiscription());
 		ArrayList<Task> display;
@@ -489,7 +489,7 @@ public class Execute {
 	}
 
 	// not finish yet
-	private static void restore(CliToLog userCommand) {
+	private static void restore(Command userCommand) {
 		// TODO Auto-generated method stub
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
@@ -536,7 +536,7 @@ public class Execute {
 	}
 
 	// not finish yet
-	private static void search(CliToLog userCommand) {
+	private static void search(Command userCommand) {
 		// TODO Auto-generated method stub
 	}
 	
@@ -545,7 +545,7 @@ public class Execute {
 
 
 	// This method gives feedback when the user gives unreadable command
-	public static DisplayConfiguration wrongCommand(CliToLog userCommand){
+	public static DisplayConfiguration wrongCommand(Command userCommand){
 		initialize();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){

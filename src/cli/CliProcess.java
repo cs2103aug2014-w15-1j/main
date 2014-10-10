@@ -21,10 +21,10 @@ public class CliProcess {
      * 
      * @return CliToLog which contains corresponding information
      * */
-    public static CliToLog interpretCommand(String inputString){
+    public static Command interpretCommand(String inputString){
         if (noInvalidKeys(inputString)) {
             CmdInfoPair getCmdPair = makeCmdPair(inputString);
-            CliToLog interpretedCm = transformCmd(getCmdPair);
+            Command interpretedCm = transformCmd(getCmdPair);
             return interpretedCm;
             
         } else {
@@ -96,8 +96,8 @@ public class CliProcess {
     /**
      * Transform string command into corresponding CliToLog objects
      * */
-    private static CliToLog transformCmd(CmdInfoPair infoPair){
-        CliToLog resultCMD;
+    private static Command transformCmd(CmdInfoPair infoPair){
+        Command resultCMD;
         COMMAND_TYPE getCMD = infoPair.getCMD();
         String subInfoStr = infoPair.getSubInfo();
 
@@ -151,26 +151,26 @@ public class CliProcess {
         return resultCMD;
     }
 
-    private static CliToLog rename(String subInfoStr) {
+    private static Command rename(String subInfoStr) {
     	if(subInfoStr.isEmpty()){
     		return makeInvalid();
     	}
-		return new CliToLog(COMMAND_TYPE.RENAME.name(), subInfoStr);
+		return new Command(COMMAND_TYPE.RENAME.name(), subInfoStr);
 	}
 
-	private static CliToLog describe(String subInfoStr) {
+	private static Command describe(String subInfoStr) {
     	if(subInfoStr.isEmpty()){
     		return makeInvalid();
     	}
-		return new CliToLog(COMMAND_TYPE.DESCRIBE.name(), subInfoStr);
+		return new Command(COMMAND_TYPE.DESCRIBE.name(), subInfoStr);
 	}
 
-	private static CliToLog reschedule(String subInfoStr) {
+	private static Command reschedule(String subInfoStr) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private static CliToLog repeat(String subInfoStr) {
+	private static Command repeat(String subInfoStr) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -179,7 +179,7 @@ public class CliProcess {
      * Interpret "add" command and get its sub-information
      * Split quotation mark contents with other contents
      * */
-    private static CliToLog add(String subInfoStr) {
+    private static Command add(String subInfoStr) {
         String taskTitle;
         String taskDescription;
         String basicInfo;
@@ -238,8 +238,8 @@ public class CliProcess {
     /**
      * Make a CTL object for add, insert 3 component separately into the CTL
      * */
-    private static CliToLog makeAddCTL(String taskTitle, String basicInfo, String taskDescription) {
-        CliToLog completeCTL;
+    private static Command makeAddCTL(String taskTitle, String basicInfo, String taskDescription) {
+        Command completeCTL;
         if (basicInfo.startsWith(ParserKeys.SPACE)) {
             basicInfo = basicInfo.substring(1, basicInfo.length());
         }
@@ -257,7 +257,7 @@ public class CliProcess {
     /**
      * Insert all the basic information into CTL, make a complete CTL;
      * */
-    private static CliToLog makeCompleteCTL(String taskTitle, String basicInfo, 
+    private static Command makeCompleteCTL(String taskTitle, String basicInfo, 
             String taskDescription, String[] component) {
         String getRpDay;
         String startDay = ParserKeys.EMPTY_STR;
@@ -275,7 +275,7 @@ public class CliProcess {
             return makeInvalid();
         }
 */
-        return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
+        return new Command(COMMAND_TYPE.ADD.name(), taskTitle, 
                             taskDescription, getRpDay, 
                             startDay, endDay);
     }
@@ -306,7 +306,7 @@ public class CliProcess {
      * @param subInfoStr
      *              String of sub-information following the update command
      */
-    private static CliToLog update(String subInfoStr){
+    private static Command update(String subInfoStr){
     	// TODO Auto-generated method stub
        String getUpdateItem;
        String getUpdateInfo;
@@ -390,8 +390,8 @@ public class CliProcess {
      * @param readTarget
      *          Target reading index
      */
-    private static CliToLog read(String readTarget){
-        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.READ.name(), readTarget);
+    private static Command read(String readTarget){
+        Command commandPackage = new Command(COMMAND_TYPE.READ.name(), readTarget);
 
         return commandPackage;
     }
@@ -399,8 +399,8 @@ public class CliProcess {
     /**
      * Undo the previous action
      */
-    private static CliToLog undo(){
-        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.UNDO.name());
+    private static Command undo(){
+        Command commandPackage = new Command(COMMAND_TYPE.UNDO.name());
 
         return commandPackage;		
     }
@@ -411,8 +411,8 @@ public class CliProcess {
      * @param deletIndex
      *          Index to be deleted
      */
-    private static CliToLog delete(String deleteIndex){
-        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.DELETE.name(), deleteIndex);
+    private static Command delete(String deleteIndex){
+        Command commandPackage = new Command(COMMAND_TYPE.DELETE.name(), deleteIndex);
 
         return commandPackage;
     }
@@ -420,8 +420,8 @@ public class CliProcess {
     /**
      * Make a CliToLog with command = "invalid"
      * */
-    private static CliToLog makeInvalid() {
-        return new CliToLog(COMMAND_TYPE.INVALID.name());
+    private static Command makeInvalid() {
+        return new Command(COMMAND_TYPE.INVALID.name());
     }
 
     /** 
@@ -430,11 +430,11 @@ public class CliProcess {
      * @param viewTarget
      *          Targeted viewing model
      */
-    private static CliToLog view(String viewTarget){
+    private static Command view(String viewTarget){
         if (viewTarget.equalsIgnoreCase(COMMAND_TYPE.TASKLIST.name()) ||
                 viewTarget.equalsIgnoreCase(COMMAND_TYPE.BIN.name())) {
 
-            CliToLog commandPackage = new CliToLog(COMMAND_TYPE.VIEW.name(), viewTarget);
+            Command commandPackage = new Command(COMMAND_TYPE.VIEW.name(), viewTarget);
             return commandPackage;
         } else {
             ErrorGenerator.popError(ErrorMSG.VIEW_MODE_ERR);
@@ -445,8 +445,8 @@ public class CliProcess {
     /** 
      * Next page for current state of view
      */
-    private static CliToLog next(){
-        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.NEXT.name());
+    private static Command next(){
+        Command commandPackage = new Command(COMMAND_TYPE.NEXT.name());
 
         return commandPackage;
     }
@@ -454,8 +454,8 @@ public class CliProcess {
     /** 
      * Previous page for current state of view
      */
-    private static CliToLog previous(){
-        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.PREVIOUS.name());
+    private static Command previous(){
+        Command commandPackage = new Command(COMMAND_TYPE.PREVIOUS.name());
 
         return commandPackage;
     }
@@ -466,8 +466,8 @@ public class CliProcess {
      *  @param restoreTarget
      *         Target restore index
      */
-    private static CliToLog restore(String restoreTarget){
-        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.RESTORE.name(), restoreTarget);
+    private static Command restore(String restoreTarget){
+        Command commandPackage = new Command(COMMAND_TYPE.RESTORE.name(), restoreTarget);
 
         return commandPackage;
     }
@@ -475,8 +475,8 @@ public class CliProcess {
     /** 
      * Exiting the program
      */
-    private static CliToLog exit(){
-        CliToLog commandPackage = new CliToLog(COMMAND_TYPE.EXIT.name());
+    private static Command exit(){
+        Command commandPackage = new Command(COMMAND_TYPE.EXIT.name());
 
         return commandPackage;		
     }

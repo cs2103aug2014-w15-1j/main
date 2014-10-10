@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import cli.CliToLog;
+import cli.Command;
 public class CliToLogTest_Simple_CMD {
 
     String testDeleStr;
@@ -14,11 +14,11 @@ public class CliToLogTest_Simple_CMD {
     String testUpdateStr;
     String testUndoStr;
     
-    CliToLog deleteTest;
-    CliToLog readTest;
-    CliToLog viewTest;
-    CliToLog updateTest;
-    CliToLog undoTest;
+    Command deleteTest;
+    Command readTest;
+    Command viewTest;
+    Command updateTest;
+    Command undoTest;
     
     @Before
     public void initTestString() {

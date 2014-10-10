@@ -2,7 +2,7 @@ package logic;
 
 import gui.DisplayConfiguration;
 import gui.VIEW_MODE;
-import cli.CliToLog;
+import cli.Command;
 import cli.CliProcess;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class RunLogic {
 	
 	public static DisplayConfiguration logic(String inputCommand){
 		// pass user command to CLI for auto-correction
-		CliToLog userCommand = CliProcess.interpretCommand(inputCommand);
+		Command userCommand = CliProcess.interpretCommand(inputCommand);
 		
 		// check whether the command is valid under current view mode
 		if(CheckCommandValid.checkValid(userCommand)){

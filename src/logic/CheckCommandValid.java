@@ -1,11 +1,11 @@
 package logic;
 
 import gui.VIEW_MODE;
-import cli.CliToLog;
+import cli.Command;
 
 public class CheckCommandValid {
 	// check whether the command is valid under current view mode
-	public static boolean checkValid(CliToLog userCommand) {
+	public static boolean checkValid(Command userCommand) {
 		String command = userCommand.getCommand();
 		VIEW_MODE mode = RunLogic.getGuiStatus().getMode();
 
@@ -67,7 +67,7 @@ public class CheckCommandValid {
 		}
 	}
 	
-	public static boolean checkCorrect(CliToLog command){
+	public static boolean checkCorrect(Command command){
 		
 		
 		return false;

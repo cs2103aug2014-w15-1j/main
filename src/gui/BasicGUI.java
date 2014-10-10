@@ -243,7 +243,7 @@ public class BasicGUI extends JFrame {
 			String command = inputWindow.getText().trim();
 			String emptyString = "";
 			inputWindow.setText(emptyString);
-			Display.display(RunLogic.logic(command));
+			DisplayController.display(RunLogic.logic(command));
 
 		}
 	}
