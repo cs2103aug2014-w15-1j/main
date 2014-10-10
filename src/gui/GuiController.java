@@ -6,11 +6,11 @@ import logic.RunLogic;
 public class GuiController {
 	static BasicGui gui;
 	
-	private static InfoConverter convert(DisplayInfo info){
-		return new InfoConverter(info);
+	private static GuiInfoTranslator translate(DisplayInfo info){
+		return new GuiInfoTranslator(info);
 	}
 	
-	public static void display(InfoConverter info) {
+	public static void display(GuiInfoTranslator info) {
 		if (gui == null) {
 			run();
 		}
@@ -20,7 +20,7 @@ public class GuiController {
 	}
 	
 	public static void display(DisplayInfo info) {
-		display(convert(info));
+		display(translate(info));
 	}
 	
 	public static void display(String command){

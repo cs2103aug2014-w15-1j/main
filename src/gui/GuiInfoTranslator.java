@@ -1,12 +1,10 @@
 package gui;
 
 import java.util.ArrayList;
-
 import logic.DisplayInfo;
-import logic.GUIStatus;
 import logic.Task;
 
-public class InfoConverter  {
+public class GuiInfoTranslator  {
 
 	/*
 	 * ====================================================================
@@ -25,7 +23,7 @@ public class InfoConverter  {
 	 * ===================== START OF PUBLIC METHOD =======================
 	 * ====================================================================
 	 */
-	public InfoConverter(DisplayInfo info){
+	public GuiInfoTranslator(DisplayInfo info){
 		this.info = info;
 	}
 
