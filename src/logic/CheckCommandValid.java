@@ -1,11 +1,11 @@
 package logic;
 
 import gui.VIEW_MODE;
-import cli.CliToLog;
+import cli.Command;
 
 public class CheckCommandValid {
 	// check whether the command is valid under current view mode
-	public static boolean checkValid(CliToLog userCommand) {
+	public static boolean checkValid(Command userCommand) {
 		String command = userCommand.getCommand();
 		VIEW_MODE mode = RunLogic.getGuiStatus().getMode();
 
@@ -18,8 +18,8 @@ public class CheckCommandValid {
 					|| command.equalsIgnoreCase("undo")
 					|| command.equalsIgnoreCase("search")
 					|| command.equalsIgnoreCase("exit")
-					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) || (command
-					.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) 
+					|| (command.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
 		case DATE:
 			return (command.equalsIgnoreCase("add")
 					|| command.equalsIgnoreCase("delete")
@@ -28,8 +28,8 @@ public class CheckCommandValid {
 					|| command.equalsIgnoreCase("undo")
 					|| command.equalsIgnoreCase("search")
 					|| command.equalsIgnoreCase("exit")
-					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) || (command
-					.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) 
+					|| (command.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
 		case TASK_DETAIL:
 			return (command.equalsIgnoreCase("add")
 					|| command.equalsIgnoreCase("view")
@@ -37,34 +37,39 @@ public class CheckCommandValid {
 					|| command.equalsIgnoreCase("describe")
 					|| command.equalsIgnoreCase("repeat")
 					|| command.equalsIgnoreCase("reschedule")
-					|| command.equalsIgnoreCase("restore")
 					|| command.equalsIgnoreCase("undo")
-					|| command.equalsIgnoreCase("search") || command
-						.equalsIgnoreCase("exit"));
+					|| command.equalsIgnoreCase("search") 
+					|| command.equalsIgnoreCase("exit")
+					|| command.equalsIgnoreCase("back"));
 		case MONTH:
-			return (command.equalsIgnoreCase("view") || command
-					.equalsIgnoreCase("exit"));
+			return (command.equalsIgnoreCase("view") 
+					|| command.equalsIgnoreCase("exit"));
 		case BIN:
 			return (command.equalsIgnoreCase("delete")
 					|| command.equalsIgnoreCase("read")
 					|| command.equalsIgnoreCase("view")
 					|| command.equalsIgnoreCase("restore")
 					|| command.equalsIgnoreCase("exit")
-					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) || (command
-					.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) 
+					|| (command.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+		case BIN_DETAIL:
+			return (command.equalsIgnoreCase("restore")
+					|| command.equalsIgnoreCase("view")
+					|| command.equalsIgnoreCase("back")
+					|| command.equalsIgnoreCase("exit"));
 		case UNDONE:
 			return (command.equalsIgnoreCase("delete")
 					|| command.equalsIgnoreCase("read")
 					|| command.equalsIgnoreCase("view")
 					|| command.equalsIgnoreCase("exit")
-					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) || (command
-					.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
+					|| (command.equalsIgnoreCase("next") && RunLogic.getGuiStatus().hasNext()) 
+					|| (command.equalsIgnoreCase("previous") && RunLogic.getGuiStatus().hasPrevious()));
 		default:
 			return false;
 		}
 	}
 	
-	public static boolean checkCorrect(CliToLog command){
+	public static boolean checkCorrect(Command command){
 		
 		
 		return false;

@@ -1,30 +1,50 @@
 package cli;
 
-public class CliToLog{
+public class Command{
 
+	//Command Type
     private String command;
+    
+    //Add
     private String taskTitle;
     private String taskDiscrib;
-    private String rpDate;
+    private String repeatDate;
     private String startDay;
     private String endDay;
     
-    public CliToLog(String command) {
+    //Read
+    private String readIndex;
+    
+    //Delete
+    private String deleteIndex;
+    
+    // View
+    private String viewMode;
+    
+    //Restore
+    private String restoreIndex;
+    
+    //search
+    private String searchName;
+    
+    //
+    
+    public Command(String command) {
         this.command = command;
     }
     
-    public CliToLog(String command, String taskDescribe) {
+    public Command(String command, String taskDescribe) {
         this.command = command;
         this.taskDiscrib = taskDescribe;
     }
-
-    public CliToLog(String command, String taskTitle, 
-            String taskDescribe, String rpDate, 
+    // strictly only for add command
+    public Command(String command, String taskTitle, 
+            String taskDescribe, String repeatDate, 
             String startDay, String endDay) {
         this.command = command;
         this.taskTitle = taskTitle;
         this.taskDiscrib = taskDescribe;
-        this.rpDate = rpDate;
+        this.repeatDate = repeatDate;
         this.startDay = startDay;
         this.endDay = endDay;
     }
@@ -42,7 +62,7 @@ public class CliToLog{
     }
 
     public String getRPdate(){
-        return this.rpDate;
+        return this.repeatDate;
     }
 
     public String getStartDay(){
