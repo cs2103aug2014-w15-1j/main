@@ -1,11 +1,11 @@
 package cli;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import cli.CliToLog;
+
 public class CliToLogTest_Simple_CMD {
 
     String testDeleStr;
