@@ -10,7 +10,7 @@ public class GuiController {
 		return new GuiInfoTranslator(info);
 	}
 	
-	public static void display(GuiInfoTranslator info) {
+	private static void display(GuiInfoTranslator info) {
 		if (gui == null) {
 			run();
 		}
@@ -19,16 +19,16 @@ public class GuiController {
 		gui.setMainText(info.getTaskString());
 	}
 	
-	public static void display(DisplayInfo info) {
+	private static void display(DisplayInfo info) {
 		display(translate(info));
 	}
 	
-	public static void display(String command){
+	static void display(String command){
 		DisplayInfo info= RunLogic.logic(command);
 		display(info);
 	}
 
-	private static void run(){
+	public static void run(){
 		gui = BasicGui.getInstance();
 		DisplayInfo confg= RunLogic.initialize();
 		display(confg);

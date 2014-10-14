@@ -60,7 +60,7 @@ public class BasicGui extends JFrame {
 	 */
 
 	private static final long serialVersionUID = 1L;
-	private static BasicGui theOne;
+	private static BasicGui instance;
 
 	private JPanel titlePanel;
 	private TextField titleWindow;
@@ -111,10 +111,10 @@ public class BasicGui extends JFrame {
 	}
 
 	public static BasicGui getInstance() {
-		if(theOne == null) {
-			theOne = new BasicGui();
+		if(instance == null) {
+			instance = new BasicGui();
 		}
-		return theOne;
+		return instance;
 	}
 
 	public void setTitleText(String text) {
