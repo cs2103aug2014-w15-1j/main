@@ -9,6 +9,7 @@ class ErrorMSG {
     public static final String UPDATE_FIELD_ERR = "Error at CLI: Invalid update field";
     public static final String VIEW_MODE_ERR = "Error at CLI: Invalid view mode input";
     public static final String INPUT_SYMBOL_ERR = "Error at CLI: Input contains invalid symbols, delete symbol such as \"=\"";
+    public static final String REPEAT_ERR = "Error at Parser: invalide repeat date";
 }
 
 class ErrorGenerator {

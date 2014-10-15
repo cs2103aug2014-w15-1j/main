@@ -13,7 +13,7 @@ public class CliProcess {
         // UPDATE
         RENAME, RESCHEDULE, DESCRIBE, REPEAT,
         // UPDATE_FIELD
-        NAME, DISCRIPTION, DATE, DAY;
+        NAME, DESCRIPTION, DATE, DAY;
     }
 
     /**
@@ -26,13 +26,13 @@ public class CliProcess {
             CmdInfoPair getCmdPair = makeCmdPair(inputString);
             CliToLog interpretedCm = transformCmd(getCmdPair);
             return interpretedCm;
-            
+
         } else {
             ErrorGenerator.popError(ErrorMSG.INPUT_SYMBOL_ERR);
             return makeInvalid();
         }
     }
-    
+
     /**
      * Check if input contains invalid symbols
      * */
@@ -55,7 +55,7 @@ public class CliProcess {
             getSubInfo = null;
         } else {
             getCommand = rawString.substring(0, getCommandEnd);
-            getSubInfo = rawString.substring(getCommandEnd + 1, rawString.length());
+            getSubInfo = cleanFrontSpace(rawString.substring(getCommandEnd + 1, rawString.length()));
         }
 
         if (getCommand.equalsIgnoreCase(COMMAND_TYPE.ADD.name())) {
@@ -90,6 +90,17 @@ public class CliProcess {
             return new CmdInfoPair(COMMAND_TYPE.RESTORE, getSubInfo);
         } else {
             return new CmdInfoPair(COMMAND_TYPE.INVALID, getSubInfo);
+        }
+    }
+    
+    /**
+     * Clean the white space at the start of a string
+     * */
+    private static String cleanFrontSpace(String rawString) {
+        if(rawString.startsWith(ParserKeys.SPACE)) {
+            return cleanFrontSpace(rawString.substring(1, rawString.length()));
+        } else {
+            return rawString;
         }
     }
 
@@ -142,8 +153,8 @@ public class CliProcess {
             resultCMD = exit();
             break;
         case RESTORE:
-        	resultCMD = restore(subInfoStr);
-        	break;
+            resultCMD = restore(subInfoStr);
+            break;
         default:
             resultCMD = makeInvalid();
             break;
@@ -152,132 +163,327 @@ public class CliProcess {
     }
 
     private static CliToLog rename(String subInfoStr) {
-    	if(subInfoStr.isEmpty()){
-    		return makeInvalid();
-    	}
-		return new CliToLog(COMMAND_TYPE.RENAME.name(), subInfoStr);
-	}
+        if(subInfoStr.isEmpty()){
+            return makeInvalid();
+        }
+        return new CliToLog(COMMAND_TYPE.RENAME.name(), subInfoStr);
+    }
 
-	private static CliToLog describe(String subInfoStr) {
-    	if(subInfoStr.isEmpty()){
-    		return makeInvalid();
-    	}
-		return new CliToLog(COMMAND_TYPE.DESCRIBE.name(), subInfoStr);
-	}
+    private static CliToLog describe(String subInfoStr) {
+        if(subInfoStr.isEmpty()){
+            return makeInvalid();
+        }
+        return new CliToLog(COMMAND_TYPE.DESCRIBE.name(), subInfoStr);
+    }
 
-	private static CliToLog reschedule(String subInfoStr) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private static CliToLog reschedule(String subInfoStr) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	private static CliToLog repeat(String subInfoStr) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private static CliToLog repeat(String subInfoStr) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	/**
+    /**
      * Interpret "add" command and get its sub-information
      * Split quotation mark contents with other contents
+     * 
+     * @return 
+     *      return a CliToLog object.
      * */
     private static CliToLog add(String subInfoStr) {
-        String taskTitle;
-        String taskDescription;
-        String basicInfo;
+       
         ArrayList<Integer> symbolIndex = getQuoteMark(subInfoStr);
         int markNumber = symbolIndex.size();
-
-        if (markNumber == 1 || markNumber == 3) {
+        
+        if (markNumber == 0 || markNumber == 2 || markNumber == 4 ) {
+            // No quotation marks
+            String taskTitle = getTaskTitle(subInfoStr, symbolIndex);
+            String repeatDate = getRepeatDate(subInfoStr, symbolIndex);
+            String startDate = makeDay(getBasicInfoAT(2, subInfoStr, symbolIndex, ParserKeys.EMPTY_DATE));
+            String endDate = makeDay(getBasicInfoAT(3, subInfoStr, symbolIndex, ParserKeys.EMPTY_DATE));
+            String description = getDescription(subInfoStr, symbolIndex);
+            
+            return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
+                                repeatDate, startDate, 
+                                endDate, description);
+            
+        } else if (markNumber == 1 || markNumber == 3) {
             ErrorGenerator.popError(ErrorMSG.QUOTATION_UNCLOSE_ERR);
             return makeInvalid();
-
-        } else if (markNumber == 2) {
-        	taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
-        	 basicInfo = ParserKeys.EMPTY_DATE + " " + ParserKeys.EMPTY_DATE +  " " + ParserKeys.EMPTY_DATE;
-        	 taskDescription = ParserKeys.EMPTY_DIS;
-        	 return makeAddCTL(taskTitle, basicInfo, taskDescription);
-        	 
-        } else if (markNumber == 4) {
-            taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
-            taskDescription = subInfoStr.substring(symbolIndex.get(2) + 1, symbolIndex.get(3));
-            basicInfo = ParserKeys.EMPTY_DATE + " " + ParserKeys.EMPTY_DATE +  " " + ParserKeys.EMPTY_DATE;
-            return makeAddCTL(taskTitle, basicInfo, taskDescription);
-
-        } else if (markNumber == 6){
-            taskTitle = subInfoStr.substring(symbolIndex.get(0) + 1, symbolIndex.get(1));
-            taskDescription = subInfoStr.substring(symbolIndex.get(2) + 1, symbolIndex.get(3));
-            basicInfo = subInfoStr.substring(symbolIndex.get(3)+1, symbolIndex.get(5));
-            return makeAddCTL(taskTitle, basicInfo, taskDescription);
 
         } else {
             ErrorGenerator.popError(ErrorMSG.UNEXPECTED_QUOTATION_ERR);
             return makeInvalid();
         }
     }
-
+    
     /**
-     * Return index of quotation mark in raw input String
+     * get repeated date for a task
+     * if cannot find the return system default repeat
      * */
-
-    private static ArrayList<Integer> getQuoteMark(String subInfoStr) {
-        ArrayList<Integer> quotationIndex = new ArrayList<Integer>();
-        String curStr;
-        int countSymbol = 0;
-        for(int i = 0; i < subInfoStr.length(); i ++) {
-            curStr = subInfoStr.substring(i, i+1);
-            if (countSymbol == 4) {
-                break;
-            } else if (curStr.equals(ParserKeys.SPLITSYMBOL)) {
-                quotationIndex.add(i);
-                countSymbol++;
+    private static String getRepeatDate(String subInfoStr, ArrayList<Integer> symbolIndex) {
+        String repDate = getBasicInfoAT(1, subInfoStr, symbolIndex, ParserKeys.RP_NON);
+        if (repDate.contains(ParserKeys.SPLIT_DATE)) {
+            return ParserKeys.RP_NON;
+        }else if (isValidRP(repDate)) {
+            if (repDate.isEmpty()) {
+                return ParserKeys.RP_NON;
+            } else {
+                return repDate;
+            }
+        } else {
+            String getLatter = getBasicInfoAT(2, subInfoStr, symbolIndex, ParserKeys.EMPTY_STR);
+            if (getLatter.equals(ParserKeys.EMPTY_STR)) {
+                ErrorGenerator.popError(ErrorMSG.REPEAT_ERR);
+                return ParserKeys.INVALID_INFO;
+            } else {
+                return ParserKeys.RP_NON;
             }
         }
-
-        return quotationIndex;
+    }
+    
+    /**
+     * Judge the validity of repeat date input
+     * */
+    private static boolean isValidRP(String repDate) {
+        boolean result = false;
+        for (int i = 0; i < ParserKeys.REPEAT_KEYS.length; i++) {
+            if (repDate.equalsIgnoreCase(ParserKeys.REPEAT_KEYS[i])){
+                result = true;
+            }
+        }
+        return result;
     }
 
     /**
-     * Make a CTL object for add, insert 3 component separately into the CTL
+     * Get basic information at location 
+     * (1) repeat date, (2) start date, (3) end date
      * */
-    private static CliToLog makeAddCTL(String taskTitle, String basicInfo, String taskDescription) {
-        CliToLog completeCTL;
-        if (basicInfo.startsWith(ParserKeys.SPACE)) {
-            basicInfo = basicInfo.substring(1, basicInfo.length());
-        }
-        
-        String[] component = basicInfo.split(ParserKeys.SPACE);
-        if (component.length == 3) {
-            completeCTL = makeCompleteCTL(taskTitle, basicInfo, taskDescription, component); 
-            return completeCTL;
+    private static String getBasicInfoAT(int location, String subInfoStr, 
+                                         ArrayList<Integer> symbolIndex, 
+                                         String defaultStr) {
+        if (symbolIndex.size() == 2 || symbolIndex.size() == 4) {
+            // remove the front quotation
+            if (subInfoStr.startsWith(ParserKeys.SPLITSYMBOL)) {
+                String removedStr = subInfoStr.substring(symbolIndex.get(1) + 1, subInfoStr.length());
+                
+                if (location == 1){
+                    return getFirstWord(removedStr, defaultStr);
+                    
+                } else if (location == 2) {
+                    return getStartDate(removedStr, defaultStr);
+                } else {
+                    return getEndDate(removedStr, defaultStr);
+                }
+                
+            } else {
+                String frontRemoved = removeBlocks(subInfoStr, location);
+                return getFirstWord(frontRemoved, defaultStr);
+            }
         } else {
-            ErrorGenerator.popError(ErrorMSG.TASK_INFO_ERR);
-            return makeInvalid();
+            // No symbols
+            if (location == 1){
+                String frontRemoved = removeBlocks(subInfoStr, 1);
+                return getFirstWord(frontRemoved, defaultStr);
+                
+            } else if (location == 2) {
+                String frontRemoved = removeBlocks(subInfoStr, 1);
+                return getStartDate(frontRemoved, defaultStr);
+            } else {
+                String frontRemoved = removeBlocks(subInfoStr, 1);
+                return getEndDate(frontRemoved, defaultStr);
+            }
+        }
+    }
+    
+    /**
+     * get start day for a task
+     * if cannot find the return system default date
+     * */
+    private static String getStartDate(String subInfoStr, String defaultStr) {
+        String frontWord = getFirstWord(subInfoStr, defaultStr);
+        if (frontWord.contains(ParserKeys.SPLIT_DATE)) {
+            return frontWord;
+        } else {
+            String frontRemoved = removeBlocks(subInfoStr, 1);
+            return getFirstWord(frontRemoved, defaultStr);
+        }
+    }
+    
+    /**
+     * get End date for a task
+     * if cannot find the return system default end date
+     * */
+    private static String getEndDate(String subInfoStr, String defaultStr) {
+        
+        String frontWord1 = getFirstWord(subInfoStr, defaultStr);
+        if (!frontWord1.contains(ParserKeys.SPLIT_DATE)) {
+            // Has Repeat Date
+            String front1Removed = removeBlocks(subInfoStr, 1);
+            String frontWord2 = getFirstWord(front1Removed, defaultStr);
+            
+            if (frontWord2.contains(ParserKeys.SPLIT_DATE)) {
+                // Has Start Date
+                String front2Removed = removeBlocks(front1Removed, 1);
+                String frontWord3 = getFirstWord(front2Removed, defaultStr);
+                
+                if (frontWord3.contains(ParserKeys.SPLIT_DATE)) {
+                    // Has End Date
+                    return getFirstWord(front2Removed, defaultStr);
+                } else {
+                    // Has no End Date
+                    return defaultStr;
+                }  
+            } else {
+                // Has no Start Date
+                return defaultStr;
+            }
+        } else if (frontWord1.contains(ParserKeys.SPLIT_DATE)){
+            // Has no Repeat Date, But has Start Day
+            String front2Removed = removeBlocks(subInfoStr, 1);
+            String frontWord3 = getFirstWord(front2Removed, defaultStr);
+            
+            if (frontWord3.contains(ParserKeys.SPLIT_DATE)) {
+                // Has End Date
+                return getFirstWord(front2Removed, defaultStr);
+            } else {
+                // Has no End Date
+                return defaultStr;
+            }  
+        } else {
+            // Has no Repeat Date nor Start Day
+            return defaultStr;
+        }
+    }
+    
+    /**
+     * Remove front blocks by spaces
+     * 
+     * @param {String]
+     * @param {Number}
+     * */
+    private static String removeBlocks(String originStr, int numToRemove) {
+        originStr = cleanFrontSpace(originStr);
+        if (numToRemove > 0) {
+            int getSpace = originStr.indexOf(ParserKeys.SPACE);
+            
+            if (getSpace != -1) {
+                String curRemove =  originStr.substring(getSpace + 1, originStr.length());
+                return removeBlocks(curRemove, numToRemove - 1);
+            } else {
+                return originStr;
+            }
+        } else {
+            return originStr;
         }
     }
 
     /**
-     * Insert all the basic information into CTL, make a complete CTL;
+     * Get the specific word section
      * */
-    private static CliToLog makeCompleteCTL(String taskTitle, String basicInfo, 
-            String taskDescription, String[] component) {
-        String getRpDay;
-        String startDay = ParserKeys.EMPTY_STR;
-        String endDay = ParserKeys.EMPTY_STR;
-
-        getRpDay = component[0];
-        String rawStartDay = component[1];
-        String rawEndDay = component[2];
-
-        startDay = makeDay(rawStartDay);
-        endDay = makeDay(rawEndDay);
-/*
-        if (startDay.equals(ParserKeys.EMPTY_DATE) || endDay.equals(ParserKeys.EMPTY_DATE)) {
-            ErrorGenerator.popError(ErrorMSG.INPUT_DATE_ERR);
-            return makeInvalid();
+    private static String getFirstWord(String removedStr, String defaultStr) {
+        removedStr = cleanFrontSpace(removedStr);
+        int firstSpace = removedStr.indexOf(ParserKeys.SPACE);
+        if (firstSpace == -1 && removedStr.isEmpty()) {
+            return defaultStr;
+        } else if (firstSpace == -1 && !removedStr.isEmpty()){
+            return removedStr;
+        } else {
+            return removedStr.substring(0, firstSpace);
         }
-*/
-        return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
-                            taskDescription, getRpDay, 
-                            startDay, endDay);
+    }
+
+    /**
+     * Get the description at the end
+     * 
+     * @param {String}
+     * @param {ArrayList<Integer>}
+     * 
+     * @return {String}
+     * */
+    private static String getDescription(String subInfoStr, ArrayList<Integer> symbolIndex) {
+        if (symbolIndex.size() == 0) {
+            String[] splitedString = subInfoStr.split(ParserKeys.SPACE);
+            
+            if (splitedString.length > 1) {
+                String getEnd = splitedString[splitedString.length - 1];
+                if (isValidRP(getEnd)) {
+                    return ParserKeys.EMPTY_DIS; 
+                } else if (isValidDate(getEnd)){
+                    return ParserKeys.EMPTY_DIS;
+                } else {
+                    return getEnd;
+                }
+            } else {
+                return ParserKeys.EMPTY_DIS;
+            }
+        }else if (symbolIndex.size() == 2) {
+            if (subInfoStr.startsWith(ParserKeys.SPLITSYMBOL)) {
+                return ParserKeys.EMPTY_DIS;
+            } else {
+                return retrieveQuotedStr(subInfoStr, 
+                                         symbolIndex.get(0), 
+                                         symbolIndex.get(1), 
+                                         ParserKeys.EMPTY_DIS);
+            }
+        } else {
+            // 4 Quotation Markers
+            return retrieveQuotedStr(subInfoStr, 
+                                     symbolIndex.get(2), 
+                                     symbolIndex.get(3),
+                                     ParserKeys.EMPTY_DIS);
+        }
+    }
+    
+    /**
+     * Get task title, if title is empty, return an system EMPYT_TITLE
+     * 
+     * @param {String}
+     * @param {ArrayList<Integer>}
+     * 
+     * @return {String}
+     * */
+    private static String getTaskTitle(String subInfoStr, ArrayList<Integer> symbolIndex) {
+        if (symbolIndex.size() == 0) {
+            return getFirstWord(subInfoStr, ParserKeys.EMPTY_TITLE);
+        }
+        if (symbolIndex.size() == 2) {
+            if (subInfoStr.startsWith(ParserKeys.SPLITSYMBOL)) {
+                return retrieveQuotedStr(subInfoStr, 
+                                         symbolIndex.get(0), 
+                                         symbolIndex.get(1), 
+                                         ParserKeys.EMPTY_TITLE);
+            } else {
+                int firstSpace = subInfoStr.indexOf(ParserKeys.SPACE);
+                return subInfoStr.substring(0, firstSpace);
+            }
+            
+        } else {
+            // 4 Quotation Markers
+            return retrieveQuotedStr(subInfoStr, 
+                                     symbolIndex.get(0), 
+                                     symbolIndex.get(1), 
+                                     ParserKeys.EMPTY_TITLE);
+        }
+    }
+    
+    /**
+     * Retrieve a string by the start and end index of quotation marker
+     * 
+     * @param {string}
+     * @param {number}
+     * @param {number}
+     * */
+    private static String retrieveQuotedStr(String subInfoStr, int startIndex, int endIndex, String defaultStr) {
+        String getStr = subInfoStr.substring(startIndex + 1, endIndex);
+        if (getStr.isEmpty()) {
+            return defaultStr;
+        } else {
+            return getStr;
+        }
     }
 
     /**
@@ -298,6 +504,13 @@ public class CliProcess {
         }
         return resultDay;
     }
+    
+    /**
+     * Check if is valid date
+     * */
+    private static boolean isValidDate(String rawStr) {
+        return !makeDay(rawStr).equals(ParserKeys.EMPTY_DATE);
+    }
 
     /**
      * To change/update a field in an input
@@ -307,40 +520,39 @@ public class CliProcess {
      *              String of sub-information following the update command
      */
     private static CliToLog update(String subInfoStr){
-    	// TODO Auto-generated method stub
-       String getUpdateItem;
-       String getUpdateInfo;
+        String getUpdateItem;
+        String getUpdateInfo;
 
         int getCommandEnd = subInfoStr.indexOf(ParserKeys.SPACE);
         if (getCommandEnd == ParserKeys.INDEX_NOT_EXIST) {
-        	ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
+            ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
             return makeInvalid();
         } else {
-        	getUpdateItem = subInfoStr.substring(0, getCommandEnd).trim().toLowerCase();
-        	getUpdateInfo = subInfoStr.substring(getCommandEnd + 1, subInfoStr.length());
+            getUpdateItem = subInfoStr.substring(0, getCommandEnd).trim().toLowerCase();
+            getUpdateInfo = subInfoStr.substring(getCommandEnd + 1, subInfoStr.length());
         }
-        
-        if (getUpdateItem.equalsIgnoreCase("name")){
-        	return rename(getUpdateInfo);
-        } else if (getUpdateItem.equalsIgnoreCase("description")){
-        	return describe(getUpdateInfo);
+
+        if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.NAME.name())){
+            return rename(getUpdateInfo);
+        } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.DESCRIPTION.name())){
+            return describe(getUpdateInfo);
         } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.RESCHEDULE.name())){
-        	return reschedule(getUpdateInfo);
+            return reschedule(getUpdateInfo);
         } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.REPEAT.name())){
-        	return repeat(getUpdateInfo);
+            return repeat(getUpdateInfo);
         } else {
-        	ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
+            ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
             return makeInvalid();
         }
-             
-        
-        
+
+
+
         /*
-        
+
         String updateField;
         String newContent;
         String[] component = subInfoStr.split(ParserKeys.SPLITSYMBOL);
-        
+
         // Check update input contents validity
         if (component.length != 2) {
             ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
@@ -365,7 +577,7 @@ public class CliProcess {
      * @param inputField
      *          Targeted update field of information on one specific task
      */
- /*   private static String identifyField(String inputField){
+    /*   private static String identifyField(String inputField){
         String updateField = null;
 
         //Check field to be changed
@@ -382,7 +594,7 @@ public class CliProcess {
         }
         return updateField;
     }
-*/
+     */
 
     /** 
      * Read details of a certain task
@@ -459,8 +671,8 @@ public class CliProcess {
 
         return commandPackage;
     }
-    
-    /* *
+
+    /**
      *  Restore item from bin
      *  
      *  @param restoreTarget
@@ -471,7 +683,7 @@ public class CliProcess {
 
         return commandPackage;
     }
-    
+
     /** 
      * Exiting the program
      */
@@ -479,5 +691,34 @@ public class CliProcess {
         CliToLog commandPackage = new CliToLog(COMMAND_TYPE.EXIT.name());
 
         return commandPackage;		
+    }
+    /*
+    public static void main(String args[]) {
+        String subInfoStr = "\"a \" everyday"; 
+        ArrayList<Integer> symbolIndex = new ArrayList<Integer>();
+        symbolIndex.add(0);
+        symbolIndex.add(3);
+        //System.out.println(getBasicInfoAT(1, subInfoStr, symbolIndex, "DEFAULT"));
+        System.out.println("".equals(""));
+    }
+    */
+    
+    /**
+     * Return index of quotation mark in raw input String
+     * */
+    private static ArrayList<Integer> getQuoteMark(String subInfoStr) {
+        ArrayList<Integer> quotationIndex = new ArrayList<Integer>();
+        String curStr;
+        int countSymbol = 0;
+        for(int i = 0; i < subInfoStr.length(); i ++) {
+            curStr = subInfoStr.substring(i, i+1);
+            if (countSymbol == 4) {
+                break;
+            } else if (curStr.equals(ParserKeys.SPLITSYMBOL)) {
+                quotationIndex.add(i);
+                countSymbol++;
+            }
+        }
+        return quotationIndex;
     }
 }

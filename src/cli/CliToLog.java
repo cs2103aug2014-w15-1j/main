@@ -1,29 +1,36 @@
 package cli;
 
+import cli.ParserKeys;
+
 public class CliToLog{
 
     private String command;
     private String taskTitle;
-    private String taskDiscrib;
+    private String description;
     private String rpDate;
     private String startDay;
     private String endDay;
+    private String taskDescription;
     
     public CliToLog(String command) {
         this.command = command;
     }
     
-    public CliToLog(String command, String taskDescribe) {
+    public CliToLog(String command, String taskDescription) {
         this.command = command;
-        this.taskDiscrib = taskDescribe;
+        this.taskDescription = taskDescription;
+        this.rpDate = ParserKeys.RP_EVREYDAY;
+        this.startDay = ParserKeys.EMPTY_DATE;
+        this.endDay = ParserKeys.EMPTY_DATE;
+        this.description = ParserKeys.EMPTY_DIS;
     }
 
     public CliToLog(String command, String taskTitle, 
-            String taskDescribe, String rpDate, 
-            String startDay, String endDay) {
+                    String rpDate, String startDay, String endDay,
+                    String taskDescribe) {
         this.command = command;
         this.taskTitle = taskTitle;
-        this.taskDiscrib = taskDescribe;
+        this.description = taskDescribe;
         this.rpDate = rpDate;
         this.startDay = startDay;
         this.endDay = endDay;
@@ -38,7 +45,11 @@ public class CliToLog{
     }
 
     public String getDiscription(){
-        return this.taskDiscrib;
+        return this.description;
+    }
+    
+    public String getTaskDescription(){
+        return this.taskDescription;
     }
 
     public String getRPdate(){
