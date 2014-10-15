@@ -1,5 +1,8 @@
 package cli;
 
+import cli.ParserKeys;
+
+
 public class Command{
 
 	//Command Type
@@ -7,10 +10,11 @@ public class Command{
     
     //Add
     private String taskTitle;
-    private String taskDiscrib;
-    private String repeatDate;
+    private String description;
+    private String rpDate;
     private String startDay;
     private String endDay;
+    private String taskDescription;
     
     //Read
     private String readIndex;
@@ -27,24 +31,26 @@ public class Command{
     //search
     private String searchName;
     
-    //
-    
     public Command(String command) {
         this.command = command;
     }
     
     public Command(String command, String taskDescribe) {
         this.command = command;
-        this.taskDiscrib = taskDescribe;
+        this.taskDescription = taskDescribe;
+        this.rpDate = ParserKeys.RP_EVREYDAY;
+        this.startDay = ParserKeys.EMPTY_DATE;
+        this.endDay = ParserKeys.EMPTY_DATE;
+        this.description = ParserKeys.EMPTY_DIS;
     }
+        
     // strictly only for add command
     public Command(String command, String taskTitle, 
-            String taskDescribe, String repeatDate, 
-            String startDay, String endDay) {
+            String repeatDate, String startDay, String endDay, String description) {
         this.command = command;
         this.taskTitle = taskTitle;
-        this.taskDiscrib = taskDescribe;
-        this.repeatDate = repeatDate;
+        this.description = description;
+        this.rpDate = repeatDate;
         this.startDay = startDay;
         this.endDay = endDay;
     }
@@ -57,12 +63,16 @@ public class Command{
         return this.taskTitle;
     }
 
-    public String getDiscription(){
-        return this.taskDiscrib;
+    public String getDescription(){
+        return this.description;
+    }
+    
+    public String getTaskDescription(){
+        return this.taskDescription;
     }
 
     public String getRPdate(){
-        return this.repeatDate;
+        return this.rpDate;
     }
 
     public String getStartDay(){
