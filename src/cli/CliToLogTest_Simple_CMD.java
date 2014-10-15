@@ -9,7 +9,7 @@ import cli.CliToLog;
 
 =======
 import cli.Command;
->>>>>>> c20498aa8afaa635d12074d1510aedc6e859966c
+
 public class CliToLogTest_Simple_CMD {
 
     String testDeleStr;
