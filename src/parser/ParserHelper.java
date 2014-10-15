@@ -1,6 +1,6 @@
-package cli;
+package parser;
 
-import cli.CliProcess.COMMAND_TYPE;
+import parser.ParserProcess.COMMAND_TYPE;
 
 class CmdInfoPair {
     private COMMAND_TYPE cmd;

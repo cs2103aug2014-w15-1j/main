@@ -1,11 +1,11 @@
 package logic;
 
-import cli.Command;
-import cli.CliProcess;
 import gui.VIEW_MODE;
 
 import java.util.ArrayList;
 
+import parser.CliProcess;
+import parser.Command;
 import read_file.ReadFile;
 
 public class RunLogic {

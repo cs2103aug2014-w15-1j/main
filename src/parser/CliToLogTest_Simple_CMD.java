@@ -1,11 +1,10 @@
-package cli;
+package parser;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import cli.Command;
+import parser.Command;
 public class CliToLogTest_Simple_CMD {
 
     String testDeleStr;
@@ -31,23 +30,23 @@ public class CliToLogTest_Simple_CMD {
     
     @Test
     public void test() {
-        deleteTest = CliProcess.interpretCommand(testDeleStr);
+        deleteTest = ParserProcess.interpretCommand(testDeleStr);
         Assert.assertEquals("Test delete command: ", "DELETE", deleteTest.getCommand());
         Assert.assertEquals("Test delete target index: ", "1", deleteTest.getTaskDescription());
         
-        readTest = CliProcess.interpretCommand(testReadStr);
+        readTest = ParserProcess.interpretCommand(testReadStr);
         Assert.assertEquals("Test delete command: ", "READ", readTest.getCommand());
         Assert.assertEquals("Test delete target index: ", "2", readTest.getTaskDescription());
         
-        viewTest = CliProcess.interpretCommand(testViewStr);
+        viewTest = ParserProcess.interpretCommand(testViewStr);
         Assert.assertEquals("Test delete command: ", "VIEW", viewTest.getCommand());
         Assert.assertEquals("Test delete target index: ", "tasklist", viewTest.getTaskDescription());
         
-        updateTest = CliProcess.interpretCommand(testUpdateStr);
+        updateTest = ParserProcess.interpretCommand(testUpdateStr);
         Assert.assertEquals("Test delete command: ", "RENAME", updateTest.getCommand());
         Assert.assertEquals("Test delete target index: ", "a new name", updateTest.getTaskDescription());
         
-        undoTest = CliProcess.interpretCommand(testUndoStr);
+        undoTest = ParserProcess.interpretCommand(testUndoStr);
         Assert.assertEquals("Test delete command: ", "UNDO", undoTest.getCommand());
     }
 }
