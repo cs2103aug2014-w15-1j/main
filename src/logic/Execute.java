@@ -5,7 +5,7 @@ import gui.VIEW_MODE;
 import java.util.ArrayList;
 import java.util.Date;
 
-import cli.Command;
+import parser.Command;
 import data_store.DataStore;
 
 public class Execute {
@@ -108,7 +108,7 @@ public class Execute {
 		}
 		
 		// update File
-		Task newTask = new Task(userCommand.getTitle(), userCommand.getDiscription(), userCommand.getRPdate(), startDate, endDate);
+		Task newTask = new Task(userCommand.getTitle(), userCommand.getDescription(), userCommand.getRPdate(), startDate, endDate);
 		taskList.add(newTask);
 		
 		// update GUI view mode
@@ -128,7 +128,7 @@ public class Execute {
 
 	// delete a certain task or delete or tasks
 	private static void deleteTask(Command userCommand) {
-		String deleteLine = userCommand.getDiscription();
+		String deleteLine = userCommand.getTaskDescription();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			if(deleteLine.equalsIgnoreCase("all")){
@@ -214,7 +214,7 @@ public class Execute {
 
 	// read details of a certain task
 	private static void readTask(Command userCommand) {
-		int readLine = Integer.valueOf(userCommand.getDiscription());
+		int readLine = Integer.valueOf(userCommand.getTaskDescription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			if(readLine > Constant.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
@@ -265,7 +265,7 @@ public class Execute {
 	
 	// update the name of a certain task 
 	private static void rename(Command userCommand) {
-		taskList.get(GUI.getTaskIndex()).rename(userCommand.getDiscription());
+		taskList.get(GUI.getTaskIndex()).rename(userCommand.getTaskDescription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -275,7 +275,7 @@ public class Execute {
 
 	// update the description of a certain task
 	private static void describe(Command userCommand) {
-		taskList.get(GUI.getTaskIndex()).describe(userCommand.getDiscription());
+		taskList.get(GUI.getTaskIndex()).describe(userCommand.getTaskDescription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -302,9 +302,9 @@ public class Execute {
 		int startYear = Integer.valueOf(userCommand.getTitle().substring(0,4));
 		int startMonth = Integer.valueOf(userCommand.getTitle().substring(4,6));
 		int startDay = Integer.valueOf(userCommand.getTitle().substring(6,8));
-		int endYear = Integer.valueOf(userCommand.getDiscription().substring(0,4));
-		int endMonth = Integer.valueOf(userCommand.getDiscription().substring(4,6));
-		int endDay = Integer.valueOf(userCommand.getDiscription().substring(6,8));
+		int endYear = Integer.valueOf(userCommand.getTaskDescription().substring(0,4));
+		int endMonth = Integer.valueOf(userCommand.getTaskDescription().substring(4,6));
+		int endDay = Integer.valueOf(userCommand.getTaskDescription().substring(6,8));
 		Date startDate = new Date(startYear, startMonth, startDay);
 		Date endDate = new Date(endYear, endMonth, endDay);
 		taskList.get(GUI.getTaskIndex()).reschedule(startDate, endDate);
@@ -319,14 +319,14 @@ public class Execute {
 	// change view mode
 	private static void view(Command userCommand) {
 		GUI.changeCurretnTask(0);
-		VIEW_MODE mode = determineViewMode(userCommand.getDiscription());
+		VIEW_MODE mode = determineViewMode(userCommand.getTaskDescription());
 		ArrayList<Task> display;
 		switch (mode) {
 		case DATE:
-			display = viewDate(userCommand.getDiscription());
+			display = viewDate(userCommand.getTaskDescription());
 			break;
 		case MONTH:
-			display = viewMonth(userCommand.getDiscription());
+			display = viewMonth(userCommand.getTaskDescription());
 			break;
 		case BIN:
 			display = viewBin();
@@ -503,7 +503,7 @@ public class Execute {
 		// TODO Auto-generated method stub
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
-			int restoreLine = Integer.valueOf(userCommand.getDiscription());
+			int restoreLine = Integer.valueOf(userCommand.getTaskDescription());
 			if(restoreLine > Constant.MAX_DISPLAY_LINE || currentDisplay[restoreLine] == -1){
 				for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
 					if(currentDisplay[i] != -1){

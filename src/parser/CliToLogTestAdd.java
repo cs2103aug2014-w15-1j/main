@@ -1,4 +1,4 @@
-package cli;
+package parser;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +22,7 @@ public class CliToLogTestAdd {
     
     @Test
     public void testAdd() {
-        resultCTL = CliProcess.interpretCommand(testAddStr);
+        resultCTL = ParserProcess.interpretCommand(testAddStr);
         getCommand = resultCTL.getCommand();
         getTitle = resultCTL.getTitle();
         getDescription = resultCTL.getDescription();

@@ -1,2 +1,9 @@
+<<<<<<< HEAD
 /cli/
 /logic/
+=======
+/cli
+/data_store
+/gui
+/logic
+>>>>>>> 9c0b21785df46d8467a4a1db9be40f27e297bb52

@@ -1,4 +1,4 @@
-package cli;
+package parser;
 
 class ErrorMSG {
     public static final String QUOTATION_UNCLOSE_ERR = "Error at Parser: Quotation mark unclosed or missing title/discription";

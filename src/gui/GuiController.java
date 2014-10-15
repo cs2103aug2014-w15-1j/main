@@ -1,10 +1,13 @@
 package gui;
 
+import java.util.logging.Logger;
+
 import logic.DisplayInfo;
 import logic.RunLogic;
 
 public class GuiController {
-	static BasicGui gui;
+	private static BasicGui gui;
+	private static Logger logger = Logger.getLogger("GuiController"); 
 	
 	private static GuiInfoTranslator translate(DisplayInfo info){
 		return new GuiInfoTranslator(info);
@@ -25,13 +28,18 @@ public class GuiController {
 	
 	static void display(String command){
 		DisplayInfo info= RunLogic.logic(command);
+		logger.info("user enters command: " + command);
 		display(info);
+		logger.info("user receives feedback");
 	}
 
 	public static void run(){
 		gui = BasicGui.getInstance();
+		logger.info("Gui instance gotten");
+		assert gui!=null:"GuiController cannot get instance of Gui";
 		DisplayInfo confg= RunLogic.initialize();
 		display(confg);
+		logger.info("MagiCal initialization completed");
 	}
 	public static void main(String[] args){
 		run();

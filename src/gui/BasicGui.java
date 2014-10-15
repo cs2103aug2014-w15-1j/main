@@ -30,6 +30,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JLayeredPane;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.Frame;
 import java.awt.Dialog.ModalExclusionType;
@@ -39,6 +40,7 @@ import java.awt.SystemColor;
 
 import javax.swing.UIManager;
 import javax.swing.BoxLayout;
+
 import java.awt.Window.Type;
 
 /**
@@ -99,6 +101,17 @@ public class BasicGui extends JFrame {
 	 * method BasicGUI: constructor of GUI
 	 */
 	private BasicGui() {
+		try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 		setType(Type.UTILITY);
 		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		getContentPane().setFocusTraversalPolicyProvider(true);

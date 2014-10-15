@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.ArrayList;
+
 import logic.DisplayInfo;
 import logic.Task;
 
@@ -12,6 +13,7 @@ public class GuiInfoTranslator  {
 	 * ====================================================================
 	 */
 	private DisplayInfo info;
+	private final static String Message_Empty_List = "No task here";
 	/*
 	 * ====================================================================
 	 * ===================== END OF PRIVATE FIELD =========================
@@ -64,7 +66,7 @@ public class GuiInfoTranslator  {
 			task = taskList.get(0);
 			return processTaskDetailText(task);
 		case MONTH:
-			throw new Error("not supported yet");
+			throw new UnsupportedOperationException("view in Month is not supported yet");
 		default:
 			return processTaskListText(taskList);
 		}
@@ -99,7 +101,7 @@ public class GuiInfoTranslator  {
 			output = "<html>" + "<ol>" + body + "</ol>" + "</html>";
 
 		} else {
-			output = "<html>" + "<center>" + "EMPTY" + "</center>" + "</html>";
+			output = "<html>" + "<center>" + Message_Empty_List + "</center>" + "</html>";
 		}
 
 		return output;

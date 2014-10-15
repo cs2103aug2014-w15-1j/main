@@ -1,8 +1,8 @@
-package cli;
+package parser;
 
 import java.util.ArrayList;
 
-public class CliProcess {
+public class ParserProcess {
 
     enum COMMAND_TYPE {
         ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT, PREVIOUS, SEARCH, BACK,

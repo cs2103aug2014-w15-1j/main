@@ -1,7 +1,7 @@
 package logic;
 
+import parser.Command;
 import gui.VIEW_MODE;
-import cli.Command;
 
 public class CheckCommandValid {
 	// check whether the command is valid under current view mode

@@ -1,7 +1,6 @@
-package cli;
+package parser;
 
-import cli.ParserKeys;
-
+import parser.ParserKeys;
 
 public class Command{
 
@@ -46,7 +45,8 @@ public class Command{
         
     // strictly only for add command
     public Command(String command, String taskTitle, 
-            String repeatDate, String startDay, String endDay, String description) {
+                   String repeatDate, String startDay, String endDay, 
+                   String description) {
         this.command = command;
         this.taskTitle = taskTitle;
         this.description = description;
