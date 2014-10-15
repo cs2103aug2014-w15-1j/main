@@ -210,8 +210,8 @@ public class CliProcess {
             String startDate = makeDay(getBasicInfoAT(2, subInfoStr, symbolIndex, ParserKeys.EMPTY_DATE));
             String endDate = makeDay(getBasicInfoAT(3, subInfoStr, symbolIndex, ParserKeys.EMPTY_DATE));
             String description = getDescription(subInfoStr, symbolIndex);
-            
-            return new CliToLog(COMMAND_TYPE.ADD.name(), taskTitle, 
+            System.out.println(repeatDate);
+            return new Command(COMMAND_TYPE.ADD.name(), taskTitle, 
                                 repeatDate, startDate, 
                                 endDate, description);
             
@@ -242,6 +242,7 @@ public class CliProcess {
         } else {
             String getLatter = getBasicInfoAT(2, subInfoStr, symbolIndex, ParserKeys.EMPTY_STR);
             if (getLatter.equals(ParserKeys.EMPTY_STR)) {
+                
                 ErrorGenerator.popError(ErrorMSG.REPEAT_ERR);
                 return ParserKeys.INVALID_INFO;
             } else {
@@ -301,6 +302,7 @@ public class CliProcess {
                 String frontRemoved = removeBlocks(subInfoStr, 1);
                 return getEndDate(frontRemoved, defaultStr);
             }
+        }
     }
     
     /**
@@ -464,7 +466,6 @@ public class CliProcess {
                 int firstSpace = subInfoStr.indexOf(ParserKeys.SPACE);
                 return subInfoStr.substring(0, firstSpace);
             }
-            
         } else {
             // 4 Quotation Markers
             return retrieveQuotedStr(subInfoStr, 
@@ -523,7 +524,6 @@ public class CliProcess {
      * @param subInfoStr
      *              String of sub-information following the update command
      */
-
     private static Command update(String subInfoStr){
        String getUpdateItem;
        String getUpdateInfo;
@@ -536,22 +536,30 @@ public class CliProcess {
             getUpdateItem = subInfoStr.substring(0, getCommandEnd).trim().toLowerCase();
             getUpdateInfo = subInfoStr.substring(getCommandEnd + 1, subInfoStr.length());
         }
-
-        if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.NAME.name())){
-            return rename(getUpdateInfo);
-        } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.DESCRIPTION.name())){
-            return describe(getUpdateInfo);
-        } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.RESCHEDULE.name())){
-            return reschedule(getUpdateInfo);
-        } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.REPEAT.name())){
-            return repeat(getUpdateInfo);
+        ArrayList<Integer> symbolIndex = getQuoteMark(getUpdateInfo);
+        int symbolNum = symbolIndex.size();
+        if (symbolNum == 2) {
+            String taskDescription = getTaskTitle(cleanFrontSpace(getUpdateInfo), symbolIndex);
+            
+            if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.NAME.name())){
+                return rename(taskDescription);
+            } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.DESCRIPTION.name())){
+                return describe(taskDescription);
+            } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.RESCHEDULE.name())){
+                return reschedule(taskDescription);
+            } else if (getUpdateItem.equalsIgnoreCase(COMMAND_TYPE.REPEAT.name())){
+                return repeat(taskDescription);
+            } else {
+                ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
+                return makeInvalid();
+            }
         } else {
-            ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
+            ErrorGenerator.popError(ErrorMSG.UNEXPECTED_QUOTATION_ERR);
             return makeInvalid();
         }
+        
 
-
-
+        
         /*
 
         String updateField;
@@ -703,16 +711,14 @@ public class CliProcess {
 
         return commandPackage;		
     }
-    /*
+    
     public static void main(String args[]) {
-        String subInfoStr = "\"a \" everyday"; 
-        ArrayList<Integer> symbolIndex = new ArrayList<Integer>();
-        symbolIndex.add(0);
-        symbolIndex.add(3);
+        String subInfoStr = "add title"; 
+        Command result = interpretCommand(subInfoStr);
         //System.out.println(getBasicInfoAT(1, subInfoStr, symbolIndex, "DEFAULT"));
-        System.out.println("".equals(""));
+        System.out.println(result.getRPdate());
     }
-    */
+    
     
     /**
      * Return index of quotation mark in raw input String

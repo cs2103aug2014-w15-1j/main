@@ -27,7 +27,7 @@ class ParserKeys {
     public static final String INVALID_SYMBOL = "=";
     public static final String EMPTY_STR = "";
     public static final String EMPTY_TITLE = "EMPTY TITLE";
-    public static final String EMPTY_DIS = "EMPTY DISCRIPTION";
+    public static final String EMPTY_DIS = "EMPTY DESCRIPTION";
     public static final String EMPTY_DATE = "20000101";
     
     public static final String RP_EVREYDAY = "everyday";

@@ -1,25 +1,17 @@
 package cli;
 
-<<<<<<< HEAD:src/cli/CliToLog.java
 import cli.ParserKeys;
 
-public class CliToLog{
-=======
+
 public class Command{
->>>>>>> 54818b7a4ce089a542fcde4f3c55e8622ac9f8d4:src/cli/Command.java
 
 	//Command Type
     private String command;
     
     //Add
     private String taskTitle;
-<<<<<<< HEAD:src/cli/CliToLog.java
     private String description;
     private String rpDate;
-=======
-    private String taskDiscrib;
-    private String repeatDate;
->>>>>>> 54818b7a4ce089a542fcde4f3c55e8622ac9f8d4:src/cli/Command.java
     private String startDay;
     private String endDay;
     private String taskDescription;
@@ -39,43 +31,26 @@ public class Command{
     //search
     private String searchName;
     
-    //
-    
     public Command(String command) {
         this.command = command;
     }
     
-<<<<<<< HEAD:src/cli/CliToLog.java
-    public CliToLog(String command, String taskDescription) {
-=======
     public Command(String command, String taskDescribe) {
->>>>>>> 54818b7a4ce089a542fcde4f3c55e8622ac9f8d4:src/cli/Command.java
         this.command = command;
-        this.taskDescription = taskDescription;
+        this.taskDescription = taskDescribe;
         this.rpDate = ParserKeys.RP_EVREYDAY;
         this.startDay = ParserKeys.EMPTY_DATE;
         this.endDay = ParserKeys.EMPTY_DATE;
         this.description = ParserKeys.EMPTY_DIS;
     }
-<<<<<<< HEAD:src/cli/CliToLog.java
-
-    public CliToLog(String command, String taskTitle, 
-                    String rpDate, String startDay, String endDay,
-                    String taskDescribe) {
-        this.command = command;
-        this.taskTitle = taskTitle;
-        this.description = taskDescribe;
-        this.rpDate = rpDate;
-=======
+        
     // strictly only for add command
     public Command(String command, String taskTitle, 
-            String taskDescribe, String repeatDate, 
-            String startDay, String endDay) {
+            String repeatDate, String startDay, String endDay, String description) {
         this.command = command;
         this.taskTitle = taskTitle;
-        this.taskDiscrib = taskDescribe;
-        this.repeatDate = repeatDate;
->>>>>>> 54818b7a4ce089a542fcde4f3c55e8622ac9f8d4:src/cli/Command.java
+        this.description = description;
+        this.rpDate = repeatDate;
         this.startDay = startDay;
         this.endDay = endDay;
     }
@@ -88,7 +63,7 @@ public class Command{
         return this.taskTitle;
     }
 
-    public String getDiscription(){
+    public String getDescription(){
         return this.description;
     }
     
@@ -97,7 +72,7 @@ public class Command{
     }
 
     public String getRPdate(){
-        return this.repeatDate;
+        return this.rpDate;
     }
 
     public String getStartDay(){
