@@ -2,6 +2,13 @@ package parser;
 
 import parser.ParserProcess.COMMAND_TYPE;
 
+/**
+ * class CmdInfoPair: A pair of command type and command's sub-information
+ * 
+ * @author A0119493X
+ *          
+ * */
+
 class CmdInfoPair {
     private COMMAND_TYPE cmd;
     private String subInfo;
@@ -19,6 +26,15 @@ class CmdInfoPair {
         return this.subInfo;
     }
 }
+
+/**
+ * class ParserKeys: Special characters reserved for Parser
+ * 
+ * @author A0119493X
+ *          Containing special keys to help interpreting input strings, including separating
+ *          symbols, special field names, and invalid symbols
+ *          
+ * */
 
 class ParserKeys {
     public static final String SPLITSYMBOL = "\"";

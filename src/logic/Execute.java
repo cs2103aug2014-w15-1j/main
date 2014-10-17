@@ -5,7 +5,7 @@ import gui.VIEW_MODE;
 import java.util.ArrayList;
 import java.util.Date;
 
-import parser.Command;
+import parser.RawCommand;
 import data_store.DataStore;
 
 public class Execute {
@@ -17,7 +17,7 @@ public class Execute {
 	private static DisplayInfo passToGui;
 	private static LogicToStore passToStore;
 	
-	public static DisplayInfo executeCommand(Command userCommand){
+	public static DisplayInfo executeCommand(RawCommand userCommand){
 		initialize();
 		COMMAND_TYPE commandType = determineCommandType(userCommand.getCommand());
 		
@@ -92,7 +92,7 @@ public class Execute {
 
 	// add a task to task list. update new GUI and File information
 	@SuppressWarnings("deprecation")
-	private static void addTask(Command userCommand) {
+	private static void addTask(RawCommand userCommand) {
 		// modify date information of task
 		Date startDate = null;
 		Date endDate = null;
@@ -127,8 +127,8 @@ public class Execute {
 
 
 	// delete a certain task or delete or tasks
-	private static void deleteTask(Command userCommand) {
-		String deleteLine = userCommand.getTaskDescription();
+	private static void deleteTask(RawCommand userCommand) {
+		String deleteLine = userCommand.getCMDDescription();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			if(deleteLine.equalsIgnoreCase("all")){
@@ -213,8 +213,8 @@ public class Execute {
 	}
 
 	// read details of a certain task
-	private static void readTask(Command userCommand) {
-		int readLine = Integer.valueOf(userCommand.getTaskDescription());
+	private static void readTask(RawCommand userCommand) {
+		int readLine = Integer.valueOf(userCommand.getCMDDescription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			if(readLine > Constant.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
@@ -264,8 +264,8 @@ public class Execute {
 	}
 	
 	// update the name of a certain task 
-	private static void rename(Command userCommand) {
-		taskList.get(GUI.getTaskIndex()).rename(userCommand.getTaskDescription());
+	private static void rename(RawCommand userCommand) {
+		taskList.get(GUI.getTaskIndex()).rename(userCommand.getCMDDescription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -274,8 +274,8 @@ public class Execute {
 	}
 
 	// update the description of a certain task
-	private static void describe(Command userCommand) {
-		taskList.get(GUI.getTaskIndex()).describe(userCommand.getTaskDescription());
+	private static void describe(RawCommand userCommand) {
+		taskList.get(GUI.getTaskIndex()).describe(userCommand.getCMDDescription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
@@ -284,7 +284,7 @@ public class Execute {
 	}
 
 	// update the repeat times and dates of a certain task
-	private static void repeat(Command userCommand) {
+	private static void repeat(RawCommand userCommand) {
 		// TODO Auto-generated method stub
 		taskList.get(GUI.getTaskIndex()).repeat( userCommand.getRPdate());
 		ArrayList<Task> display = new ArrayList<Task>();
@@ -297,14 +297,14 @@ public class Execute {
 
 	// update the time information of a certain task
 	@SuppressWarnings("deprecation")
-	private static void reschedule(Command userCommand) {
+	private static void reschedule(RawCommand userCommand) {
 		// TODO Auto-generated method stub
 		int startYear = Integer.valueOf(userCommand.getTitle().substring(0,4));
 		int startMonth = Integer.valueOf(userCommand.getTitle().substring(4,6));
 		int startDay = Integer.valueOf(userCommand.getTitle().substring(6,8));
-		int endYear = Integer.valueOf(userCommand.getTaskDescription().substring(0,4));
-		int endMonth = Integer.valueOf(userCommand.getTaskDescription().substring(4,6));
-		int endDay = Integer.valueOf(userCommand.getTaskDescription().substring(6,8));
+		int endYear = Integer.valueOf(userCommand.getCMDDescription().substring(0,4));
+		int endMonth = Integer.valueOf(userCommand.getCMDDescription().substring(4,6));
+		int endDay = Integer.valueOf(userCommand.getCMDDescription().substring(6,8));
 		Date startDate = new Date(startYear, startMonth, startDay);
 		Date endDate = new Date(endYear, endMonth, endDay);
 		taskList.get(GUI.getTaskIndex()).reschedule(startDate, endDate);
@@ -317,16 +317,16 @@ public class Execute {
 	}
 
 	// change view mode
-	private static void view(Command userCommand) {
+	private static void view(RawCommand userCommand) {
 		GUI.changeCurretnTask(0);
-		VIEW_MODE mode = determineViewMode(userCommand.getTaskDescription());
+		VIEW_MODE mode = determineViewMode(userCommand.getCMDDescription());
 		ArrayList<Task> display;
 		switch (mode) {
 		case DATE:
-			display = viewDate(userCommand.getTaskDescription());
+			display = viewDate(userCommand.getCMDDescription());
 			break;
 		case MONTH:
-			display = viewMonth(userCommand.getTaskDescription());
+			display = viewMonth(userCommand.getCMDDescription());
 			break;
 		case BIN:
 			display = viewBin();
@@ -499,11 +499,11 @@ public class Execute {
 	}
 
 	// not finish yet
-	private static void restore(Command userCommand) {
+	private static void restore(RawCommand userCommand) {
 		// TODO Auto-generated method stub
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
-			int restoreLine = Integer.valueOf(userCommand.getTaskDescription());
+			int restoreLine = Integer.valueOf(userCommand.getCMDDescription());
 			if(restoreLine > Constant.MAX_DISPLAY_LINE || currentDisplay[restoreLine] == -1){
 				for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
 					if(currentDisplay[i] != -1){
@@ -546,7 +546,7 @@ public class Execute {
 	}
 
 	// not finish yet
-	private static void search(Command userCommand) {
+	private static void search(RawCommand userCommand) {
 		// TODO Auto-generated method stub
 	}
 	
@@ -555,7 +555,7 @@ public class Execute {
 
 
 	// This method gives feedback when the user gives unreadable command
-	public static DisplayInfo wrongCommand(Command userCommand){
+	public static DisplayInfo wrongCommand(RawCommand userCommand){
 		initialize();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){

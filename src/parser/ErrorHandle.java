@@ -1,5 +1,12 @@
 package parser;
 
+/**
+ * class ErrorMSG: String type error messages
+ * 
+ * @author A0119493X
+ *          Parser error messages of all scenarios.
+ * */
+
 class ErrorMSG {
     public static final String QUOTATION_UNCLOSE_ERR = "Error at Parser: Quotation mark unclosed or missing title/discription";
     public static final String UNEXPECTED_QUOTATION_ERR = "Error at Parser: Input task contain unexpected quotation mark";

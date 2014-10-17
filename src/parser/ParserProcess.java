@@ -2,6 +2,15 @@ package parser;
 
 import java.util.ArrayList;
 
+/**
+ * class ParserProcess: Retrieve valid information from raw input string
+ * 
+ * @author A0119493X
+ *          Interpret raw input strings and wrap valid information into Command objects
+ *          
+ * */
+
+
 public class ParserProcess {
 
     enum COMMAND_TYPE {
@@ -15,16 +24,22 @@ public class ParserProcess {
         // UPDATE_FIELD
         NAME, DESCRIPTION, DATE, DAY;
     }
-
+    
+    /*
+     * ====================================================================
+     * ===================== START OF PUBLIC METHOD =======================
+     * ====================================================================
+     */
+    
     /**
      * Interpret input string to an executable command
      * 
      * @return CliToLog which contains corresponding information
      * */
-    public static Command interpretCommand(String inputString){
+    public static RawCommand interpretCommand(String inputString){
         if (noInvalidKeys(inputString)) {
             CmdInfoPair getCmdPair = makeCmdPair(inputString);
-            Command interpretedCm = transformCmd(getCmdPair);
+            RawCommand interpretedCm = transformCmd(getCmdPair);
             return interpretedCm;
 
         } else {
@@ -32,13 +47,12 @@ public class ParserProcess {
             return makeInvalid();
         }
     }
-
-    /**
-     * Check if input contains invalid symbols
-     * */
-    private static boolean noInvalidKeys(String inputString) {
-        return !inputString.contains(ParserKeys.INVALID_SYMBOL);
-    }
+    
+    /*
+     * ====================================================================
+     * ===================== END OF PUBLIC METHOD =========================
+     * ====================================================================
+     */
 
     /**
      * Interpret strings by their own commands
@@ -96,21 +110,10 @@ public class ParserProcess {
     }
     
     /**
-     * Clean the white space at the start of a string
-     * */
-    private static String cleanFrontSpace(String rawString) {
-        if(rawString.startsWith(ParserKeys.SPACE)) {
-            return cleanFrontSpace(rawString.substring(1, rawString.length()));
-        } else {
-            return rawString;
-        }
-    }
-
-    /**
      * Transform string command into corresponding CliToLog objects
      * */
-    private static Command transformCmd(CmdInfoPair infoPair){
-        Command resultCMD;
+    private static RawCommand transformCmd(CmdInfoPair infoPair){
+        RawCommand resultCMD;
         COMMAND_TYPE getCMD = infoPair.getCMD();
         String subInfoStr = infoPair.getSubInfo();
 
@@ -167,26 +170,26 @@ public class ParserProcess {
         return resultCMD;
     }
 
-    private static Command rename(String subInfoStr) {
+    private static RawCommand rename(String subInfoStr) {
     	if(subInfoStr.isEmpty()){
     		return makeInvalid();
     	}
-		return new Command(COMMAND_TYPE.RENAME.name(), subInfoStr);
+		return new RawCommand(COMMAND_TYPE.RENAME.name(), subInfoStr);
 	}
 
-	private static Command describe(String subInfoStr) {
+	private static RawCommand describe(String subInfoStr) {
     	if(subInfoStr.isEmpty()){
     		return makeInvalid();
     	}
-		return new Command(COMMAND_TYPE.DESCRIBE.name(), subInfoStr);
+		return new RawCommand(COMMAND_TYPE.DESCRIBE.name(), subInfoStr);
 	}
 
-	private static Command reschedule(String subInfoStr) {
+	private static RawCommand reschedule(String subInfoStr) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private static Command repeat(String subInfoStr) {
+	private static RawCommand repeat(String subInfoStr) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -199,7 +202,7 @@ public class ParserProcess {
      *      return a CliToLog object.
      * */
 	
-    private static Command add(String subInfoStr) {
+    private static RawCommand add(String subInfoStr) {
         ArrayList<Integer> symbolIndex = getQuoteMark(subInfoStr);
         int markNumber = symbolIndex.size();
         
@@ -211,7 +214,7 @@ public class ParserProcess {
             String endDate = makeDay(getBasicInfoAT(3, subInfoStr, symbolIndex, ParserKeys.EMPTY_DATE));
             String description = getDescription(subInfoStr, symbolIndex);
             System.out.println(repeatDate);
-            return new Command(COMMAND_TYPE.ADD.name(), taskTitle, 
+            return new RawCommand(COMMAND_TYPE.ADD.name(), taskTitle, 
                                 repeatDate, startDate, 
                                 endDate, description);
             
@@ -251,19 +254,6 @@ public class ParserProcess {
         }
     }
     
-    /**
-     * Judge the validity of repeat date input
-     * */
-    private static boolean isValidRP(String repDate) {
-        boolean result = false;
-        for (int i = 0; i < ParserKeys.REPEAT_KEYS.length; i++) {
-            if (repDate.equalsIgnoreCase(ParserKeys.REPEAT_KEYS[i])){
-                result = true;
-            }
-        }
-        return result;
-    }
-
     /**
      * Get basic information at location 
      * (1) repeat date, (2) start date, (3) end date
@@ -365,6 +355,37 @@ public class ParserProcess {
         }
     }
     
+    /**
+     * Check if input contains invalid symbols
+     * */
+    private static boolean noInvalidKeys(String inputString) {
+        return !inputString.contains(ParserKeys.INVALID_SYMBOL);
+    }
+    
+    /**
+     * Clean the white space at the start of a string
+     * */
+    private static String cleanFrontSpace(String rawString) {
+        if(rawString.startsWith(ParserKeys.SPACE)) {
+            return cleanFrontSpace(rawString.substring(1, rawString.length()));
+        } else {
+            return rawString;
+        }
+    }
+    
+    /**
+     * Judge the validity of repeat date input
+     * */
+    private static boolean isValidRP(String repDate) {
+        boolean result = false;
+        for (int i = 0; i < ParserKeys.REPEAT_KEYS.length; i++) {
+            if (repDate.equalsIgnoreCase(ParserKeys.REPEAT_KEYS[i])){
+                result = true;
+            }
+        }
+        return result;
+    }
+
     /**
      * Remove front blocks by spaces
      * 
@@ -524,7 +545,7 @@ public class ParserProcess {
      * @param subInfoStr
      *              String of sub-information following the update command
      */
-    private static Command update(String subInfoStr){
+    private static RawCommand update(String subInfoStr){
        String getUpdateItem;
        String getUpdateInfo;
 
@@ -615,8 +636,8 @@ public class ParserProcess {
      * @param readTarget
      *          Target reading index
      */
-    private static Command read(String readTarget){
-        Command commandPackage = new Command(COMMAND_TYPE.READ.name(), readTarget);
+    private static RawCommand read(String readTarget){
+        RawCommand commandPackage = new RawCommand(COMMAND_TYPE.READ.name(), readTarget);
 
         return commandPackage;
     }
@@ -624,8 +645,8 @@ public class ParserProcess {
     /**
      * Undo the previous action
      */
-    private static Command undo(){
-        Command commandPackage = new Command(COMMAND_TYPE.UNDO.name());
+    private static RawCommand undo(){
+        RawCommand commandPackage = new RawCommand(COMMAND_TYPE.UNDO.name());
 
         return commandPackage;		
     }
@@ -636,8 +657,8 @@ public class ParserProcess {
      * @param deletIndex
      *          Index to be deleted
      */
-    private static Command delete(String deleteIndex){
-        Command commandPackage = new Command(COMMAND_TYPE.DELETE.name(), deleteIndex);
+    private static RawCommand delete(String deleteIndex){
+        RawCommand commandPackage = new RawCommand(COMMAND_TYPE.DELETE.name(), deleteIndex);
 
         return commandPackage;
     }
@@ -645,8 +666,8 @@ public class ParserProcess {
     /**
      * Make a CliToLog with command = "invalid"
      * */
-    private static Command makeInvalid() {
-        return new Command(COMMAND_TYPE.INVALID.name());
+    private static RawCommand makeInvalid() {
+        return new RawCommand(COMMAND_TYPE.INVALID.name());
     }
 
     /** 
@@ -655,11 +676,11 @@ public class ParserProcess {
      * @param viewTarget
      *          Targeted viewing model
      */
-    private static Command view(String viewTarget){
+    private static RawCommand view(String viewTarget){
         if (viewTarget.equalsIgnoreCase(COMMAND_TYPE.TASKLIST.name()) ||
                 viewTarget.equalsIgnoreCase(COMMAND_TYPE.BIN.name())) {
 
-            Command commandPackage = new Command(COMMAND_TYPE.VIEW.name(), viewTarget);
+            RawCommand commandPackage = new RawCommand(COMMAND_TYPE.VIEW.name(), viewTarget);
             return commandPackage;
         } else {
             ErrorGenerator.popError(ErrorMSG.VIEW_MODE_ERR);
@@ -670,8 +691,8 @@ public class ParserProcess {
     /** 
      * Next page for current state of view
      */
-    private static Command next(){
-        Command commandPackage = new Command(COMMAND_TYPE.NEXT.name());
+    private static RawCommand next(){
+        RawCommand commandPackage = new RawCommand(COMMAND_TYPE.NEXT.name());
 
         return commandPackage;
     }
@@ -679,8 +700,8 @@ public class ParserProcess {
     /** 
      * Previous page for current state of view
      */
-    private static Command previous(){
-        Command commandPackage = new Command(COMMAND_TYPE.PREVIOUS.name());
+    private static RawCommand previous(){
+        RawCommand commandPackage = new RawCommand(COMMAND_TYPE.PREVIOUS.name());
 
         return commandPackage;
     }
@@ -691,14 +712,14 @@ public class ParserProcess {
      *  @param restoreTarget
      *         Target restore index
      */
-    private static Command restore(String restoreTarget){
-        Command commandPackage = new Command(COMMAND_TYPE.RESTORE.name(), restoreTarget);
+    private static RawCommand restore(String restoreTarget){
+        RawCommand commandPackage = new RawCommand(COMMAND_TYPE.RESTORE.name(), restoreTarget);
 
         return commandPackage;
     } 
     
-    private static Command back(){
-    	Command commandPackage = new Command(COMMAND_TYPE.BACK.name());
+    private static RawCommand back(){
+    	RawCommand commandPackage = new RawCommand(COMMAND_TYPE.BACK.name());
     	
     	return commandPackage;
     }
@@ -706,15 +727,15 @@ public class ParserProcess {
     /** 
      * Exiting the program
      */
-    private static Command exit(){
-        Command commandPackage = new Command(COMMAND_TYPE.EXIT.name());
+    private static RawCommand exit(){
+        RawCommand commandPackage = new RawCommand(COMMAND_TYPE.EXIT.name());
 
         return commandPackage;		
     }
     
     public static void main(String args[]) {
         String subInfoStr = "add title"; 
-        Command result = interpretCommand(subInfoStr);
+        RawCommand result = interpretCommand(subInfoStr);
         //System.out.println(getBasicInfoAT(1, subInfoStr, symbolIndex, "DEFAULT"));
         System.out.println(result.getRPdate());
     }
