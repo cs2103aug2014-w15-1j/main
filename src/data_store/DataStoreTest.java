@@ -1,5 +1,7 @@
 package data_store;
 
+import java.util.Calendar;
+
 import logic.Task;
 
 import java.util.ArrayList;
@@ -20,9 +22,17 @@ public class DataStoreTest {
     String repeatTimes = "twice a day";
     String repeatDays = "1 month";
     
+
     @SuppressWarnings("deprecation")
-    Date startDate = new Date(2014, 8, 22);
-    Date endDate = new Date(2014, 9, 22);
+	Date startDate = new Date(2014, 8, 22);
+    @SuppressWarnings("deprecation")
+	Date endDate = new Date(2014, 9, 22);
+    
+    /*Calendar calEnd = Calendar.getInstance();
+    calEnd = setTime(Date endDate);
+    
+    */
+    
 
 
     private   Task testTask = new Task(name, description, 
