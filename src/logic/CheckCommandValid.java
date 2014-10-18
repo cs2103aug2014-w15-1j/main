@@ -1,11 +1,11 @@
 package logic;
 
-import parser.Command;
+import parser.RawCommand;
 import gui.VIEW_MODE;
 
 public class CheckCommandValid {
 	// check whether the command is valid under current view mode
-	public static boolean checkValid(Command userCommand) {
+	public static boolean checkValid(RawCommand userCommand) {
 		String command = userCommand.getCommand();
 		VIEW_MODE mode = RunLogic.getGuiStatus().getMode();
 
@@ -69,7 +69,7 @@ public class CheckCommandValid {
 		}
 	}
 	
-	public static boolean checkCorrect(Command command){
+	public static boolean checkCorrect(RawCommand command){
 		
 		
 		return false;

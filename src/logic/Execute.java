@@ -5,7 +5,7 @@ import gui.VIEW_MODE;
 import java.util.ArrayList;
 import java.util.Date;
 
-import parser.Command;
+import parser.RawCommand;
 import data_store.DataStore;
 
 public class Execute {
@@ -17,7 +17,7 @@ public class Execute {
 	private static DisplayInfo passToGui;
 	private static LogicToStore passToStore;
 	
-	public static DisplayInfo executeCommand(Command userCommand){
+	public static DisplayInfo executeCommand(RawCommand userCommand){
 		initialize();
 		COMMAND_TYPE commandType = determineCommandType(userCommand.getCommand());
 		
@@ -92,7 +92,7 @@ public class Execute {
 
 	// add a task to task list. update new GUI and File information
 	@SuppressWarnings("deprecation")
-	private static void addTask(Command userCommand) {
+	private static void addTask(RawCommand userCommand) {
 		// modify date information of task
 		Date startDate = null;
 		Date endDate = null;
@@ -121,32 +121,32 @@ public class Execute {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(newTask);
 		
-		constructBridges(display, FeedbackFormat.ADD_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, Default.ADD_FEEDBACK, Default.TITLE);
 		 
 	}
 
 
 	// delete a certain task or delete or tasks
-	private static void deleteTask(Command userCommand) {
-		String deleteLine = userCommand.getTaskDescription();
+	private static void deleteTask(RawCommand userCommand) {
+		String deleteLine = userCommand.getCMDDescription();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			if(deleteLine.equalsIgnoreCase("all")){
 				trashbinList.clear(); 
 				currentDisplay = initializeDisplayList(currentDisplay);
 				GUI.changeCurretnTask(-1);
-				constructBridges( display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);	
-			} else if(Integer.valueOf(deleteLine) > Constant.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1) {
+				constructBridges( display, Default.DELETE_FEEDBACK, Default.TITLE);	
+			} else if(Integer.valueOf(deleteLine) > Default.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1) {
 				display = viewBin();
-				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.INVALID_FEEDBACK, Default.TITLE);
 			} else {
 				trashbinList.remove(currentDisplay[Integer.valueOf(deleteLine)]);
 				display = viewBin();
-				constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.DELETE_FEEDBACK, Default.TITLE);
 			}
 		} else if(GUI.getMode().equals(VIEW_MODE.DATE)) {
 			if(deleteLine.equalsIgnoreCase("all")){
-				for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
+				for(int i = 1; i <= Default.MAX_DISPLAY_LINE; i++){
 					if(currentDisplay[i] != -1){
 						trashbinList.add(taskList.remove(currentDisplay[i]));
 					} else {
@@ -154,14 +154,14 @@ public class Execute {
 					}
 				}
 				display = viewDate(GUI.getDate());
-				constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
-			} else if(Integer.valueOf(deleteLine) > Constant.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1) {
+				constructBridges(display, Default.DELETE_FEEDBACK, Default.TITLE);
+			} else if(Integer.valueOf(deleteLine) > Default.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1) {
 				display = viewDate(GUI.getDate());
-				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.INVALID_FEEDBACK, Default.TITLE);
 			} else {
 				trashbinList.add(taskList.remove(currentDisplay[Integer.valueOf(deleteLine)]));
 				display = viewDate(GUI.getDate());
-				constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.DELETE_FEEDBACK, Default.TITLE);
 			}
 		} else if (GUI.getMode().equals(VIEW_MODE.TASK_LIST)) {
 			if(deleteLine.equalsIgnoreCase("all")){
@@ -173,17 +173,17 @@ public class Execute {
 					// update GUI view mode
 					GUI = new GUIStatus(GUI.getMode(), false, false, -1, GUI.getDate());
 					
-					constructBridges(taskList, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
-				} else if(Integer.valueOf(deleteLine) > Constant.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1){
+					constructBridges(taskList, Default.DELETE_FEEDBACK, Default.TITLE);
+				} else if(Integer.valueOf(deleteLine) > Default.MAX_DISPLAY_LINE || currentDisplay[Integer.valueOf(deleteLine)] == -1){
 				// delete certain task while the task does not exist
-					for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
+					for(int i = 1; i <= Default.MAX_DISPLAY_LINE; i++){
 						if(currentDisplay[i] != -1){
 							display.add(taskList.get(currentDisplay[i]));
 						} else {
 							break;
 						}
 					}
-					constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+					constructBridges(display, Default.INVALID_FEEDBACK, Default.TITLE);
 					
 				} else {
 				// delete certain task
@@ -193,7 +193,7 @@ public class Execute {
 					// update GUI display information
 					display = new ArrayList<Task>();
 					initializeDisplayList(currentDisplay);
-					for(int i = 0; i < Constant.MAX_DISPLAY_LINE; i++){
+					for(int i = 0; i < Default.MAX_DISPLAY_LINE; i++){
 						if((GUI.getTaskIndex() + i) < taskList.size()){
 							display.add(taskList.get(GUI.getTaskIndex() + i));
 							currentDisplay[i + 1] = GUI.getTaskIndex() + i;
@@ -204,8 +204,8 @@ public class Execute {
 					
 					// update GUI view mode
 					GUI.changeHasPrevious(GUI.getTaskIndex() != 0);
-					GUI.changeHasNext(GUI.getTaskIndex() + Constant.MAX_DISPLAY_LINE < taskList.size());	
-					constructBridges(display, FeedbackFormat.DELETE_FEEDBACK, TitleFormat.TITLE);
+					GUI.changeHasNext(GUI.getTaskIndex() + Default.MAX_DISPLAY_LINE < taskList.size());	
+					constructBridges(display, Default.DELETE_FEEDBACK, Default.TITLE);
 				}
 		}
 		
@@ -213,19 +213,19 @@ public class Execute {
 	}
 
 	// read details of a certain task
-	private static void readTask(Command userCommand) {
-		int readLine = Integer.valueOf(userCommand.getTaskDescription());
+	private static void readTask(RawCommand userCommand) {
+		int readLine = Integer.valueOf(userCommand.getCMDDescription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
-			if(readLine > Constant.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
-				for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
+			if(readLine > Default.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
+				for(int i = 1; i <= Default.MAX_DISPLAY_LINE; i++){
 					if(currentDisplay[i] != -1){
 						display.add(trashbinList.get(currentDisplay[i]));
 					} else {
 						break;
 					}
 				}
-				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.INVALID_FEEDBACK, Default.TITLE);
 				
 			} else {
 				GUI.changeCurretnTask(currentDisplay[readLine]);
@@ -235,18 +235,18 @@ public class Execute {
 				currentDisplay = initializeDisplayList(currentDisplay);
 				currentDisplay[1] = GUI.getTaskIndex();
 				
-				constructBridges(display, FeedbackFormat.READ_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.READ_FEEDBACK, Default.TITLE);
 			}
 		} else {
-			if(readLine > Constant.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
-				for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
+			if(readLine > Default.MAX_DISPLAY_LINE || currentDisplay[readLine] == -1){
+				for(int i = 1; i <= Default.MAX_DISPLAY_LINE; i++){
 					if(currentDisplay[i] != -1){
 						display.add(taskList.get(currentDisplay[i]));
 					} else {
 						break;
 					}
 				}
-				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.INVALID_FEEDBACK, Default.TITLE);
 				
 			} else {
 				GUI.changeCurretnTask(currentDisplay[readLine]);
@@ -256,7 +256,7 @@ public class Execute {
 				currentDisplay = initializeDisplayList(currentDisplay);
 				currentDisplay[1] = GUI.getTaskIndex();
 				
-				constructBridges(display, FeedbackFormat.READ_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.READ_FEEDBACK, Default.TITLE);
 				
 			}
 		}
@@ -264,47 +264,47 @@ public class Execute {
 	}
 	
 	// update the name of a certain task 
-	private static void rename(Command userCommand) {
-		taskList.get(GUI.getTaskIndex()).rename(userCommand.getTaskDescription());
+	private static void rename(RawCommand userCommand) {
+		taskList.get(GUI.getTaskIndex()).rename(userCommand.getCMDDescription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		constructBridges(display, FeedbackFormat.RENAME_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, Default.RENAME_FEEDBACK, Default.TITLE);
 		 
 	}
 
 	// update the description of a certain task
-	private static void describe(Command userCommand) {
-		taskList.get(GUI.getTaskIndex()).describe(userCommand.getTaskDescription());
+	private static void describe(RawCommand userCommand) {
+		taskList.get(GUI.getTaskIndex()).describe(userCommand.getCMDDescription());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		constructBridges(display, FeedbackFormat.DESCRIBE_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, Default.DESCRIBE_FEEDBACK, Default.TITLE);
 		 
 	}
 
 	// update the repeat times and dates of a certain task
-	private static void repeat(Command userCommand) {
+	private static void repeat(RawCommand userCommand) {
 		// TODO Auto-generated method stub
 		taskList.get(GUI.getTaskIndex()).repeat( userCommand.getRPdate());
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		constructBridges(display, FeedbackFormat.REPEAT_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, Default.REPEAT_FEEDBACK, Default.TITLE);
 		 
 		
 	}
 
 	// update the time information of a certain task
 	@SuppressWarnings("deprecation")
-	private static void reschedule(Command userCommand) {
+	private static void reschedule(RawCommand userCommand) {
 		// TODO Auto-generated method stub
 		int startYear = Integer.valueOf(userCommand.getTitle().substring(0,4));
 		int startMonth = Integer.valueOf(userCommand.getTitle().substring(4,6));
 		int startDay = Integer.valueOf(userCommand.getTitle().substring(6,8));
-		int endYear = Integer.valueOf(userCommand.getTaskDescription().substring(0,4));
-		int endMonth = Integer.valueOf(userCommand.getTaskDescription().substring(4,6));
-		int endDay = Integer.valueOf(userCommand.getTaskDescription().substring(6,8));
+		int endYear = Integer.valueOf(userCommand.getCMDDescription().substring(0,4));
+		int endMonth = Integer.valueOf(userCommand.getCMDDescription().substring(4,6));
+		int endDay = Integer.valueOf(userCommand.getCMDDescription().substring(6,8));
 		Date startDate = new Date(startYear, startMonth, startDay);
 		Date endDate = new Date(endYear, endMonth, endDay);
 		taskList.get(GUI.getTaskIndex()).reschedule(startDate, endDate);
@@ -312,21 +312,21 @@ public class Execute {
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(GUI.getTaskIndex()));
 		
-		constructBridges(display, FeedbackFormat.RESCHEDULE_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, Default.RESCHEDULE_FEEDBACK, Default.TITLE);
 		 
 	}
 
 	// change view mode
-	private static void view(Command userCommand) {
+	private static void view(RawCommand userCommand) {
 		GUI.changeCurretnTask(0);
-		VIEW_MODE mode = determineViewMode(userCommand.getTaskDescription());
+		VIEW_MODE mode = determineViewMode(userCommand.getCMDDescription());
 		ArrayList<Task> display;
 		switch (mode) {
 		case DATE:
-			display = viewDate(userCommand.getTaskDescription());
+			display = viewDate(userCommand.getCMDDescription());
 			break;
 		case MONTH:
-			display = viewMonth(userCommand.getTaskDescription());
+			display = viewMonth(userCommand.getCMDDescription());
 			break;
 		case BIN:
 			display = viewBin();
@@ -342,7 +342,7 @@ public class Execute {
 			throw new Error("Unrecognized view mode");
 		}
 		
-		constructBridges(display, FeedbackFormat.VIEW_FEEDBACK, TitleFormat.TITLE);		 
+		constructBridges(display, Default.VIEW_FEEDBACK, Default.TITLE);		 
 	}
 
 
@@ -359,7 +359,7 @@ public class Execute {
 		boolean hasNext = false;
 		for(int i = 1, j = GUI.getTaskIndex();  j < taskList.size(); j++){
 			if(taskList.get(j).getEndDate().equals(requiredDate)){
-				if(i <= Constant.MAX_DISPLAY_LINE){
+				if(i <= Default.MAX_DISPLAY_LINE){
 					display.add(taskList.get(j));
 					currentDisplay[i] = j;
 					i++;
@@ -386,7 +386,7 @@ public class Execute {
 				display.add(task);
 			}
 		}
-		boolean hasNext = display.size() > Constant.MAX_DISPLAY_LINE;
+		boolean hasNext = display.size() > Default.MAX_DISPLAY_LINE;
 		GUI = new GUIStatus(VIEW_MODE.MONTH, hasNext, false, 0, GUI.getDate());
 		return display;
 	}
@@ -400,7 +400,7 @@ public class Execute {
 		} else {
 			boolean hasNext = false;
 			for(int i = 1, j = GUI.getTaskIndex();  j < trashbinList.size(); j++){
-				if(i <= Constant.MAX_DISPLAY_LINE){
+				if(i <= Default.MAX_DISPLAY_LINE){
 					display.add(trashbinList.get(j));
 					currentDisplay[i] = j;
 					i++;
@@ -431,7 +431,7 @@ public class Execute {
 		} else {
 			boolean hasNext = false;
 			for(int i = 1, j = GUI.getTaskIndex();  j < taskList.size(); j++){
-				if(i <= Constant.MAX_DISPLAY_LINE){
+				if(i <= Default.MAX_DISPLAY_LINE){
 					display.add(taskList.get(j));
 					currentDisplay[i] = j;
 					i++;
@@ -450,7 +450,7 @@ public class Execute {
 	// not finish yet
 	private static void previous() {
 		// TODO Auto-generated method stub
-		GUI.changeCurretnTask(GUI.getTaskIndex() - Constant.MAX_DISPLAY_LINE);
+		GUI.changeCurretnTask(GUI.getTaskIndex() - Default.MAX_DISPLAY_LINE);
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			display = viewBin();
@@ -461,12 +461,12 @@ public class Execute {
 		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
 			display = viewAllTask();
 		}
-		constructBridges(display, FeedbackFormat.PREVIOUS_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, Default.PREVIOUS_FEEDBACK, Default.TITLE);
 		 
 	}
 
 	private static void next() {
-		GUI.changeCurretnTask(GUI.getTaskIndex() + Constant.MAX_DISPLAY_LINE);
+		GUI.changeCurretnTask(GUI.getTaskIndex() + Default.MAX_DISPLAY_LINE);
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
 			display = viewBin();
@@ -477,19 +477,19 @@ public class Execute {
 		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
 			display = viewAllTask();
 		}
-		constructBridges(display, FeedbackFormat.NEXT_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, Default.NEXT_FEEDBACK, Default.TITLE);
 		 
 	}
 	
 	private static void back(){
-		GUI.changeCurretnTask(GUI.getTaskIndex() - GUI.getTaskIndex() % Constant.MAX_DISPLAY_LINE);
+		GUI.changeCurretnTask(GUI.getTaskIndex() - GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE);
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
 			display = viewBin();
 		} else if (GUI.getMode().equals(VIEW_MODE.TASK_DETAIL)){
 			display = viewAllTask();
 		}
-		constructBridges(display, FeedbackFormat.VIEW_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, Default.VIEW_FEEDBACK, Default.TITLE);
 	}
 	
 	// not finish yet
@@ -499,20 +499,20 @@ public class Execute {
 	}
 
 	// not finish yet
-	private static void restore(Command userCommand) {
+	private static void restore(RawCommand userCommand) {
 		// TODO Auto-generated method stub
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
-			int restoreLine = Integer.valueOf(userCommand.getTaskDescription());
-			if(restoreLine > Constant.MAX_DISPLAY_LINE || currentDisplay[restoreLine] == -1){
-				for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
+			int restoreLine = Integer.valueOf(userCommand.getCMDDescription());
+			if(restoreLine > Default.MAX_DISPLAY_LINE || currentDisplay[restoreLine] == -1){
+				for(int i = 1; i <= Default.MAX_DISPLAY_LINE; i++){
 					if(currentDisplay[i] != -1){
 						display.add(trashbinList.get(currentDisplay[i]));
 					} else {
 						break;
 					}
 				}
-				constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.INVALID_FEEDBACK, Default.TITLE);
 				
 			} else {
 				taskList.add(trashbinList.remove(currentDisplay[restoreLine]));
@@ -520,7 +520,7 @@ public class Execute {
 				
 				boolean hasNext = false;
 				for(int i = 1, j = GUI.getTaskIndex();  j < trashbinList.size(); j++){
-					if(i <= Constant.MAX_DISPLAY_LINE){
+					if(i <= Default.MAX_DISPLAY_LINE){
 						display.add(trashbinList.get(j));
 						currentDisplay[i] = j;
 						i++;
@@ -532,7 +532,7 @@ public class Execute {
 				boolean hasPrevious = GUI.getTaskIndex() > 0;
 				GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 				
-				constructBridges(display, FeedbackFormat.RESTORE_FEEDBACK, TitleFormat.TITLE);
+				constructBridges(display, Default.RESTORE_FEEDBACK, Default.TITLE);
 				
 			}
 		} else if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)) {
@@ -540,13 +540,13 @@ public class Execute {
 			currentDisplay[1] = taskList.size() - 1;
 			GUI.changeCurretnTask(currentDisplay[1]);
 			display.add(taskList.get(GUI.getTaskIndex()));
-			constructBridges(display, FeedbackFormat.RESTORE_FEEDBACK, TitleFormat.TITLE);
+			constructBridges(display, Default.RESTORE_FEEDBACK, Default.TITLE);
 		}
 		 
 	}
 
 	// not finish yet
-	private static void search(Command userCommand) {
+	private static void search(RawCommand userCommand) {
 		// TODO Auto-generated method stub
 	}
 	
@@ -555,11 +555,11 @@ public class Execute {
 
 
 	// This method gives feedback when the user gives unreadable command
-	public static DisplayInfo wrongCommand(Command userCommand){
+	public static DisplayInfo wrongCommand(RawCommand userCommand){
 		initialize();
 		ArrayList<Task> display = new ArrayList<Task>();
 		if(GUI.getMode().equals(VIEW_MODE.BIN)){
-			for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
+			for(int i = 1; i <= Default.MAX_DISPLAY_LINE; i++){
 				if(currentDisplay[i] != -1){
 					display.add(trashbinList.get(currentDisplay[i]));
 				} else{
@@ -569,7 +569,7 @@ public class Execute {
 			
 			 
 		} else if(GUI.getMode().equals(VIEW_MODE.TASK_LIST)){
-			for(int i = 1; i <= Constant.MAX_DISPLAY_LINE; i++){
+			for(int i = 1; i <= Default.MAX_DISPLAY_LINE; i++){
 				if(currentDisplay[i] != -1){
 					display.add(taskList.get(currentDisplay[i]));
 				} else{
@@ -583,7 +583,7 @@ public class Execute {
 		} else if (GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
 			display.add(trashbinList.get(currentDisplay[1]));
 		}
-		constructBridges(display, FeedbackFormat.INVALID_FEEDBACK, TitleFormat.TITLE);
+		constructBridges(display, Default.INVALID_FEEDBACK, Default.TITLE);
 		update();
 		DataStore.writeAllData(passToStore);
 		return passToGui;

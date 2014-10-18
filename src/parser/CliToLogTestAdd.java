@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class CliToLogTestAdd {
     
-    Command resultCTL;
+    RawCommand resultCTL;
     String testAddStr;
     String getCommand;
     String getTitle;
