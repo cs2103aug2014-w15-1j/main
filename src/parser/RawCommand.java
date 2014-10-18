@@ -2,49 +2,53 @@ package parser;
 
 import parser.ParserKeys;
 
-public class Command{
+/**
+ * class RawCommand: Wrapping all command information
+ * 
+ * @author A0119493X
+ *          Command information includes command type, command description, 
+ *          task title, task description, repeat time, start date, end date. All of them
+ *          are in String type
+ *          
+ * */
 
-	//Command Type
-    private String command;
+public class RawCommand{
+
+    /*
+     * ====================================================================
+     * ===================== START OF PRIVATE FIELD =======================
+     * ====================================================================
+     */
     
-    //Add
+    private String command;
     private String taskTitle;
     private String description;
     private String rpDate;
     private String startDay;
     private String endDay;
-    private String taskDescription;
+    private String cmdDescription;
     
-    //Read
-    private String readIndex;
+    /*
+     * ====================================================================
+     * ===================== END OF PRIVATE FIELD =========================
+     * ====================================================================
+     */
     
-    //Delete
-    private String deleteIndex;
-    
-    // View
-    private String viewMode;
-    
-    //Restore
-    private String restoreIndex;
-    
-    //search
-    private String searchName;
-    
-    public Command(String command) {
+    public RawCommand(String command) {
         this.command = command;
     }
     
-    public Command(String command, String taskDescribe) {
+    public RawCommand(String command, String cmdDescription) {
         this.command = command;
-        this.taskDescription = taskDescribe;
+        this.cmdDescription = cmdDescription;
         this.rpDate = ParserKeys.RP_EVREYDAY;
         this.startDay = ParserKeys.EMPTY_DATE;
         this.endDay = ParserKeys.EMPTY_DATE;
         this.description = ParserKeys.EMPTY_DIS;
     }
         
-    // strictly only for add command
-    public Command(String command, String taskTitle, 
+    // Strictly only for add command
+    public RawCommand(String command, String taskTitle, 
                    String repeatDate, String startDay, String endDay, 
                    String description) {
         this.command = command;
@@ -67,8 +71,8 @@ public class Command{
         return this.description;
     }
     
-    public String getTaskDescription(){
-        return this.taskDescription;
+    public String getCMDDescription(){
+        return this.cmdDescription;
     }
 
     public String getRPdate(){

@@ -3,7 +3,7 @@ package logic;
 import gui.VIEW_MODE;
 
 import java.util.ArrayList;
-import parser.Command;
+import parser.RawCommand;
 import parser.ParserProcess;
 import read_file.ReadFile;
 
@@ -44,7 +44,7 @@ public class RunLogic {
 	
 	public static DisplayInfo logic(String inputCommand){
 		// pass user command to CLI for auto-correction
-		Command userCommand = ParserProcess.interpretCommand(inputCommand);
+		RawCommand userCommand = ParserProcess.interpretCommand(inputCommand);
 		
 		// check whether the command is valid under current view mode
 		if(CheckCommandValid.checkValid(userCommand)){
