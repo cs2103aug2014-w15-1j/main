@@ -44,14 +44,12 @@ public class RunLogic {
 	
 	public static DisplayInfo logic(String inputCommand){
 		// pass user command to CLI for auto-correction
-		Command userCommand = ParserProcess.interpretCommand(inputCommand);
+		Command stringCommand = ParserProcess.interpretCommand(inputCommand);
+		Command userCommand = convert(stringCommand);
 		
-		// check whether the command is valid under current view mode
-		if(CheckCommandValid.checkValid(userCommand)){
-			 return Execute.executeCommand(userCommand);
-		} else {
-			 return Execute.wrongCommand(userCommand);
-		}
+		userCommand.execute();
+
+		return new DisplayInfo(GUI, initialDisplay, FeedbackFormat.START_FEEDBACK, TitleFormat.TITLE);;
 	}
 	
 	public static GUIStatus getGuiStatus(){
