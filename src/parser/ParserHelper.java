@@ -1,6 +1,6 @@
 package parser;
 
-import parser.ParserProcess.COMMAND_TYPE;
+import parser.CMDTypes.COMMAND_TYPE;
 
 /**
  * class CmdInfoPair: A pair of command type and command's sub-information
@@ -10,15 +10,15 @@ import parser.ParserProcess.COMMAND_TYPE;
  * */
 
 class CmdInfoPair {
-    private COMMAND_TYPE cmd;
+    private CMDTypes.COMMAND_TYPE cmd;
     private String subInfo;
     
-    public CmdInfoPair(COMMAND_TYPE cmd, String subInfo) {
+    public CmdInfoPair(CMDTypes.COMMAND_TYPE cmd, String subInfo) {
         this.cmd = cmd;
         this.subInfo = subInfo;
     }
     
-    public COMMAND_TYPE getCMD() {
+    public CMDTypes.COMMAND_TYPE getCMD() {
         return this.cmd;
     }
     
