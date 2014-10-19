@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import parser.RawCommand;
-public class CliToLogTest_Simple_CMD {
+public class TestSimpleCMD {
 
     String testDeleStr;
     String testReadStr;
