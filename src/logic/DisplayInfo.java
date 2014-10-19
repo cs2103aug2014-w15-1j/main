@@ -21,6 +21,8 @@ public class DisplayInfo {
 	private boolean hasNextPage;
 	private boolean hasPreviousPage;
 
+	private boolean change;
+	
 	private ArrayList<Task> taskList;
 	private String feedback;
 	private String title;
@@ -46,7 +48,22 @@ public class DisplayInfo {
 		this.taskList = taskList;
 		this.feedback = feedback;
 		this.title = title;
+		
+		this.change = false;
 	}
+	
+	public DisplayInfo(GUIStatus status,
+			String feedback, Boolean change) {
+		this.mode = status.getMode();
+		this.hasNextPage = status.hasNext();
+		this.hasPreviousPage = status.hasPrevious();
+		setIsPageInvolved();
+
+		this.feedback = feedback;
+			
+		this.change = change;
+	}
+	
 	public VIEW_MODE getViewMode(){
 		return this.mode;
 	}

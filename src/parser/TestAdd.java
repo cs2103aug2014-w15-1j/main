@@ -6,9 +6,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CliToLogTestAdd {
+public class TestAdd {
     
-    Command resultCTL;
+    RawCommand resultCTL;
     String testAddStr;
     String getCommand;
     String getTitle;
