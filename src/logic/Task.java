@@ -1,14 +1,13 @@
 package logic;
 
-import java.util.Date;
 import data_store.SystemInfo;
 
 public class Task {
 	private String name;
 	private String description;
 	private String repeatDays;
-	private Date startDate;
-	private Date endDate;
+	private JDate startDate;
+	private JDate endDate;
 	
 	public Task(){
 		// empty constructor
@@ -38,7 +37,7 @@ public class Task {
 		this.endDate = null;
 	}
 	
-	public Task(String name, String description, String repeatDays, Date startDate, Date endDate){
+	public Task(String name, String description, String repeatDays, JDate startDate, JDate endDate){
 		this.name = name;
 		this.description = description;
 		this.repeatDays = repeatDays;
@@ -58,11 +57,11 @@ public class Task {
 		return this.repeatDays;
 	}
 	
-	public Date getStartDate(){
+	public JDate getStartDate(){
 		return this.startDate;
 	}
 	
-	public Date getEndDate(){
+	public JDate getEndDate(){
 		return this.endDate;
 	}
 	
@@ -70,7 +69,7 @@ public class Task {
 		this.name = newName;
 	}
 	
-	public void reschedule(Date newStartDate, Date newEndDate){
+	public void reschedule(JDate newStartDate, JDate newEndDate){
 		this.startDate = newStartDate;
 		this.endDate = newEndDate;
 	}
@@ -83,8 +82,26 @@ public class Task {
 		this.repeatDays = newRepeatDays;
 	}
 	
-	@SuppressWarnings("deprecation")
-    public String toPersonalString() {
+	public boolean equals(Task task){
+		if(!this.name.equals(task.name)){
+			return false;
+		}
+		if(!this.description.equals(task.description)){
+			return false;
+		}
+		if(!this.startDate.equals(task.startDate)){
+			return false;
+		}
+		if(!this.endDate.equals(task.endDate)){
+			return false;
+		}
+		if(!this.repeatDays.equals(task.repeatDays)){
+			return false;
+		}
+		return true;
+	}
+	
+	public String toPersonalString() {
 	    String startDateStr;
 	    String endDateStr;
 	    if (this.startDate == null) {
