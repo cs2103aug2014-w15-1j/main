@@ -1,6 +1,6 @@
 package logic;
 
-import java.util.Date;
+import logic.JDate;
 
 import data_store.SystemInfo;
 

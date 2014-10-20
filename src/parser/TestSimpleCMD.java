@@ -3,26 +3,10 @@ package parser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-<<<<<<< HEAD
-<<<<<<< HEAD:src/cli/CliToLogTest_Simple_CMD.java
-<<<<<<< HEAD
-import cli.CliToLog;
-
-=======
-import cli.Command;
-
-=======
-import parser.Command;
->>>>>>> 9c0b21785df46d8467a4a1db9be40f27e297bb52:src/parser/CliToLogTest_Simple_CMD.java
-=======
 import parser.RawCommand;
-<<<<<<< HEAD:src/parser/CliToLogTest_Simple_CMD.java
->>>>>>> 8f9c07ecf5a3ae8b6a81815036cdea0f57e9fec5
-public class CliToLogTest_Simple_CMD {
-=======
+
 public class TestSimpleCMD {
->>>>>>> d35f0d34e63ee2ed70097722d872f7f745059950:src/parser/TestSimpleCMD.java
+
 
     String testDeleStr;
     String testReadStr;
