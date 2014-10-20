@@ -1,5 +1,7 @@
 package logic;
 
+import java.util.Date;
+
 import data_store.SystemInfo;
 
 public class Task {
@@ -37,12 +39,12 @@ public class Task {
 		this.endDate = null;
 	}
 	
-	public Task(String name, String description, String repeatDays, JDate startDate, JDate endDate){
+	public Task(String name, String description, String repeatDays, JDate startDate2, JDate endDate2){
 		this.name = name;
 		this.description = description;
 		this.repeatDays = repeatDays;
-		this.startDate = startDate;
-		this.endDate = endDate;
+		this.startDate = startDate2;
+		this.endDate = endDate2;
 	}
 	
 	public String getName(){

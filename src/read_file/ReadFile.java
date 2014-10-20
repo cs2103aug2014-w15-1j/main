@@ -4,10 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Date;
+
 
 import data_store.DataStore;
 import data_store.SystemInfo;
+import logic.JDate;
 import logic.Task;
 
 /**
@@ -133,10 +134,10 @@ public class ReadFile {
         
         if (tempoTaskSplit.length == 5) {
             String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
-            Date startDate = dateMaker(startDateStr);
+            JDate startDate = dateMaker(startDateStr);
     
             String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);
-            Date endDate = dateMaker(endDateStr);
+            JDate endDate = dateMaker(endDateStr);
     
             Task curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
                     tempoTaskSplit[2], startDate, endDate);
@@ -150,10 +151,9 @@ public class ReadFile {
     /**
      * Make a Date object
      * */
-    @SuppressWarnings("deprecation")
-    private Date dateMaker(String[] dateInfo) {
+    private JDate dateMaker(String[] dateInfo) {
         try {
-            return new Date(Integer.parseInt(dateInfo[0]),
+            return new JDate(Integer.parseInt(dateInfo[0]),
                     Integer.parseInt(dateInfo[1]),
                     Integer.parseInt(dateInfo[2]));
 
