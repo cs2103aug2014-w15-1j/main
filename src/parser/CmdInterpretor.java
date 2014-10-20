@@ -9,14 +9,18 @@ import parser.CMDTypes.COMMAND_TYPE;
  * class CmdInterpretor: Identify commands in input string
  * 
  * @author A0119493X
- * 			
+ * 			CmdInterpretor takes in a raw string input, identifies the command
+ * 			in the raw input and return a RawCommand object that contains basic
+ * 			information 
  * */
-public class CmdInterpretor {
+public class CMDInterpretor {
+	
 	/**
      * Interpret strings by their own commands
      * 
      * @param rawString -String
-     * @return -CmdInfoPair
+     * @return a CmdInfoPair object that contains a pair of command and sub-information string 
+     * 		   of an raw input 
      * */
     static CmdInfoPair makeCmdPair(String rawString){
         String getCommand;
@@ -137,11 +141,9 @@ public class CmdInterpretor {
      * Split quotation mark contents with other contents
      * 
      * @param subInfoStr -RawCommand
-     * @return 
-     *      return a CliToLog object.
+     * @return -CliToLog
      * */
-	
-    private static RawCommand add(String subInfoStr) {
+	private static RawCommand add(String subInfoStr) {
         ArrayList<Integer> symbolIndex = InfoRetrieve.getQuoteMark(subInfoStr);
         int markNumber = symbolIndex.size();
         
@@ -169,6 +171,10 @@ public class CmdInterpretor {
     
     /**
      * Return a RawCommand for rename operation
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
+     * @return -RawCommand
      * */
     private static RawCommand rename(String subInfoStr) {
     	if(subInfoStr.isEmpty()){
@@ -179,6 +185,10 @@ public class CmdInterpretor {
 
     /**
      * Return a RawCommand for re-describe operation
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
+     * @return -RawCommand
      * */
 	private static RawCommand describe(String subInfoStr) {
     	if(subInfoStr.isEmpty()){
@@ -189,6 +199,10 @@ public class CmdInterpretor {
 
 	/**
      * Return a RawCommand for re-schedule operation
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
+     * @return -RawCommand
      * */
 	private static RawCommand reschedule(String subInfoStr) {
 		// TODO Auto-generated method stub
@@ -197,6 +211,10 @@ public class CmdInterpretor {
 	
 	/**
      * Return a RawCommand for repeat operation
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
+     * @return -RawCommand
      * */
 	private static RawCommand repeat(String subInfoStr) {
 		// TODO Auto-generated method stub
@@ -209,6 +227,7 @@ public class CmdInterpretor {
      * 
      * @param subInfoStr
      *              String of sub-information following the update command
+     * @return -RawCommand
      */
     private static RawCommand update(String subInfoStr){
        String getUpdateItem;
@@ -297,6 +316,10 @@ public class CmdInterpretor {
 
     /** 
      * Read details of a certain task
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
+     * @return -RawCommand
      */
     private static RawCommand read(String readTarget){
         RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.READ.name(), readTarget);
@@ -306,6 +329,10 @@ public class CmdInterpretor {
 
     /**
      * Return a RawCommand for undo operation
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
+     * @return -RawCommand
      * */
     private static RawCommand undo(){
         RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.UNDO.name());
@@ -315,6 +342,10 @@ public class CmdInterpretor {
 
     /**
      * Return a RawCommand for delete operation
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
+     * @return -RawCommand
      * */
     private static RawCommand delete(String deleteIndex){
         RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.DELETE.name(), deleteIndex);
@@ -324,6 +355,10 @@ public class CmdInterpretor {
 
     /**
      * Return a RawCommand of any invalid operation
+     * 
+     * @param subInfoStr
+     *              String of sub-information following the update command
+     * @return -RawCommand
      * */
     static RawCommand makeInvalid() {
         return new RawCommand(CMDTypes.COMMAND_TYPE.INVALID.name());
@@ -331,6 +366,10 @@ public class CmdInterpretor {
 
     /**
      * Return a RawCommand for view operation, switch to different view modes
+     * 
+     * @param viewTarget
+     *              String of sub-information following the update command
+     * @return -RawCommand
      * */
     private static RawCommand view(String viewTarget){
         if (viewTarget.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.TASKLIST.name()) ||
@@ -346,6 +385,8 @@ public class CmdInterpretor {
 
     /** 
      * Return a RawCommand for viewing Next page for current state of view
+     * 
+     * @return -RawCommand
      */
     private static RawCommand next(){
         RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.NEXT.name());
@@ -355,6 +396,8 @@ public class CmdInterpretor {
 
     /** 
      * Go to previous page for current state of view
+     * 
+     * @return -RawCommand
      */
     private static RawCommand previous(){
         RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.PREVIOUS.name());
@@ -366,7 +409,9 @@ public class CmdInterpretor {
      *  Restore item from bin
      *  
      *  @param restoreTarget
-     *         Target restore index
+     *         String of target restore index
+     *         
+     *  @return -RawCommand
      */
     private static RawCommand restore(String restoreTarget){
         RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.RESTORE.name(), restoreTarget);

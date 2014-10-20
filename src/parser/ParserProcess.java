@@ -3,14 +3,10 @@ package parser;
 import java.util.ArrayList;
 
 /**
- * class ParserProcess: Retrieve valid information from raw input string
+ * class ParserProcess: Interpret raw input strings and wrap valid information into RawCommand objects
  * 
- * @author A0119493X
- *          Interpret raw input strings and wrap valid information into Command objects
- *          
+ * @author A0119493X        
  * */
-
-
 public class ParserProcess {
     
     /*
@@ -22,17 +18,18 @@ public class ParserProcess {
     /**
      * Interpret input string to an executable command
      * 
+     * @param inputString A string input by the user from the command box
      * @return CliToLog which contains corresponding information
      * */
     public static RawCommand interpretCommand(String inputString){
         if (InfoRetrieve.noInvalidKeys(inputString)) {
-            CmdInfoPair getCmdPair = CmdInterpretor.makeCmdPair(inputString);
-            RawCommand interpretedCm = CmdInterpretor.transformCmd(getCmdPair);
+            CmdInfoPair getCmdPair = CMDInterpretor.makeCmdPair(inputString);
+            RawCommand interpretedCm = CMDInterpretor.transformCmd(getCmdPair);
             return interpretedCm;
 
         } else {
             ErrorGenerator.popError(ErrorMSG.INPUT_SYMBOL_ERR);
-            return CmdInterpretor.makeInvalid();
+            return CMDInterpretor.makeInvalid();
         }
     }
     
@@ -45,4 +42,10 @@ public class ParserProcess {
         System.out.println(result.getRPdate());
     }
     */
+    
+    /*
+     * ====================================================================
+     * ===================== END OF PUBLIC METHOD =========================
+     * ====================================================================
+     */
 }

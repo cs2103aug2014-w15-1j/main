@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 /**
  * class InfoRetrieve: Retrieve specific information from raw input string
+ * 
+ *@author A0119493X
+ * 
  * */
 public class InfoRetrieve {
 	/**

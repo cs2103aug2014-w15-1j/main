@@ -35,11 +35,13 @@ public class GuiController {
 
 	public static void run(){
 		gui = BasicGui.getInstance();
+		
 		logger.info("Gui instance gotten");
 		assert gui!=null:"GuiController cannot get instance of Gui";
 		DisplayInfo confg= RunLogic.initialize();
 		display(confg);
 		logger.info("MagiCal initialization completed");
+		gui.showLayered();
 	}
 	public static void main(String[] args){
 		run();

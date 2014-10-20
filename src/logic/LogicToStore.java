@@ -11,7 +11,7 @@ public class LogicToStore {
 		this.TrashbinList = null;
 	}
 	
-	LogicToStore(ArrayList<Task> taskList, ArrayList<Task> TrashbinList){
+	public LogicToStore(ArrayList<Task> taskList, ArrayList<Task> TrashbinList){
 		this.TaskList = taskList;
 		this.TrashbinList = TrashbinList;
 	}
