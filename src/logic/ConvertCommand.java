@@ -2,65 +2,238 @@ package logic;
 
 import gui.VIEW_MODE;
 import parser.RawCommand;
-import CommandType.Command;
+import CommandType.*;
 
 public class ConvertCommand {
 	public static Command convert(RawCommand command){
+		if(command == null){
+			return new Invalid(Default.UNKNOWN_COMMAND);
+		}
+		
+		if (command.getCommand().equalsIgnoreCase("add")) {
+			return convertAdd(command);
+		} else if (command.getCommand().equalsIgnoreCase("delete")) {
+			return convertDelete(command);
+		} else if (command.getCommand().equalsIgnoreCase("read")) {
+			return convertRead(command);
+		} else if (command.getCommand().equalsIgnoreCase("rename")) {
+			return convertRename(command);
+		} else if (command.getCommand().equalsIgnoreCase("repeat")) {
+			return convertRepeart(command);
+		} else if (command.getCommand().equalsIgnoreCase("reschedule")) {
+			return convertReschedule(command);
+		} else if (command.getCommand().equalsIgnoreCase("describe")) {
+			return ConvertDescribe(command);
+		} else if (command.getCommand().equalsIgnoreCase("restore")) {
+			return convertRestore(command);
+		} else if (command.getCommand().equalsIgnoreCase("view")) {
+			return convertView(command);
+		} else if (command.getCommand().equalsIgnoreCase("undo")) {
+			return convertUndo(command);
+		} else if (command.getCommand().equalsIgnoreCase("next")) {
+			return convertNext(command);
+		} else if (command.getCommand().equalsIgnoreCase("previous")) {
+			return convertPrevious(command);
+		} else if (command.getCommand().equalsIgnoreCase("search")) {
+			return convertSearch(command);
+		} else if (command.getCommand().equalsIgnoreCase("back")) {
+			return convertBack(command);
+		} else if (command.getCommand().equalsIgnoreCase("exit")) {
+			return convertExit(command);
+		} else {
+			return new Invalid(Default.UNKNOWN_COMMAND);
+		}
+	}
+
+	private static Command convertAdd(RawCommand command) {
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST) || 
+				RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)	){
+			if(command.getTitle().equals(null)){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Add", "task title"));
+			}
+			JDate startDate = null;
+			JDate endDate = null;
+
+		}
+		return new Invalid(String.format(Default.CANNOT_FORMAT, "Add", RunLogic.getGuiStatus().getMode().toString()));
+	}
+
+	private static Command convertDelete(RawCommand command) {
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+			if(!isInt(command.getCMDDescription())){
+				if(command.getCMDDescription().equalsIgnoreCase("all")){
+					return new DeleteTaskList(true);
+				} else {
+					return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Delete", "delete line"));
+				}
+			}
+			
+			int deleteLine = Integer.parseInt(command.getCMDDescription());
+			if(deleteLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[deleteLine] == -1){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Delete", "delete line"));
+			}
+			
+			return new DeleteTaskList(deleteLine);
+		}
+		
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
+			if(!isInt(command.getCMDDescription())){
+				if(command.getCMDDescription().equalsIgnoreCase("all")){
+					return new DeleteTrashbin(true);
+				} else {
+					return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Delete", "delete line"));
+				}
+			}
+			
+			int deleteLine = Integer.parseInt(command.getCMDDescription());
+			if(deleteLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[deleteLine] == -1){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Delete", "delete line"));
+			}
+			
+			return new DeleteTrashbin(deleteLine);
+		}
+		
+		return new Invalid(String.format(Default.CANNOT_FORMAT, "Delete", RunLogic.getGuiStatus().getMode().toString()));
+	}
+
+	private static Command convertRead(RawCommand command) {
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+			if(!isInt(command.getCMDDescription())){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Read", "read line"));
+			}
+			
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Read", "read line"));
+			}
+			
+			return new ReadTaskList(readLine);
+		}
+		
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
+			if(!isInt(command.getCMDDescription())){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Read", "read line"));
+			}
+			
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Read", "read line"));
+			}
+			
+			return new ReadBin(readLine);
+		}
+		
+		return new Invalid(String.format(Default.CANNOT_FORMAT, "Read", RunLogic.getGuiStatus().getMode().toString()));
+	}
+
+	private static Command convertRename(RawCommand command) {
+		String newName = command.getTitle();
+		if(newName.equals(null)){
+			return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Rename", "Name"));
+		}
+		return new Rename(newName);
+	}
+
+	private static Command convertRepeart(RawCommand command) {
+		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
-	// This method determine which command the user want to use
-	private static COMMAND_TYPE determineCommandType(String commandTypeString) {
-		if (commandTypeString.equalsIgnoreCase("add")) {
-			return COMMAND_TYPE.ADD_TASK;
-		} else if (commandTypeString.equalsIgnoreCase("delete")) {
-			return COMMAND_TYPE.DELETE_TASK;
-		} else if (commandTypeString.equalsIgnoreCase("read")) {
-			return COMMAND_TYPE.READ_TASK;
-		} else if (commandTypeString.equalsIgnoreCase("rename")) {
-			return COMMAND_TYPE.RENAME;
-		} else if (commandTypeString.equalsIgnoreCase("repeat")) {
-			return COMMAND_TYPE.REPEAT;
-		} else if (commandTypeString.equalsIgnoreCase("reschedule")) {
-			return COMMAND_TYPE.RESCHEDULE;
-		} else if (commandTypeString.equalsIgnoreCase("describe")) {
-			return COMMAND_TYPE.DESCRIBE;
-		} else if (commandTypeString.equalsIgnoreCase("restore")) {
-			return COMMAND_TYPE.RESTORE;
-		} else if (commandTypeString.equalsIgnoreCase("view")) {
-			return COMMAND_TYPE.VIEW_MODE;
-		} else if (commandTypeString.equalsIgnoreCase("undo")) {
-			return COMMAND_TYPE.UNDO;
-		} else if (commandTypeString.equalsIgnoreCase("next")) {
-			return COMMAND_TYPE.NEXT;
-		} else if (commandTypeString.equalsIgnoreCase("previous")) {
-			return COMMAND_TYPE.PREVIOUS;
-		} else if (commandTypeString.equalsIgnoreCase("search")) {
-			return COMMAND_TYPE.SEARCH;
-		} else if (commandTypeString.equalsIgnoreCase("back")) {
-			return COMMAND_TYPE.BACK;
-		} else if (commandTypeString.equalsIgnoreCase("exit")) {
-			return COMMAND_TYPE.EXIT;
+
+	private static Command convertReschedule(RawCommand command) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static Command ConvertDescribe(RawCommand command) {
+		String newDescription = command.getDescription();
+		if(newDescription.equals(null)){
+			return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Describe", "Description"));
+		}
+		return new Describe(newDescription);
+	}
+
+	private static Command convertRestore(RawCommand command) {
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			return new Restore(1);
+		}
+		
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
+			if(!isInt(command.getCMDDescription())){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Restore", "restore line"));
+			}
+			
+			int restoreLine = Integer.parseInt(command.getCMDDescription());
+			if(restoreLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[restoreLine] == -1){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Restore", "restore line"));
+			}
+			
+			return new Restore(restoreLine);
+		}
+		
+		return new Invalid(String.format(Default.CANNOT_FORMAT, "Restore", RunLogic.getGuiStatus().getMode().toString()));
+	}
+
+	private static Command convertView(RawCommand command) {
+		String newMode = command.getCMDDescription();
+		if(newMode.equals(null)){
+			return new ViewTaskList(0);
+		} else if(newMode.equalsIgnoreCase("tasklist")){
+			return new ViewTaskList(0);
+		} else if(newMode.equalsIgnoreCase("bin")){
+			return new ViewTrashBin(0);
 		} else {
-			return COMMAND_TYPE.INVALID;
+			return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "view", "view mode"));
 		}
 	}
+
+	private static Command convertUndo(RawCommand command) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static Command convertNext(RawCommand command) {
+		return new Next();
+	}
+
+	private static Command convertPrevious(RawCommand command) {
+		return new Previous();
+	}
+
+	private static Command convertSearch(RawCommand command) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static Command convertBack(RawCommand command) {
+		return new Back();
+	}
+
+	private static Command convertExit(RawCommand command) {
+		return new Exit();
+	}
 	
-	// This method determine which view mode the user want to use
-	private static VIEW_MODE determineViewMode(String viewModeString) {
-		if (viewModeString.equalsIgnoreCase("DATE")) {
-			return VIEW_MODE.DATE;
-		} else if (viewModeString.equalsIgnoreCase("MONTH")) {
-			return VIEW_MODE.MONTH;
-		} else if (viewModeString.equalsIgnoreCase("BIN")) {
-			return VIEW_MODE.BIN;
-		} else if (viewModeString.equalsIgnoreCase("TASKLIST")) {
-			return VIEW_MODE.TASK_LIST;
-		} else if (viewModeString.equalsIgnoreCase("UNDONE")) {
-			return VIEW_MODE.UNDONE;
-		} else {
-			return VIEW_MODE.TASK_DETAIL;
+	
+	
+	//--------------------Helper Function-------------------------
+	private static boolean isInt(String str){
+		if(str.equals(null)){
+			return false;
 		}
+		
+		int len = str.length();
+		for(int i = 0; i < len; i++){
+			if(str.charAt(i) < 48 || str.charAt(i) > 57){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	private static JDate convertDate(String date){
+		int year = Integer.parseInt(date.substring(0, 4));
+		int month = Integer.parseInt(date.substring(4, 6));
+		int day = Integer.parseInt(date.substring(6, 8));
+		return new JDate(year, month, day);
 	}
 }

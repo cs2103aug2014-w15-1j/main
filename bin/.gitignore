@@ -1,7 +1,6 @@
-/cli
+/CommandType
 /data_store
 /gui
 /logic
 /parser
-/CommandType
 /read_file

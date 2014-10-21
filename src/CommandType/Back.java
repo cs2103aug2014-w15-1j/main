@@ -23,7 +23,7 @@ public class Back implements Command{
 			ViewTaskList view = new ViewTaskList(GUI.getTaskIndex());
 			return view.execute();
 		}
-		Invalid invalid = new Invalid(Default.INVALID_FEEDBACK);
+		Invalid invalid = new Invalid(String.format(Default.CANNOT_FORMAT, "Back", GUI.getMode().toString()));
 		return invalid.execute();
 	}
 
