@@ -53,7 +53,18 @@ public class ConvertCommand {
 			}
 			JDate startDate = null;
 			JDate endDate = null;
-
+			if(command.getStartDay().equals(null)){
+				if(!isInt(command.getStartDay()) || command.getStartDay().length() != Default.LENGTH_OF_DATE_FORMAT){
+					return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Add", "start date"));
+				}
+				if(!isInt(command.getEndDay()) || command.getEndDay().length() != Default.LENGTH_OF_DATE_FORMAT){
+					return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Add", "end date"));
+				}
+				startDate = convertDate(command.getStartDay());
+				endDate = convertDate(command.getEndDay());
+			}
+			Task task = new Task(command.getTitle(), command.getDescription(), command.getRPdate(), startDate, endDate);
+			return new Add(task);
 		}
 		return new Invalid(String.format(Default.CANNOT_FORMAT, "Add", RunLogic.getGuiStatus().getMode().toString()));
 	}

@@ -47,17 +47,13 @@ public class RunLogic {
 		// pass user command to CLI for auto-correction
 		RawCommand stringCommand = ParserProcess.interpretCommand(inputCommand);
 		Command userCommand = ConvertCommand.convert(stringCommand);
-
-		if(stringCommand.getCommand().equalsIgnoreCase("UNDO")){
-			return userCommand.undo();
-		}
+		
 		return userCommand.execute();
-
 	}
 	
 	
 	
-	
+	//-------------------helper API--------------------------
 	
 	public static GUIStatus getGuiStatus(){
 		return GUI;
