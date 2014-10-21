@@ -21,26 +21,10 @@ public class RunLogic {
 		taskList = rf.getEventTask();
 		trashbinList = rf.getTrashFile();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
-		
-		ArrayList<Task> initialDisplay = new ArrayList<Task>();
-		for(int i = 0; i < currentDisplay.length; i++){
-			currentDisplay[i] = -1;
-		}
-		boolean hasNext = taskList.size() > Default.MAX_DISPLAY_LINE;
-		if(hasNext){
-			for(int i = 0; i < Default.MAX_DISPLAY_LINE; i++){
-				initialDisplay.add(taskList.get(i));
-				currentDisplay[i + 1] = i;
-			}
-		} else {
-			initialDisplay = taskList;
-			for(int i = 1; i <= initialDisplay.size(); i++){
-				currentDisplay[i] = i - 1;
-			}
-		}
-		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, false, currentDisplay[1], "20140930");
-
-		return new DisplayInfo(GUI, initialDisplay, Default.START_FEEDBACK, Default.TITLE);
+		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, currentDisplay[1], "20141022");
+	
+		Command view = new ViewTaskList(0);
+		return view.execute();
 	}
 	
 	public static DisplayInfo logic(String inputCommand){
