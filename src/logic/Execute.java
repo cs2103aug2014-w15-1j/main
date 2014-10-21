@@ -20,7 +20,6 @@ public class Execute {
 	public static DisplayInfo executeCommand(RawCommand userCommand){
 		initialize();
 		COMMAND_TYPE commandType = determineCommandType(userCommand.getCommand());
-		
 		switch (commandType) {
 			case ADD_TASK:
 				addTask(userCommand);

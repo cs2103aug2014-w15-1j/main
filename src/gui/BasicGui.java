@@ -101,6 +101,10 @@ public class BasicGui extends JFrame {
 	 * method BasicGUI: constructor of GUI
 	 */
 	private BasicGui() {
+		setUndecorated(true);
+		setOpacity(0.75f);
+		setRootPaneCheckingEnabled(false);
+		setType(Type.UTILITY);
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
 		} catch (ClassNotFoundException e) {
@@ -112,7 +116,6 @@ public class BasicGui extends JFrame {
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		setType(Type.UTILITY);
 		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		getContentPane().setFocusTraversalPolicyProvider(true);
 		setVisible(true);
@@ -141,7 +144,11 @@ public class BasicGui extends JFrame {
 	public void setMainText(String text) {
 		mainWindow.setText(text);
 	}
-
+	public void showLayered() {
+		MultiLayered layered = new MultiLayered();
+		mainPanel.removeAll();
+		mainPanel.add(layered);
+	}
 
 	/*
 	 * ====================================================================
@@ -197,6 +204,7 @@ public class BasicGui extends JFrame {
 
 	private void constructBodyPane() {
 		desktopPanel = new JDesktopPane();
+		desktopPanel.setBackground(Color.LIGHT_GRAY);
 		getContentPane().add(desktopPanel, BorderLayout.CENTER);
 		desktopPanel.setLayout(new BorderLayout(0, 0));
 

@@ -27,7 +27,7 @@ public class JDate extends GregorianCalendar {
 	 ************** Constructor *****************
 	 ********************************************/
 
-	JDate(int year, int month, int day) {
+	public JDate(int year, int month, int day) {
 		super(year, month, day);
 		setLenient(false);
 	}

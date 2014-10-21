@@ -3,9 +3,10 @@ package parser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import parser.RawCommand;
+
 public class TestSimpleCMD {
+
 
     String testDeleStr;
     String testReadStr;
