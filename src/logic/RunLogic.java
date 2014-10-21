@@ -55,6 +55,10 @@ public class RunLogic {
 
 	}
 	
+	
+	
+	
+	
 	public static GUIStatus getGuiStatus(){
 		return GUI;
 	}
