@@ -127,8 +127,8 @@ public class GuiInfoTranslator  {
 
 		String nameInfo = infoOpen + task.getName() + infoClose;
 		String descriptionInfo = infoOpen + task.getDescription() + infoClose;
-		String startDateInfo = infoOpen + task.getStartDate().toLocaleString() + infoClose;
-		String endDateInfo = infoOpen + task.getEndDate().toLocaleString() + infoClose;
+		String startDateInfo = infoOpen + task.getStartDate().toString() + infoClose;
+		String endDateInfo = infoOpen + task.getEndDate().toString() + infoClose;
 
 		String nameAttr = attrOpen + "Name: " + attrClose;
 		String descriptionAttr = attrOpen + "description: " + attrClose;

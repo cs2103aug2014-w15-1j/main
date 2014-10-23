@@ -35,7 +35,6 @@ public class GuiController {
 
 	public static void run(){
 		gui = BasicGui.getInstance();
-		
 		logger.info("Gui instance gotten");
 		assert gui!=null:"GuiController cannot get instance of Gui";
 		DisplayInfo confg= RunLogic.initialize();

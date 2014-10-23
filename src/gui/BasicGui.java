@@ -145,7 +145,7 @@ public class BasicGui extends JFrame {
 		mainWindow.setText(text);
 	}
 	public void showLayered() {
-		MultiLayered layered = new MultiLayered();
+		MultiLayeredPanel layered = new MultiLayeredPanel();
 		mainPanel.removeAll();
 		mainPanel.add(layered);
 	}
