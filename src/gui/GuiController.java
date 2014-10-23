@@ -18,7 +18,6 @@ public class GuiController {
 			run();
 		}
 		gui.setTitleText(info.getTitleString());
-		
 		gui.setFeedbackText(info.getFeedbackString());
 		if(info.changeTaskList()) {
 			gui.setMainText(info.getTaskString());

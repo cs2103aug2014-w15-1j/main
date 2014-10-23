@@ -30,6 +30,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JLayeredPane;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.Frame;
@@ -105,17 +106,16 @@ public class BasicGui extends JFrame {
 		setOpacity(0.75f);
 		setRootPaneCheckingEnabled(false);
 		setType(Type.UTILITY);
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
+//		try {
+//		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//		        if ("Nimbus".equals(info.getName())) {
+//		            UIManager.setLookAndFeel(info.getClassName());
+//		            break;
+//		        }
+//		    }
+//		} catch (Exception e) {
+//		    // If Nimbus is not available, you can set the GUI to another look and feel.
+//		}
 		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		getContentPane().setFocusTraversalPolicyProvider(true);
 		setVisible(true);

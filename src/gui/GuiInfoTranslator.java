@@ -55,6 +55,10 @@ public class GuiInfoTranslator  {
 	public String getTaskString() {
 		ArrayList<Task> taskList = info.getTaskList();
 		Task task;
+		if(taskList == null) {
+			return Message_Empty_List;
+		}
+		
 		switch (info.getViewMode()) {
 		case TASK_DETAIL:
 			if (taskList.size() != 1) {
@@ -127,11 +131,22 @@ public class GuiInfoTranslator  {
 		String infoOpen = "<i><font size=+1 color = " + infoFontColor + ">";
 		String infoClose = "</i>";
 		String newLine = "<br>";
-
+		
+		
 		String nameInfo = infoOpen + task.getName() + infoClose;
 		String descriptionInfo = infoOpen + task.getDescription() + infoClose;
-		String startDateInfo = infoOpen + task.getStartDate().toString() + infoClose;
-		String endDateInfo = infoOpen + task.getEndDate().toString() + infoClose;
+		String startDateInfo;
+		if(checkNullInfo(task.getStartDate())){
+			startDateInfo = infoOpen +  infoClose;
+		} else {
+			startDateInfo = infoOpen + task.getStartDate().toString() + infoClose;
+		}
+		String endDateInfo;
+		if(checkNullInfo(task.getEndDate())) {
+			endDateInfo = infoOpen + infoClose;
+		} else {
+			endDateInfo = infoOpen + task.getEndDate().toString() + infoClose;
+		}
 
 		String nameAttr = attrOpen + "Name: " + attrClose;
 		String descriptionAttr = attrOpen + "description: " + attrClose;
@@ -144,6 +159,9 @@ public class GuiInfoTranslator  {
 				+ "</html>";
 		return output;
 
+	}
+	private static boolean checkNullInfo(Object o){
+		return o == null;
 	}
 
 
