@@ -10,7 +10,10 @@ import logic.LogicToStore;
 
 
 /**
- * This class stores data to file by passing (String)filename
+ * class 
+ * 
+ * @author A0100792M
+
  * */
 
 public class DataStore {

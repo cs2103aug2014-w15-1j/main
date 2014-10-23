@@ -8,7 +8,7 @@ import java.util.Date;
 import parser.RawCommand;
 import data_store.DataStore;
 
-public class Execute {
+public class Execute {/*
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
@@ -655,4 +655,5 @@ public class Execute {
 		passToGui = new DisplayInfo(GUI, display, feedback, title);
 		passToStore = new LogicToStore(taskList,trashbinList);
 	}
+	*/
 }

@@ -12,7 +12,7 @@ import logic.Task;
 
 public class DeleteTaskList implements Command{
 	boolean deleteAll;
-	int deleteLine;
+	int deleteIndex;
 	
 	//local memory
 	private static GUIStatus GUI;
@@ -25,13 +25,13 @@ public class DeleteTaskList implements Command{
 	public DeleteTaskList(Boolean all){
 		initialize();
 		this.deleteAll = all;
-		this.deleteLine = -1;
+		this.deleteIndex = -1;
 	}
 	
 	public DeleteTaskList(int line){
 		initialize();
 		this.deleteAll = false;
-		this.deleteLine = currentDisplay[line];
+		this.deleteIndex = currentDisplay[line];
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class DeleteTaskList implements Command{
 			ViewTaskList viewTaskList = new ViewTaskList();
 			return viewTaskList.execute();
 		} else {
-			trashbinList.add(taskList.remove(deleteLine));
+			trashbinList.add(taskList.remove(deleteIndex));
 			
 			if(currentDisplay[1] > taskList.size()){
 				currentDisplay[1] -= Default.MAX_DISPLAY_LINE;

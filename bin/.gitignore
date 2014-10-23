@@ -1,0 +1,11 @@
+<<<<<<< HEAD
+/CommandType
+/data_store
+/gui
+/logic
+/parser
+/read_file
+=======
+/data_store/
+/parser/
+>>>>>>> 99ab2a0e6f2ba4774c6b5927d60aecefec632827

@@ -21,7 +21,7 @@ public class Previous implements Command{
 			ViewTrashBin view = new ViewTrashBin(currentFirstIndex - Default.MAX_DISPLAY_LINE);
 			return view.execute();
 		}
-		Invalid invalid = new Invalid(Default.INVALID_FEEDBACK);
+		Invalid invalid = new Invalid(String.format(Default.CANNOT_FORMAT, "Previous",GUI.getMode().toString()));
 		return invalid.execute();
 	}
 
