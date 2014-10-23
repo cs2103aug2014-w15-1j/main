@@ -51,7 +51,7 @@ import java.awt.Window.Type;
  *         desktopPanel(for main), toolBar(for helper) and inputPanel(for input)
  *         And inside each container, there exist a hierarchy of container and
  *         field.
- *         Note: singleton pattern is applied in this class
+ *         Note: singleton pattern is applied in this class 
  */
 public class BasicGui extends JFrame {
 

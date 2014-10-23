@@ -4,6 +4,7 @@ import parser.RawCommand;
 import gui.VIEW_MODE;
 
 public class CheckCommandValid {
+	/*
 	// check whether the command is valid under current view mode
 	public static boolean checkValid(RawCommand userCommand) {
 		String command = userCommand.getCommand();
@@ -67,13 +68,7 @@ public class CheckCommandValid {
 		default:
 			return false;
 		}
-	}
-	
-	public static boolean checkCorrect(RawCommand command){
-		
-		
-		return false;
-	}
-	
+		*/
+
 
 }

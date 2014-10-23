@@ -49,7 +49,7 @@ public class DisplayInfo {
 		this.feedback = feedback;
 		this.title = title;
 		
-		this.changeTasklist = false;
+		this.changeTasklist = true;
 	}
 	
 	public DisplayInfo(GUIStatus status,
