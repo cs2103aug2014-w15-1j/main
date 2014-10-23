@@ -48,6 +48,9 @@ public class GuiInfoTranslator  {
 	public String getTitleString() {
 		return info.getTitleString();
 	}
+	public boolean changeTaskList() {
+		return info.changeTasklist();
+	}
 	
 	public String getTaskString() {
 		ArrayList<Task> taskList = info.getTaskList();

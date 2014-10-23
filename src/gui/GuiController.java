@@ -18,8 +18,12 @@ public class GuiController {
 			run();
 		}
 		gui.setTitleText(info.getTitleString());
+		
 		gui.setFeedbackText(info.getFeedbackString());
-		gui.setMainText(info.getTaskString());
+		if(info.changeTaskList()) {
+			gui.setMainText(info.getTaskString());
+		}
+		
 	}
 	
 	private static void display(DisplayInfo info) {
@@ -40,7 +44,7 @@ public class GuiController {
 		DisplayInfo confg= RunLogic.initialize();
 		display(confg);
 		logger.info("MagiCal initialization completed");
-		gui.showLayered();
+		//gui.showLayered();
 	}
 	public static void main(String[] args){
 		run();

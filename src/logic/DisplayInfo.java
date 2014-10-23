@@ -21,7 +21,7 @@ public class DisplayInfo {
 	private boolean hasNextPage;
 	private boolean hasPreviousPage;
 
-	private boolean change;
+	private boolean changeTasklist;
 	
 	private ArrayList<Task> taskList;
 	private String feedback;
@@ -49,7 +49,7 @@ public class DisplayInfo {
 		this.feedback = feedback;
 		this.title = title;
 		
-		this.change = false;
+		this.changeTasklist = false;
 	}
 	
 	public DisplayInfo(GUIStatus status,
@@ -61,7 +61,7 @@ public class DisplayInfo {
 
 		this.feedback = feedback;
 			
-		this.change = change;
+		this.changeTasklist = change;
 	}
 	
 	public VIEW_MODE getViewMode(){
@@ -90,6 +90,10 @@ public class DisplayInfo {
 	public String getTitleString() {
 		return this.title;
 	}
+	public boolean changeTasklist() {
+		return changeTasklist;
+	}
+	
 
 	/*
 	 * ====================================================================
