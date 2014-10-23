@@ -32,6 +32,9 @@ public class DeleteTrashbin implements Command{
 			trashbinList.clear();
 			
 			update();
+			
+			DataStore.writeTrash(trashbinList);
+			
 			ViewTrashBin viewTrashBin = new ViewTrashBin();
 			return viewTrashBin.execute();
 		} else {
