@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.TextField;
 
 import javax.swing.JTextArea;
@@ -26,7 +28,9 @@ import java.awt.Dimension;
 
 import logic.RunLogic;
 
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JMenuBar;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JLayeredPane;
@@ -75,6 +79,7 @@ public class BasicGui extends JFrame {
 
 
 	private JPanel menuArea;
+	private JMenuBar menuBar;
 	private JPanel menuPanel;
 	private JPanel titlePanel;
 	private TextField titleWindow;
@@ -99,6 +104,8 @@ public class BasicGui extends JFrame {
 	private final static int TOP_LEFT_Y_VALUE = 100;
 	private final static int FRAME_WIDTH = 400;
 	private final static int FRAME_HEIGHT = 500;
+	
+	int pX,pY;
 
 	/*
 	 * ====================================================================
@@ -149,6 +156,7 @@ public class BasicGui extends JFrame {
 		constructContentPanel();
 		
 		constructMenuArea();
+		constructMenuBar();
 		constructTitlePanel();
 		constructTitleWindow();
 		
@@ -198,11 +206,70 @@ public class BasicGui extends JFrame {
 		
 		getContentPane().add(menuArea, BorderLayout.NORTH);
 	}
+	
+	private void constructMenuBar() {
+		menuBar = new JMenuBar();
+		JButton min=new JButton("-");
+		JButton close=new JButton("x");
+		
+		
+        min.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae)
+            {
+                // minimize
+                setState(ICONIFIED);
+            }
+        });
+        
+        close.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae)
+            {
+                // terminate program
+                System.exit(0);
+            }
+        });
+        menuBar.add(close);
+        menuBar.add(min);
+        
+        
+        menuBar.addMouseListener(new MouseAdapter(){
+            public void mousePressed(MouseEvent me)
+            {
+                // Get x,y and store them
+                pX=me.getX();
+                pY=me.getY();
+            }
+        });
+        
+        // Add MouseMotionListener for detecting drag
+        menuBar.addMouseMotionListener(new MouseAdapter(){
+            public void mouseDragged(MouseEvent me)
+            {
+                // Set the location
+                // get the current location x-co-ordinate and then get
+                // the current drag x co-ordinate, add them and subtract most recent
+                // mouse pressed x co-ordinate
+                // do same for y co-ordinate
+                setLocation(getLocation().x+me.getX()-pX,getLocation().y+me.getY()-pY);
+            }
+        });
+        
+        // Set the menu bar
+        setJMenuBar(menuBar);
+        
+        // Set size, visibility,shape and center it
+        setSize(FRAME_WIDTH,FRAME_HEIGHT);
+        setVisible(true);
+        setShape(new java.awt.geom.RoundRectangle2D.Double(0,0,getWidth(),getHeight(),5,5));
+        setLocationRelativeTo(null);
+        
+		menuArea.add(menuBar, BorderLayout.NORTH);
+	}
 	private void constructTitlePanel() {
 		titlePanel = new JPanel();
 		titlePanel.setLayout(new BorderLayout());
 		
-		menuArea.add(titlePanel);
+		menuArea.add(titlePanel, BorderLayout.CENTER);
 	}
 	private void constructTitleWindow() {
 		titleWindow = new TextField();
