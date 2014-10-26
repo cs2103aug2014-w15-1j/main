@@ -30,6 +30,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.JLayeredPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -37,22 +38,29 @@ import java.awt.Frame;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.ComponentOrientation;
 import java.awt.FlowLayout;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridBagLayout;
+import java.awt.Paint;
 import java.awt.SystemColor;
 
 import javax.swing.UIManager;
 import javax.swing.BoxLayout;
+
+import static java.awt.GraphicsDevice.WindowTranslucency.*;
 
 import java.awt.Window.Type;
 
 /**
  * class BasicGUI: contains the basic structure of GUI
  * 
- * @author JJ 
- * 		   GUI is mainly constructs by 4 container: titlePanel(for title),
+ * @author JJ GUI is mainly constructs by 4 container: titlePanel(for title),
  *         desktopPanel(for main), toolBar(for helper) and inputPanel(for input)
  *         And inside each container, there exist a hierarchy of container and
- *         field.
- *         Note: singleton pattern is applied in this class 
+ *         field. Note: singleton pattern is applied in this class
  */
 public class BasicGui extends JFrame {
 
@@ -65,21 +73,27 @@ public class BasicGui extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static BasicGui instance;
 
+
+	private JPanel menuArea;
+	private JPanel menuPanel;
 	private JPanel titlePanel;
 	private TextField titleWindow;
-
-	private JToolBar toolBar;
-	private JTextArea HelpWindow;
-
-	private JDesktopPane desktopPanel;
+	
+	private JPanel mainArea;
 	private JPanel FeedbackPanel;
 	private JTextField feedbackWindow;
 	private JPanel mainPanel;
 	private JTextPane mainWindow;
-
+	
+	private JPanel controlArea;
 	private JPanel inputPanel;
 	private JTextField inputWindow;
-
+	
+	private JToolBar helperArea;
+	private JPanel helperPanel;
+	private JTextArea HelpWindow;
+	
+	
 	// constants for FRAME initialization (unit in pixel)
 	private final static int TOP_LEFT_X_VALUE = 100;
 	private final static int TOP_LEFT_Y_VALUE = 100;
@@ -92,42 +106,261 @@ public class BasicGui extends JFrame {
 	 * ====================================================================
 	 */
 
+	
+
+//	private void constructgetContentPane()() {
+//		GraphicsEnvironment ge = GraphicsEnvironment
+//				.getLocalGraphicsEnvironment();
+//		GraphicsDevice gd = ge.getDefaultScreenDevice();
+//		boolean isPerPixelTranslucencySupported = gd
+//				.isWindowTranslucencySupported(PERPIXEL_TRANSLUCENT);
+//
+//		// If translucent windows aren't supported, exit.
+//		if (!isPerPixelTranslucencySupported) {
+//			System.out.println("Per-pixel translucency is not supported");
+//			System.exit(0);
+//		}
+//		getContentPane() = new PerPixelTranslucencyPanel();
+//			
+//
+//		setContentPane(getContentPane());
+//		getContentPane().setLayout(new BorderLayout());
+//
+//	}
+
+	/*
+	 * ====================================================================
+	 * ===================== END OF PRIVATE FIELD =========================
+	 * ====================================================================
+	 */
+	
 	/*
 	 * ====================================================================
 	 * ===================== START OF PUBLIC METHOD =======================
 	 * ====================================================================
 	 */
-
+	
 	/**
 	 * method BasicGUI: constructor of GUI
 	 */
 	private BasicGui() {
+		constructFrame();
+		
+		constructContentPanel();
+		
+		constructMenuArea();
+		constructTitlePanel();
+		constructTitleWindow();
+		
+		constructMainArea();
+		constructMainPanel();
+		constructMainWindow();
+		constructFeedbackPanel();
+		constructFeedbackWindow();
+		
+		constructHelperArea();
+		constructHelperPane();
+		constructHelperWindow();
+		
+		constructControlArea();
+		constructInputPanel();
+		constructInputWindow();
+	}
+
+	/**
+	 * 
+	 */
+	private void constructFrame() {
 		setUndecorated(true);
-		setOpacity(0.75f);
+		//setOpacity(0.8f);
+		setBackground(new Color(0, 0, 0, 0));
+		setLocationRelativeTo(null);
 		setRootPaneCheckingEnabled(false);
 		setType(Type.UTILITY);
-//		try {
-//		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//		        if ("Nimbus".equals(info.getName())) {
-//		            UIManager.setLookAndFeel(info.getClassName());
-//		            break;
-//		        }
-//		    }
-//		} catch (Exception e) {
-//		    // If Nimbus is not available, you can set the GUI to another look and feel.
-//		}
+		
 		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		getContentPane().setFocusTraversalPolicyProvider(true);
 		setVisible(true);
-		constructContentPane();
-		constructTitlePane();
-		constructBodyPane();
-		constructHelperPane();
-		constructInputPane();
+	}
+	
+	private void constructContentPanel() {
+		getContentPane().setEnabled(false);
+		getContentPane().setForeground(new Color(0,0,0));
+		getContentPane().setBackground(new Color(0,0,0));
+		getContentPane().setLayout(new BorderLayout());
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(TOP_LEFT_X_VALUE, TOP_LEFT_Y_VALUE, FRAME_WIDTH, FRAME_HEIGHT);
+	}
+	private void constructMenuArea() {
+		menuArea = new JPanel();
+		menuArea.setOpaque(false);
+		menuArea.setLayout(new BorderLayout(0, 0));
+		
+		getContentPane().add(menuArea, BorderLayout.NORTH);
+	}
+	private void constructTitlePanel() {
+		titlePanel = new JPanel();
+		titlePanel.setLayout(new BorderLayout());
+		
+		menuArea.add(titlePanel);
+	}
+	private void constructTitleWindow() {
+		titleWindow = new TextField();
+		titleWindow.setEditable(false);
+		titleWindow
+				.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		titleWindow.setText("Today is Sep 29 2014");
+		titleWindow.setForeground(Color.WHITE);
+		titleWindow.setBackground(new Color(255, 192, 203, 182));
+		
+		titlePanel.add(titleWindow);
+	}
+	private void constructMainArea() {
+		mainArea = new ImagePanel();
+		mainArea.setOpaque(false);
+		mainArea.setBackground(new Color(0,0,0,0));
+		mainArea.setLayout(new BorderLayout(0, 0));
+		
+		getContentPane().add(mainArea, BorderLayout.CENTER);
+	
+	}
+	private void constructMainPanel() {
+		mainPanel = new JPanel();
+		mainPanel.setRequestFocusEnabled(false);
+		mainPanel.setOpaque(false);
+		mainPanel.setDoubleBuffered(false);
+		mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		mainPanel.setBackground(new Color(0,0,0));
+		mainPanel.setBorder(null);
+		mainPanel.setLayout(new BorderLayout(0, 0));
+		
+		mainArea.add(mainPanel, BorderLayout.CENTER);
 	}
 
+	private void constructMainWindow() {
+		mainWindow = new JTextPane();
+		mainWindow.setOpaque(false);
+		mainWindow.setBorder(null);
+		mainWindow.setContentType("text/html");
+		mainWindow.setFocusable(false);
+		mainWindow.setEditable(false);
+		mainWindow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		mainWindow.setFont(new Font("Calibri", Font.PLAIN, 29));
+		mainWindow.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		mainWindow.setText("<html><li>sample</li></html>");
+		mainWindow.setBackground(new Color(255,255,255,144));
+		
+		mainPanel.add(mainWindow);
+	}
+
+	private void constructFeedbackPanel() {
+		FeedbackPanel = new JPanel();
+		FeedbackPanel.setOpaque(false);
+		FeedbackPanel.setBackground(new Color(255, 255, 255, 0));
+		FeedbackPanel.setBorder(null);
+		FeedbackPanel.setLayout(new BorderLayout(0, 0));
+		
+		mainArea.add(FeedbackPanel, BorderLayout.SOUTH);
+	}
+	
+	private void constructFeedbackWindow() {
+		feedbackWindow = new JTextField();
+		feedbackWindow.setMinimumSize(new Dimension(10, 8));
+		feedbackWindow.setBorder(null);
+		feedbackWindow.setFont(new Font("Ayuthaya", Font.PLAIN, 13));
+		feedbackWindow.setHorizontalAlignment(SwingConstants.CENTER);
+		feedbackWindow.setBackground(new Color(255, 255, 255, 125));
+		feedbackWindow.setEditable(false);
+		feedbackWindow.setText("Task Added!");
+		feedbackWindow.setColumns(20);
+		
+		FeedbackPanel.add(feedbackWindow, BorderLayout.NORTH);
+	}
+	
+	private void constructControlArea() {
+		controlArea = new JPanel();
+		controlArea.setOpaque(false);
+		controlArea.setBorder(null);
+		controlArea.setLayout(new BorderLayout(0, 0));
+		
+		getContentPane().add(controlArea, BorderLayout.SOUTH);
+	}
+
+	private void constructInputPanel() {
+		inputPanel = new JPanel();
+		inputPanel.setOpaque(false);
+		inputPanel.setLayout(new BorderLayout());
+		
+		controlArea.add(inputPanel);
+	}
+	
+	private void constructInputWindow() {
+		inputWindow = new JTextField();
+		inputWindow.setOpaque(true);
+		//inputWindow.setBackground(new Color(255, 255, 255, 255));
+		inputWindow.addActionListener(new EnterKeyListener(inputWindow));
+		inputWindow.setText("Input");
+		inputWindow.setColumns(30);
+		
+		inputPanel.add(inputWindow);
+	}
+
+	private void constructHelperArea() {
+		helperArea = new JToolBar();
+		helperArea.setBorder(null);
+		helperArea.setFloatable(false);
+		helperArea.setSize(new Dimension(2314, 0));
+		helperArea.setRollover(true);
+		
+		getContentPane().add(helperArea, BorderLayout.EAST);
+	}
+	
+	private void constructHelperPane() {
+		helperPanel = new JPanel();
+		helperPanel.setBorder(null);
+		helperPanel.setLayout(new BorderLayout());
+		
+		helperArea.add(helperPanel);
+	}
+
+	/**
+	 * 
+	 */
+	private void constructHelperWindow() {
+		HelpWindow = new JTextArea();
+		HelpWindow.setTabSize(1);
+		HelpWindow.setRows(2);
+		HelpWindow.setWrapStyleWord(true);
+		HelpWindow.setBorder(null);
+		HelpWindow.setEditable(false);
+		HelpWindow.setBackground(new Color(135, 206, 250, 220));
+		HelpWindow.setText("command");
+		
+		helperPanel.add(HelpWindow);
+	}
+
+	
+
+	
+
+	/*
+	 * ====================================================================
+	 * ===================== END OF PRIVATE FIELD =========================
+	 * ====================================================================
+	 */
+	
+	/*
+	 * ====================================================================
+	 * ===================== START OF PUBLIC METHOD =======================
+	 * ====================================================================
+	 */
+	
 	public static BasicGui getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new BasicGui();
 		}
 		return instance;
@@ -144,123 +377,26 @@ public class BasicGui extends JFrame {
 	public void setMainText(String text) {
 		mainWindow.setText(text);
 	}
+
 	public void showLayered() {
 		MultiLayeredPanel layered = new MultiLayeredPanel();
 		mainPanel.removeAll();
 		mainPanel.add(layered);
 	}
+	
 
 	/*
 	 * ====================================================================
 	 * ===================== END OF PUBLIC METHOD =========================
 	 * ====================================================================
 	 */
-	private void constructInputPane() {
-		inputPanel = new JPanel();
-		getContentPane().add(inputPanel, BorderLayout.SOUTH);
-		inputPanel.setLayout(new BorderLayout(0, 0));
-
-		inputWindow = new JTextField();
-		inputPanel.add(inputWindow);
-		inputWindow.setBackground(Color.WHITE);
-		inputWindow.addActionListener(new EnterKeyListener(inputWindow));
-		inputWindow.setText("Input");
-		inputWindow.setColumns(30);
-	}
-
-	private void constructHelperPane() {
-		toolBar = new JToolBar();
-		toolBar.setBorder(null);
-		toolBar.setFloatable(false);
-		toolBar.setSize(new Dimension(2314, 0));
-		toolBar.setRollover(true);
-		getContentPane().add(toolBar, BorderLayout.EAST);
-
-		HelpWindow = new JTextArea();
-		HelpWindow.setTabSize(1);
-		HelpWindow.setRows(2);
-		HelpWindow.setWrapStyleWord(true);
-		toolBar.add(HelpWindow);
-		HelpWindow.setBorder(null);
-		HelpWindow.setEditable(false);
-		HelpWindow.setBackground(new Color(0, 255, 204));
-		HelpWindow.setText("command");
-	}
-
-	private void constructTitlePane() {
-		titlePanel = new JPanel();
-		getContentPane().add(titlePanel, BorderLayout.NORTH);
-		titlePanel.setLayout(new BorderLayout(0, 0));
-
-		titleWindow = new TextField();
-		titlePanel.add(titleWindow);
-		titleWindow.setEditable(false);
-		titleWindow
-				.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		titleWindow.setText("Today is Sep 29 2014");
-		titleWindow.setForeground(Color.WHITE);
-		titleWindow.setBackground(Color.PINK);
-	}
-
-	private void constructBodyPane() {
-		desktopPanel = new JDesktopPane();
-		desktopPanel.setBackground(Color.LIGHT_GRAY);
-		getContentPane().add(desktopPanel, BorderLayout.CENTER);
-		desktopPanel.setLayout(new BorderLayout(0, 0));
-
-		FeedbackPanel = new JPanel();
-		desktopPanel.add(FeedbackPanel, BorderLayout.SOUTH);
-		FeedbackPanel.setBackground(new Color(255, 255, 255));
-		FeedbackPanel.setBorder(null);
-		FeedbackPanel.setLayout(new BorderLayout(0, 0));
-
-		feedbackWindow = new JTextField();
-		FeedbackPanel.add(feedbackWindow, BorderLayout.NORTH);
-		feedbackWindow.setMinimumSize(new Dimension(10, 8));
-		feedbackWindow.setBorder(null);
-		feedbackWindow.setFont(new Font("Ayuthaya", Font.PLAIN, 13));
-		feedbackWindow.setHorizontalAlignment(SwingConstants.CENTER);
-		feedbackWindow.setBackground(new Color(153, 204, 255));
-		feedbackWindow.setEditable(false);
-		feedbackWindow.setText("Task Added!");
-		feedbackWindow.setColumns(20);
-
-		mainPanel = new JPanel();
-		mainPanel.setRequestFocusEnabled(false);
-		mainPanel.setOpaque(false);
-		mainPanel.setDoubleBuffered(false);
-		mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		mainPanel.setBackground(Color.PINK);
-		mainPanel.setBorder(null);
-		desktopPanel.add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setLayout(new BorderLayout(0, 0));
-
-		mainWindow = new JTextPane();
-		mainWindow.setBorder(null);
-		mainWindow.setContentType("text/html");
-		mainWindow.setFocusable(false);
-		mainWindow.setEditable(false);
-		mainWindow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		mainPanel.add(mainWindow);
-		mainWindow.setFont(new Font("Calibri", Font.PLAIN, 29));
-		mainWindow.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-			}
-		});
-		mainWindow.setForeground(Color.BLACK);
-		mainWindow.setText("<html><li>Hi</li></html>");
-		mainWindow.setBackground(Color.WHITE);
-	}
-
-	private void constructContentPane() {
-		getContentPane().setEnabled(false);
-		getContentPane().setForeground(Color.WHITE);
-		getContentPane().setBackground(Color.WHITE);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(TOP_LEFT_X_VALUE, TOP_LEFT_Y_VALUE, FRAME_WIDTH, FRAME_HEIGHT);
-	}
-
-	
+//	public static void main(String[] args){
+//		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//            	BasicGui gui = BasicGui.getInstance();
+//            }
+//        });
+//		
+//	}
 
 }
