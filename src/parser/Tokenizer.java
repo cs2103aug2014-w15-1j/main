@@ -16,7 +16,7 @@ public class Tokenizer {
 		try {
 		  TokenizerModel model = new TokenizerModel(modelIn);
 		  TokenizerME tokenizer = new TokenizerME(model);
-		  String tokens[] = tokenizer.tokenize("Please Add a new task, tomorrow is my birthday");
+		  String tokens[] = tokenizer.tokenize("Please Add a new task, tomorrow is my birthday!");
 		  
 		  for (String word: tokens) {
 			  System.out.println(word);
