@@ -26,10 +26,8 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Dimension;
 
-import logic.RunLogic;
 
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
 import javax.swing.JMenuBar;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
@@ -156,7 +154,7 @@ public class BasicGui extends JFrame {
 		constructContentPanel();
 		
 		constructMenuArea();
-		constructMenuBar();
+		//constructMenuBar();
 		constructTitlePanel();
 		constructTitleWindow();
 		
@@ -207,64 +205,6 @@ public class BasicGui extends JFrame {
 		getContentPane().add(menuArea, BorderLayout.NORTH);
 	}
 	
-	private void constructMenuBar() {
-		menuBar = new JMenuBar();
-		JButton min=new JButton("-");
-		JButton close=new JButton("x");
-		
-		
-        min.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent ae)
-            {
-                // minimize
-                setState(ICONIFIED);
-            }
-        });
-        
-        close.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent ae)
-            {
-                // terminate program
-                System.exit(0);
-            }
-        });
-        menuBar.add(close);
-        menuBar.add(min);
-        
-        
-        menuBar.addMouseListener(new MouseAdapter(){
-            public void mousePressed(MouseEvent me)
-            {
-                // Get x,y and store them
-                pX=me.getX();
-                pY=me.getY();
-            }
-        });
-        
-        // Add MouseMotionListener for detecting drag
-        menuBar.addMouseMotionListener(new MouseAdapter(){
-            public void mouseDragged(MouseEvent me)
-            {
-                // Set the location
-                // get the current location x-co-ordinate and then get
-                // the current drag x co-ordinate, add them and subtract most recent
-                // mouse pressed x co-ordinate
-                // do same for y co-ordinate
-                setLocation(getLocation().x+me.getX()-pX,getLocation().y+me.getY()-pY);
-            }
-        });
-        
-        // Set the menu bar
-        setJMenuBar(menuBar);
-        
-        // Set size, visibility,shape and center it
-        setSize(FRAME_WIDTH,FRAME_HEIGHT);
-        setVisible(true);
-        setShape(new java.awt.geom.RoundRectangle2D.Double(0,0,getWidth(),getHeight(),5,5));
-        setLocationRelativeTo(null);
-        
-		menuArea.add(menuBar, BorderLayout.NORTH);
-	}
 	private void constructTitlePanel() {
 		titlePanel = new JPanel();
 		titlePanel.setLayout(new BorderLayout());
@@ -278,9 +218,33 @@ public class BasicGui extends JFrame {
 				.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		titleWindow.setText("Today is Sep 29 2014");
 		titleWindow.setForeground(Color.WHITE);
-		titleWindow.setBackground(new Color(255, 192, 203, 182));
+		titleWindow.setBackground(new Color(255, 192, 203, 120));
+		
+		enableDraggableTitle();
 		
 		titlePanel.add(titleWindow);
+	}
+
+	private void enableDraggableTitle() {
+		titleWindow.addMouseListener(new MouseAdapter(){
+            public void mousePressed(MouseEvent me)
+            {
+                // Get x,y and store them
+                pX=me.getX();
+                pY=me.getY();
+            }
+        });
+		titleWindow.addMouseMotionListener(new MouseAdapter(){
+            public void mouseDragged(MouseEvent me)
+            {
+                // Set the location
+                // get the current location x-co-ordinate and then get
+                // the current drag x co-ordinate, add them and subtract most recent
+                // mouse pressed x co-ordinate
+                // do same for y co-ordinate
+                setLocation(getLocation().x+me.getX()-pX,getLocation().y+me.getY()-pY);
+            }
+        });
 	}
 	private void constructMainArea() {
 		mainArea = new ImagePanel();
@@ -320,6 +284,7 @@ public class BasicGui extends JFrame {
 		});
 		mainWindow.setText("<html><li>sample</li></html>");
 		mainWindow.setBackground(new Color(255,255,255,144));
+		
 		
 		mainPanel.add(mainWindow);
 	}
