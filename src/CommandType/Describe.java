@@ -7,6 +7,7 @@ import logic.*;
 
 public class Describe implements Command{
 	String newDescription;
+	
 	//local memory
 	private static ArrayList<Task> taskList;
 

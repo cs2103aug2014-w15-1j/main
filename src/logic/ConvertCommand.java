@@ -53,16 +53,21 @@ public class ConvertCommand {
 			}
 			JDate startDate = null;
 			JDate endDate = null;
-			if(command.getStartDay().equals(null)){
+
+			if(!command.getStartDay().equals(null)){
 				if(!isInt(command.getStartDay()) || command.getStartDay().length() != Default.LENGTH_OF_DATE_FORMAT){
 					return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Add", "start date"));
 				}
+				startDate = convertDate(command.getStartDay());
+			}
+			
+			if(!command.getEndDay().equals(null)){
 				if(!isInt(command.getEndDay()) || command.getEndDay().length() != Default.LENGTH_OF_DATE_FORMAT){
 					return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Add", "end date"));
 				}
-				startDate = convertDate(command.getStartDay());
 				endDate = convertDate(command.getEndDay());
 			}
+			
 			Task task = new Task(command.getTitle(), command.getDescription(), command.getRPdate(), startDate, endDate);
 			return new Add(task);
 		}
@@ -151,8 +156,27 @@ public class ConvertCommand {
 	}
 
 	private static Command convertReschedule(RawCommand command) {
-		// TODO Auto-generated method stub
-		return null;
+		String newStartDate = command.getStartDay();
+		String newEndDate = command.getEndDay();
+		
+		JDate startDate = null;
+		JDate endDate = null;
+
+		if(!command.getStartDay().equals(null)){
+			if(!isInt(command.getStartDay()) || command.getStartDay().length() != Default.LENGTH_OF_DATE_FORMAT){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Reschedule", "start date"));
+			}
+			startDate = convertDate(newStartDate);
+		}
+		
+		if(!command.getEndDay().equals(null)){
+			if(!isInt(command.getEndDay()) || command.getEndDay().length() != Default.LENGTH_OF_DATE_FORMAT){
+				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Reschedule", "end date"));
+			}
+			endDate = convertDate(newEndDate);
+		}
+		
+		return new Reschedule(startDate, endDate);
 	}
 
 	private static Command ConvertDescribe(RawCommand command) {
@@ -203,11 +227,17 @@ public class ConvertCommand {
 	}
 
 	private static Command convertNext(RawCommand command) {
-		return new Next();
+		if(RunLogic.getGuiStatus().hasNext()){
+			return new Next();
+		}
+		return new Invalid(String.format(Default.CANNOT_FORMAT, "Next", RunLogic.getGuiStatus().getMode().toString()));
 	}
 
 	private static Command convertPrevious(RawCommand command) {
-		return new Previous();
+		if(RunLogic.getGuiStatus().hasPrevious()){
+			return new Previous();
+		}
+		return new Invalid(String.format(Default.CANNOT_FORMAT, "Previous", RunLogic.getGuiStatus().getMode().toString()));
 	}
 
 	private static Command convertSearch(RawCommand command) {
