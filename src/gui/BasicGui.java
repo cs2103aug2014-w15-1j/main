@@ -84,7 +84,7 @@ public class BasicGui extends JFrame {
 	
 	private JPanel mainArea;
 	private JPanel FeedbackPanel;
-	private JTextField feedbackWindow;
+	private TransColorTextField feedbackWindow;
 	private JPanel mainPanel;
 	private JTextPane mainWindow;
 	
@@ -300,14 +300,13 @@ public class BasicGui extends JFrame {
 	}
 	
 	private void constructFeedbackWindow() {
-		feedbackWindow = new JTextField();
+		feedbackWindow = new TransColorTextField();
 		feedbackWindow.setMinimumSize(new Dimension(10, 8));
 		feedbackWindow.setBorder(null);
 		feedbackWindow.setFont(new Font("Ayuthaya", Font.PLAIN, 13));
 		feedbackWindow.setHorizontalAlignment(SwingConstants.CENTER);
-		feedbackWindow.setBackground(new Color(255, 255, 255, 125));
 		feedbackWindow.setEditable(false);
-		feedbackWindow.setText("Task Added!");
+		feedbackWindow.setTextTransColor("Task Added!");
 		feedbackWindow.setColumns(20);
 		
 		FeedbackPanel.add(feedbackWindow, BorderLayout.NORTH);
@@ -335,10 +334,12 @@ public class BasicGui extends JFrame {
 		inputWindow.setOpaque(true);
 		//inputWindow.setBackground(new Color(255, 255, 255, 255));
 		inputWindow.addActionListener(new EnterKeyListener(inputWindow));
-		inputWindow.setText("Input");
+		inputWindow.setText("Enter you command here:");
+		inputWindow.selectAll();
 		inputWindow.setColumns(30);
 		
 		inputPanel.add(inputWindow);
+		inputWindow.requestFocus();
 	}
 
 	private void constructHelperArea() {
@@ -403,7 +404,7 @@ public class BasicGui extends JFrame {
 	}
 
 	public void setFeedbackText(String text) {
-		feedbackWindow.setText(text);
+		feedbackWindow.setTextTransColor(text);
 	}
 
 	public void setMainText(String text) {
