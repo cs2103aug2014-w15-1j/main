@@ -21,9 +21,9 @@ public class RunLogic {
 		taskList = rf.getEventTask();
 		trashbinList = rf.getTrashFile();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
-		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, currentDisplay[1], "20141022");
+		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, "20141022");
 	
-		Command view = new ViewTaskList(0);
+		Command view = new ViewTaskList();
 		return view.execute();
 	}
 	
