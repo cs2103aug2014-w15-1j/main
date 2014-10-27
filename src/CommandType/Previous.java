@@ -11,8 +11,14 @@ public class Previous implements Command{
 
 	@Override
 	public DisplayInfo execute() {
+		Invalid invalid = new Invalid(String.format(Default.CANNOT_FORMAT, "Previous",GUI.getMode().toString()));
+
 		int currentFirstIndex = GUI.getTaskIndex();
 		VIEW_MODE mode = GUI.getMode();
+		
+		if(!GUI.hasPrevious()){
+			return invalid.execute();
+		}
 		if(mode.equals(VIEW_MODE.TASK_LIST)){
 			ViewTaskList view = new ViewTaskList(currentFirstIndex - Default.MAX_DISPLAY_LINE);
 			return view.execute();
@@ -21,7 +27,6 @@ public class Previous implements Command{
 			ViewTrashBin view = new ViewTrashBin(currentFirstIndex - Default.MAX_DISPLAY_LINE);
 			return view.execute();
 		}
-		Invalid invalid = new Invalid(String.format(Default.CANNOT_FORMAT, "Previous",GUI.getMode().toString()));
 		return invalid.execute();
 	}
 

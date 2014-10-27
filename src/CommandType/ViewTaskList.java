@@ -45,11 +45,12 @@ public class ViewTaskList implements Command{
 					break;
 				}
 			}
-			boolean hasPrevious = (currentDisplay[1] > 0);
+			boolean hasPrevious = firstTaskIndex > 0;
 			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 		}
 		constructBridges(display, Default.VIEW_FEEDBACK, Default.TITLE);
 		update();
+		
 		return passToGui;
 	}
 

@@ -164,9 +164,9 @@ public class BasicGui extends JFrame {
 		constructFeedbackPanel();
 		constructFeedbackWindow();
 		
-		constructHelperArea();
-		constructHelperPane();
-		constructHelperWindow();
+//		constructHelperArea();
+//		constructHelperPane();
+//		constructHelperWindow();
 		
 		constructControlArea();
 		constructInputPanel();
@@ -399,6 +399,7 @@ public class BasicGui extends JFrame {
 		return instance;
 	}
 
+		
 	public void setTitleText(String text) {
 		titleWindow.setText(text);
 	}
@@ -415,6 +416,15 @@ public class BasicGui extends JFrame {
 		MultiLayeredPanel layered = new MultiLayeredPanel();
 		mainPanel.removeAll();
 		mainPanel.add(layered);
+	}
+	public void showListed() {
+		MemoListPanel listed = new  MemoListPanel();
+		listed.removeAll();
+		mainPanel.add(listed);
+	}
+	
+	public void ShowDetailed() {
+		
 	}
 	
 
