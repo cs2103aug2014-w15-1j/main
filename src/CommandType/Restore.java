@@ -11,6 +11,9 @@ import logic.RunLogic;
 import logic.Task;
 
 public class Restore implements Command{
+	private static String feedback;
+	private static String title;
+	
 	int restoreIndex;
 	
 	//local memory
@@ -21,7 +24,10 @@ public class Restore implements Command{
 		
 	private static LogicToStore passToStore;
 	
-	public Restore(int line){
+	public Restore(int line, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		this.restoreIndex = currentDisplay[line];
 	}
@@ -39,7 +45,7 @@ public class Restore implements Command{
 		constructBridges();
 		DataStore.writeAllData(passToStore);
 		
-		ViewTrashBin viewTrashbin = new ViewTrashBin(currentDisplay[1]);
+		ViewTrashBin viewTrashbin = new ViewTrashBin(currentDisplay[1], feedback, title);
 		return viewTrashbin.execute();
 	}
 

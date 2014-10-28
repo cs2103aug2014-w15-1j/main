@@ -4,13 +4,12 @@ import gui.VIEW_MODE;
 
 import java.util.ArrayList;
 
-import logic.Default;
-import logic.DisplayInfo;
-import logic.GUIStatus;
-import logic.RunLogic;
-import logic.Task;
+import logic.*;
 
 public class ReadBin implements Command{
+	private static String feedback;
+	private static String title;
+	
 	int readIndex;
 	
 	//local memory
@@ -21,7 +20,10 @@ public class ReadBin implements Command{
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
 	
-	public ReadBin(int line){
+	public ReadBin(int line, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		readIndex = currentDisplay[line];
 	}
@@ -37,7 +39,7 @@ public class ReadBin implements Command{
 		
 		display.add(trashbinList.get(readIndex));
 		
-		constructBridges(display, Default.READ_FEEDBACK, Default.TITLE);
+		constructBridges(display, feedback, title);
 		update();
 		return passToGui;
 	}

@@ -53,13 +53,14 @@ public class DisplayInfo {
 	}
 	
 	public DisplayInfo(GUIStatus status,
-			String feedback, Boolean change) {
+			String feedback, Boolean change, String title) {
 		this.mode = status.getMode();
 		this.hasNextPage = status.hasNext();
 		this.hasPreviousPage = status.hasPrevious();
 		setIsPageInvolved();
 
 		this.feedback = feedback;
+		this.title = title;
 			
 		this.changeTasklist = change;
 	}

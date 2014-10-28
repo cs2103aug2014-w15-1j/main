@@ -5,26 +5,29 @@ import gui.VIEW_MODE;
 import logic.*;
 
 public class Back implements Command{
+	private static String feedback;
+	private static String title;
+	
 	//local memory
 	private static GUIStatus GUI;
 	
-	public Back(){
+	public Back(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
 		initialize();
 	}
-	
+
 	@Override
 	public DisplayInfo execute() {
 		GUI.changeCurretnTask(GUI.getTaskIndex() - GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE);
 	
 		if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
-			ViewTrashBin view = new ViewTrashBin(GUI.getTaskIndex());
+			ViewTrashBin view = new ViewTrashBin(GUI.getTaskIndex(), feedback, title);
 			return view.execute();
-		} else if (GUI.getMode().equals(VIEW_MODE.TASK_DETAIL)){
-			ViewTaskList view = new ViewTaskList(GUI.getTaskIndex());
+		} else {
+			ViewTaskList view = new ViewTaskList(GUI.getTaskIndex(), feedback, title);
 			return view.execute();
 		}
-		Invalid invalid = new Invalid(String.format(Default.CANNOT_FORMAT, "Back", GUI.getMode().toString()));
-		return invalid.execute();
 	}
 
 	@Override

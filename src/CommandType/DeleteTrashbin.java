@@ -6,6 +6,9 @@ import logic.*;
 import data_store.DataStore;
 
 public class DeleteTrashbin implements Command{
+	private static String feedback;
+	private static String title;
+	
 	boolean deleteAll;
 	int deleteLine;
 	
@@ -14,13 +17,19 @@ public class DeleteTrashbin implements Command{
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay;
 	
-	public DeleteTrashbin(Boolean all){
+	public DeleteTrashbin(Boolean all, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		this.deleteAll = all;
 		this.deleteLine = -1;
 	}
 	
-	public DeleteTrashbin(int line){
+	public DeleteTrashbin(int line, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		this.deleteAll = false;
 		this.deleteLine = currentDisplay[line];
@@ -35,7 +44,7 @@ public class DeleteTrashbin implements Command{
 			
 			DataStore.writeTrash(trashbinList);
 			
-			ViewTrashBin viewTrashBin = new ViewTrashBin();
+			ViewTrashBin viewTrashBin = new ViewTrashBin(feedback, title);
 			return viewTrashBin.execute();
 		} else {
 			trashbinList.remove(deleteLine);
@@ -47,7 +56,7 @@ public class DeleteTrashbin implements Command{
 			
 			DataStore.writeTrash(trashbinList);
 			
-			ViewTaskList viewTaskList = new ViewTaskList(currentDisplay[1]);
+			ViewTaskList viewTaskList = new ViewTaskList(currentDisplay[1], feedback, title);
 			return viewTaskList.execute();
 		}
 	}
