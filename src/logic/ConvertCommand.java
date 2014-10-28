@@ -5,7 +5,11 @@ import parser.RawCommand;
 import CommandType.*;
 
 public class ConvertCommand {
-	private static String TITLE = "title";
+	private static String TASKLIST_TITLE = "Task List";
+	private static String BIN_TITLE = "Trash bin";
+	private static String DETAIL_TITLE_FORMAT = "Detail of %s";
+	
+	
 	//feedback formats
 	private static String CANNOT_FORMAT = "Cannot command %s1 in %2s view mode!";
 	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %1s: %2s invalid!";
@@ -57,7 +61,7 @@ public class ConvertCommand {
 
 	public static Command convert(RawCommand command){
 		if(command == null){
-			return new Invalid(UNKNOWN, TITLE);
+			return new Invalid(UNKNOWN, null);
 		}
 		
 		if (command.getCommand().equalsIgnoreCase("add")) {
@@ -91,7 +95,7 @@ public class ConvertCommand {
 		} else if (command.getCommand().equalsIgnoreCase("exit")) {
 			return convertExit(command);
 		} else {
-			return new Invalid(UNKNOWN, TITLE);
+			return new Invalid(UNKNOWN, null);
 		}
 	}
 
@@ -99,109 +103,112 @@ public class ConvertCommand {
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST) || 
 				RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)	){
 			if(command.getTitle() == null){
-				return new Invalid(INVALID_ADD_NAME, TITLE);
+				return new Invalid(INVALID_ADD_NAME, null);
 			}
 			JDate startDate = null;
 			JDate endDate = null;
 
 			if(command.getStartDay() != null){
 				if(!isInt(command.getStartDay()) || command.getStartDay().length() != Default.LENGTH_OF_DATE_FORMAT){
-					return new Invalid(INVALID_ADD_STARTDATE, TITLE);
+					return new Invalid(INVALID_ADD_STARTDATE, null);
 				}
 				startDate = convertDate(command.getStartDay());
 			}
 			
 			if(command.getEndDay() != null){
 				if(!isInt(command.getEndDay()) || command.getEndDay().length() != Default.LENGTH_OF_DATE_FORMAT){
-					return new Invalid(INVALID_ADD_ENDDATE, TITLE);
+					return new Invalid(INVALID_ADD_ENDDATE, null);
 				}
 				endDate = convertDate(command.getEndDay());
 			}
 			
 			Task task = new Task(command.getTitle(), command.getDescription(), command.getRPdate(), startDate, endDate);
-			return new Add(task, SUCCESSFUL_ADD, TITLE);
+			return new Add(task, SUCCESSFUL_ADD, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		}
-		return new Invalid(CANNOT_ADD, TITLE);
+		return new Invalid(CANNOT_ADD, null);
 	}
 
 	private static Command convertDelete(RawCommand command) {
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
 			if(!isInt(command.getCMDDescription())){
 				if(command.getCMDDescription().equalsIgnoreCase("all")){
-					return new DeleteTaskList(true, SUCCESSFUL_DELETE, TITLE);
+					return new DeleteTaskList(true, SUCCESSFUL_DELETE, TASKLIST_TITLE);
 				} else {
-					return new Invalid(INVALID_DELETE_ITEM, TITLE);
+					return new Invalid(INVALID_DELETE_ITEM, null);
 				}
 			}
 			
 			int deleteLine = Integer.parseInt(command.getCMDDescription());
 			if(deleteLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[deleteLine] == -1){
-				return new Invalid(INVALID_DELETE_ITEM, TITLE);
+				return new Invalid(INVALID_DELETE_ITEM, null);
 			}
 			
-			return new DeleteTaskList(deleteLine, SUCCESSFUL_DELETE, TITLE);
+			return new DeleteTaskList(deleteLine, SUCCESSFUL_DELETE, TASKLIST_TITLE);
 		}
 		
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
 			if(!isInt(command.getCMDDescription())){
 				if(command.getCMDDescription().equalsIgnoreCase("all")){
-					return new DeleteTrashbin(true, SUCCESSFUL_DELETE, TITLE);
+					return new DeleteTrashbin(true, SUCCESSFUL_DELETE, BIN_TITLE);
 				} else {
-					return new Invalid(INVALID_DELETE_ITEM, TITLE);
+					return new Invalid(INVALID_DELETE_ITEM, null);
 				}
 			}
 			
 			int deleteLine = Integer.parseInt(command.getCMDDescription());
 			if(deleteLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[deleteLine] == -1){
-				return new Invalid(INVALID_DELETE_ITEM, TITLE);
+				return new Invalid(INVALID_DELETE_ITEM, null);
 			}
 			
-			return new DeleteTrashbin(deleteLine, SUCCESSFUL_DELETE, TITLE);
+			return new DeleteTrashbin(deleteLine, SUCCESSFUL_DELETE, BIN_TITLE);
 		}
 		
-		return new Invalid(CANNOT_DELETE, TITLE);
+		return new Invalid(CANNOT_DELETE, null);
 	}
 
 	private static Command convertRead(RawCommand command) {
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
 			if(!isInt(command.getCMDDescription())){
-				return new Invalid(INVALID_READ_ITEM, TITLE);
+				return new Invalid(INVALID_READ_ITEM, null);
 			}
 			
 			int readLine = Integer.parseInt(command.getCMDDescription());
 			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
-				return new Invalid(INVALID_READ_ITEM, TITLE);
+				return new Invalid(INVALID_READ_ITEM, null);
 			}
 			
-			return new ReadTaskList(readLine, SUCCESSFUL_READ, TITLE);
+			Task task = RunLogic.getTaskList().get(RunLogic.getCurrentDisplay()[readLine]);
+			return new ReadTaskList(readLine, SUCCESSFUL_READ, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		}
 		
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
 			if(!isInt(command.getCMDDescription())){
-				return new Invalid(INVALID_READ_ITEM, TITLE);
+				return new Invalid(INVALID_READ_ITEM, null);
 			}
 			
 			int readLine = Integer.parseInt(command.getCMDDescription());
 			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
-				return new Invalid(INVALID_READ_ITEM, TITLE);
+				return new Invalid(INVALID_READ_ITEM, null);
 			}
 			
-			return new ReadBin(readLine, SUCCESSFUL_READ, TITLE);
+			Task task = RunLogic.getTrashbinList().get(RunLogic.getCurrentDisplay()[readLine]);
+			return new ReadBin(readLine, SUCCESSFUL_READ, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		}
 		
-		return new Invalid(CANNOT_READ, TITLE);
+		return new Invalid(CANNOT_READ, null);
 	}
 
 	private static Command convertRename(RawCommand command) {
 		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
-			return new Invalid(CANNOT_RENAME, TITLE);
+			return new Invalid(CANNOT_RENAME, null);
 		}
 		
 		String newName = command.getTitle();
 		if(newName == null){
-			return new Invalid(INVALID_RENAME_NAME, TITLE);
+			return new Invalid(INVALID_RENAME_NAME, null);
 		}
-		return new Rename(newName, SUCCESSFUL_RENAME, TITLE);
+		
+		return new Rename(newName, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, newName));
 	}
 
 	private static Command convertRepeart(RawCommand command) {
@@ -211,7 +218,7 @@ public class ConvertCommand {
 
 	private static Command convertReschedule(RawCommand command) {
 		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
-			return new Invalid(CANNOT_RESCHEDULE, TITLE);
+			return new Invalid(CANNOT_RESCHEDULE, null);
 		}
 		
 		String newStartDate = command.getStartDay();
@@ -222,62 +229,65 @@ public class ConvertCommand {
 
 		if(command.getStartDay() != null){
 			if(!isInt(command.getStartDay()) || command.getStartDay().length() != Default.LENGTH_OF_DATE_FORMAT){
-				return new Invalid(INVALID_RESCHEDULE_STARTDATE, TITLE);
+				return new Invalid(INVALID_RESCHEDULE_STARTDATE, null);
 			}
 			startDate = convertDate(newStartDate);
 		}
 		
 		if(command.getEndDay() != null){
 			if(!isInt(command.getEndDay()) || command.getEndDay().length() != Default.LENGTH_OF_DATE_FORMAT){
-				return new Invalid(INVALID_RESCHEDULE_ENDDATE, TITLE);
+				return new Invalid(INVALID_RESCHEDULE_ENDDATE, null);
 			}
 			endDate = convertDate(newEndDate);
 		}
 		
-		return new Reschedule(startDate, endDate, SUCCESSFUL_RESCHDULE, TITLE);
+		Task task = RunLogic.getTaskList().get(RunLogic.getGuiStatus().getTaskIndex());
+		return new Reschedule(startDate, endDate, SUCCESSFUL_RESCHDULE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 	}
 
 	private static Command ConvertDescribe(RawCommand command) {
 		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
-			return new Invalid(CANNOT_DESCRIBE, TITLE);
+			return new Invalid(CANNOT_DESCRIBE, null);
 		}
 		
 		String newDescription = command.getDescription();
 
-		return new Describe(newDescription, SUCCESSFUL_DESCRIBE, TITLE);
+		Task task = RunLogic.getTaskList().get(RunLogic.getGuiStatus().getTaskIndex());
+		return new Describe(newDescription, SUCCESSFUL_DESCRIBE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 	}
 
 	private static Command convertRestore(RawCommand command) {
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN_DETAIL)){
-			return new Restore(1, SUCCESSFUL_RESTORE, TITLE);
+			Task task = RunLogic.getTrashbinList().get(RunLogic.getGuiStatus().getTaskIndex());
+			return new Restore(1, SUCCESSFUL_RESTORE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		}
 		
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
 			if(!isInt(command.getCMDDescription())){
-				return new Invalid(INVALID_RESTORE_ITEM, TITLE);
+				return new Invalid(INVALID_RESTORE_ITEM, null);
 			}
 			
 			int restoreLine = Integer.parseInt(command.getCMDDescription());
 			if(restoreLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[restoreLine] == -1){
-				return new Invalid(INVALID_RESTORE_ITEM, TITLE);
+				return new Invalid(INVALID_RESTORE_ITEM, null);
 			}
 			
-			return new Restore(restoreLine, SUCCESSFUL_RESTORE, TITLE);
+			return new Restore(restoreLine, SUCCESSFUL_RESTORE, BIN_TITLE);
 		}
 		
-		return new Invalid(CANNOT_RESTORE, TITLE);
+		return new Invalid(CANNOT_RESTORE, null);
 	}
 
 	private static Command convertView(RawCommand command) {
 		String newMode = command.getCMDDescription();
 		if(newMode == null){
-			return new ViewTaskList(0, SUCCESSFUL_VIEW, TITLE);
+			return new ViewTaskList(0, SUCCESSFUL_VIEW, TASKLIST_TITLE);
 		} else if(newMode.equalsIgnoreCase("tasklist")){
-			return new ViewTaskList(0, SUCCESSFUL_VIEW, TITLE);
+			return new ViewTaskList(0, SUCCESSFUL_VIEW, TASKLIST_TITLE);
 		} else if(newMode.equalsIgnoreCase("bin")){
-			return new ViewTrashBin(0, SUCCESSFUL_VIEW, TITLE);
+			return new ViewTrashBin(0, SUCCESSFUL_VIEW, BIN_TITLE);
 		} else {
-			return new Invalid(INVALID_VIEW_MODE, TITLE);
+			return new Invalid(INVALID_VIEW_MODE, null);
 		}
 	}
 
@@ -288,24 +298,27 @@ public class ConvertCommand {
 
 	private static Command convertNext(RawCommand command) {
 		if(RunLogic.getGuiStatus().hasNext()){
-			if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)||
-					RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
-				return new Next(SUCCESSFUL_NEXT, TITLE);
+			if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+				return new Next(SUCCESSFUL_NEXT, TASKLIST_TITLE);
+			} else if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
+
+				return new Next(SUCCESSFUL_NEXT, BIN_TITLE);
 			}
-			return new Invalid(CANNOT_NEXT, TITLE);
+			return new Invalid(CANNOT_NEXT, null);
 		}
-		return new Invalid(NO_NEXT, TITLE);
+		return new Invalid(NO_NEXT, null);
 	}
 
 	private static Command convertPrevious(RawCommand command) {
 		if(RunLogic.getGuiStatus().hasPrevious()){
-			if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)||
-					RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
-				return new Previous(SUCCESSFUL_PREVIOUS, TITLE);
+			if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+				return new Previous(SUCCESSFUL_PREVIOUS, TASKLIST_TITLE);
+			} else if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
+				return new Previous(SUCCESSFUL_PREVIOUS, BIN_TITLE);
 			}
-			return new Invalid(CANNOT_PREVIOUS, TITLE);
+			return new Invalid(CANNOT_PREVIOUS, null);
 		}
-		return new Invalid(NO_PREVIOUS, TITLE);
+		return new Invalid(NO_PREVIOUS, null);
 	}
 
 	private static Command convertSearch(RawCommand command) {
@@ -314,11 +327,12 @@ public class ConvertCommand {
 	}
 
 	private static Command convertBack(RawCommand command) {
-		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)||
-				RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN_DETAIL)){
-			return new Back(SUCCESSFUL_BACK, TITLE);
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			return new Back(SUCCESSFUL_BACK, TASKLIST_TITLE);
+		} else if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			return new Back(SUCCESSFUL_BACK, BIN_TITLE);
 		}
-		return new Invalid(CANNOT_BACK, TITLE);
+		return new Invalid(CANNOT_BACK, null);
 	}
 
 	private static Command convertExit(RawCommand command) {
