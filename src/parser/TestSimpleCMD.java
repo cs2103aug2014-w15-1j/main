@@ -31,23 +31,23 @@ public class TestSimpleCMD {
     
     @Test
     public void test() {
-        deleteTest = ParserProcess.interpretCommand(testDeleStr);
+        deleteTest = ParserProcesser.interpretCommand(testDeleStr);
         Assert.assertEquals("Test delete command: ", "DELETE", deleteTest.getCommand());
         Assert.assertEquals("Test delete target index: ", "1", deleteTest.getCMDDescription());
         
-        readTest = ParserProcess.interpretCommand(testReadStr);
+        readTest = ParserProcesser.interpretCommand(testReadStr);
         Assert.assertEquals("Test delete command: ", "READ", readTest.getCommand());
         Assert.assertEquals("Test delete target index: ", "2", readTest.getCMDDescription());
         
-        viewTest = ParserProcess.interpretCommand(testViewStr);
+        viewTest = ParserProcesser.interpretCommand(testViewStr);
         Assert.assertEquals("Test delete command: ", "VIEW", viewTest.getCommand());
         Assert.assertEquals("Test delete target index: ", "tasklist", viewTest.getCMDDescription());
         
-        updateTest = ParserProcess.interpretCommand(testUpdateStr);
+        updateTest = ParserProcesser.interpretCommand(testUpdateStr);
         Assert.assertEquals("Test delete command: ", "RENAME", updateTest.getCommand());
         Assert.assertEquals("Test delete target index: ", "a new name", updateTest.getCMDDescription());
         
-        undoTest = ParserProcess.interpretCommand(testUndoStr);
+        undoTest = ParserProcesser.interpretCommand(testUndoStr);
         Assert.assertEquals("Test delete command: ", "UNDO", undoTest.getCommand());
     }
 }
