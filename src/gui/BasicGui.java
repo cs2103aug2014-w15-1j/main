@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Dimension;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
 import javax.swing.JTextPane;
@@ -260,11 +261,10 @@ public class BasicGui extends JFrame {
 		mainPanel.setOpaque(false);
 		mainPanel.setDoubleBuffered(false);
 		mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		mainPanel.setBackground(new Color(0,0,0));
 		mainPanel.setBorder(null);
-		mainPanel.setLayout(new BorderLayout(0, 0));
+		mainPanel.setLayout(new BorderLayout(0,0));
 		
-		mainArea.add(mainPanel, BorderLayout.CENTER);
+		mainArea.add(mainPanel);
 	}
 
 	private void constructMainWindow() {
@@ -436,13 +436,13 @@ public class BasicGui extends JFrame {
 	 * ===================== END OF PUBLIC METHOD =========================
 	 * ====================================================================
 	 */
-	public static void main(String[] args){
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-            	BasicGui gui = BasicGui.getInstance();
-            }
-        });
-		
-	}
+//	public static void main(String[] args){
+//		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//            	BasicGui gui = BasicGui.getInstance();
+//            }
+//        });
+//		
+//	}
 
 }
