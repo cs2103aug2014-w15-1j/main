@@ -34,7 +34,6 @@ public class myJsonStore {
 				
 		for(int i=0; i < info.size(); i++){
 		
-		//Gson convertTask = new Gson();	
 		//String jsonStringTaskObj = convertTask.toJson(info.get(i));
 		
 		try {

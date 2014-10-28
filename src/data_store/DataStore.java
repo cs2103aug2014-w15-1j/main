@@ -9,13 +9,6 @@ import logic.Task;
 import logic.LogicToStore;
 
 
-/**
- * class 
- * 
- * @author A0100792M
-
- * */
-
 public class DataStore {
 	
 	/**
