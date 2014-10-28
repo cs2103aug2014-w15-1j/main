@@ -34,5 +34,7 @@ public class SentenceParser {
 		 */
 	}
 	
-	
+	public static void main(String[] args) {
+		
+	}
 }
