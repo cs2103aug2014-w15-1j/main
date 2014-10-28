@@ -36,6 +36,7 @@ public class ReadTaskList implements Command{
 		currentDisplay[1] = readIndex;
 
 		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
+		GUI.changeCurretnTask(readIndex);
 		
 		display.add(taskList.get(readIndex));
 		
