@@ -10,18 +10,6 @@ import java.util.*;
 
 import logic.Task;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
-
-/**
- * class 
- * 
- * @author A0100792M
- * 			
- * 
- * */
-
 
 @SuppressWarnings("unused")
 public class myJsonStore {

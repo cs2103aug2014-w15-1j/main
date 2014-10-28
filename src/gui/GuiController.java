@@ -63,7 +63,7 @@ public class GuiController {
 		DisplayInfo info = RunLogic.initialize();
 		display(info);
 		logger.info("MagiCal initialization completed");
-		//gui.showLayered();
+		gui.showLayered();
 	}
 
 	public static void main(String[] args) {
