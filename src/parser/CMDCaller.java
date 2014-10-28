@@ -1,6 +1,6 @@
 package parser;
 
-import parser.CMDTypes.COMMAND_TYPE;
+import java.util.ArrayList;
 
 public class CMDCaller {
 
@@ -13,7 +13,7 @@ public class CMDCaller {
 	static RawCommand transformCmd(CMDInfoPair infoPair){
 	    RawCommand resultCMD;
 	    CMDTypes.COMMAND_TYPE getCMD = infoPair.getCMD();
-	    String subInfoStr = infoPair.getSubInfo();
+	    ArrayList<String> subInfoStr = infoPair.getSubInfo();
 	
 	    switch(getCMD){
 	    case ADD:
@@ -67,5 +67,4 @@ public class CMDCaller {
 	    }
 	    return resultCMD;
 	}
-
 }

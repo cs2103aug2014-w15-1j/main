@@ -9,148 +9,82 @@ import java.util.ArrayList;
  * 
  * */
 public class InfoRetrieve {
+	
+	/**
+     * Get task title, if title is empty, return an system EMPYT_TITLE
+     * 
+     * @param {String}
+     * @param {ArrayList<String>}
+     * 
+     * @return {RawInfoPair}
+     * */
+    static RawInfoPair getTaskTitle(ArrayList<String> tokens) {
+    	String title = "";
+    	String front;
+    	
+        while(!tokens.isEmpty()) {
+        	front = tokens.get(0);
+        	
+        	if(!ValidityChecker.isValidRP(front) && 
+        	   !ValidityChecker.isValidDate(front)){
+        		title += front + ParserKeys.SPACE;
+        		tokens.remove(0);
+        	} else {
+        		break;
+        	}
+        }
+        
+        return new RawInfoPair(title, tokens);
+    }
+	
 	/**
      * get repeated date for a task
      * if cannot find the return system default repeat
      * */
-    static String getRepeatDate(String subInfoStr, ArrayList<Integer> symbolIndex) {
-        String repDate = getBasicInfoAT(1, subInfoStr, symbolIndex, ParserKeys.RP_NON);
-        if (repDate.contains(ParserKeys.SPLIT_DATE)) {
-            return ParserKeys.RP_NON;
-        }else if (isValidRP(repDate)) {
-            if (repDate.isEmpty()) {
-                return ParserKeys.RP_NON;
-            } else {
-                return repDate;
-            }
-        } else {
-            String getLatter = getBasicInfoAT(2, subInfoStr, symbolIndex, ParserKeys.EMPTY_STR);
-            if (getLatter.equals(ParserKeys.EMPTY_STR)) {
-                
-                ErrorGenerator.popError(ErrorMSG.REPEAT_ERR);
-                return ParserKeys.INVALID_INFO;
-            } else {
-                return ParserKeys.RP_NON;
-            }
+    static RawInfoPair getRepeatDate(ArrayList<String> tokens) {
+    	String repeatDate = "";
+    	String cur;
+    	
+        for (int i = 0; i < tokens.size(); i++) {
+        	cur = tokens.get(i);
+        	if (ValidityChecker.isValidRP(cur)) {
+        		repeatDate = cur;
+        		tokens.remove(i);
+        		break;
+        	}
         }
-    }
-    
-    /**
-     * Get basic information at location 
-     * (1) repeat date, (2) start date, (3) end date
-     * */
-    static String getBasicInfoAT(int location, String subInfoStr, 
-                                         ArrayList<Integer> symbolIndex, 
-                                         String defaultStr) {
-        if (symbolIndex.size() == 2 || symbolIndex.size() == 4) {
-            // remove the front quotation
-            if (subInfoStr.startsWith(ParserKeys.SPLITSYMBOL)) {
-                String removedStr = subInfoStr.substring(symbolIndex.get(1) + 1, subInfoStr.length());
-                
-                if (location == 1){
-                    return getFirstWord(removedStr, defaultStr);
-                    
-                } else if (location == 2) {
-                    return getStartDate(removedStr, defaultStr);
-                } else {
-                    return getEndDate(removedStr, defaultStr);
-                }
-                
-            } else {
-                String frontRemoved = removeBlocks(subInfoStr, location);
-                return getFirstWord(frontRemoved, defaultStr);
-            }
-        } else {
-            // No symbols
-            if (location == 1){
-                String frontRemoved = removeBlocks(subInfoStr, 1);
-                return getFirstWord(frontRemoved, defaultStr);
-                
-            } else if (location == 2) {
-                String frontRemoved = removeBlocks(subInfoStr, 1);
-                return getStartDate(frontRemoved, defaultStr);
-            } else {
-                String frontRemoved = removeBlocks(subInfoStr, 1);
-                return getEndDate(frontRemoved, defaultStr);
-            }
+        
+        if (repeatDate.isEmpty()) {
+        	repeatDate = ParserKeys.RP_NON;
         }
+        
+        return new RawInfoPair(repeatDate, tokens);
     }
     
     /**
      * get start day for a task
      * if cannot find the return system default date
      * */
-    private static String getStartDate(String subInfoStr, String defaultStr) {
-        String frontWord = getFirstWord(subInfoStr, defaultStr);
-        if (frontWord.contains(ParserKeys.SPLIT_DATE)) {
-            return frontWord;
-        } else {
-            String frontRemoved = removeBlocks(subInfoStr, 1);
-            return getFirstWord(frontRemoved, defaultStr);
+    static RawInfoPair getDate(ArrayList<String> tokens) {
+    	String date = "";
+    	String cur;
+    	
+        for (int i = 0; i < tokens.size(); i++) {
+        	cur = tokens.get(i);
+        	if (ValidityChecker.isValidDate(cur)) {
+        		date = makeDay(cur);
+        		tokens.remove(i);
+        		break;
+        	}
         }
-    }
-    
-    /**
-     * get End date for a task
-     * if cannot find the return system default end date
-     * */
-    private static String getEndDate(String subInfoStr, String defaultStr) {
         
-        String frontWord1 = getFirstWord(subInfoStr, defaultStr);
-        if (!frontWord1.contains(ParserKeys.SPLIT_DATE)) {
-            // Has Repeat Date
-            String front1Removed = removeBlocks(subInfoStr, 1);
-            String frontWord2 = getFirstWord(front1Removed, defaultStr);
-            
-            if (frontWord2.contains(ParserKeys.SPLIT_DATE)) {
-                // Has Start Date
-                String front2Removed = removeBlocks(front1Removed, 1);
-                String frontWord3 = getFirstWord(front2Removed, defaultStr);
-                
-                if (frontWord3.contains(ParserKeys.SPLIT_DATE)) {
-                    // Has End Date
-                    return getFirstWord(front2Removed, defaultStr);
-                } else {
-                    // Has no End Date
-                    return defaultStr;
-                }  
-            } else {
-                // Has no Start Date
-                return defaultStr;
-            }
-        } else if (frontWord1.contains(ParserKeys.SPLIT_DATE)){
-            // Has no Repeat Date, But has Start Day
-            String front2Removed = removeBlocks(subInfoStr, 1);
-            String frontWord3 = getFirstWord(front2Removed, defaultStr);
-            
-            if (frontWord3.contains(ParserKeys.SPLIT_DATE)) {
-                // Has End Date
-                return getFirstWord(front2Removed, defaultStr);
-            } else {
-                // Has no End Date
-                return defaultStr;
-            }  
-        } else {
-            // Has no Repeat Date nor Start Day
-            return defaultStr;
+        if (date.isEmpty()) {
+        	date = ParserKeys.EMPTY_DATE;
         }
+        
+        return new RawInfoPair(date, tokens);
     }
     
-    /**
-     * Get the specific word section
-     * */
-    private static String getFirstWord(String removedStr, String defaultStr) {
-        removedStr = cleanFrontSpace(removedStr);
-        int firstSpace = removedStr.indexOf(ParserKeys.SPACE);
-        if (firstSpace == -1 && removedStr.isEmpty()) {
-            return defaultStr;
-        } else if (firstSpace == -1 && !removedStr.isEmpty()){
-            return removedStr;
-        } else {
-            return removedStr.substring(0, firstSpace);
-        }
-    }
-
     /**
      * Get the description at the end
      * 
@@ -159,85 +93,17 @@ public class InfoRetrieve {
      * 
      * @return {String}
      * */
-    static String getDescription(String subInfoStr, ArrayList<Integer> symbolIndex) {
-        if (symbolIndex.size() == 0) {
-            String[] splitedString = subInfoStr.split(ParserKeys.SPACE);
-            
-            if (splitedString.length > 1) {
-                String getEnd = splitedString[splitedString.length - 1];
-                if (isValidRP(getEnd)) {
-                    return ParserKeys.EMPTY_DIS; 
-                } else if (isValidDate(getEnd)){
-                    return ParserKeys.EMPTY_DIS;
-                } else {
-                    return getEnd;
-                }
-            } else {
-                return ParserKeys.EMPTY_DIS;
-            }
-        }else if (symbolIndex.size() == 2) {
-            if (subInfoStr.startsWith(ParserKeys.SPLITSYMBOL)) {
-                return ParserKeys.EMPTY_DIS;
-            } else {
-                return retrieveQuotedStr(subInfoStr, 
-                                         symbolIndex.get(0), 
-                                         symbolIndex.get(1), 
-                                         ParserKeys.EMPTY_DIS);
-            }
-        } else {
-            // 4 Quotation Markers
-            return retrieveQuotedStr(subInfoStr, 
-                                     symbolIndex.get(2), 
-                                     symbolIndex.get(3),
-                                     ParserKeys.EMPTY_DIS);
+    static String getDescription(ArrayList<String> tokens) {
+    	String description = "";
+        for ( int i = 0; i < tokens.size(); i++) {
+        	description += tokens.get(i) + ParserKeys.SPACE;
         }
-    }
-    
-    /**
-     * Get task title, if title is empty, return an system EMPYT_TITLE
-     * 
-     * @param {String}
-     * @param {ArrayList<Integer>}
-     * 
-     * @return {String}
-     * */
-    static String getTaskTitle(String subInfoStr, ArrayList<Integer> symbolIndex) {
-        if (symbolIndex.size() == 0) {
-            return getFirstWord(subInfoStr, ParserKeys.EMPTY_TITLE);
+        
+        if (description.isEmpty()) {
+        	description = ParserKeys.EMPTY_DIS;
         }
-        if (symbolIndex.size() == 2) {
-            if (subInfoStr.startsWith(ParserKeys.SPLITSYMBOL)) {
-                return retrieveQuotedStr(subInfoStr, 
-                                         symbolIndex.get(0), 
-                                         symbolIndex.get(1), 
-                                         ParserKeys.EMPTY_TITLE);
-            } else {
-                int firstSpace = subInfoStr.indexOf(ParserKeys.SPACE);
-                return subInfoStr.substring(0, firstSpace);
-            }
-        } else {
-            // 4 Quotation Markers
-            return retrieveQuotedStr(subInfoStr, 
-                                     symbolIndex.get(0), 
-                                     symbolIndex.get(1), 
-                                     ParserKeys.EMPTY_TITLE);
-        }
-    }
-    
-    /**
-     * Retrieve a string by the start and end index of quotation marker
-     * 
-     * @param {string}
-     * @param {number}
-     * @param {number}
-     * */
-    private static String retrieveQuotedStr(String subInfoStr, int startIndex, int endIndex, String defaultStr) {
-        String getStr = subInfoStr.substring(startIndex + 1, endIndex);
-        if (getStr.isEmpty()) {
-            return defaultStr;
-        } else {
-            return getStr;
-        }
+        
+        return description;
     }
     
     /**
@@ -252,25 +118,8 @@ public class InfoRetrieve {
         for (int i = 0; i < startDayArr.length; i++) {
             resultDay += startDayArr[i];
         }
-
-        if (resultDay.length() != ParserKeys.DATE_LENGTH) {
-            resultDay = ParserKeys.EMPTY_DATE;
-        }
+        
         return resultDay;
-    }
-    
-    /**
-     * Check if is valid date
-     * */
-    private static boolean isValidDate(String rawStr) {
-        return !makeDay(rawStr).equals(ParserKeys.EMPTY_DATE);
-    }
-    
-    /**
-     * Check if input contains invalid symbols
-     * */
-    static boolean noInvalidKeys(String inputString) {
-        return !inputString.contains(ParserKeys.INVALID_SYMBOL);
     }
     
     /**
@@ -287,7 +136,7 @@ public class InfoRetrieve {
     /**
      * Judge the validity of repeat date input
      * */
-    private static boolean isValidRP(String repDate) {
+    static boolean isValidRP(String repDate) {
         boolean result = false;
         for (int i = 0; i < ParserKeys.REPEAT_KEYS.length; i++) {
             if (repDate.equalsIgnoreCase(ParserKeys.REPEAT_KEYS[i])){
@@ -295,28 +144,6 @@ public class InfoRetrieve {
             }
         }
         return result;
-    }
-
-    /**
-     * Remove front blocks by spaces
-     * 
-     * @param {String]
-     * @param {Number}
-     * */
-    private static String removeBlocks(String originStr, int numToRemove) {
-        originStr = cleanFrontSpace(originStr);
-        if (numToRemove > 0) {
-            int getSpace = originStr.indexOf(ParserKeys.SPACE);
-            
-            if (getSpace != -1) {
-                String curRemove =  originStr.substring(getSpace + 1, originStr.length());
-                return removeBlocks(curRemove, numToRemove - 1);
-            } else {
-                return originStr;
-            }
-        } else {
-            return originStr;
-        }
     }
     
     /**
@@ -337,4 +164,37 @@ public class InfoRetrieve {
         }
         return quotationIndex;
     }
+    
+    /**
+     * Return index of quotation mark in raw input String
+     * */
+    static ArrayList<Integer> getDateMarker(String subInfoStr) {
+        ArrayList<Integer> dateMarkIndex = new ArrayList<Integer>();
+        String curStr;
+        
+        for(int i = 0; i < subInfoStr.length(); i ++) {
+            curStr = subInfoStr.substring(i, i + 1);
+            if (curStr.equals(ParserKeys.SPLIT_DATE)) {
+                dateMarkIndex.add(i);
+            }
+        }
+        return dateMarkIndex;
+    }
+
+	/**
+	 * Get front command
+	 * */
+	public static String getCommand(String rawString) {
+		
+		String getCommand;
+		int getCommandEnd = rawString.indexOf(ParserKeys.SPACE);
+		
+	    if (getCommandEnd == ParserKeys.INDEX_NOT_EXIST) {
+	        getCommand = rawString;
+	    } else {
+	        getCommand = rawString.substring(0, getCommandEnd);
+	    }
+	    
+	    return getCommand;
+	}
 }

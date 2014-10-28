@@ -1,5 +1,7 @@
 package parser;
 
+import java.util.ArrayList;
+
 import parser.CMDTypes.COMMAND_TYPE;
 
 
@@ -11,7 +13,7 @@ import parser.CMDTypes.COMMAND_TYPE;
  * 			in the raw input and return a RawCommand object that contains basic
  * 			information 
  * */
-public class CMDSwitcher {
+public class CMDInterpreter {
 	
 	/**
      * Interpret strings by their own commands
@@ -20,18 +22,9 @@ public class CMDSwitcher {
      * @return a CmdInfoPair object that contains a pair of command and sub-information string 
      * 		   of an raw input 
      * */
-    static CMDInfoPair makeCmdPair(String rawString){
-        String getCommand;
-        String getSubInfo;
-
-        int getCommandEnd = rawString.indexOf(ParserKeys.SPACE);
-        if (getCommandEnd == ParserKeys.INDEX_NOT_EXIST) {
-            getCommand = rawString;
-            getSubInfo = null;
-        } else {
-            getCommand = rawString.substring(0, getCommandEnd);
-            getSubInfo = InfoRetrieve.cleanFrontSpace(rawString.substring(getCommandEnd + 1, rawString.length()));
-        }
+    static CMDInfoPair makeCmdPair(RawInfoPair rawCMDPair){
+        String getCommand = rawCMDPair.getFront();
+        ArrayList<String> getSubInfo = rawCMDPair.getSubInfo();
 
         if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.ADD.name())) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.ADD, getSubInfo);
@@ -69,10 +62,4 @@ public class CMDSwitcher {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.INVALID, getSubInfo);
         }
     }
-    
-    
-
-
-    
-    
 }

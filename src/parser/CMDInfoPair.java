@@ -1,5 +1,9 @@
 package parser;
 
+import java.util.ArrayList;
+
+import parser.CMDTypes.COMMAND_TYPE;
+
 /**
  * class CmdInfoPair: A pair of command type and command's sub-information
  * 
@@ -8,19 +12,19 @@ package parser;
  * */
 
 class CMDInfoPair {
-    private CMDTypes.COMMAND_TYPE cmd;
-    private String subInfo;
+    private COMMAND_TYPE cmd;
+    private ArrayList<String> subInfo;
     
-    public CMDInfoPair(CMDTypes.COMMAND_TYPE cmd, String subInfo) {
-        this.cmd = cmd;
-        this.subInfo = subInfo;
+    public CMDInfoPair(COMMAND_TYPE add, ArrayList<String> getSubInfo) {
+        this.cmd = add;
+        this.subInfo = getSubInfo;
     }
     
-    public CMDTypes.COMMAND_TYPE getCMD() {
+    public COMMAND_TYPE getCMD() {
         return this.cmd;
     }
     
-    public String getSubInfo() {
+    public ArrayList<String> getSubInfo() {
         return this.subInfo;
     }
 }
