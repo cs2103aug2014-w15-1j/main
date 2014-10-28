@@ -41,33 +41,16 @@ public class DeleteTaskList implements Command{
 			taskList.clear();
 			
 			update();
+			
+			constructBridges();
+			DataStore.writeAllData(passToStore);
+			
 			ViewTaskList viewTaskList = new ViewTaskList();
 			return viewTaskList.execute();
-		} 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		else {
+		} else {
 			trashbinList.add(taskList.remove(deleteIndex));
 			
-			if(currentDisplay[1] > taskList.size()){
+			if(currentDisplay[1] >= taskList.size()){
 				currentDisplay[1] -= Default.MAX_DISPLAY_LINE;
 			}
 			update();
