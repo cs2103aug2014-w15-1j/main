@@ -48,20 +48,20 @@ public class ConvertCommand {
 	private static Command convertAdd(RawCommand command) {
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST) || 
 				RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)	){
-			if(command.getTitle().equals(null)){
+			if(command.getTitle() == null){
 				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Add", "task title"));
 			}
 			JDate startDate = null;
 			JDate endDate = null;
 
-			if(!command.getStartDay().equals(null)){
+			if(command.getStartDay() != null){
 				if(!isInt(command.getStartDay()) || command.getStartDay().length() != Default.LENGTH_OF_DATE_FORMAT){
 					return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Add", "start date"));
 				}
 				startDate = convertDate(command.getStartDay());
 			}
 			
-			if(!command.getEndDay().equals(null)){
+			if(command.getEndDay() != null){
 				if(!isInt(command.getEndDay()) || command.getEndDay().length() != Default.LENGTH_OF_DATE_FORMAT){
 					return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Add", "end date"));
 				}
@@ -144,7 +144,7 @@ public class ConvertCommand {
 
 	private static Command convertRename(RawCommand command) {
 		String newName = command.getTitle();
-		if(newName.equals(null)){
+		if(newName == null){
 			return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Rename", "Name"));
 		}
 		return new Rename(newName);
@@ -162,14 +162,14 @@ public class ConvertCommand {
 		JDate startDate = null;
 		JDate endDate = null;
 
-		if(!command.getStartDay().equals(null)){
+		if(command.getStartDay() != null){
 			if(!isInt(command.getStartDay()) || command.getStartDay().length() != Default.LENGTH_OF_DATE_FORMAT){
 				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Reschedule", "start date"));
 			}
 			startDate = convertDate(newStartDate);
 		}
 		
-		if(!command.getEndDay().equals(null)){
+		if(command.getEndDay() != null){
 			if(!isInt(command.getEndDay()) || command.getEndDay().length() != Default.LENGTH_OF_DATE_FORMAT){
 				return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Reschedule", "end date"));
 			}
@@ -181,7 +181,7 @@ public class ConvertCommand {
 
 	private static Command ConvertDescribe(RawCommand command) {
 		String newDescription = command.getDescription();
-		if(newDescription.equals(null)){
+		if(newDescription == null){
 			return new Invalid(String.format(Default.INVALID_ARGUMENT_FORMAT, "Describe", "Description"));
 		}
 		return new Describe(newDescription);
@@ -210,7 +210,7 @@ public class ConvertCommand {
 
 	private static Command convertView(RawCommand command) {
 		String newMode = command.getCMDDescription();
-		if(newMode.equals(null)){
+		if(newMode == null){
 			return new ViewTaskList(0);
 		} else if(newMode.equalsIgnoreCase("tasklist")){
 			return new ViewTaskList(0);
@@ -257,7 +257,7 @@ public class ConvertCommand {
 	
 	//--------------------Helper Function-------------------------
 	private static boolean isInt(String str){
-		if(str.equals(null)){
+		if(str == null){
 			return false;
 		}
 		

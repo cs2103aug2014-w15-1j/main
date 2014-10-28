@@ -24,12 +24,14 @@ public class MemoListPanel extends JPanel {
 	private ArrayList<String> secondCol;
 
 	private int alphaValue = 0;
-	private Color[] layerColors = { new Color(251, 172, 27, alphaValue),
-			new Color(52, 167, 224, alphaValue),
+	private Color[] layerColors = {
+			new Color(251, 172, 27, alphaValue),
+			new Color(244, 167, 224, alphaValue),
 			new Color(246, 40, 52, alphaValue),
 			new Color(248, 113, 0, alphaValue),
 			new Color(141, 196, 0, alphaValue) };
-
+	private Color lightGrey = new Color(220, 220, 220, 213);
+	
 	MemoListPanel(ArrayList<String> firstCol, ArrayList<String> secondCol) {
 		super();
 		this.setOpaque(false);
@@ -46,10 +48,10 @@ public class MemoListPanel extends JPanel {
 		c1.gridy = 0;
 		c1.insets = new Insets(5,10,1,1);
 		c1.weightx = 0.7;
-		this.add(createColoredLabel("title" , layerColors[0]), c1);
+		this.add(createColoredLabel("title" , layerColors[1]), c1);
 		for(int i=0; i<firstCol.size(); i++) {
 			c1.gridy = i+1;
-			this.add(createColoredLabel(i+1 + ". " + firstCol.get(i), layerColors[1]), c1);
+			this.add(createColoredLabel(i+1 + ". " + firstCol.get(i), lightGrey), c1);
 		}
 		
 		GridBagConstraints c2 = new GridBagConstraints();
@@ -60,7 +62,7 @@ public class MemoListPanel extends JPanel {
 		this.add(createColoredLabel("endTime" , layerColors[0]), c2);
 		for(int i=0; i<secondCol.size(); i++) {
 			c2.gridy = i+1;
-			this.add(createColoredLabel(secondCol.get(i), layerColors[3]), c2);
+			this.add(createColoredLabel(secondCol.get(i), lightGrey), c2);
 		}
 		
 	}

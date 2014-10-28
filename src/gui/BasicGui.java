@@ -416,7 +416,6 @@ public class BasicGui extends JFrame {
 		mainPanel.validate();
 	}
 	public void showListed(ArrayList<String> a, ArrayList<String> b) {
-		System.out.println(a.toString() + b.toString());
 		MemoListPanel listed = new MemoListPanel(a, b);
 		mainPanel.removeAll();
 		mainPanel.add(listed);
@@ -437,13 +436,13 @@ public class BasicGui extends JFrame {
 	 * ===================== END OF PUBLIC METHOD =========================
 	 * ====================================================================
 	 */
-//	public static void main(String[] args){
-//		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//            	BasicGui gui = BasicGui.getInstance();
-//            }
-//        });
-//		
-//	}
+	public static void main(String[] args){
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+            	BasicGui gui = BasicGui.getInstance();
+            }
+        });
+		
+	}
 
 }
