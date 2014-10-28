@@ -3,9 +3,10 @@ package gui;
 import java.util.ArrayList;
 
 import logic.DisplayInfo;
+import logic.JDate;
 import logic.Task;
 
-public class GuiInfoTranslator  {
+public class GuiInfoTranslator {
 
 	/*
 	 * ====================================================================
@@ -13,7 +14,12 @@ public class GuiInfoTranslator  {
 	 * ====================================================================
 	 */
 	private DisplayInfo info;
-	private final static String Message_Empty_List = "No task here";
+	private final static String MESSAGE_EMPTY_LIST = "No relevent information here";
+	private final static String EMPTY_STRING = "";
+	private String[] taskDetailAttr = {"Name", "StartDate", "EndDate", "Description", "Repition"};
+	private ArrayList<String> firstCol = new ArrayList<String>();
+	private ArrayList<String> secondCol = new ArrayList<String>();
+
 	/*
 	 * ====================================================================
 	 * ===================== END OF PRIVATE FIELD =========================
@@ -25,7 +31,7 @@ public class GuiInfoTranslator  {
 	 * ===================== START OF PUBLIC METHOD =======================
 	 * ====================================================================
 	 */
-	public GuiInfoTranslator(DisplayInfo info){
+	public GuiInfoTranslator(DisplayInfo info) {
 		this.info = info;
 	}
 
@@ -40,7 +46,7 @@ public class GuiInfoTranslator  {
 	public boolean hasPreviousPage() {
 		return this.hasPreviousPage();
 	}
-	
+
 	public String getFeedbackString() {
 		return info.getFeedbackString();
 	}
@@ -48,123 +54,111 @@ public class GuiInfoTranslator  {
 	public String getTitleString() {
 		return info.getTitleString();
 	}
+
 	public boolean changeTaskList() {
 		return info.changeTasklist();
 	}
-	
-	public String getTaskString() {
+
+	public VIEW_MODE getViewMode() {
+		return info.getViewMode();
+	}
+
+	public ArrayList<String> getFirstCol() {
+		return firstCol;
+	}
+
+	public ArrayList<String> getSecondCol() {
+		return secondCol;
+	}
+
+	public boolean processTaskInfo() {
 		ArrayList<Task> taskList = info.getTaskList();
 		Task task;
-		if(taskList == null) {
-			return Message_Empty_List;
+		if (taskList == null) {
+			return false;
+		} else if(taskList.size() <= 0) {
+			return false;
 		}
-		
+
 		switch (info.getViewMode()) {
 		case TASK_DETAIL:
 			if (taskList.size() != 1) {
 				throw new Error("taskList does not contain one task exactly");
 			}
 			task = taskList.get(0);
-			return processTaskDetailText(task);
+			processTaskDetail(task);
+			return true;
 		case BIN_DETAIL:
 			if (taskList.size() != 1) {
 				throw new Error("taskList does not contain one task exactly");
 			}
 			task = taskList.get(0);
-			return processTaskDetailText(task);
+			processTaskDetail(task);
+			return true;
 		case MONTH:
-			throw new UnsupportedOperationException("view in Month is not supported yet");
+			throw new UnsupportedOperationException(
+					"view in Month is not supported yet");
 		default:
-			return processTaskListText(taskList);
+			processTaskList(taskList);
+			return true;
 		}
 	}
 
-	
-	
 	/*
 	 * ====================================================================
 	 * ===================== END OF PUBLIC METHOD =========================
 	 * ====================================================================
 	 */
 
-	
-	/**
-	 * method processTaskListText: convert a list of task into text\html string
-	 * with only name displayed in an ordered list
-	 * 
-	 * @param taskList
-	 * @return corresponding string in text\html format
-	 */
-	private String processTaskListText(ArrayList<Task> taskList) {
-		String output = "";
-		if (taskList.size() > 0) {
-			String fontColor = "blue";
-			String taskOpen = "<li><font size=+2 font color=" + fontColor + ">";
-			String taskClose = "</font>";
-			String body = "";
-			for (int i = 0; i < taskList.size(); i++) {
-				body += taskOpen + taskList.get(i).getName() + taskClose;
+	private void processTaskList(ArrayList<Task> lst) {
+		if(lst == null) {
+			throw new Error("tasklist cannot be null at this point");
+		}
+		if(lst.size() <= 0) {
+			throw new Error("tasklist cannot be null at this point");
+		}
+		
+		for(int i=0; i<lst.size(); i++) {
+			firstCol.add(lst.get(i).getName());
+			if(lst.get(i).getEndDate() != null){
+				secondCol.add(lst.get(i).getEndDate().toString());
+			} else {
+				secondCol.add(EMPTY_STRING);
 			}
-			output = "<html>" + "<ol>" + body + "</ol>" + "</html>";
-
-		} else {
-			output = "<html>" + "<center>" + Message_Empty_List + "</center>" + "</html>";
 		}
-
-		return output;
 
 	}
-
-	/**
-	 * method processTaskDetailText: convert a certain task into text\html
-	 * 
-	 * string with all necessary attributes displayed.
-	 * 
-	 * @param task
-	 * @return corresponding string in text\html format
-	 */
-	private String processTaskDetailText(Task task) {
-		String attrFontColor = "black";
-		String infoFontColor = "green";
-		String attrOpen = "<i><font size=+1 color=" + attrFontColor + ">";
-		String attrClose = "</font>";
-		String infoOpen = "<i><font size=+1 color = " + infoFontColor + ">";
-		String infoClose = "</i>";
-		String newLine = "<br>";
-		
-		
-		String nameInfo = infoOpen + task.getName() + infoClose;
-		String descriptionInfo = infoOpen + task.getDescription() + infoClose;
-		String startDateInfo;
-		if(checkNullInfo(task.getStartDate())){
-			startDateInfo = infoOpen +  infoClose;
-		} else {
-			startDateInfo = infoOpen + task.getStartDate().toString() + infoClose;
+	private void processTaskDetail(Task task) {
+		if(task == null) {
+			throw new Error("task cannot be null at this point");
 		}
-		String endDateInfo;
-		if(checkNullInfo(task.getEndDate())) {
-			endDateInfo = infoOpen + infoClose;
-		} else {
-			endDateInfo = infoOpen + task.getEndDate().toString() + infoClose;
+		String name = task.getName();
+		JDate startDate = task.getStartDate();
+		JDate endDate = task.getEndDate();
+		String descrition = task.getDescription();
+		String repetition = task.getRepeatDays();
+		
+		for(String attr: taskDetailAttr) {
+			firstCol.add(attr);
 		}
-
-		String nameAttr = attrOpen + "Name: " + attrClose;
-		String descriptionAttr = attrOpen + "description: " + attrClose;
-		String StartDateAttr = attrOpen + "startTime: " + attrClose;
-		String endDateAttr = attrOpen + "endTime: " + attrClose;
-
-		String output = "<html>" + newLine  + nameAttr + nameInfo + "<br>"
-				+ descriptionAttr + descriptionInfo + "<br>" + StartDateAttr
-				+ startDateInfo + "<br>" + endDateAttr + endDateInfo + "<br>"
-				+ "</html>";
-		return output;
-
+		secondCol.add(name);
+		if(startDate != null) {
+			secondCol.add(startDate.toString());
+		} else {
+			secondCol.add(EMPTY_STRING);
+		}
+		if(endDate != null) {
+			secondCol.add(endDate.toString());
+		} else {
+			secondCol.add(EMPTY_STRING);
+		}
+		secondCol.add(descrition);
+		secondCol.add(repetition);
+		
 	}
-	private static boolean checkNullInfo(Object o){
+
+	private static boolean checkNullInfo(Object o) {
 		return o == null;
 	}
-
-
-
 
 }
