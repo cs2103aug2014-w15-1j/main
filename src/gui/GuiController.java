@@ -39,7 +39,6 @@ public class GuiController {
 				if(info.processTaskInfo()) {
 					gui.showListed(info.getFirstCol(), info.getSecondCol());
 				}
-
 			}
 		}
 
@@ -58,12 +57,12 @@ public class GuiController {
 
 	public static void run() {
 		gui = BasicGui.getInstance();
-		logger.info("Gui instance gotten");
+		//logger.info("Gui instance gotten");
 		assert gui != null : "GuiController cannot get instance of Gui";
 		DisplayInfo info = RunLogic.initialize();
 		display(info);
-		logger.info("MagiCal initialization completed");
-		gui.showLayered();
+		logger.info("MagiCal initialization completed sdaflass");
+		//gui.showLayered();
 	}
 
 	public static void main(String[] args) {
