@@ -26,7 +26,6 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Dimension;
 
-
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
 import javax.swing.JTextPane;
@@ -49,12 +48,9 @@ import java.awt.GridBagLayout;
 import java.awt.Paint;
 import java.awt.SystemColor;
 
-import javax.swing.UIManager;
-import javax.swing.BoxLayout;
 
-import static java.awt.GraphicsDevice.WindowTranslucency.*;
 
-import java.awt.Window.Type;
+import java.util.ArrayList;
 
 /**
  * class BasicGUI: contains the basic structure of GUI
@@ -101,7 +97,7 @@ public class BasicGui extends JFrame {
 	private final static int TOP_LEFT_X_VALUE = 100;
 	private final static int TOP_LEFT_Y_VALUE = 100;
 	private final static int FRAME_WIDTH = 400;
-	private final static int FRAME_HEIGHT = 500;
+	private final static int FRAME_HEIGHT = 460;
 	
 	int pX,pY;
 
@@ -171,6 +167,8 @@ public class BasicGui extends JFrame {
 		constructControlArea();
 		constructInputPanel();
 		constructInputWindow();
+		
+		this.validate();
 	}
 
 	/**
@@ -200,6 +198,7 @@ public class BasicGui extends JFrame {
 	private void constructMenuArea() {
 		menuArea = new JPanel();
 		menuArea.setOpaque(false);
+		menuArea.setPreferredSize(new Dimension(FRAME_WIDTH,20));
 		menuArea.setLayout(new BorderLayout(0, 0));
 		
 		getContentPane().add(menuArea, BorderLayout.NORTH);
@@ -248,7 +247,7 @@ public class BasicGui extends JFrame {
 	}
 	private void constructMainArea() {
 		mainArea = new ImagePanel();
-		mainArea.setOpaque(false);
+		mainArea.setOpaque(true);
 		mainArea.setBackground(new Color(0,0,0,0));
 		mainArea.setLayout(new BorderLayout(0, 0));
 		
@@ -408,22 +407,27 @@ public class BasicGui extends JFrame {
 		feedbackWindow.setTextTransColor(text);
 	}
 
-	public void setMainText(String text) {
-		mainWindow.setText(text);
-	}
+	
 
 	public void showLayered() {
 		MultiLayeredPanel layered = new MultiLayeredPanel();
 		mainPanel.removeAll();
 		mainPanel.add(layered);
+		mainPanel.validate();
 	}
-	public void showListed() {
-		MemoListPanel listed = new  MemoListPanel();
-		listed.removeAll();
+	public void showListed(ArrayList<String> a, ArrayList<String> b) {
+		System.out.println(a.toString() + b.toString());
+		MemoListPanel listed = new MemoListPanel(a, b);
+		mainPanel.removeAll();
 		mainPanel.add(listed);
+		mainPanel.validate();
 	}
 	
-	public void ShowDetailed() {
+	public void ShowDetailed(ArrayList<String> a, ArrayList<String> b) {
+		AttributePanel detailed = new AttributePanel(a, b);
+		mainPanel.removeAll();
+		mainPanel.add(detailed);
+		mainPanel.validate();
 		
 	}
 	
