@@ -6,6 +6,9 @@ import data_store.DataStore;
 import logic.*;
 
 public class Describe implements Command{
+	private static String feedback;
+	private static String title;
+	
 	String newDescription;
 	
 	//local memory
@@ -14,7 +17,10 @@ public class Describe implements Command{
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
 		
-	public Describe(String description){
+	public Describe(String description, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		newDescription = description;
 	}
@@ -26,7 +32,7 @@ public class Describe implements Command{
 		display.add(taskList.get(RunLogic.getGuiStatus().getTaskIndex()));
 		update();
 		
-		constructBridges(display, Default.RENAME_FEEDBACK, Default.TITLE);
+		constructBridges(display, feedback, title);
 		DataStore.writeTask(taskList);
 		return passToGui;
 	}

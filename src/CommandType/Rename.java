@@ -6,14 +6,20 @@ import data_store.DataStore;
 import logic.*;
 
 public class Rename implements Command{
-	String newName;
+	private static String feedback;
+	private static String title;
+	
+	private String newName;
 	//local memory
 	private static ArrayList<Task> taskList;
 
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
 		
-	public Rename(String name){
+	public Rename(String name, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		newName = name;
 	}
@@ -25,7 +31,7 @@ public class Rename implements Command{
 		display.add(taskList.get(RunLogic.getGuiStatus().getTaskIndex()));
 		update();
 		
-		constructBridges(display, Default.RENAME_FEEDBACK, Default.TITLE);
+		constructBridges(display, feedback, title);
 		DataStore.writeTask(taskList);
 		return passToGui;
 	}

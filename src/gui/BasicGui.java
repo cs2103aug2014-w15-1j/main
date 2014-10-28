@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Dimension;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
 import javax.swing.JTextPane;
@@ -76,7 +77,7 @@ public class BasicGui extends JFrame {
 	private JMenuBar menuBar;
 	private JPanel menuPanel;
 	private JPanel titlePanel;
-	private TextField titleWindow;
+	private JTextField titleWindow;
 	
 	private JPanel mainArea;
 	private JPanel FeedbackPanel;
@@ -211,17 +212,16 @@ public class BasicGui extends JFrame {
 		menuArea.add(titlePanel, BorderLayout.CENTER);
 	}
 	private void constructTitleWindow() {
-		titleWindow = new TextField();
+		titleWindow = new JTextField();
+		titleWindow.setBackground(new Color(255, 192, 203,120));
 		titleWindow.setEditable(false);
-		titleWindow
-				.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		titleWindow.setText("Today is Sep 29 2014");
-		titleWindow.setForeground(Color.WHITE);
-		titleWindow.setBackground(new Color(255, 192, 203, 120));
+		titleWindow.setForeground(Color.white);
+		titleWindow.setBorder(null);
 		
 		enableDraggableTitle();
 		
-		titlePanel.add(titleWindow);
+		titlePanel.add(titleWindow, BorderLayout.CENTER);
 	}
 
 	private void enableDraggableTitle() {
@@ -260,11 +260,10 @@ public class BasicGui extends JFrame {
 		mainPanel.setOpaque(false);
 		mainPanel.setDoubleBuffered(false);
 		mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		mainPanel.setBackground(new Color(0,0,0));
 		mainPanel.setBorder(null);
-		mainPanel.setLayout(new BorderLayout(0, 0));
+		mainPanel.setLayout(new BorderLayout(0,0));
 		
-		mainArea.add(mainPanel, BorderLayout.CENTER);
+		mainArea.add(mainPanel);
 	}
 
 	private void constructMainWindow() {
@@ -416,7 +415,7 @@ public class BasicGui extends JFrame {
 		mainPanel.validate();
 	}
 	public void showListed(ArrayList<String> a, ArrayList<String> b) {
-		MemoListPanel listed = new MemoListPanel(a, b);
+		ColumnListPanel listed = new ColumnListPanel(a, b);
 		mainPanel.removeAll();
 		mainPanel.add(listed);
 		mainPanel.validate();
@@ -436,13 +435,13 @@ public class BasicGui extends JFrame {
 	 * ===================== END OF PUBLIC METHOD =========================
 	 * ====================================================================
 	 */
-	public static void main(String[] args){
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-            	BasicGui gui = BasicGui.getInstance();
-            }
-        });
-		
-	}
+//	public static void main(String[] args){
+//		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//            	BasicGui gui = BasicGui.getInstance();
+//            }
+//        });
+//		
+//	}
 
 }

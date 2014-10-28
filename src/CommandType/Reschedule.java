@@ -3,13 +3,12 @@ package CommandType;
 import java.util.ArrayList;
 
 import data_store.DataStore;
-import logic.Default;
-import logic.DisplayInfo;
-import logic.JDate;
-import logic.RunLogic;
-import logic.Task;
+import logic.*;
 
 public class Reschedule implements Command{
+	private static String feedback;
+	private static String title;
+	
 	JDate newStartDate;
 	JDate newEndDate;
 	//local memory
@@ -19,7 +18,10 @@ public class Reschedule implements Command{
 	private static DisplayInfo passToGui;
 		
 	
-	public Reschedule(JDate startDate, JDate endDate){
+	public Reschedule(JDate startDate, JDate endDate, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		newStartDate = startDate;
 		newEndDate = endDate;
@@ -33,7 +35,7 @@ public class Reschedule implements Command{
 		display.add(taskList.get(RunLogic.getGuiStatus().getTaskIndex()));
 		update();
 		
-		constructBridges(display, Default.RENAME_FEEDBACK, Default.TITLE);
+		constructBridges(display, feedback, title);
 		DataStore.writeTask(taskList);
 		return passToGui;
 	}

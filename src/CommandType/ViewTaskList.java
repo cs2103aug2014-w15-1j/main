@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import logic.*;
 
 public class ViewTaskList implements Command{
+	private static String feedback;
+	private static String title;
+	
 	int firstTaskIndex;
 	
 	//local memory
@@ -17,12 +20,18 @@ public class ViewTaskList implements Command{
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
 	
-	public ViewTaskList(){
+	public ViewTaskList(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		firstTaskIndex = 0;
 		initialize();
 	}
 	
-	public ViewTaskList(int index){
+	public ViewTaskList(int index, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		firstTaskIndex = index;
 		initialize();
 	}
@@ -48,7 +57,7 @@ public class ViewTaskList implements Command{
 			boolean hasPrevious = firstTaskIndex > 0;
 			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 		}
-		constructBridges(display, Default.VIEW_FEEDBACK, Default.TITLE);
+		constructBridges(display, feedback, title);
 		update();
 		
 		return passToGui;
