@@ -22,7 +22,7 @@ public class TestAdd {
     
     @Test
     public void testAdd() {
-        resultCTL = ParserProcess.interpretCommand(testAddStr);
+        resultCTL = ParserProcesser.interpretCommand(testAddStr);
         getCommand = resultCTL.getCommand();
         getTitle = resultCTL.getTitle();
         getDescription = resultCTL.getDescription();

@@ -4,7 +4,7 @@ import gui.VIEW_MODE;
 
 import java.util.ArrayList;
 import parser.RawCommand;
-import parser.ParserProcess;
+import parser.ParserProcesser;
 import read_file.ReadFile;
 import CommandType.*;
 
@@ -29,7 +29,7 @@ public class RunLogic {
 	
 	public static DisplayInfo logic(String inputCommand){
 		// pass user command to CLI for auto-correction
-		RawCommand stringCommand = ParserProcess.interpretCommand(inputCommand);
+		RawCommand stringCommand = ParserProcesser.interpretCommand(inputCommand);
 		Command userCommand = ConvertCommand.convert(stringCommand);
 		
 		return userCommand.execute();

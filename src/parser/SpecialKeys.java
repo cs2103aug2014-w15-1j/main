@@ -3,31 +3,6 @@ package parser;
 import parser.CMDTypes.COMMAND_TYPE;
 
 /**
- * class CmdInfoPair: A pair of command type and command's sub-information
- * 
- * @author A0119493X
- *          
- * */
-
-class CmdInfoPair {
-    private CMDTypes.COMMAND_TYPE cmd;
-    private String subInfo;
-    
-    public CmdInfoPair(CMDTypes.COMMAND_TYPE cmd, String subInfo) {
-        this.cmd = cmd;
-        this.subInfo = subInfo;
-    }
-    
-    public CMDTypes.COMMAND_TYPE getCMD() {
-        return this.cmd;
-    }
-    
-    public String getSubInfo() {
-        return this.subInfo;
-    }
-}
-
-/**
  * class ParserKeys: Special characters reserved for Parser
  * 
  * @author A0119493X

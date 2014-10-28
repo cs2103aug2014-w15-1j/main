@@ -39,12 +39,14 @@ public class RawCommand{
         this.command = command;
     }
     
-    public RawCommand(String command, String cmdDescription) {
+    public RawCommand(String command, String subInfo) {
     	
     	if (command.equals(COMMAND_TYPE.RENAME.name())) {
-    		this.taskTitle = cmdDescription;
+    		this.taskTitle = subInfo;
     	} else if (command.equals(COMMAND_TYPE.DESCRIBE.name())) {
-    		this.description = cmdDescription;
+    		this.description = subInfo;
+    	} else {
+    		this.cmdDescription = subInfo;
     	}
     	
         this.command = command;

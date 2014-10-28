@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * 
  * @author A0119493X        
  * */
-public class ParserProcess {
+public class ParserProcesser {
     
     /*
      * ====================================================================
@@ -23,13 +23,13 @@ public class ParserProcess {
      * */
     public static RawCommand interpretCommand(String inputString){
         if (InfoRetrieve.noInvalidKeys(inputString)) {
-            CmdInfoPair getCmdPair = CMDInterpretor.makeCmdPair(inputString);
-            RawCommand interpretedCm = CMDInterpretor.transformCmd(getCmdPair);
+            CMDInfoPair getCmdPair = CMDSwitcher.makeCmdPair(inputString);
+            RawCommand interpretedCm = CMDCaller.transformCmd(getCmdPair);
             return interpretedCm;
-
+            
         } else {
             ErrorGenerator.popError(ErrorMSG.INPUT_SYMBOL_ERR);
-            return CMDInterpretor.makeInvalid();
+            return CMDMaker.makeInvalid();
         }
     }
     
