@@ -436,13 +436,13 @@ public class BasicGui extends JFrame {
 	 * ===================== END OF PUBLIC METHOD =========================
 	 * ====================================================================
 	 */
-//	public static void main(String[] args){
-//		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//            	BasicGui gui = BasicGui.getInstance();
-//            }
-//        });
-//		
-//	}
+	public static void main(String[] args){
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+            	BasicGui gui = BasicGui.getInstance();
+            }
+        });
+		
+	}
 
 }
