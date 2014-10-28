@@ -17,6 +17,7 @@ public class GuiController {
 		if (gui == null) {
 			run();
 		}
+		System.out.print(info.getTitleString());
 		gui.setTitleText(info.getTitleString());
 		gui.setFeedbackText(info.getFeedbackString());
 

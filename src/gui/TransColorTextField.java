@@ -18,6 +18,7 @@ public class TransColorTextField extends JTextField{
 	public void setTextTransColor(String txt) {
 		setBackground(currentColor);
 		setText(txt);
+		this.validate();
 		switchColor();
 		
 	}
