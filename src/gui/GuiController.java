@@ -39,7 +39,6 @@ public class GuiController {
 				if(info.processTaskInfo()) {
 					gui.showListed(info.getFirstCol(), info.getSecondCol());
 				}
-
 			}
 		}
 
@@ -63,7 +62,7 @@ public class GuiController {
 		DisplayInfo info = RunLogic.initialize();
 		display(info);
 		logger.info("MagiCal initialization completed");
-		//gui.showLayered();
+		gui.showLayered();
 	}
 
 	public static void main(String[] args) {
