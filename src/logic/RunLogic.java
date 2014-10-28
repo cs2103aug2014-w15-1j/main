@@ -10,7 +10,7 @@ import CommandType.*;
 
 public class RunLogic {
 	private static String WELCOME = "Welcome to MagiCal!";
-	private static String TITLE = "title title title title";
+	private static String TITLE = "Task List";
 	
 	// keep track on GUI and File status
 	private static GUIStatus GUI;

@@ -9,7 +9,7 @@ public class Rename implements Command{
 	private static String feedback;
 	private static String title;
 	
-	String newName;
+	private String newName;
 	//local memory
 	private static ArrayList<Task> taskList;
 
