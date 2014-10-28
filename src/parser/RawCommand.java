@@ -1,5 +1,6 @@
 package parser;
 
+import parser.CMDTypes.COMMAND_TYPE;
 import parser.ParserKeys;
 
 /**
@@ -39,12 +40,28 @@ public class RawCommand{
     }
     
     public RawCommand(String command, String cmdDescription) {
+    	
+    	if (command.equals(COMMAND_TYPE.RENAME.name())) {
+    		this.taskTitle = cmdDescription;
+    	} else if (command.equals(COMMAND_TYPE.DESCRIBE.name())) {
+    		this.description = cmdDescription;
+    	}
+    	
         this.command = command;
-        this.cmdDescription = cmdDescription;
+        /*
         this.rpDate = ParserKeys.RP_EVREYDAY;
         this.startDay = ParserKeys.EMPTY_DATE;
         this.endDay = ParserKeys.EMPTY_DATE;
         this.description = ParserKeys.EMPTY_DIS;
+        */
+    }
+    
+    public RawCommand(String command, String startDay, String endDay) {
+    	this.command = command;
+        //this.rpDate = ParserKeys.RP_EVREYDAY;
+        this.startDay = startDay;
+        this.endDay = endDay;
+        //this.description = ParserKeys.EMPTY_DIS;
     }
         
     // Strictly only for add command
