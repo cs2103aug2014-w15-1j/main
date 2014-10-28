@@ -34,8 +34,8 @@ public class myJsonStore {
 				
 		for(int i=0; i < info.size(); i++){
 		
-		Gson convertTask = new Gson();	
-		String jsonStringTaskObj = convertTask.toJson(info.get(i));
+		//Gson convertTask = new Gson();	
+		//String jsonStringTaskObj = convertTask.toJson(info.get(i));
 		
 		try {
 			//write converted json data to a file named "filename"
@@ -43,7 +43,7 @@ public class myJsonStore {
 					new BufferedWriter (
                     new FileWriter("filename")));
 			
-			fileOut.write(jsonStringTaskObj);
+			//fileOut.write(jsonStringTaskObj);
 			fileOut.close();
 	 
 		} catch (IOException e) {
