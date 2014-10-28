@@ -9,7 +9,9 @@ import read_file.ReadFile;
 import CommandType.*;
 
 public class RunLogic {
-
+	private static String WELCOME = "Welcome to MagiCal!";
+	private static String TITLE = "title";
+	
 	// keep track on GUI and File status
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
@@ -23,7 +25,7 @@ public class RunLogic {
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, "20141022");
 	
-		Command view = new ViewTaskList();
+		Command view = new ViewTaskList(WELCOME, TITLE);
 		return view.execute();
 	}
 	

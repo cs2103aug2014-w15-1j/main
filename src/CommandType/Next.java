@@ -4,25 +4,28 @@ import gui.VIEW_MODE;
 import logic.*;
 
 public class Next implements Command{
+	private static String feedback;
+	private static String title;
+	
 	private static GUIStatus GUI;
-	public Next(){
+	public Next(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		GUI = RunLogic.getGuiStatus();
 	}
-
+	
 	@Override
 	public DisplayInfo execute() {
 		int currentFirstIndex = GUI.getTaskIndex();
 		VIEW_MODE mode = GUI.getMode();
 		if(mode.equals(VIEW_MODE.TASK_LIST)){
-			ViewTaskList view = new ViewTaskList(currentFirstIndex + Default.MAX_DISPLAY_LINE);
+			ViewTaskList view = new ViewTaskList(currentFirstIndex + Default.MAX_DISPLAY_LINE, feedback, title);
+			return view.execute();
+		} else {
+			ViewTrashBin view = new ViewTrashBin(currentFirstIndex + Default.MAX_DISPLAY_LINE, feedback, title);
 			return view.execute();
 		}
-		if(mode.equals(VIEW_MODE.BIN)){
-			ViewTrashBin view = new ViewTrashBin(currentFirstIndex + Default.MAX_DISPLAY_LINE);
-			return view.execute();
-		}
-		Invalid invalid = new Invalid(String.format(Default.CANNOT_FORMAT, "Next", GUI.getMode().toString()));
-		return invalid.execute();
 	}
 
 	@Override
