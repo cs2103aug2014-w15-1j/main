@@ -94,7 +94,7 @@ public class ColumnListPanel extends JPanel {
 	private void constructAllCol() {
 		int colIndex;
 		colIndex = 0;
-		for(int i=1; i<=NUM_OF_COL; i++) {
+		for(int i=1; i<=firstCol.size(); i++) {
 			indexCol.add(Integer.toString(i));
 		}
 		GridBagConstraints c0 = new GridBagConstraints();
