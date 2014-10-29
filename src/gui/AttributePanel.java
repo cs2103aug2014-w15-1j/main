@@ -27,8 +27,6 @@ public class AttributePanel extends JPanel {
 		super();
 		this.setOpaque(false);
 		
-		
-		
 		this.firstCol = firstCol;
 		this.secondCol = secondCol;
 		
