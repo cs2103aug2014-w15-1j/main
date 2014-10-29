@@ -1,12 +1,11 @@
 package read_file;
+import data_store.DataStore;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-
-import data_store.DataStore;
 import data_store.SystemInfo;
 import logic.JDate;
 import logic.Task;
@@ -25,29 +24,24 @@ public class ReadFile {
         this.EVENTTASK = new ArrayList<Task>();
         this.TRASHFILE = new ArrayList<Task>();
     }
+    
 
     /**
      * get event ArrayList<Task>
      */
     public ArrayList<Task> getEventTask() {
-        String systemOS = this.getOS();
-        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
-            return getOSEventTask(SystemInfo.EVENT_NAME_SOLARIS);
-        } else {
-            return getOSEventTask(SystemInfo.EVENT_NAME_WINDOWS);
-        }
+    	String filePathName = data_store.DataStore.getFilePath(SystemInfo.EVENT_NAME);
+        
+    	return getOSEventTask(filePathName);
     }
 
     /**
      * get trash ArrayList<Task>
      */
     public ArrayList<Task> getTrashFile() {
-        String systemOS = this.getOS();
-        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
-            return getOSTrashFile(SystemInfo.TRASH_NAME_SOLARIS);
-        } else {
-            return getOSTrashFile(SystemInfo.TRASH_NAME_WINDOWS);
-        }
+      String filePathName = data_store.DataStore.getFilePath(SystemInfo.TRASH_NAME);
+       
+      return getOSTrashFile(filePathName);
     }
 
     /** 
@@ -163,7 +157,4 @@ public class ReadFile {
         }
     }
 
-    private String getOS() {
-        return System.getProperty(SystemInfo.OS_NAME);
-    }
 }

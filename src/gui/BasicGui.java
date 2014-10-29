@@ -332,7 +332,8 @@ public class BasicGui extends JFrame {
 		inputWindow.setOpaque(true);
 		//inputWindow.setBackground(new Color(255, 255, 255, 255));
 		inputWindow.addActionListener(new EnterKeyListener(inputWindow));
-		inputWindow.setText("Enter you command here:");
+		inputWindow.setText("Enter your"
+				+ " command here:");
 		inputWindow.selectAll();
 		inputWindow.setColumns(30);
 		

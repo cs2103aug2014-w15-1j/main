@@ -1,4 +1,9 @@
+<<<<<<< HEAD
+/data_store/
+=======
 /logic
 /gui
 /parser
 /CommandType
+>>>>>>> 3a7aa16cfa83ebeff4a900a096b922860b3392db
+/read_file/

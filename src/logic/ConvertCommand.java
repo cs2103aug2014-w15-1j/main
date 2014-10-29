@@ -13,7 +13,7 @@ public class ConvertCommand {
 	//feedback formats
 	private static String CANNOT_FORMAT = "Cannot command %s1 in %2s view mode!";
 	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %1s: %2s invalid!";
-	private static String UNKNOWN = "Invalid Command! Get command information at tutorial!";
+	private static String UNKNOWN = "Invalid Command!";
 	
 	private static String SUCCESSFUL_ADD = "New task added successfully!";
 	private static String CANNOT_ADD = String.format(CANNOT_FORMAT, "Add", RunLogic.getGuiStatus().getMode().toString());
