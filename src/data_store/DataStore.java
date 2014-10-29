@@ -13,6 +13,17 @@ import java.io.File;
 public class DataStore {
 	
 	/**
+	 * Get the respective path of working directory OS-dependent
+	 */
+	public static String getFilePath(String nameList){
+		
+		String workingDirectory = System.getProperty("user.dir");  
+		String absoluteEvent = workingDirectory + File.separator + nameList;
+		
+        return absoluteEvent;
+	}
+	
+	/**
 	 * Writing all data to distinctive file
 	 */
 	public static void writeAllData(LogicToStore allData) {
@@ -21,28 +32,21 @@ public class DataStore {
 	}
 
 	public static void writeTrash(ArrayList<Task> trashData) {
-	    String systemOS = getOS();
-	    if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
-	        writeFile(trashData, 
-	                  SystemInfo.TRASH_NAME_SOLARIS,
-	                  ErrorMSG.WRITE_TRASHERROR);
-	    } else {
-	        writeFile(trashData,
-	                  SystemInfo.TRASH_NAME_WINDOWS,
-	                  ErrorMSG.WRITE_TRASHERROR);
-	    }
+		String absoluteFile = getFilePath(SystemInfo.TRASH_NAME);   	
+        
+	    writeFile(trashData,
+	              absoluteFile,
+	              ErrorMSG.WRITE_TRASHERROR);
 	}
 	
 	public static void writeTask(ArrayList<Task> taskData) {
-	    
-	    String workingDirectory = System.getProperty("user.dir");     	
-        String absoluteEvent = workingDirectory + File.separator + SystemInfo.EVENT_NAME;
+	    String absoluteFile = getFilePath(SystemInfo.EVENT_NAME);
        
         writeFile(taskData, 
-        		  absoluteEvent, 
+        		  absoluteFile, 
                   ErrorMSG.WRITE_EVENTERROR);
- 
 	}
+	
 	
 	/**Initializing files with empty data
      * */
@@ -90,28 +94,20 @@ public class DataStore {
 	 * Initializing Trash by creating a empty trash file
 	 * */
 	private static void initializeTrash() {
-	    String systemOS = getOS();
-        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
-            initalizeWriter(SystemInfo.TRASH_NAME_SOLARIS, ErrorMSG.TRASH_INITERROR);
-        } else {
-            initalizeWriter(SystemInfo.TRASH_NAME_WINDOWS, ErrorMSG.TRASH_INITERROR);
-        }
+		 String absolutePath = getFilePath(SystemInfo.TRASH_NAME);
+	        
+	     initalizeWriter(absolutePath, ErrorMSG.TRASH_INITERROR);
 	}
 	
 	/**
 	 * Initializing Task by creating a empty task file
      * */
-	private static void initializeTask() {
-
-       	String workingDirectory = System.getProperty("user.dir");       	
-        String absoluteEvent = workingDirectory + File.separator + SystemInfo.EVENT_NAME;
+	private static void initializeTask() {      	    	
+        String absolutePath = getFilePath(SystemInfo.EVENT_NAME);
         
-        initalizeWriter(absoluteEvent, ErrorMSG.TASK_INITERROR);
+        initalizeWriter(absolutePath, ErrorMSG.TASK_INITERROR);
 
     }
-	
-	
-
 	
 	 static void initalizeWriter(String fileName, String errorMesg) {
 	    try {
@@ -132,7 +128,4 @@ public class DataStore {
         return taskLine.toPersonalString();
     }
     
-    private static String getOS() {
-        return System.getProperty(SystemInfo.OS_NAME);
-    }
 }

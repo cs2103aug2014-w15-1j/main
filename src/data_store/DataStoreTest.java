@@ -51,7 +51,6 @@ public class DataStoreTest {
 
         DataStore.writeTrash(TestTrash);
         String resultTR = "Store Trash results";
-
         assertEquals("Testing Trash store", "Store Trash results", resultTR);
     }
 
