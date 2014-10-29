@@ -35,7 +35,9 @@ public class ColumnListPanel extends JPanel {
 	// info of task list
 	private ArrayList<String> firstCol;
 	private ArrayList<String> secondCol;
+	private ArrayList<String> indexCol;
 	private final static String SPACE = " ";
+	private final static String indexColTitle = "Index";
 	private final static String firstColTitle = "Title";
 	private final static String secondColTitle = "End Date";
 
@@ -66,7 +68,8 @@ public class ColumnListPanel extends JPanel {
 		super();
 		this.firstCol = firstCol;
 		this.secondCol = secondCol;
-
+		this.indexCol = new ArrayList<String>();
+		
 		setUp();
 		constructAllCol();
 
@@ -90,17 +93,28 @@ public class ColumnListPanel extends JPanel {
 	 */
 	private void constructAllCol() {
 		int colIndex;
-		// column 0
 		colIndex = 0;
+		for(int i=1; i<=NUM_OF_COL; i++) {
+			indexCol.add(Integer.toString(i));
+		}
+		GridBagConstraints c0 = new GridBagConstraints();
+		c0.fill = GridBagConstraints.BOTH;
+		c0.ipady = 17;
+		c0.insets = new Insets(0, 10, 0, 0);
+		c0.weightx = 0;
+		constructCol(colIndex, indexColTitle, indexCol, c0);
+		
+		// column 0
+		colIndex = 1;
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH;
 		c1.ipady = 17;
-		c1.insets = new Insets(0, 10, 0, 0);
-		c1.weightx = 0.9;
-		constructCol(0, firstColTitle, firstCol, c1);
+		c1.insets = new Insets(0, 5, 0, 0);
+		c1.weightx = 0.8;
+		constructCol(colIndex, firstColTitle, firstCol, c1);
 
 		// column 1
-		colIndex = 1;
+		colIndex = 2;
 		GridBagConstraints c2 = new GridBagConstraints();
 		c2.weightx = 0.1;
 		c2.insets = new Insets(0, 10, 0, 10);
@@ -125,13 +139,12 @@ public class ColumnListPanel extends JPanel {
 			ArrayList<String> lst, GridBagConstraints c) {
 		c.gridx = colIndex;
 		c.gridy = 0;
-		this.add(createColoredLabel(firstColTitle, lightCyan120), c);
+		this.add(createColoredLabel(title, lightCyan120), c);
 		for (int i = 0; i < NUM_OF_COL; i++) {
 			c.gridy = i + 1;
-			int index = i + 1;
 			if (i < lst.size()) {
 				this.add(
-						createColoredLabel(index + ". " + lst.get(i),
+						createColoredLabel(lst.get(i),
 								lightCyan20), c);
 			} else {
 				this.add(createEmptyLabel(), c);

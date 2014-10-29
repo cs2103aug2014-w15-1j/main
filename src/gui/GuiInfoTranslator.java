@@ -28,7 +28,7 @@ public class GuiInfoTranslator {
 	private ArrayList<String> secondCol = new ArrayList<String>();
 
 	// constants
-	private final static String MESSAGE_EMPTY_LIST = "No relevent information here";
+	//private final static String MESSAGE_EMPTY_LIST = "No relevent information here";
 	private final static String EMPTY_STRING = "";
 
 	// attributes in task detail view mode
