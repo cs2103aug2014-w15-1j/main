@@ -54,9 +54,8 @@ public class TestSimpleCMD {
         reDescribe = ParserProcesser.interpretCommand(testReDescribeStr);
         Assert.assertEquals("Test command: ", "DESCRIBE", reDescribe.getCommand());
         Assert.assertEquals("Test target index: ", "a new description", reDescribe.getDescription());
-        
+       
         undoTest = ParserProcesser.interpretCommand(testUndoStr);
         Assert.assertEquals("Test command: ", "UNDO", undoTest.getCommand());
-        
     }
 }

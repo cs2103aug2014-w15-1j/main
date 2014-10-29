@@ -10,10 +10,10 @@ public class CMDMaker {
 	 * Interpret "add" command and get its sub-information
 	 * Split quotation mark contents with other contents
 	 * 
-	 * @param tokens -RawCommand
+	 * @param tokenPairs -RawCommand
 	 * @return -CliToLog
 	 * */
-	static RawCommand add(ArrayList<String> tokens) {
+	static RawCommand add(ArrayList<TokenPair> tokenPairs) {
 		String taskTitle;
 		String repeatDate;
 		String startDate;
@@ -21,7 +21,7 @@ public class CMDMaker {
 		String description;
 		
 		RawInfoPair titlePair;
-		titlePair = InfoRetrieve.getTaskTitle(tokens);
+		titlePair = InfoRetrieve.getTaskTitle(tokenPairs);
 		taskTitle = titlePair.getFront();
 		
 		RawInfoPair repeatPair;
@@ -40,34 +40,34 @@ public class CMDMaker {
 		description = InfoRetrieve.getDescription(endPair.getSubInfo());
 		
 		return new RawCommand(CMDTypes.COMMAND_TYPE.ADD.name(), taskTitle, 
-				repeatDate, startDate, 
-				endDate, description);
+							  repeatDate, startDate, 
+							  endDate, description);
 	}
 	
 	/**
 	 * To change/update a field in an input
 	 * Change command field
 	 * 
-	 * @param tokens
+	 * @param tokenPairs
 	 *              String of sub-information following the update command
 	 * @return -RawCommand
 	 */
-	static RawCommand update(ArrayList<String> tokens){
+	static RawCommand update(ArrayList<TokenPair> tokenPairs){
 		
 		try {
-			String field = tokens.get(0);
+			String field = tokenPairs.get(0).getCotent();
 			
 			if (field.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.NAME.name())){
-				tokens.remove(0);
-				return rename(tokens);
+				tokenPairs.remove(0);
+				return rename(tokenPairs);
 			} else if (field.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.DESCRIPTION.name())){
-				tokens.remove(0);
-				return describe(tokens);
+				tokenPairs.remove(0);
+				return describe(tokenPairs);
 			} else if (field.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RESCHEDULE.name())){
-				tokens.remove(0);
-				return reschedule(tokens);
+				tokenPairs.remove(0);
+				return reschedule(tokenPairs);
 			} else if (field.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.REPEAT.name())){
-				return repeat(tokens);
+				return repeat(tokenPairs);
 			} else {
 				return makeInvalid();
 			}
@@ -80,16 +80,17 @@ public class CMDMaker {
 	/**
 	 * Return a RawCommand for rename operation
 	 * 
-	 * @param tokens
+	 * @param tokenPairs
 	 *              String of sub-information following the update command
 	 * @return -RawCommand
 	 * */
-	static RawCommand rename(ArrayList<String> tokens) {
+	static RawCommand rename(ArrayList<TokenPair> tokenPairs) {
 		try {
-			if(tokens.isEmpty()){
+			if(tokenPairs.isEmpty()){
 				return makeInvalid();
 			} else {
-				return new RawCommand(CMDTypes.COMMAND_TYPE.RENAME.name(), tokens.get(0));
+				return new RawCommand(CMDTypes.COMMAND_TYPE.RENAME.name(), 
+									  tokenPairs.get(0).getCotent());
 			}
 		} catch (Exception e) {
 			return makeInvalid();
@@ -103,12 +104,13 @@ public class CMDMaker {
 	 *              String of sub-information following the update command
 	 * @return -RawCommand
 	 * */
-	static RawCommand describe(ArrayList<String> tokens) {
+	static RawCommand describe(ArrayList<TokenPair> tokenPairs) {
 		try {
-			if(tokens.isEmpty()){
+			if(tokenPairs.isEmpty()){
 				return makeInvalid();
 			}
-			return new RawCommand(CMDTypes.COMMAND_TYPE.DESCRIBE.name(), tokens.get(0));
+			return new RawCommand(CMDTypes.COMMAND_TYPE.DESCRIBE.name(), 
+								  tokenPairs.get(0).getCotent());
 		} catch (Exception e) {
 			return makeInvalid();
 		}
@@ -122,10 +124,10 @@ public class CMDMaker {
 	 * @param string 
 	 * @return -RawCommand
 	 * */
-	static RawCommand reschedule(ArrayList<String> tokens) {
+	static RawCommand reschedule(ArrayList<TokenPair> tokenPairs) {
 		try {
-			String startDate = tokens.get(0);
-			String endDate = tokens.get(1);
+			String startDate = tokenPairs.get(0).getCotent();
+			String endDate = tokenPairs.get(1).getCotent();
 			return new RawCommand(CMDTypes.COMMAND_TYPE.RESCHEDULE.name(), 
 								  startDate,
 								  endDate);
@@ -141,12 +143,13 @@ public class CMDMaker {
 	 *              String of sub-information following the update command
 	 * @return -RawCommand
 	 * */
-	static RawCommand repeat(ArrayList<String> tokens) {
+	static RawCommand repeat(ArrayList<TokenPair> tokenPairs) {
 		try {
-			if(tokens.isEmpty()){
+			if(tokenPairs.isEmpty()){
 				return makeInvalid();
 			}
-			return new RawCommand(CMDTypes.COMMAND_TYPE.REPEAT.name(), tokens.get(0));
+			return new RawCommand(CMDTypes.COMMAND_TYPE.REPEAT.name(), 
+								  tokenPairs.get(0).getCotent());
 		} catch (Exception e) {
 			return makeInvalid();
 		}
@@ -159,12 +162,13 @@ public class CMDMaker {
 	 *              String of sub-information following the update command
 	 * @return -RawCommand
 	 */
-	static RawCommand read(ArrayList<String> tokens){
+	static RawCommand read(ArrayList<TokenPair> tokenPairs){
 		try {
-			if(tokens.isEmpty()){
+			if(tokenPairs.isEmpty()){
 				return makeInvalid();
 			}
-			return new RawCommand(CMDTypes.COMMAND_TYPE.READ.name(), tokens.get(0));
+			return new RawCommand(CMDTypes.COMMAND_TYPE.READ.name(), 
+								  tokenPairs.get(0).getCotent());
 		} catch (Exception e) {
 			return makeInvalid();
 		}
@@ -190,12 +194,13 @@ public class CMDMaker {
 	 *              String of sub-information following the update command
 	 * @return -RawCommand
 	 * */
-	static RawCommand delete(ArrayList<String> tokens){
+	static RawCommand delete(ArrayList<TokenPair> tokenPairs){
 		try {
-			if(tokens.isEmpty()){
+			if(tokenPairs.isEmpty()){
 				return makeInvalid();
 			}
-			return new RawCommand(CMDTypes.COMMAND_TYPE.DELETE.name(), tokens.get(0));
+			return new RawCommand(CMDTypes.COMMAND_TYPE.DELETE.name(), 
+								  tokenPairs.get(0).getCotent());
 		} catch (Exception e) {
 			return makeInvalid();
 		}
@@ -204,13 +209,13 @@ public class CMDMaker {
 	/**
 	 * Return a RawCommand for view operation, switch to different view modes
 	 * 
-	 * @param tokens
+	 * @param tokenPairs
 	 *              String of sub-information following the update command
 	 * @return -RawCommand
 	 * */
-	static RawCommand view(ArrayList<String> tokens){
+	static RawCommand view(ArrayList<TokenPair> tokenPairs){
 		try {
-			String getFields = tokens.get(0);
+			String getFields = tokenPairs.get(0).getCotent();
 			if (getFields.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.TASKLIST.name()) ||
 				getFields.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.BIN.name())) {
 	
@@ -250,15 +255,15 @@ public class CMDMaker {
 	/**
 	 *  Restore item from bin
 	 *  
-	 *  @param tokens
+	 *  @param tokenPairs
 	 *         String of target restore index
 	 *         
 	 *  @return -RawCommand
 	 */
-	static RawCommand restore(ArrayList<String> tokens){
+	static RawCommand restore(ArrayList<TokenPair> tokenPairs){
 		try {
 			RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.RESTORE.name(), 
-													   tokens.get(0));
+													   tokenPairs.get(0).getCotent());
 	
 			return commandPackage;
 		} catch (Exception e) {

@@ -3,28 +3,41 @@ package gui;
 import java.awt.Color;
 import javax.swing.JTextField;
 
-public class TransColorTextField extends JTextField{
+/**
+ * <code>TransColorTextField</code> is a customized <code>JTextField</code>
+ * which allows background color switch when new text is set.
+ * 
+ * @author A0119391A
+ * 
+ */
+public class TransColorTextField extends JTextField {
 
 	private static final long serialVersionUID = 2017126697448899239L;
-	private Color colorA = new Color(255,255,255,255);
-	private Color colorB = new Color(128,138,135,255);
-
+	private Color colorA = new Color(255, 255, 255, 255);
+	private Color colorB = new Color(128, 138, 135, 255);
 	private Color currentColor;
-	
+	/*********************************************
+	 *************** Constructor *****************
+	 ********************************************/
 	public TransColorTextField() {
 		super();
 		currentColor = colorA;
-		
+
 	}
+	/*********************************************
+	 ************* Public Method ****************
+	 ********************************************/
 	public void setTextTransColor(String txt) {
 		setBackground(currentColor);
-		setText("");
 		setText(txt);
 		switchColor();
-		
+
 	}
+	/*********************************************
+	 ************* Private Method ****************
+	 ********************************************/
 	private void switchColor() {
-		if(currentColor.equals(colorA) ) {
+		if (currentColor.equals(colorA)) {
 			currentColor = colorB;
 		} else {
 			currentColor = colorA;

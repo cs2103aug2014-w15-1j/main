@@ -2,7 +2,14 @@ package parser;
 
 import java.util.ArrayList;
 
-public class Tokenizer {
+import parser.TokenType.TOKEN_TYPE;
+
+/**
+ * class Tokenizer: split string into tokens
+ * 
+ * @author A0119493X
+ * */
+class Tokenizer {
 	
 	/**
 	 * Split raw input into a command and a list of sub info.
@@ -11,7 +18,7 @@ public class Tokenizer {
 	 * */
 	public static RawInfoPair SplitRawInput(String rawInputStr) {
 		String command;
-		ArrayList<String> subInfo;
+		ArrayList<TokenPair> subInfo;
 		
 		command = InfoRetrieve.getCommand(rawInputStr);
 		
@@ -30,16 +37,34 @@ public class Tokenizer {
 	/**
 	 * Split sub info string into blocks and store in a ArrayList<String>;
 	 * */
-	private static ArrayList<String> splitInfoString(String subInfoStr) {
-		ArrayList<String> infoList = new ArrayList<String>();
+	private static ArrayList<TokenPair> splitInfoString(String subInfoStr) {
+		ArrayList<TokenPair> infoList = new ArrayList<TokenPair>();
 		String frontBlock;
+		TokenPair frontPair;
 		while (subInfoStr != null) {
 			frontBlock = StringCutter.getFrontBlock(subInfoStr);
-			infoList.add(frontBlock);
+			frontPair = judgeContent(frontBlock);
+			infoList.add(frontPair);
 			
 			subInfoStr = StringCutter.rmFrontBlock(subInfoStr);
 		}
 		
 		return infoList;
+	}
+
+	/**
+	 * Judge contents and form corresponding token pair
+	 * */
+	private static TokenPair judgeContent(String frontBlock) {
+		if (ValidityChecker.isValidDate(frontBlock)) {
+			return new TokenPair(frontBlock, TOKEN_TYPE.DT);
+		} else if (ValidityChecker.isValidRP(frontBlock)) {
+			return new TokenPair(frontBlock, TOKEN_TYPE.RP);
+		} else if (ValidityChecker.endsWithQuo(frontBlock)) {
+			return new TokenPair(frontBlock.substring(0, frontBlock.length() - 1), 
+								 TOKEN_TYPE.QT);
+		} else {
+			return new TokenPair(frontBlock, TOKEN_TYPE.UN);
+		}
 	}
 }
