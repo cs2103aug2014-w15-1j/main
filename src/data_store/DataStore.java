@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import logic.Task;
 import logic.LogicToStore;
 
+import java.io.File;
 
 public class DataStore {
 	
@@ -33,16 +34,14 @@ public class DataStore {
 	}
 	
 	public static void writeTask(ArrayList<Task> taskData) {
-	    String systemOS = getOS();
-        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
-            writeFile(taskData, 
-                      SystemInfo.EVENT_NAME_SOLARIS, 
-                      ErrorMSG.WRITE_EVENTERROR);
-        } else {
-            writeFile(taskData, 
-                      SystemInfo.EVENT_NAME_WINDOWS, 
-                      ErrorMSG.WRITE_EVENTERROR);
-        }
+	    
+	    String workingDirectory = System.getProperty("user.dir");     	
+        String absoluteEvent = workingDirectory + File.separator + SystemInfo.EVENT_NAME;
+       
+        writeFile(taskData, 
+        		  absoluteEvent, 
+                  ErrorMSG.WRITE_EVENTERROR);
+ 
 	}
 	
 	/**Initializing files with empty data
@@ -103,15 +102,18 @@ public class DataStore {
 	 * Initializing Task by creating a empty task file
      * */
 	private static void initializeTask() {
-        String systemOS = getOS();
-        if (systemOS.equals(SystemInfo.SOLARIS_OS)) {
-            initalizeWriter(SystemInfo.EVENT_NAME_SOLARIS, ErrorMSG.TASK_INITERROR);
-        } else {
-            initalizeWriter(SystemInfo.EVENT_NAME_WINDOWS, ErrorMSG.TASK_INITERROR);
-        }
+
+       	String workingDirectory = System.getProperty("user.dir");       	
+        String absoluteEvent = workingDirectory + File.separator + SystemInfo.EVENT_NAME;
+        
+        initalizeWriter(absoluteEvent, ErrorMSG.TASK_INITERROR);
+
     }
 	
-	private static void initalizeWriter(String fileName, String errorMesg) {
+	
+
+	
+	 static void initalizeWriter(String fileName, String errorMesg) {
 	    try {
             FileWriter fw = new FileWriter (fileName);
             BufferedWriter bw = new BufferedWriter (fw);
