@@ -17,7 +17,7 @@ public class DataStore {
 	 */
 	public static String getFilePath(String nameList){
 		
-		String workingDirectory = System.getProperty("user.dir");  
+		String workingDirectory = System.getProperty("user.home");  
 		String absoluteEvent = workingDirectory + File.separator + nameList;
 		
         return absoluteEvent;
