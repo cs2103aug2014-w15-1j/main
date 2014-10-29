@@ -1,11 +1,10 @@
 package data_store;
+
+import static org.junit.Assert.*;
 import logic.JDate;
 import logic.Task;
 
-
 import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,13 +47,13 @@ public class DataStoreTest {
     public void test() {
         DataStore.writeTask(TestTasks);
         String resultTA = "Tasks results";
-        assertEquals("Testing Tasks store", "Tasks results",resultTA);
+        assertEquals("Testing Tasks store", "Tasks results", resultTA);
 
         DataStore.writeTrash(TestTrash);
         String resultTR = "Store Trash results";
-
         assertEquals("Testing Trash store", "Store Trash results", resultTR);
     }
+
 
 	public DataStore getTestStoreTrash() {
 		return testStoreTrash;
