@@ -52,7 +52,7 @@ public class ConvertCommand {
 	private static String NO_NEXT = "No next page!";
 	private static String CANNOT_NEXT = String.format(CANNOT_FORMAT, "Next", RunLogic.getGuiStatus().getMode().toString());
 	
-	private static String SUCCESSFUL_PREVIOUS = "Next page!";
+	private static String SUCCESSFUL_PREVIOUS = "Previous page!";
 	private static String NO_PREVIOUS = "No previous page!";
 	private static String CANNOT_PREVIOUS = String.format(CANNOT_FORMAT, "Previous", RunLogic.getGuiStatus().getMode().toString());
 	
