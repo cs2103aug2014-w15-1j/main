@@ -3,17 +3,19 @@ package CommandType;
 import logic.*;
 
 public class Invalid implements Command{
-	String feedback;
+	private static String feedback;
+	private static String title;
 	
-	public Invalid(String feedback){
-		this.feedback = feedback;
+	public Invalid(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
 	}
 	
 	@Override
 	public DisplayInfo execute() {
 		// TODO Auto-generated method stub
 		
-		return new DisplayInfo(RunLogic.getGuiStatus(), feedback, false);
+		return new DisplayInfo(RunLogic.getGuiStatus(), feedback, false, title);
 	}
 
 	@Override

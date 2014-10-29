@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import logic.*;
 
 public class ViewTrashBin implements Command{
-int firstTaskIndex;
+	private static String feedback;
+	private static String title;
+	
+	int firstTaskIndex;
 	
 	//local memory
 	private static GUIStatus GUI;
@@ -17,12 +20,18 @@ int firstTaskIndex;
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
 	
-	public ViewTrashBin(){
+	public ViewTrashBin(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		firstTaskIndex = 0;
 		initialize();
 	}
 	
-	public ViewTrashBin(int index){
+	public ViewTrashBin(int index, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		firstTaskIndex = index;
 		initialize();
 	}
@@ -48,7 +57,7 @@ int firstTaskIndex;
 			boolean hasPrevious = (currentDisplay[1] > 0);
 			GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 		}
-		constructBridges(display, Default.VIEW_FEEDBACK, Default.TITLE);
+		constructBridges(display, feedback, title);
 		update();
 		return passToGui;
 	}

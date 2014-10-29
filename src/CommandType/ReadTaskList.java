@@ -4,13 +4,12 @@ import gui.VIEW_MODE;
 
 import java.util.ArrayList;
 
-import logic.Default;
-import logic.DisplayInfo;
-import logic.GUIStatus;
-import logic.RunLogic;
-import logic.Task;
+import logic.*;
 
 public class ReadTaskList implements Command{
+	private static String feedback;
+	private static String title;
+	
 	int readIndex;
 	
 	//local memory
@@ -21,7 +20,10 @@ public class ReadTaskList implements Command{
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
 	
-	public ReadTaskList(int line){
+	public ReadTaskList(int line, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		readIndex = currentDisplay[line];
 	}
@@ -34,10 +36,11 @@ public class ReadTaskList implements Command{
 		currentDisplay[1] = readIndex;
 
 		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
+		GUI.changeCurretnTask(readIndex);
 		
 		display.add(taskList.get(readIndex));
 		
-		constructBridges(display, Default.READ_FEEDBACK, Default.TITLE);
+		constructBridges(display, feedback, title);
 		update();
 		return passToGui;
 	}

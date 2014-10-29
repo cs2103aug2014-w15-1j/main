@@ -17,28 +17,26 @@ public class GuiController {
 		if (gui == null) {
 			run();
 		}
+		System.out.print(info.getTitleString());
 		gui.setTitleText(info.getTitleString());
 		gui.setFeedbackText(info.getFeedbackString());
 
 		if (info.changeTaskList()) {
 			switch (info.getViewMode()) {
 			case TASK_DETAIL:
-				if(info.processTaskInfo()) {
-					gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
-				}
+				info.processTaskInfo();
+				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
 				break;
 			case BIN_DETAIL:
-				if(info.processTaskInfo()) {
-					gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
-				}
+				info.processTaskInfo();
+				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
 				break;
 			case MONTH:
 				throw new UnsupportedOperationException(
 						"view in Month is not supported yet");
 			default:
-				if(info.processTaskInfo()) {
-					gui.showListed(info.getFirstCol(), info.getSecondCol());
-				}
+				info.processTaskInfo();
+				gui.showListed(info.getFirstCol(), info.getSecondCol());
 			}
 		}
 
@@ -57,7 +55,7 @@ public class GuiController {
 
 	public static void run() {
 		gui = BasicGui.getInstance();
-		//logger.info("Gui instance gotten");
+		logger.info("Gui instance gotten");
 		assert gui != null : "GuiController cannot get instance of Gui";
 		DisplayInfo info = RunLogic.initialize();
 		display(info);
@@ -68,5 +66,4 @@ public class GuiController {
 	public static void main(String[] args) {
 		run();
 	}
-
 }

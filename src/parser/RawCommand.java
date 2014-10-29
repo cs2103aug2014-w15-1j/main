@@ -40,6 +40,7 @@ public class RawCommand{
     }
     
     public RawCommand(String command, String subInfo) {
+    	this.command = command;
     	
     	if (command.equals(COMMAND_TYPE.RENAME.name())) {
     		this.taskTitle = subInfo;
@@ -48,28 +49,18 @@ public class RawCommand{
     	} else {
     		this.cmdDescription = subInfo;
     	}
-    	
-        this.command = command;
-        /*
-        this.rpDate = ParserKeys.RP_EVREYDAY;
-        this.startDay = ParserKeys.EMPTY_DATE;
-        this.endDay = ParserKeys.EMPTY_DATE;
-        this.description = ParserKeys.EMPTY_DIS;
-        */
     }
     
     public RawCommand(String command, String startDay, String endDay) {
     	this.command = command;
-        //this.rpDate = ParserKeys.RP_EVREYDAY;
         this.startDay = startDay;
         this.endDay = endDay;
-        //this.description = ParserKeys.EMPTY_DIS;
     }
         
     // Strictly only for add command
     public RawCommand(String command, String taskTitle, 
-                   String repeatDate, String startDay, String endDay, 
-                   String description) {
+                   	  String repeatDate, String startDay, String endDay, 
+                      String description) {
         this.command = command;
         this.taskTitle = taskTitle;
         this.description = description;

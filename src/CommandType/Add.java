@@ -9,6 +9,8 @@ import logic.*;
 
 public class Add implements Command{
 	private static Task task;
+	private static String feedback;
+	private static String title;
 	
 	//local memory
 	private static GUIStatus GUI;
@@ -20,8 +22,10 @@ public class Add implements Command{
 	private static DisplayInfo passToGui;
 	private static LogicToStore passToStore;
 	
-	public Add(Task newTask){
+	public Add(Task newTask, String myFeedback, String myTitle){
 		task = newTask;
+		feedback = myFeedback;
+		title = myTitle;
 		initialize();
 	}
 
@@ -37,7 +41,7 @@ public class Add implements Command{
 		update();
 		
 		display.add(task);
-		constructBridges(display, Default.ADD_FEEDBACK, Default.TITLE);
+		constructBridges(display, feedback, title);
 		DataStore.writeTask(taskList);
 		return passToGui;
 	}

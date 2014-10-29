@@ -11,6 +11,9 @@ import logic.RunLogic;
 import logic.Task;
 
 public class DeleteTaskList implements Command{
+	private static String feedback;
+	private static String title;
+	
 	boolean deleteAll;
 	int deleteIndex;
 	
@@ -22,13 +25,19 @@ public class DeleteTaskList implements Command{
 		
 	private static LogicToStore passToStore;
 	
-	public DeleteTaskList(Boolean all){
+	public DeleteTaskList(Boolean all, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		this.deleteAll = all;
 		this.deleteIndex = -1;
 	}
 	
-	public DeleteTaskList(int line){
+	public DeleteTaskList(int line, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
 		initialize();
 		this.deleteAll = false;
 		this.deleteIndex = currentDisplay[line];
@@ -41,33 +50,16 @@ public class DeleteTaskList implements Command{
 			taskList.clear();
 			
 			update();
-			ViewTaskList viewTaskList = new ViewTaskList();
+			
+			constructBridges();
+			DataStore.writeAllData(passToStore);
+			
+			ViewTaskList viewTaskList = new ViewTaskList(feedback, title);
 			return viewTaskList.execute();
-		} 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		else {
+		} else {
 			trashbinList.add(taskList.remove(deleteIndex));
 			
-			if(currentDisplay[1] > taskList.size()){
+			if(currentDisplay[1] >= taskList.size()){
 				currentDisplay[1] -= Default.MAX_DISPLAY_LINE;
 			}
 			update();
@@ -75,7 +67,7 @@ public class DeleteTaskList implements Command{
 			constructBridges();
 			DataStore.writeAllData(passToStore);
 			
-			ViewTaskList viewTaskList = new ViewTaskList(currentDisplay[1]);
+			ViewTaskList viewTaskList = new ViewTaskList(currentDisplay[1], feedback, title);
 			return viewTaskList.execute();
 		}
 	}
