@@ -14,14 +14,15 @@ public class DeleteTaskList implements Command{
 	private static String feedback;
 	private static String title;
 	
-	boolean deleteAll;
-	int deleteIndex;
+	private static boolean deleteAll;
+	private static int deleteIndex;
 	
 	//local memory
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay;
+	private static int[] currentListIndex;
 		
 	private static LogicToStore passToStore;
 	
@@ -30,8 +31,8 @@ public class DeleteTaskList implements Command{
 		title = myTitle;
 		
 		initialize();
-		this.deleteAll = all;
-		this.deleteIndex = -1;
+		deleteAll = all;
+		deleteIndex = -1;
 	}
 	
 	public DeleteTaskList(int line, String myFeedback, String myTitle){
@@ -39,35 +40,54 @@ public class DeleteTaskList implements Command{
 		title = myTitle;
 		
 		initialize();
-		this.deleteAll = false;
-		this.deleteIndex = currentDisplay[line];
+		deleteAll = false;
+		deleteIndex = currentDisplay[line];
 	}
 	
 	@Override
 	public DisplayInfo execute() {
 		if(deleteAll){
-			trashbinList.addAll(taskList);
-			taskList.clear();
+			for(int i = 1; i<= Default.MAX_DISPLAY_LINE; i++){
+				if(currentDisplay[i] != -1){
+					trashbinList.add(taskList.remove(currentListIndex[currentDisplay[1]]));
+				} else {
+					break;
+				}
+			}
+			currentListIndex = updateListIndex(currentListIndex);
 			
 			update();
 			
 			constructBridges();
 			DataStore.writeAllData(passToStore);
 			
-			ViewTaskList viewTaskList = new ViewTaskList(feedback, title);
+			ViewTaskList viewTaskList;
+			if(GUI.hasNext()){
+				viewTaskList = new ViewTaskList(currentDisplay[1], feedback, title);
+			} else if (GUI.hasPrevious()){
+				viewTaskList = new ViewTaskList(currentDisplay[1] - Default.MAX_DISPLAY_LINE, feedback, title);
+			} else {
+				viewTaskList = new ViewTaskList(feedback, title);
+			}
 			return viewTaskList.execute();
 		} else {
-			trashbinList.add(taskList.remove(deleteIndex));
+			trashbinList.add(taskList.remove(currentListIndex[deleteIndex]));
 			
-			if(currentDisplay[1] >= taskList.size()){
-				currentDisplay[1] -= Default.MAX_DISPLAY_LINE;
-			}
+			currentListIndex = updateListIndex(currentListIndex);
+			
 			update();
 			
 			constructBridges();
 			DataStore.writeAllData(passToStore);
 			
-			ViewTaskList viewTaskList = new ViewTaskList(currentDisplay[1], feedback, title);
+			ViewTaskList viewTaskList;
+			if(currentListIndex[deleteIndex] != -1){
+				viewTaskList = new ViewTaskList(deleteIndex, feedback, title);
+			} else if (GUI.hasPrevious()){
+				viewTaskList = new ViewTaskList(deleteIndex - Default.MAX_DISPLAY_LINE, feedback, title);
+			} else {
+				viewTaskList = new ViewTaskList(feedback, title);
+			}
 			return viewTaskList.execute();
 		}
 	}
@@ -86,6 +106,7 @@ public class DeleteTaskList implements Command{
 		taskList = RunLogic.getTaskList();
 		trashbinList = RunLogic.getTrashbinList();
 		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 	
 	private static void update(){
@@ -93,6 +114,17 @@ public class DeleteTaskList implements Command{
 		RunLogic.updateTaskList(taskList);
 		RunLogic.updateTrashbinList(trashbinList);
 		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+	
+	private int[] updateListIndex(int[] currentList) {
+		for(int i = 0; i < taskList.size(); i++){
+			currentList[i] = i;
+		}
+		for(int i = taskList.size(); i < currentList.length; i++){
+			currentList[i] = -1;
+		}
+		return currentList;
 	}
 	
 	private static void constructBridges(){

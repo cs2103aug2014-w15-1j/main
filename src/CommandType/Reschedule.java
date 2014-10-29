@@ -9,10 +9,14 @@ public class Reschedule implements Command{
 	private static String feedback;
 	private static String title;
 	
-	JDate newStartDate;
-	JDate newEndDate;
+	private static JDate newStartDate;
+	private static JDate newEndDate;
+	private static int lineIndex;
+	
 	//local memory
 	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
 
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
@@ -25,12 +29,22 @@ public class Reschedule implements Command{
 		initialize();
 		newStartDate = startDate;
 		newEndDate = endDate;
+		lineIndex = 1;
 	}
 	
+	public Reschedule(int line, JDate startDate, JDate endDate, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		initialize();
+		newStartDate = startDate;
+		newEndDate = endDate;
+		lineIndex = line;
+	}
 	
 	@Override
 	public DisplayInfo execute() {
-		taskList.get(RunLogic.getGuiStatus().getTaskIndex()).reschedule(newStartDate, newEndDate);
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(newStartDate, newEndDate);
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(RunLogic.getGuiStatus().getTaskIndex()));
 		update();
@@ -52,6 +66,8 @@ public class Reschedule implements Command{
 	
 	private static void initialize(){
 		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 		
 	private static void update(){

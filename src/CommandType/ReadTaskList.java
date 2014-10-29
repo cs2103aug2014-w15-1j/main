@@ -10,7 +10,7 @@ public class ReadTaskList implements Command{
 	private static String feedback;
 	private static String title;
 	
-	int readIndex;
+	private static int readIndex;
 	
 	//local memory
 	private static GUIStatus GUI;
@@ -38,7 +38,7 @@ public class ReadTaskList implements Command{
 		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
 		GUI.changeCurretnTask(readIndex);
 		
-		display.add(taskList.get(readIndex));
+		display.add(taskList.get(RunLogic.getCurrentListIndex()[readIndex]));
 		
 		constructBridges(display, feedback, title);
 		update();

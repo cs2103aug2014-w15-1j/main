@@ -16,6 +16,7 @@ public class ViewTaskList implements Command{
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
 	private static int[] currentDisplay;
+	private static int[] currentListIndex;
 	
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
@@ -40,21 +41,21 @@ public class ViewTaskList implements Command{
 	public DisplayInfo execute() {
 		ArrayList<Task> display = new ArrayList<Task>();
 		currentDisplay = initializeDisplayList(currentDisplay);
+		
 		if(taskList.isEmpty()){
 			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, GUI.getDate());
 		} else {
-			boolean hasNext = false;
-			for(int i = 1, j = firstTaskIndex;  j < taskList.size(); j++){
+			boolean hasNext = currentListIndex[firstTaskIndex + Default.MAX_DISPLAY_LINE] > 0;
+			boolean hasPrevious = firstTaskIndex >= Default.MAX_DISPLAY_LINE;
+			for(int i = 1, j = firstTaskIndex; currentListIndex[j] >= 0; j++){
 				if(i <= Default.MAX_DISPLAY_LINE){
-					display.add(taskList.get(j));
+					display.add(taskList.get(currentListIndex[j]));
 					currentDisplay[i] = j;
 					i++;
 				} else {
-					hasNext = true;
 					break;
 				}
 			}
-			boolean hasPrevious = firstTaskIndex > 0;
 			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
 		}
 		constructBridges(display, feedback, title);
@@ -62,6 +63,7 @@ public class ViewTaskList implements Command{
 		
 		return passToGui;
 	}
+
 
 	@Override
 	public DisplayInfo undo() {
@@ -77,20 +79,23 @@ public class ViewTaskList implements Command{
 		GUI = RunLogic.getGuiStatus();
 		taskList = RunLogic.getTaskList();
 		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 	
 	private static void update(){
 		RunLogic.updateGuiStatus(GUI);
 		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int[] currentDisplay) {
-		for(int i = 0; i < currentDisplay.length; i++){
-			currentDisplay[i] = -1;
+	private static int[] initializeDisplayList(int[] currentDis) {
+		for(int i = 0; i < currentDis.length; i++){
+			currentDis[i] = -1;
 		}
-		return currentDisplay;
+
+		return currentDis;
 	}
-	
+		
 	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
 		passToGui = new DisplayInfo(GUI, display, feedback, title);
 	}

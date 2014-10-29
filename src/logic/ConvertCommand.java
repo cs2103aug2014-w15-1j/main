@@ -8,41 +8,45 @@ public class ConvertCommand {
 	private static String TASKLIST_TITLE = "Task List";
 	private static String BIN_TITLE = "Trash bin";
 	private static String DETAIL_TITLE_FORMAT = "Detail of %s";
+	private static String SEARCH_TITLE = "Search result of %s";
 	
 	
 	//feedback formats
-	private static String CANNOT_FORMAT = "Cannot command %s1 in %2s view mode!";
-	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %1s: %2s invalid!";
+	private static String CANNOT_FORMAT = "Cannot command %s in current view mode!";
+	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %s: %s invalid!";
 	private static String UNKNOWN = "Invalid Command!";
 	
 	private static String SUCCESSFUL_ADD = "New task added successfully!";
-	private static String CANNOT_ADD = String.format(CANNOT_FORMAT, "Add", RunLogic.getGuiStatus().getMode().toString());
+	private static String CANNOT_ADD = String.format(CANNOT_FORMAT, "Add");
 	private static String INVALID_ADD_NAME = String.format(INVALID_ARGUMENT_FORMAT, "Add", "task title");
 	private static String INVALID_ADD_STARTDATE = String.format(INVALID_ARGUMENT_FORMAT, "Add", "start date");
 	private static String INVALID_ADD_ENDDATE = String.format(INVALID_ARGUMENT_FORMAT, "Add", "end date");
 
 	private static String SUCCESSFUL_DELETE = "Task deleted successfully!";
-	private static String CANNOT_DELETE = String.format(CANNOT_FORMAT, "Delete", RunLogic.getGuiStatus().getMode().toString());
+	private static String CANNOT_DELETE = String.format(CANNOT_FORMAT, "Delete");
 	private static String INVALID_DELETE_ITEM = String.format(INVALID_ARGUMENT_FORMAT, "Delete", "delete line");
 	
 	private static String SUCCESSFUL_READ = "Task details!";
-	private static String CANNOT_READ = String.format(CANNOT_FORMAT, "Read", RunLogic.getGuiStatus().getMode().toString());
+	private static String CANNOT_READ = String.format(CANNOT_FORMAT, "Read");
 	private static String INVALID_READ_ITEM = String.format(INVALID_ARGUMENT_FORMAT, "Read", "Read line");
 	
 	private static String SUCCESSFUL_RENAME = "Task rename successfully!";
-	private static String CANNOT_RENAME = String.format(CANNOT_FORMAT, "Rename", RunLogic.getGuiStatus().getMode().toString());
+	private static String CANNOT_RENAME = String.format(CANNOT_FORMAT, "Rename");
+	private static String INVALID_RENAME_ITEM = String.format(INVALID_ARGUMENT_FORMAT, "Rename", "Update line");
 	private static String INVALID_RENAME_NAME = String.format(INVALID_ARGUMENT_FORMAT, "Rename", "New name");
 
 	private static String SUCCESSFUL_RESCHDULE = "Task reschedule successfully!";
-	private static String CANNOT_RESCHEDULE = String.format(CANNOT_FORMAT, "Reschedule", RunLogic.getGuiStatus().getMode().toString());
+	private static String CANNOT_RESCHEDULE = String.format(CANNOT_FORMAT, "Reschedule");
+	private static String INVALID_RESCHEDULE_ITEM = String.format(INVALID_ARGUMENT_FORMAT, "Reschedule", "Update line");
 	private static String INVALID_RESCHEDULE_STARTDATE = String.format(INVALID_ARGUMENT_FORMAT, "Reschedule", "Start date");
 	private static String INVALID_RESCHEDULE_ENDDATE = String.format(INVALID_ARGUMENT_FORMAT, "Reschedule", "End date");
 
 	private static String SUCCESSFUL_DESCRIBE = "Task describe successfully!";
-	private static String CANNOT_DESCRIBE = String.format(CANNOT_FORMAT, "Describe", RunLogic.getGuiStatus().getMode().toString());
+	private static String INVALID_DESCRIBE_ITEM = String.format(INVALID_ARGUMENT_FORMAT, "Describe", "Update line");
+	private static String CANNOT_DESCRIBE = String.format(CANNOT_FORMAT, "Describe");
 
 	private static String SUCCESSFUL_RESTORE = "Task restore successfully!";
-	private static String CANNOT_RESTORE = String.format(CANNOT_FORMAT, "Restore", RunLogic.getGuiStatus().getMode().toString());
+	private static String CANNOT_RESTORE = String.format(CANNOT_FORMAT, "Restore");
 	private static String INVALID_RESTORE_ITEM = String.format(INVALID_ARGUMENT_FORMAT, "Restore", "Restore line");
 
 	private static String SUCCESSFUL_VIEW = "View mode changed!";
@@ -50,14 +54,18 @@ public class ConvertCommand {
 
 	private static String SUCCESSFUL_NEXT = "Next page!";
 	private static String NO_NEXT = "No next page!";
-	private static String CANNOT_NEXT = String.format(CANNOT_FORMAT, "Next", RunLogic.getGuiStatus().getMode().toString());
+	private static String CANNOT_NEXT = String.format(CANNOT_FORMAT, "Next");
 	
 	private static String SUCCESSFUL_PREVIOUS = "Previous page!";
 	private static String NO_PREVIOUS = "No previous page!";
-	private static String CANNOT_PREVIOUS = String.format(CANNOT_FORMAT, "Previous", RunLogic.getGuiStatus().getMode().toString());
+	private static String CANNOT_PREVIOUS = String.format(CANNOT_FORMAT, "Previous");
 	
 	private static String SUCCESSFUL_BACK = "Back to List!";
-	private static String CANNOT_BACK = String.format(CANNOT_FORMAT, "Back", RunLogic.getGuiStatus().getMode().toString());
+	private static String CANNOT_BACK = String.format(CANNOT_FORMAT, "Back");
+
+	private static String SUCCESSFUL_SEARCH = "Search Results!";
+	private static String INVALID_KEYWORD = String.format(INVALID_ARGUMENT_FORMAT, "Search", "Key word");
+	private static String CANNOT_SEARCH = String.format(CANNOT_FORMAT, "Search");
 
 	public static Command convert(RawCommand command){
 		if(command == null){
@@ -177,7 +185,7 @@ public class ConvertCommand {
 				return new Invalid(INVALID_READ_ITEM, null);
 			}
 			
-			Task task = RunLogic.getTaskList().get(RunLogic.getCurrentDisplay()[readLine]);
+			Task task = RunLogic.getTaskList().get(RunLogic.getCurrentListIndex()[RunLogic.getCurrentDisplay()[readLine]]);
 			return new ReadTaskList(readLine, SUCCESSFUL_READ, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		}
 		
@@ -191,7 +199,7 @@ public class ConvertCommand {
 				return new Invalid(INVALID_READ_ITEM, null);
 			}
 			
-			Task task = RunLogic.getTrashbinList().get(RunLogic.getCurrentDisplay()[readLine]);
+			Task task = RunLogic.getTrashbinList().get(RunLogic.getCurrentListIndex()[RunLogic.getCurrentDisplay()[readLine]]);
 			return new ReadBin(readLine, SUCCESSFUL_READ, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		}
 		
@@ -199,15 +207,27 @@ public class ConvertCommand {
 	}
 
 	private static Command convertRename(RawCommand command) {
-		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
-			return new Invalid(CANNOT_RENAME, null);
-		}
-		
 		String newName = command.getTitle();
 		if(newName == null){
 			return new Invalid(INVALID_RENAME_NAME, null);
 		}
 		
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+			if(!isInt(command.getCMDDescription())){
+				System.out.println("!");
+				return new Invalid(INVALID_RENAME_ITEM, null);
+			}
+			
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
+				return new Invalid(INVALID_RENAME_ITEM, null);
+			}
+			return new Rename(readLine, newName, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, newName));
+		} 
+
+		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			return new Invalid(CANNOT_RENAME, null);
+		}
 		return new Rename(newName, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, newName));
 	}
 
@@ -217,10 +237,6 @@ public class ConvertCommand {
 	}
 
 	private static Command convertReschedule(RawCommand command) {
-		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
-			return new Invalid(CANNOT_RESCHEDULE, null);
-		}
-		
 		String newStartDate = command.getStartDay();
 		String newEndDate = command.getEndDay();
 		
@@ -241,18 +257,49 @@ public class ConvertCommand {
 			endDate = convertDate(newEndDate);
 		}
 		
+
 		Task task = RunLogic.getTaskList().get(RunLogic.getGuiStatus().getTaskIndex());
+		
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+			if(!isInt(command.getCMDDescription())){
+				return new Invalid(INVALID_RENAME_ITEM, null);
+			}
+			
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
+				return new Invalid(INVALID_RENAME_ITEM, null);
+			}
+			return new Reschedule(readLine, startDate, endDate, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, task.getName()));
+		} 
+		
+		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			return new Invalid(CANNOT_RESCHEDULE, null);
+		}
+		
 		return new Reschedule(startDate, endDate, SUCCESSFUL_RESCHDULE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 	}
 
 	private static Command ConvertDescribe(RawCommand command) {
-		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
-			return new Invalid(CANNOT_DESCRIBE, null);
-		}
-		
 		String newDescription = command.getDescription();
 
 		Task task = RunLogic.getTaskList().get(RunLogic.getGuiStatus().getTaskIndex());
+		
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+			if(!isInt(command.getCMDDescription())){
+				return new Invalid(INVALID_RENAME_ITEM, null);
+			}
+			
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
+				return new Invalid(INVALID_RENAME_ITEM, null);
+			}
+			return new Describe(readLine, newDescription, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, task.getName()));
+		} 
+
+		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			return new Invalid(CANNOT_DESCRIBE, null);
+		}
+
 		return new Describe(newDescription, SUCCESSFUL_DESCRIBE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 	}
 
@@ -281,10 +328,13 @@ public class ConvertCommand {
 	private static Command convertView(RawCommand command) {
 		String newMode = command.getCMDDescription();
 		if(newMode == null){
+			RunLogic.updateCurrentListIndex(updateListIndexOfTaskList(RunLogic.getCurrentListIndex()));
 			return new ViewTaskList(0, SUCCESSFUL_VIEW, TASKLIST_TITLE);
 		} else if(newMode.equalsIgnoreCase("tasklist")){
+			RunLogic.updateCurrentListIndex(updateListIndexOfTaskList(RunLogic.getCurrentListIndex()));
 			return new ViewTaskList(0, SUCCESSFUL_VIEW, TASKLIST_TITLE);
 		} else if(newMode.equalsIgnoreCase("bin")){
+			RunLogic.updateCurrentListIndex(updateListIndexOfTrashBin(RunLogic.getCurrentListIndex()));
 			return new ViewTrashBin(0, SUCCESSFUL_VIEW, BIN_TITLE);
 		} else {
 			return new Invalid(INVALID_VIEW_MODE, null);
@@ -322,8 +372,19 @@ public class ConvertCommand {
 	}
 
 	private static Command convertSearch(RawCommand command) {
-		// TODO Auto-generated method stub
-		return null;
+		String keyWord = command.getCMDDescription();
+		if(keyWord == null){
+			return new Invalid(INVALID_KEYWORD, null);
+		}
+		
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+			return new SearchTaskList(keyWord, SUCCESSFUL_SEARCH, String.format(SEARCH_TITLE, keyWord));
+		} else if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+			return new SearchTrashBin(keyWord, SUCCESSFUL_SEARCH, String.format(SEARCH_TITLE, keyWord));
+		} 
+		
+		
+		return new Invalid(CANNOT_SEARCH, null);
 	}
 
 	private static Command convertBack(RawCommand command) {
@@ -355,6 +416,26 @@ public class ConvertCommand {
 		}
 		
 		return true;
+	}
+	
+	private static int[] updateListIndexOfTaskList(int[] currentList) {
+		for(int i = 0; i < RunLogic.getTaskList().size(); i++){
+			currentList[i] = i;
+		}
+		for(int i = RunLogic.getTaskList().size(); i < currentList.length; i++){
+			currentList[i] = -1;
+		}
+		return currentList;
+	}
+	
+	private static int[] updateListIndexOfTrashBin(int[] currentList) {
+		for(int i = 0; i < RunLogic.getTrashbinList().size(); i++){
+			currentList[i] = i;
+		}
+		for(int i = RunLogic.getTrashbinList().size(); i < currentList.length; i++){
+			currentList[i] = -1;
+		}
+		return currentList;
 	}
 	
 	private static JDate convertDate(String date){

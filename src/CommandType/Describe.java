@@ -9,10 +9,13 @@ public class Describe implements Command{
 	private static String feedback;
 	private static String title;
 	
-	String newDescription;
+	private static String newDescription;
+	private static int lineIndex;
 	
 	//local memory
 	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
 
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
@@ -23,11 +26,21 @@ public class Describe implements Command{
 		
 		initialize();
 		newDescription = description;
+		lineIndex = 1;
 	}
 	
+	public Describe(int line, String description, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		initialize();
+		newDescription = description;
+		lineIndex = line;
+	}
+
 	@Override
 	public DisplayInfo execute() {
-		taskList.get(RunLogic.getGuiStatus().getTaskIndex()).describe(newDescription);
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).describe(newDescription);
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(RunLogic.getGuiStatus().getTaskIndex()));
 		update();
@@ -49,6 +62,8 @@ public class Describe implements Command{
 	
 	private static void initialize(){
 		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 		
 	private static void update(){

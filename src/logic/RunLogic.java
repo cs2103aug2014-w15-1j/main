@@ -3,6 +3,7 @@ package logic;
 import gui.VIEW_MODE;
 
 import java.util.ArrayList;
+
 import parser.RawCommand;
 import parser.ParserProcesser;
 import read_file.ReadFile;
@@ -17,6 +18,8 @@ public class RunLogic {
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
+	private static int[] currentListIndex = new int[Default.MAX_TASKS];
+	
 	
 	public static DisplayInfo initialize() {
 		ReadFile rf = new ReadFile();
@@ -24,9 +27,10 @@ public class RunLogic {
 		trashbinList = rf.getTrashFile();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, "20141022");
-	
-		Command view = new ViewTaskList(WELCOME, TITLE);
-		return view.execute();
+
+		currentListIndex = updateListIndexOfTaskList(currentListIndex);
+		Command start = new ViewTaskList(WELCOME, TITLE);
+		return start.execute();
 	}
 	
 	public static DisplayInfo logic(String inputCommand){
@@ -39,7 +43,7 @@ public class RunLogic {
 	
 	
 	
-	//-------------------helper API--------------------------
+	//-------------------helper--------------------------
 	
 	public static GUIStatus getGuiStatus(){
 		return GUI;
@@ -57,6 +61,9 @@ public class RunLogic {
 		return currentDisplay;
 	}
 	
+	public static int[] getCurrentListIndex(){
+		return currentListIndex;
+	}
 	public static void updateGuiStatus(GUIStatus newGUI){
 		GUI = newGUI;
 	}
@@ -71,5 +78,19 @@ public class RunLogic {
 	
 	public static void updateCurrentdiaplay(int[] newDisplay){
 		currentDisplay = newDisplay;
+	}
+	
+	public static void updateCurrentListIndex(int[] newListIndex){
+		currentListIndex = newListIndex;
+	}
+	
+	private static int[] updateListIndexOfTaskList(int[] currentList) {
+		for(int i = 0; i < taskList.size(); i++){
+			currentList[i] = i;
+		}
+		for(int i = taskList.size(); i < currentList.length; i++){
+			currentList[i] = -1;
+		}
+		return currentList;
 	}
 }

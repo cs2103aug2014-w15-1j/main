@@ -1,47 +1,42 @@
 package CommandType;
 
-import gui.VIEW_MODE;
-
 import java.util.ArrayList;
 
 import logic.*;
 
-public class ReadBin implements Command{
+public class SearchTaskList implements Command{
+	private static String keyWord;
 	private static String feedback;
 	private static String title;
 	
-	int readIndex;
-	
 	//local memory
 	private static GUIStatus GUI;
-	private static ArrayList<Task> trashbinList;
+	private static ArrayList<Task> taskList;
 	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+
 	
-	//values for GUI and I/O
-	private static DisplayInfo passToGui;
-	
-	public ReadBin(int line, String myFeedback, String myTitle){
+	public SearchTaskList(String word, String myFeedback, String myTitle){
+		keyWord = word;
 		feedback = myFeedback;
 		title = myTitle;
-		
 		initialize();
-		readIndex = currentDisplay[line];
 	}
 	
 	@Override
 	public DisplayInfo execute() {
-		ArrayList<Task> display = new ArrayList<Task>();
-		
 		currentDisplay = initializeDisplayList(currentDisplay);
-		currentDisplay[1] = readIndex;
-
-		GUI.changeViewMode(VIEW_MODE.BIN_DETAIL);
-		
-		display.add(trashbinList.get(RunLogic.getCurrentListIndex()[readIndex]));
-		
-		constructBridges(display, feedback, title);
+		int[] tempListIndex = initializeDisplayList(currentListIndex);
+		for(int i = 0, j = 0; i < taskList.size(); i++){
+			if(taskList.get(currentListIndex[i]).getName().contentEquals(keyWord)){
+				tempListIndex[j] = currentListIndex[i];
+				j++;
+			}
+		}
+		currentListIndex = tempListIndex;
 		update();
-		return passToGui;
+		ViewTaskList search = new ViewTaskList(0, feedback, title);
+		return search.execute();
 	}
 
 	@Override
@@ -50,21 +45,23 @@ public class ReadBin implements Command{
 		return null;
 	}
 
-	
-	
+
 	
 	//-----------helper functions-----------------
 	
 	
 	private static void initialize(){
 		GUI = RunLogic.getGuiStatus();
-		trashbinList = RunLogic.getTrashbinList();
+		taskList = RunLogic.getTaskList();
 		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 	
 	private static void update(){
 		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateTaskList(taskList);
 		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
 	private static int[] initializeDisplayList(int[] currentDisplay) {
@@ -73,8 +70,5 @@ public class ReadBin implements Command{
 		}
 		return currentDisplay;
 	}
-	
-	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
-		passToGui = new DisplayInfo(GUI, display, feedback, title);
-	}
+
 }

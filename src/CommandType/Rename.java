@@ -9,24 +9,38 @@ public class Rename implements Command{
 	private static String feedback;
 	private static String title;
 	
-	private String newName;
+	private static String newName;
+	private static int lineIndex;
+	
 	//local memory
 	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
 
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
 		
+	public Rename(int line, String name, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		initialize();
+		newName = name;
+		lineIndex = line;
+	}
+	
 	public Rename(String name, String myFeedback, String myTitle){
 		feedback = myFeedback;
 		title = myTitle;
 		
 		initialize();
 		newName = name;
+		lineIndex = 1;
 	}
 	
 	@Override
 	public DisplayInfo execute() {
-		taskList.get(RunLogic.getGuiStatus().getTaskIndex()).rename(newName);
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).rename(newName);
 		ArrayList<Task> display = new ArrayList<Task>();
 		display.add(taskList.get(RunLogic.getGuiStatus().getTaskIndex()));
 		update();
@@ -48,8 +62,10 @@ public class Rename implements Command{
 	
 	private static void initialize(){
 		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
 	}
-		
+	
 	private static void update(){
 		RunLogic.updateTaskList(taskList);
 	}
