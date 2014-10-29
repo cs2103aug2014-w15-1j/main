@@ -1,5 +1,10 @@
 package parser;
 
+/**
+ * class StringCutter: modifying strings.
+ * 
+ * @author A0119493X
+ * */
 public class StringCutter {
 	
 	/**
@@ -37,7 +42,7 @@ public class StringCutter {
 		String frontQuotClean = frontSPclean.substring(1, frontSPclean.length());
 		int quoteEndIndex = frontQuotClean.indexOf(ParserKeys.SPLITSYMBOL);
 		
-		return frontQuotClean.substring(0, quoteEndIndex);
+		return frontQuotClean.substring(0, quoteEndIndex) + ParserKeys.SPLITSYMBOL;
 	}
 
 	/**

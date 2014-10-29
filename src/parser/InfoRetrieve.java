@@ -2,6 +2,8 @@ package parser;
 
 import java.util.ArrayList;
 
+import parser.TokenType.TOKEN_TYPE;
+
 /**
  * class InfoRetrieve: Retrieve specific information from raw input string
  * 
@@ -14,41 +16,98 @@ public class InfoRetrieve {
      * Get task title, if title is empty, return an system EMPYT_TITLE
      * 
      * @param {String}
-     * @param {ArrayList<String>}
+     * @param {ArrayList<TokenPair>}
      * 
      * @return {RawInfoPair}
      * */
-    static RawInfoPair getTaskTitle(ArrayList<String> tokens) {
-    	String title = "";
-    	String front;
+    static RawInfoPair getTaskTitle(ArrayList<TokenPair> tokenPairs) {
+    	TokenPair front;
+    	TOKEN_TYPE frontToken;
+    	int numOfQuotes;
     	
-        while(!tokens.isEmpty()) {
-        	front = tokens.get(0);
+    	numOfQuotes = countQuoted(tokenPairs);
+    	
+    	if (numOfQuotes == 0) {
+    		return getFrontUN(tokenPairs);
+    	} else if (numOfQuotes == 1) {
+    		front = tokenPairs.get(0);
+        	frontToken = front.getToken();
         	
-        	if(!ValidityChecker.isValidRP(front) && 
-        	   !ValidityChecker.isValidDate(front)){
-        		title += front + ParserKeys.SPACE;
-        		tokens.remove(0);
+        	if (ValidityChecker.isUN(frontToken)) {
+        		return getFrontUN(tokenPairs);
+        	} else {
+        		return getOneQT(tokenPairs);
+        	}
+    	} else {
+    		// numOfQuotes == 2
+    		return getOneQT(tokenPairs);
+    	}
+    }
+    
+    /**
+     * get the first contents that is Quoted
+     * */
+    static RawInfoPair getOneQT(ArrayList<TokenPair> tokenPairs) {
+    	String result = "";
+    	TokenPair curPair;
+    	for (int i = 0; i < tokenPairs.size(); i++) {
+    		curPair = tokenPairs.get(i);
+    		if (curPair.getToken() == TOKEN_TYPE.QT) {
+    			result = curPair.getCotent();
+    			tokenPairs.remove(i);
+    		}
+    	}
+    	return new RawInfoPair(result, tokenPairs);
+    }
+    
+    /**
+     * get front contents that is unidentifiable
+     * */
+    static RawInfoPair getFrontUN(ArrayList<TokenPair> tokenPair) {
+    	String result = "";
+    	TokenPair front;
+    	TOKEN_TYPE frontToken;
+    	
+    	while(!tokenPair.isEmpty()) {
+			front = tokenPair.get(0);
+        	frontToken = front.getToken();
+        	
+        	if (ValidityChecker.isUN(frontToken)){
+        		result += front.getCotent() + ParserKeys.SPACE;
+        		tokenPair.remove(0);
         	} else {
         		break;
         	}
         }
-        
-        return new RawInfoPair(title, tokens);
+    	return new RawInfoPair(result, tokenPair);
+    }
+    
+    /**
+     * Count number of quoted contents in the tokenPairs
+     * */
+    static int countQuoted(ArrayList<TokenPair> tokenPairs) {
+    	int result = 0;
+    	for (int i = 0; i < tokenPairs.size(); i++) {
+    		if (tokenPairs.get(i).getToken() == TOKEN_TYPE.QT) {
+    			result ++;
+    		}
+    	}
+    	
+    	return result;
     }
 	
 	/**
      * get repeated date for a task
      * if cannot find the return system default repeat
      * */
-    static RawInfoPair getRepeatDate(ArrayList<String> tokens) {
+    static RawInfoPair getRepeatDate(ArrayList<TokenPair> tokens) {
     	String repeatDate = "";
-    	String cur;
+    	TokenPair curPair;
     	
         for (int i = 0; i < tokens.size(); i++) {
-        	cur = tokens.get(i);
-        	if (ValidityChecker.isValidRP(cur)) {
-        		repeatDate = cur;
+        	curPair = tokens.get(i);
+        	if (ValidityChecker.isRP(curPair.getToken())) {
+        		repeatDate = curPair.getCotent();
         		tokens.remove(i);
         		break;
         	}
@@ -65,14 +124,14 @@ public class InfoRetrieve {
      * get start day for a task
      * if cannot find the return system default date
      * */
-    static RawInfoPair getDate(ArrayList<String> tokens) {
+    static RawInfoPair getDate(ArrayList<TokenPair> tokens) {
     	String date = "";
-    	String cur;
+    	TokenPair curPair;
     	
         for (int i = 0; i < tokens.size(); i++) {
-        	cur = tokens.get(i);
-        	if (ValidityChecker.isValidDate(cur)) {
-        		date = makeDay(cur);
+        	curPair = tokens.get(i);
+        	if (ValidityChecker.isDT(curPair.getToken())) {
+        		date = makeDay(curPair.getCotent());
         		tokens.remove(i);
         		break;
         	}
@@ -93,11 +152,18 @@ public class InfoRetrieve {
      * 
      * @return {String}
      * */
-    static String getDescription(ArrayList<String> tokens) {
+    static String getDescription(ArrayList<TokenPair> tokenPairs) {
     	String description = "";
-        for ( int i = 0; i < tokens.size(); i++) {
-        	description += tokens.get(i) + ParserKeys.SPACE;
-        }
+    	int numOfQuotes;
+    	numOfQuotes = countQuoted(tokenPairs);
+    	
+    	if (numOfQuotes == 0) {
+    		for ( int i = 0; i < tokenPairs.size(); i++) {
+            	description += tokenPairs.get(i).getCotent() + ParserKeys.SPACE;
+            }
+    	} else {
+    		return getOneQT(tokenPairs).getFront();
+    	}
         
         if (description.isEmpty()) {
         	description = ParserKeys.EMPTY_DIS;
@@ -136,6 +202,7 @@ public class InfoRetrieve {
     /**
      * Judge the validity of repeat date input
      * */
+    /*
     static boolean isValidRP(String repDate) {
         boolean result = false;
         for (int i = 0; i < ParserKeys.REPEAT_KEYS.length; i++) {
@@ -145,6 +212,7 @@ public class InfoRetrieve {
         }
         return result;
     }
+    */
     
     /**
      * Return index of quotation mark in raw input String

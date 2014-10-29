@@ -24,7 +24,7 @@ public class CMDInterpreter {
      * */
     static CMDInfoPair makeCmdPair(RawInfoPair rawCMDPair){
         String getCommand = rawCMDPair.getFront();
-        ArrayList<String> getSubInfo = rawCMDPair.getSubInfo();
+        ArrayList<TokenPair> getSubInfo = rawCMDPair.getSubInfo();
 
         if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.ADD.name())) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.ADD, getSubInfo);

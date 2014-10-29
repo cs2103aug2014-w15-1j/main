@@ -21,5 +21,4 @@ class CMDTypes {
 	    // UPDATE_FIELD
 	    NAME, DESCRIPTION, DATE, DAY;
 	}
-
 }

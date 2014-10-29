@@ -13,7 +13,7 @@ public class CMDCaller {
 	static RawCommand transformCmd(CMDInfoPair infoPair){
 	    RawCommand resultCMD;
 	    CMDTypes.COMMAND_TYPE getCMD = infoPair.getCMD();
-	    ArrayList<String> subInfoStr = infoPair.getSubInfo();
+	    ArrayList<TokenPair> subInfoStr = infoPair.getSubInfo();
 	
 	    switch(getCMD){
 	    case ADD:

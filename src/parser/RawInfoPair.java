@@ -10,9 +10,9 @@ import java.util.ArrayList;
  * */
 public class RawInfoPair {
 	private String front;
-    private ArrayList<String> subInfo;
+    private ArrayList<TokenPair> subInfo;
     
-    public RawInfoPair(String front, ArrayList<String> subInfo) {
+    public RawInfoPair(String front, ArrayList<TokenPair> subInfo) {
         this.front = front;
         this.subInfo = subInfo;
     }
@@ -21,7 +21,7 @@ public class RawInfoPair {
         return this.front;
     }
     
-    public ArrayList<String> getSubInfo() {
+    public ArrayList<TokenPair> getSubInfo() {
         return this.subInfo;
     }
 }

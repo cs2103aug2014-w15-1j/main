@@ -2,7 +2,36 @@ package parser;
 
 import java.util.ArrayList;
 
+import parser.TokenType.TOKEN_TYPE;
+
+/**
+ * class ValidityChecker: check if information is valid or not
+ * 
+ * @author A0119493X
+ * */
+
 public class ValidityChecker {
+	
+	/**
+	 * Check if token type is UN
+	 * */
+	static boolean isDT(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.DT;
+	}
+	
+	/**
+	 * Check if token is RP
+	 * */
+	static boolean isRP(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.RP;
+	}
+	
+	/**
+	 * Check if token type is DT
+	 * */
+	static boolean isUN(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.UN;
+	}
 	
 	/**
 	 * Check if input contains invalid keys or incomplete quotation marks
@@ -43,6 +72,13 @@ public class ValidityChecker {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Check if ends with quotation mark;
+	 * */
+	static boolean endsWithQuo(String rawStr) {
+		return rawStr.endsWith(ParserKeys.SPLITSYMBOL);
 	}
 
 	/**
