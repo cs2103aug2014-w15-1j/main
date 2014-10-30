@@ -5,6 +5,7 @@ import parser.RawCommand;
 import CommandType.*;
 
 public class ConvertCommand {
+	// title formats
 	private static String TASKLIST_TITLE = "Task List";
 	private static String BIN_TITLE = "Trash bin";
 	private static String DETAIL_TITLE_FORMAT = "Detail of %s";
@@ -45,6 +46,11 @@ public class ConvertCommand {
 	private static String INVALID_DESCRIBE_ITEM = String.format(INVALID_ARGUMENT_FORMAT, "Describe", "Update line");
 	private static String CANNOT_DESCRIBE = String.format(CANNOT_FORMAT, "Describe");
 
+	private static String SUCCESSFUL_MARK = "Task Mark successfully!";
+	private static String INVALID_MARK_ITEM = String.format(INVALID_ARGUMENT_FORMAT, "Mark", "Update line");
+	private static String INVALID_MARK_STATUS = String.format(INVALID_ARGUMENT_FORMAT, "Mark", "Status");
+	private static String CANNOT_MARK = String.format(CANNOT_FORMAT, "Mark");
+	
 	private static String SUCCESSFUL_RESTORE = "Task restore successfully!";
 	private static String CANNOT_RESTORE = String.format(CANNOT_FORMAT, "Restore");
 	private static String INVALID_RESTORE_ITEM = String.format(INVALID_ARGUMENT_FORMAT, "Restore", "Restore line");
@@ -69,6 +75,10 @@ public class ConvertCommand {
 
 	private static String SUCCESSFUL_VIEW_DATE = "Search result!";
 	
+	
+	
+	
+	
 	public static Command convert(RawCommand command){
 		if(command == null){
 			return new Invalid(UNKNOWN, null);
@@ -90,6 +100,8 @@ public class ConvertCommand {
 			return convertReschedule(command);
 		} else if (command.getCommand().equalsIgnoreCase("describe")) {
 			return ConvertDescribe(command);
+		} else if (command.getCommand().equalsIgnoreCase("mark")) {
+			return ConvertMark(command);
 		} else if (command.getCommand().equalsIgnoreCase("restore")) {
 			return convertRestore(command);
 		} else if (command.getCommand().equalsIgnoreCase("view")) {
@@ -300,7 +312,7 @@ public class ConvertCommand {
 			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
 				return new Invalid(INVALID_DESCRIBE_ITEM, null);
 			}
-			return new Describe(readLine, newDescription, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, task.getName()));
+			return new Describe(readLine, newDescription, SUCCESSFUL_DESCRIBE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		} 
 
 		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
@@ -308,6 +320,41 @@ public class ConvertCommand {
 		}
 
 		return new Describe(newDescription, SUCCESSFUL_DESCRIBE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
+	}
+	
+	private static Command ConvertMark(RawCommand command) {
+		String newDescription = command.getDescription();
+		boolean status = true;
+		
+		if(newDescription == null){
+			status = true;
+		} else if(newDescription.equalsIgnoreCase("done")) {
+			status = true;
+		} else if(newDescription.equalsIgnoreCase("undone")) {
+			status = false;
+		} else {
+			return new Invalid(INVALID_MARK_STATUS, null);
+		}
+
+		Task task = RunLogic.getTaskList().get(RunLogic.getGuiStatus().getTaskIndex());
+		
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+			if(!isInt(command.getCMDDescription())){
+				return new Invalid(INVALID_MARK_ITEM, null);
+			}
+			
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
+				return new Invalid(INVALID_MARK_ITEM, null);
+			}
+			return new Mark(readLine, status, SUCCESSFUL_MARK, String.format(DETAIL_TITLE_FORMAT, task.getName()));
+		} 
+
+		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			return new Invalid(CANNOT_MARK, null);
+		}
+
+		return new Mark(status, SUCCESSFUL_MARK, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 	}
 
 	private static Command convertRestore(RawCommand command) {
