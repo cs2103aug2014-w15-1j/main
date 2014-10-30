@@ -1,42 +1,64 @@
 package CommandType;
 
+import gui.VIEW_MODE;
+
 import java.util.ArrayList;
 
 import logic.*;
 
-public class SearchTaskList implements Command{
-	private static String keyWord;
+public class ViewDate implements Command{
+	private static JDate date;
 	private static String feedback;
 	private static String title;
 	
 	//local memory
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
 
 	
-	public SearchTaskList(String word, String myFeedback, String myTitle){
-		keyWord = word;
+	public ViewDate(JDate myDate, String myFeedback, String myTitle) {
+		date = myDate;
 		feedback = myFeedback;
 		title = myTitle;
 		initialize();
+		
 	}
-	
+
 	@Override
 	public DisplayInfo execute() {
+		ArrayList<Task> targetList = new ArrayList<Task>();
+		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			targetList = trashbinList;
+		} else {
+			targetList = taskList;
+		}
+		
+		
+		
 		currentDisplay = initializeDisplayList(currentDisplay);
 		int[] tempListIndex = initializeDisplayList(currentListIndex);
-		for(int i = 0, j = 0; i < taskList.size(); i++){
-			if(taskList.get(currentListIndex[i]).getName().contentEquals(keyWord)){
+		for(int i = 0, j = 0; i < targetList.size(); i++){
+			if(targetList.get(currentListIndex[i]).getStartDate().equals(date) || 
+					targetList.get(currentListIndex[i]).getEndDate().equals(date)){
 				tempListIndex[j] = currentListIndex[i];
 				j++;
 			}
 		}
 		currentListIndex = tempListIndex;
+		GUI.changeDate(date);
 		update();
-		ViewTaskList search = new ViewTaskList(0, feedback, title);
-		return search.execute();
+		
+		Command viewDate;
+		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			viewDate = new ViewTaskList(0, feedback, title);
+		} else {
+			viewDate = new ViewTrashBin(0, feedback, title);
+		}
+		
+		return viewDate.execute();
 	}
 
 	@Override
@@ -45,7 +67,7 @@ public class SearchTaskList implements Command{
 		return null;
 	}
 
-
+	
 	
 	//-----------helper functions-----------------
 	
@@ -53,6 +75,7 @@ public class SearchTaskList implements Command{
 	private static void initialize(){
 		GUI = RunLogic.getGuiStatus();
 		taskList = RunLogic.getTaskList();
+		trashbinList = RunLogic.getTrashbinList();
 		currentDisplay = RunLogic.getCurrentDisplay();
 		currentListIndex = RunLogic.getCurrentListIndex();
 	}

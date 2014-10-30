@@ -26,6 +26,7 @@ public class DisplayInfo {
 	private ArrayList<Task> taskList;
 	private String feedback;
 	private String title;
+	private JDate date;
 
 	/*
 	 * ====================================================================
@@ -43,6 +44,7 @@ public class DisplayInfo {
 		this.mode = status.getMode();
 		this.hasNextPage = status.hasNext();
 		this.hasPreviousPage = status.hasPrevious();
+		this.date = status.getDate();
 		setIsPageInvolved();
 
 		this.taskList = taskList;
@@ -57,6 +59,7 @@ public class DisplayInfo {
 		this.mode = status.getMode();
 		this.hasNextPage = status.hasNext();
 		this.hasPreviousPage = status.hasPrevious();
+		this.date = status.getDate();
 		setIsPageInvolved();
 
 		this.feedback = feedback;
@@ -95,6 +98,9 @@ public class DisplayInfo {
 		return changeTasklist;
 	}
 	
+	public JDate getDate(){
+		return this.date;
+	}
 
 	/*
 	 * ====================================================================

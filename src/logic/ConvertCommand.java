@@ -67,6 +67,8 @@ public class ConvertCommand {
 	private static String INVALID_KEYWORD = String.format(INVALID_ARGUMENT_FORMAT, "Search", "Key word");
 	private static String CANNOT_SEARCH = String.format(CANNOT_FORMAT, "Search");
 
+	private static String SUCCESSFUL_VIEW_DATE = "Search result!";
+	
 	public static Command convert(RawCommand command){
 		if(command == null){
 			return new Invalid(UNKNOWN, null);
@@ -92,6 +94,8 @@ public class ConvertCommand {
 			return convertRestore(command);
 		} else if (command.getCommand().equalsIgnoreCase("view")) {
 			return convertView(command);
+		} else if (command.getCommand().equalsIgnoreCase("viewdate")) {
+			return convertViewDate(command);
 		} else if (command.getCommand().equalsIgnoreCase("undo")) {
 			return convertUndo(command);
 		} else if (command.getCommand().equalsIgnoreCase("next")) {
@@ -265,12 +269,12 @@ public class ConvertCommand {
 		
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
 			if(!isInt(command.getCMDDescription())){
-				return new Invalid(INVALID_RENAME_ITEM, null);
+				return new Invalid(INVALID_RESCHEDULE_ITEM, null);
 			}
 			
 			int readLine = Integer.parseInt(command.getCMDDescription());
 			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
-				return new Invalid(INVALID_RENAME_ITEM, null);
+				return new Invalid(INVALID_RESCHEDULE_ITEM, null);
 			}
 			return new Reschedule(readLine, startDate, endDate, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		} 
@@ -289,12 +293,12 @@ public class ConvertCommand {
 		
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
 			if(!isInt(command.getCMDDescription())){
-				return new Invalid(INVALID_RENAME_ITEM, null);
+				return new Invalid(INVALID_DESCRIBE_ITEM, null);
 			}
 			
 			int readLine = Integer.parseInt(command.getCMDDescription());
 			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
-				return new Invalid(INVALID_RENAME_ITEM, null);
+				return new Invalid(INVALID_DESCRIBE_ITEM, null);
 			}
 			return new Describe(readLine, newDescription, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		} 
@@ -341,6 +345,17 @@ public class ConvertCommand {
 			return new ViewTrashBin(0, SUCCESSFUL_VIEW, BIN_TITLE);
 		} else {
 			return new Invalid(INVALID_VIEW_MODE, null);
+		}
+	}
+
+	private static Command convertViewDate(RawCommand command) {
+		String rawDate = command.getCMDDescription();
+		if(rawDate == null){
+			return new Invalid(INVALID_VIEW_MODE, null);
+		} else if(!isInt(rawDate)){
+			return new Invalid(INVALID_VIEW_MODE, null);
+		} else {
+			return new ViewDate(convertDate(rawDate), SUCCESSFUL_VIEW_DATE, String.format(SEARCH_TITLE, rawDate));
 		}
 	}
 

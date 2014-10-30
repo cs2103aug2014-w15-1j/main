@@ -46,7 +46,7 @@ public class RunLogic {
 		trashbinList = rf.getTrashFile();
 		initializeTaskPointer();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
-		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, "20141022");
+		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, convertDate("20141022"));
 
 		currentListIndex = updateListIndexOfTaskList(currentListIndex);
 		Command start = new ViewTaskList(WELCOME, TITLE);
@@ -112,5 +112,12 @@ public class RunLogic {
 			currentList[i] = -1;
 		}
 		return currentList;
+	}
+	
+	private static JDate convertDate(String date){
+		int year = Integer.parseInt(date.substring(0, 4));
+		int month = Integer.parseInt(date.substring(4, 6));
+		int day = Integer.parseInt(date.substring(6, 8));
+		return new JDate(year, month, day);
 	}
 }
