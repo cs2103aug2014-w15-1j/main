@@ -11,7 +11,6 @@ public class ConvertCommand {
 	private static String DETAIL_TITLE_FORMAT = "Detail of %s";
 	private static String SEARCH_TITLE = "Search result of %s";
 	
-	
 	//feedback formats
 	private static String CANNOT_FORMAT = "Cannot command %s in current view mode!";
 	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %s: %s invalid!";
