@@ -9,7 +9,16 @@ public class Task {
 	private String description;
 	private String repeatDays;
 	private JDate startDate;
-	private JDate endDate;
+	private JDate endDate; 
+	
+	//added by Zhang Ji
+	private long pointer;
+	public void setPointer(long pointer) {
+		this.pointer = pointer;
+	}
+	public long getPointer() {
+		return pointer;
+	}
 	
 	public Task(){
 		// empty constructor

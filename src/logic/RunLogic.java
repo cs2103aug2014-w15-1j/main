@@ -20,11 +20,31 @@ public class RunLogic {
 	private static int[] currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 	private static int[] currentListIndex = new int[Default.MAX_TASKS];
 	
+	//added by Zhang Ji
+	private static long nextTaskPointer;
+	private static void initializeTaskPointer() {
+		nextTaskPointer = 0;
+		for(Task t: taskList) {
+			t.setPointer(nextTaskPointer);
+			incrementnextTaskPointer();
+		}
+		for(Task t: trashbinList) {
+			t.setPointer(nextTaskPointer);
+			incrementnextTaskPointer();
+		}
+	}
+	public static long getNextTaskPointer() {
+		return nextTaskPointer;
+	}
+	public static void incrementnextTaskPointer() {
+		nextTaskPointer++;
+	}
 	
 	public static DisplayInfo initialize() {
 		ReadFile rf = new ReadFile();
 		taskList = rf.getEventTask();
 		trashbinList = rf.getTrashFile();
+		initializeTaskPointer();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, "20141022");
 

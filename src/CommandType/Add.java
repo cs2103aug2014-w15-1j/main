@@ -23,8 +23,19 @@ public class Add implements Command{
 	private static DisplayInfo passToGui;
 	private static LogicToStore passToStore;
 	
+	//added by Zhang Ji
+	private long taskPointer;
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+	
 	public Add(Task newTask, String myFeedback, String myTitle){
 		task = newTask;
+		setTaskPointer(task.getPointer());
 		feedback = myFeedback;
 		title = myTitle;
 		initialize();
@@ -97,4 +108,6 @@ public class Add implements Command{
 		passToGui = new DisplayInfo(GUI, display, feedback, title);
 		passToStore = new LogicToStore(taskList,trashbinList);
 	}
+
+	
 }

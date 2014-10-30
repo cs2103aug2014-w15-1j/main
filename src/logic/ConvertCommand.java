@@ -73,7 +73,9 @@ public class ConvertCommand {
 		}
 		
 		if (command.getCommand().equalsIgnoreCase("add")) {
-			return convertAdd(command);
+			long nextTaskPointer = RunLogic.getNextTaskPointer();
+			RunLogic.incrementnextTaskPointer();
+			return convertAdd(command, nextTaskPointer);
 		} else if (command.getCommand().equalsIgnoreCase("delete")) {
 			return convertDelete(command);
 		} else if (command.getCommand().equalsIgnoreCase("read")) {
@@ -107,7 +109,7 @@ public class ConvertCommand {
 		}
 	}
 
-	private static Command convertAdd(RawCommand command) {
+	private static Command convertAdd(RawCommand command, long taskPointer) {
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST) || 
 				RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)	){
 			if(command.getTitle() == null){
@@ -131,6 +133,7 @@ public class ConvertCommand {
 			}
 			
 			Task task = new Task(command.getTitle(), command.getDescription(), command.getRPdate(), startDate, endDate);
+			task.setPointer(taskPointer);
 			return new Add(task, SUCCESSFUL_ADD, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		}
 		return new Invalid(CANNOT_ADD, null);
