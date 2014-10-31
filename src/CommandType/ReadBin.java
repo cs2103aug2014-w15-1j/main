@@ -43,7 +43,7 @@ public class ReadBin implements Command {
 	public DisplayInfo execute() {
 		ArrayList<Task> display = new ArrayList<Task>();
 
-		currentDisplay = initializeDisplayList(currentDisplay);
+		currentDisplay = initializeDisplayList(currentDisplay.length);
 		currentDisplay[1] = readIndex;
 
 		GUI.changeViewMode(VIEW_MODE.BIN_DETAIL);
@@ -74,11 +74,12 @@ public class ReadBin implements Command {
 		RunLogic.updateCurrentdiaplay(currentDisplay);
 	}
 
-	private static int[] initializeDisplayList(int[] currentDisplay) {
-		for (int i = 0; i < currentDisplay.length; i++) {
-			currentDisplay[i] = -1;
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
 		}
-		return currentDisplay;
+		return temp;
 	}
 
 	private static void constructBridges(ArrayList<Task> display,

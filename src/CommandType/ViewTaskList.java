@@ -40,7 +40,7 @@ public class ViewTaskList implements Command{
 	@Override
 	public DisplayInfo execute() {
 		ArrayList<Task> display = new ArrayList<Task>();
-		currentDisplay = initializeDisplayList(currentDisplay);
+		currentDisplay = initializeDisplayList(currentDisplay.length);
 		
 		if(taskList.isEmpty()){
 			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, GUI.getDate());
@@ -88,12 +88,12 @@ public class ViewTaskList implements Command{
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int[] currentDis) {
-		for(int i = 0; i < currentDis.length; i++){
-			currentDis[i] = -1;
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
 		}
-
-		return currentDis;
+		return temp;
 	}
 		
 	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
