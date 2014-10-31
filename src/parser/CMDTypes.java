@@ -11,7 +11,8 @@ class CMDTypes {
 	 * Acceptable command types
 	 * */
 	enum COMMAND_TYPE {
-	    ADD, DELETE, UPDATE, READ, VIEW, UNDO, INVALID, EXIT, NEXT, PREVIOUS, SEARCH, BACK,
+	    ADD, DELETE, UPDATE, READ, VIEW, VIEWDATE, UNDO, INVALID, 
+	    EXIT, NEXT, PREVIOUS, SEARCH, BACK, 
 	    // VIEW_MODE
 	    TASKLIST, BIN, 
 	    // from bin

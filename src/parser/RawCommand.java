@@ -35,10 +35,12 @@ public class RawCommand{
      * ====================================================================
      */
     
+    // For commands with no subInfo
     public RawCommand(String command) {
         this.command = command;
     }
     
+    // For commands with only one subInfo
     public RawCommand(String command, String subInfo) {
     	this.command = command;
     	
@@ -51,6 +53,7 @@ public class RawCommand{
     	}
     }
     
+    // For reschedule
     public RawCommand(String command, String startDay, String endDay) {
     	this.command = command;
         this.startDay = startDay;

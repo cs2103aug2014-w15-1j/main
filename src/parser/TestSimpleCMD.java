@@ -7,13 +7,16 @@ import parser.RawCommand;
 
 public class TestSimpleCMD {
 
-
-    String testDeleStr;
+	String testDeleStr;
     String testReadStr;
     String testViewStr;
     String testUpdateStr;
     String testUndoStr;
     String testReDescribeStr;
+    String testRescheduleStr;
+    String testUpdateScheduleStr;
+    String testViewDateStr1;
+    String testViewDateStr2;
     
     RawCommand deleteTest;
     RawCommand readTest;
@@ -21,6 +24,10 @@ public class TestSimpleCMD {
     RawCommand updateTest;
     RawCommand undoTest;
     RawCommand reDescribe;
+    RawCommand reScheduleTest;
+    RawCommand updateScheduleTest;
+    RawCommand viewDateTest1;
+    RawCommand viewDateTest2;
     
     
     @Before
@@ -31,6 +38,10 @@ public class TestSimpleCMD {
         testUpdateStr = "update name \"a new name\"";
         testUndoStr = "undo";
         testReDescribeStr = "update description \"a new description\"";
+        testRescheduleStr = "reschedule 2012-10-12 2012-10-13";
+        testUpdateScheduleStr = "update schedule 2012-10-12 2012-10-13";
+        testViewDateStr1 = "view today";
+        testViewDateStr2 = "view 2012-10-10";
     }
     
     @Test
@@ -57,5 +68,23 @@ public class TestSimpleCMD {
        
         undoTest = ParserProcesser.interpretCommand(testUndoStr);
         Assert.assertEquals("Test command: ", "UNDO", undoTest.getCommand());
+        
+        reScheduleTest = ParserProcesser.interpretCommand(testRescheduleStr);
+        Assert.assertEquals("Test command: RESCHEDULE", "RESCHEDULE", reScheduleTest.getCommand());
+        Assert.assertEquals("Test startdate: ", "20121012", reScheduleTest.getStartDay());
+        Assert.assertEquals("Test enddate: ", "20121013", reScheduleTest.getEndDay());
+        
+        updateScheduleTest = ParserProcesser.interpretCommand(testUpdateScheduleStr);
+        Assert.assertEquals("Test command: UPDATE", "RESCHEDULE", reScheduleTest.getCommand());
+        Assert.assertEquals("Test startdate: ", "20121012", reScheduleTest.getStartDay());
+        Assert.assertEquals("Test enddate: ", "20121013", reScheduleTest.getEndDay());
+        
+        viewDateTest1 = ParserProcesser.interpretCommand(testViewDateStr1);
+        Assert.assertEquals("Test command: VIEW", "VIEWDATE", viewDateTest1.getCommand());
+        Assert.assertEquals("Test date: ", "today", viewDateTest1.getCMDDescription());
+        
+        viewDateTest2 = ParserProcesser.interpretCommand(testViewDateStr2);
+        Assert.assertEquals("Test command: VIEW", "VIEWDATE", viewDateTest2.getCommand());
+        Assert.assertEquals("Test date: ", "20121010", viewDateTest2.getCMDDescription());
     }
 }

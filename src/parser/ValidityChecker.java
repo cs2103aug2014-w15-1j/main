@@ -75,6 +75,19 @@ public class ValidityChecker {
 	}
 	
 	/**
+     * Judge the validity of repeat date input
+     * */
+    static boolean isValidViewDate(String viewDate) {
+        boolean result = false;
+        for (int i = 0; i < ParserKeys.VIEW_DATE.length; i++) {
+            if (viewDate.equalsIgnoreCase(ParserKeys.VIEW_DATE[i])){
+                result = true;
+            }
+        }
+        return result;
+    }
+	
+	/**
 	 * Check if ends with quotation mark;
 	 * */
 	static boolean endsWithQuo(String rawStr) {

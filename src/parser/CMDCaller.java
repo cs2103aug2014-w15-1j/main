@@ -61,6 +61,9 @@ public class CMDCaller {
 	    case BACK:
 	    	resultCMD = CMDMaker.back();
 	    	break;
+	    case SEARCH:
+	    	resultCMD = CMDMaker.search(subInfoStr);
+	    	break;
 	    default:
 	        resultCMD = CMDMaker.makeInvalid();
 	        break;

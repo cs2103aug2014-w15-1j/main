@@ -84,6 +84,22 @@ public class CMDMaker {
 	 *              String of sub-information following the update command
 	 * @return -RawCommand
 	 * */
+	static RawCommand search(ArrayList<TokenPair> tokenPairs) {
+		try {
+			String getContent = InfoRetrieve.getFrontUN(tokenPairs).getFront();
+			return new RawCommand(COMMAND_TYPE.SEARCH.name(), getContent);
+		} catch (Exception e) {
+			return makeInvalid(); 
+		}
+	}
+	
+	/**
+	 * Return a RawCommand for rename operation
+	 * 
+	 * @param tokenPairs
+	 *              String of sub-information following the update command
+	 * @return -RawCommand
+	 * */
 	static RawCommand rename(ArrayList<TokenPair> tokenPairs) {
 		try {
 			if(tokenPairs.isEmpty()){
@@ -126,8 +142,8 @@ public class CMDMaker {
 	 * */
 	static RawCommand reschedule(ArrayList<TokenPair> tokenPairs) {
 		try {
-			String startDate = tokenPairs.get(0).getCotent();
-			String endDate = tokenPairs.get(1).getCotent();
+			String startDate = InfoRetrieve.makeDay(tokenPairs.get(0).getCotent());
+			String endDate = InfoRetrieve.makeDay(tokenPairs.get(1).getCotent());
 			return new RawCommand(CMDTypes.COMMAND_TYPE.RESCHEDULE.name(), 
 								  startDate,
 								  endDate);
@@ -219,12 +235,28 @@ public class CMDMaker {
 			if (getFields.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.TASKLIST.name()) ||
 				getFields.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.BIN.name())) {
 	
-				RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.VIEW.name(), getFields);
-				return commandPackage;
+				return new RawCommand(CMDTypes.COMMAND_TYPE.VIEW.name(), getFields);
+			} else if (ValidityChecker.isValidViewDate(getFields)) {
+				return viewDate(getFields);
+			} else if (ValidityChecker.isValidDate(getFields)) {
+				return viewDate(InfoRetrieve.makeDay(getFields));
 			} else {
 				ErrorGenerator.popError(ErrorMSG.VIEW_MODE_ERR);
 				return makeInvalid();
 			}
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+
+	/** 
+	 * Return a RawCommand for viewing a certain date
+	 * 
+	 * @return -RawCommand
+	 */
+	private static RawCommand viewDate(String getDate) {
+		try {
+			return new RawCommand(CMDTypes.COMMAND_TYPE.VIEWDATE.name(), getDate);
 		} catch (Exception e) {
 			return makeInvalid();
 		}
