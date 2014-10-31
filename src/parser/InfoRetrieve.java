@@ -79,7 +79,7 @@ public class InfoRetrieve {
         		break;
         	}
         }
-    	return new RawInfoPair(result, tokenPair);
+    	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
     }
     
     /**
@@ -96,7 +96,7 @@ public class InfoRetrieve {
         	result += front.getCotent() + ParserKeys.SPACE;
         	tokenPair.remove(0);
         }
-    	return new RawInfoPair(result, tokenPair);
+    	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
     }
     
     /**
@@ -188,7 +188,7 @@ public class InfoRetrieve {
         	description = ParserKeys.EMPTY_DIS;
         }
         
-        return description;
+        return description.substring(0, description.length()-1);
     }
     
     /**

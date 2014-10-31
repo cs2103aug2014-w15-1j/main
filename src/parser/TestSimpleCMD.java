@@ -17,6 +17,7 @@ public class TestSimpleCMD {
     String testUpdateScheduleStr;
     String testViewDateStr1;
     String testViewDateStr2;
+    String testSearchStr;
     
     RawCommand deleteTest;
     RawCommand readTest;
@@ -28,6 +29,7 @@ public class TestSimpleCMD {
     RawCommand updateScheduleTest;
     RawCommand viewDateTest1;
     RawCommand viewDateTest2;
+    RawCommand searchTest;
     
     
     @Before
@@ -42,6 +44,7 @@ public class TestSimpleCMD {
         testUpdateScheduleStr = "update schedule 2012-10-12 2012-10-13";
         testViewDateStr1 = "view today";
         testViewDateStr2 = "view 2012-10-10";
+        testSearchStr = "search a task name";
     }
     
     @Test
@@ -86,5 +89,10 @@ public class TestSimpleCMD {
         viewDateTest2 = ParserProcesser.interpretCommand(testViewDateStr2);
         Assert.assertEquals("Test command: VIEW", "VIEWDATE", viewDateTest2.getCommand());
         Assert.assertEquals("Test date: ", "20121010", viewDateTest2.getCMDDescription());
+        
+        searchTest = ParserProcesser.interpretCommand(testSearchStr);
+        Assert.assertEquals("Test command: Search", "SEARCH", searchTest.getCommand());
+        Assert.assertEquals("Test search contents: ", "a task name", searchTest.getCMDDescription());
+        
     }
 }
