@@ -110,5 +110,10 @@ public class Add implements Command{
 		passToStore = new LogicToStore(taskList,trashbinList);
 	}
 
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+
 	
 }

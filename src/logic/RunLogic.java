@@ -3,7 +3,10 @@ package logic;
 import gui.VIEW_MODE;
 
 import java.util.ArrayList;
+
 import java.util.Calendar;
+
+import java.util.Stack;
 
 import parser.RawCommand;
 import parser.ParserProcesser;
@@ -22,6 +25,20 @@ public class RunLogic {
 	private static int[] currentListIndex = new int[Default.MAX_TASKS];
 	
 	//added by Zhang Ji
+	private static Stack<Command> pastCommands;
+	
+	public static boolean hasPastCommands() {
+		return !pastCommands.isEmpty();
+	}
+	public static void undo() {
+		pastCommands.pop().undo();
+	}
+	private static void addPastCommands(Command cmd){
+		if(cmd.supportUndo()) {
+			pastCommands.push(cmd);
+		}
+	}
+	
 	private static int nextTaskPointer;
 	private static void initializeTaskPointer() {
 		nextTaskPointer = 0;
@@ -43,11 +60,35 @@ public class RunLogic {
 		nextTaskPointer++;
 	}
 	
+
+	public int getIndexInList(ArrayList<Task> lst, int ptr) {
+		for(int i=0; i<lst.size(); i++) {
+			if(lst.get(i).matchPointer(ptr)){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public boolean removeTaskByPointer(ArrayList<Task> lst, int ptr){
+		int index = getIndexInList(lst, ptr);
+		if(index != -1){
+			lst.remove(index);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	// end of Zhang Ji's modification
+	
+
 	public static DisplayInfo initialize() {
 		ReadFile rf = new ReadFile();
 		taskList = rf.getEventTask();
 		trashbinList = rf.getTrashFile();
 		initializeTaskPointer();
+		pastCommands = new Stack<Command>();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 		
  		Calendar c = Calendar.getInstance();
@@ -65,7 +106,7 @@ public class RunLogic {
 		// pass user command to CLI for auto-correction
 		RawCommand stringCommand = ParserProcesser.interpretCommand(inputCommand);
 		Command userCommand = ConvertCommand.convert(stringCommand);
-		
+		addPastCommands(userCommand);
 		return userCommand.execute();
 	}
 	

@@ -15,6 +15,7 @@ public class ConvertCommand {
 	private static String CANNOT_FORMAT = "Cannot command %s in current view mode!";
 	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %s: %s invalid!";
 	private static String UNKNOWN = "Invalid Command!";
+	private static String NO_UNDO = "No available undo!";
 	
 	private static String SUCCESSFUL_ADD = "New task added successfully!";
 	private static String CANNOT_ADD = String.format(CANNOT_FORMAT, "Add");
@@ -119,6 +120,8 @@ public class ConvertCommand {
 			return convertBack(command);
 		} else if (command.getCommand().equalsIgnoreCase("exit")) {
 			return convertExit(command);
+		} else if(command.getCommand().equalsIgnoreCase("undo")){
+			return convertUndo();
 		} else {
 			return new Invalid(UNKNOWN, null);
 		}
@@ -474,7 +477,9 @@ public class ConvertCommand {
 	private static Command convertExit(RawCommand command) {
 		return new Exit();
 	}
-	
+	private static Command convertUndo(){
+		return new Undo();
+	}
 	
 	
 	//--------------------Helper Function-------------------------

@@ -104,5 +104,10 @@ public class Restore implements Command {
 	private static void constructBridges() {
 		passToStore = new LogicToStore(taskList, trashbinList);
 	}
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+
 
 }

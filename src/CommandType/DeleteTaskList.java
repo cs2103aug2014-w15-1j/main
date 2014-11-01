@@ -126,7 +126,11 @@ public class DeleteTaskList implements Command{
 		}
 		return currentList;
 	}
-	
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+
 	private static void constructBridges(){
 		passToStore = new LogicToStore(taskList,trashbinList);
 	}

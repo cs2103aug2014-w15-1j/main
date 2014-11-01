@@ -99,5 +99,11 @@ public class ViewTaskList implements Command{
 	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
 		passToGui = new DisplayInfo(GUI, display, feedback, title);
 	}
+	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
 
 }

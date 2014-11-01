@@ -86,4 +86,9 @@ public class Mark implements Command{
 	private static void update() {
 		RunLogic.updateTaskList(taskList);
 	}
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+
 }

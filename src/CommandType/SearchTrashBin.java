@@ -71,6 +71,10 @@ public class SearchTrashBin implements Command{
 		}
 		return temp;
 	}
-	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
 
 }
