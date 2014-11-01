@@ -23,7 +23,7 @@ public class RunLogic {
 	private static int[] currentListIndex = new int[Default.MAX_TASKS];
 	
 	//added by Zhang Ji
-	private static long nextTaskPointer;
+	private static int nextTaskPointer;
 	private static void initializeTaskPointer() {
 		nextTaskPointer = 0;
 		for(Task t: taskList) {
@@ -35,12 +35,35 @@ public class RunLogic {
 			incrementnextTaskPointer();
 		}
 	}
-	public static long getNextTaskPointer() {
+
+	public static int getNextTaskPointer() {
 		return nextTaskPointer;
 	}
 	public static void incrementnextTaskPointer() {
 		nextTaskPointer++;
 	}
+	
+	public int getIndexInList(ArrayList<Task> lst, int ptr) {
+		for(int i=0; i<lst.size(); i++) {
+			if(lst.get(i).matchPointer(ptr)){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public boolean removeTaskByPointer(ArrayList<Task> lst, int ptr){
+		int index = getIndexInList(lst, ptr);
+		if(index != -1){
+			lst.remove(index);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	// end of Zhang Ji's modification
 	
 	public static DisplayInfo initialize() {
 		ReadFile rf = new ReadFile();
