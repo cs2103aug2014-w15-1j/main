@@ -19,15 +19,19 @@ public class Back implements Command{
 
 	@Override
 	public DisplayInfo execute() {
+		int highlightLine = GUI.getTaskIndex();
 		GUI.changeCurretnTask(GUI.getTaskIndex() - GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE);
-	
+		
+		Command view;
 		if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
-			ViewTrashBin view = new ViewTrashBin(GUI.getTaskIndex(), feedback, title);
-			return view.execute();
+			view = new ViewTrashBin(GUI.getTaskIndex(), feedback, title);
 		} else {
-			ViewTaskList view = new ViewTaskList(GUI.getTaskIndex(), feedback, title);
-			return view.execute();
+			view = new ViewTaskList(GUI.getTaskIndex(), feedback, title);
 		}
+		DisplayInfo dis = view.execute();
+		dis.setHightlight(Default.HIGHLIGHT_LINE);
+		dis.setHighlightLine(highlightLine);
+		return dis;
 	}
 
 	@Override

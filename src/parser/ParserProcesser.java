@@ -1,7 +1,5 @@
 package parser;
 
-import java.util.ArrayList;
-
 /**
  * class ParserProcess: Interpret raw input strings and wrap valid information into RawCommand objects
  * 
@@ -23,8 +21,13 @@ public class ParserProcesser {
 	 * */
 	public static RawCommand interpretCommand(String inputString){
 
+		// Tokenize command and information, split sentence into words.
 		RawInfoPair RawCmdPair = Tokenizer.SplitRawInput(inputString);
+		
+		// Identify command, form a pair of command and sub information.
 		CMDInfoPair CmdPair = CMDInterpreter.makeCmdPair(RawCmdPair);
+		
+		// Call corresponding commands information retrieval.
 		RawCommand interpretedCm = CMDCaller.transformCmd(CmdPair);
 		return interpretedCm;
 	}

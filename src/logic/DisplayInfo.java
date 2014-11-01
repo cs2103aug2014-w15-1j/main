@@ -26,6 +26,12 @@ public class DisplayInfo {
 	private ArrayList<Task> taskList;
 	private String feedback;
 	private String title;
+	private JDate date;
+	
+	// info for highlight
+	private int highlight = Default.NO_HIGHLIGHT;
+	private int highlightLine;
+	private int highlightItem;
 
 	/*
 	 * ====================================================================
@@ -43,6 +49,7 @@ public class DisplayInfo {
 		this.mode = status.getMode();
 		this.hasNextPage = status.hasNext();
 		this.hasPreviousPage = status.hasPrevious();
+		this.date = status.getDate();
 		setIsPageInvolved();
 
 		this.taskList = taskList;
@@ -57,6 +64,7 @@ public class DisplayInfo {
 		this.mode = status.getMode();
 		this.hasNextPage = status.hasNext();
 		this.hasPreviousPage = status.hasPrevious();
+		this.date = status.getDate();
 		setIsPageInvolved();
 
 		this.feedback = feedback;
@@ -95,6 +103,35 @@ public class DisplayInfo {
 		return changeTasklist;
 	}
 	
+	public JDate getDate(){
+		return this.date;
+	}
+	
+	
+	// public method for highlight
+	public void setHightlight(int newHighlight){
+		this.highlight = newHighlight;
+	}
+	
+	public void setHighlightLine(int line){
+		this.highlightLine = line;
+	}
+	
+	public void setHighlightItem(int item){
+		this.highlightItem = item;
+	}
+	
+	public int getHightlight(){
+		return this.highlight;
+	}
+	
+	public int getHighlightLine(){
+		return this.highlightLine;
+	}
+	
+	public int getHighlightItem(){
+		return this.highlightItem;
+	}
 
 	/*
 	 * ====================================================================

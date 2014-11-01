@@ -26,9 +26,10 @@ public class JDate extends GregorianCalendar {
 	/********************************************
 	 ************** Constructor *****************
 	 ********************************************/
-
+	
+	// note: input range for month value is from 1 to 12
 	public JDate(int year, int month, int day) {
-		super(year, month, day);
+		super(year, month-1, day);
 		setLenient(false);
 	}
 
@@ -40,7 +41,7 @@ public class JDate extends GregorianCalendar {
 	}
 
 	public void setMonth(int newValue) {
-		this.set(MONTH, newValue);
+		this.set(MONTH, newValue-1);
 	}
 
 	public void setDay(int newValue) {

@@ -63,6 +63,8 @@ class Tokenizer {
 		} else if (ValidityChecker.endsWithQuo(frontBlock)) {
 			return new TokenPair(frontBlock.substring(0, frontBlock.length() - 1), 
 								 TOKEN_TYPE.QT);
+		} else if (ValidityChecker.isInteger(frontBlock)) {
+			return new TokenPair(frontBlock, TOKEN_TYPE.NB);
 		} else {
 			return new TokenPair(frontBlock, TOKEN_TYPE.UN);
 		}

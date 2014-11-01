@@ -17,13 +17,25 @@ public class Add implements Command{
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay;
+	private static int[] currentListIndex;
 
 	//values for GUI and I/O
 	private static DisplayInfo passToGui;
 	private static LogicToStore passToStore;
 	
+	//added by Zhang Ji
+	private long taskPointer;
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+	
 	public Add(Task newTask, String myFeedback, String myTitle){
 		task = newTask;
+		setTaskPointer(task.getPointer());
 		feedback = myFeedback;
 		title = myTitle;
 		initialize();
@@ -34,9 +46,10 @@ public class Add implements Command{
 		ArrayList<Task> display = new ArrayList<Task>();
 		
 		taskList.add(task);
+		currentListIndex = updateListIndex(currentListIndex);
 		GUI.changeCurretnTask((taskList.size() - 1));
 		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
-		currentDisplay = initializeDisplayList(currentDisplay);
+		currentDisplay = initializeDisplayList(currentDisplay.length);
 		currentDisplay[1] = GUI.getTaskIndex();
 		update();
 		
@@ -63,6 +76,7 @@ public class Add implements Command{
 		taskList = RunLogic.getTaskList();
 		trashbinList = RunLogic.getTrashbinList();
 		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 	
 	private static void update(){
@@ -70,17 +84,31 @@ public class Add implements Command{
 		RunLogic.updateTaskList(taskList);
 		RunLogic.updateTrashbinList(trashbinList);
 		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int[] currentDisplay) {
-		for(int i = 0; i < currentDisplay.length; i++){
-			currentDisplay[i] = -1;
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
 		}
-		return currentDisplay;
+		return temp;
+	}
+	
+	private int[] updateListIndex(int[] currentList) {
+		for(int i = 0; i < taskList.size(); i++){
+			currentList[i] = i;
+		}
+		for(int i = taskList.size(); i < currentList.length; i++){
+			currentList[i] = -1;
+		}
+		return currentList;
 	}
 	
 	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
 		passToGui = new DisplayInfo(GUI, display, feedback, title);
 		passToStore = new LogicToStore(taskList,trashbinList);
 	}
+
+	
 }

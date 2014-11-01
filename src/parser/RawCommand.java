@@ -1,7 +1,6 @@
 package parser;
 
 import parser.CMDTypes.COMMAND_TYPE;
-import parser.ParserKeys;
 
 /**
  * class RawCommand: Wrapping all command information
@@ -35,27 +34,40 @@ public class RawCommand{
      * ====================================================================
      */
     
+    // For commands with no subInfo
     public RawCommand(String command) {
         this.command = command;
     }
     
+    // For commands with only one subInfo
     public RawCommand(String command, String subInfo) {
     	this.command = command;
-    	
-    	if (command.equals(COMMAND_TYPE.RENAME.name())) {
-    		this.taskTitle = subInfo;
-    	} else if (command.equals(COMMAND_TYPE.DESCRIBE.name())) {
-    		this.description = subInfo;
-    	} else {
-    		this.cmdDescription = subInfo;
-    	}
+    	this.cmdDescription = subInfo;
     }
     
-    public RawCommand(String command, String startDay, String endDay) {
+    // For update info with locateLine
+    public RawCommand(String command, String fieldInfo, String locateLine) {
+    	
     	this.command = command;
-        this.startDay = startDay;
-        this.endDay = endDay;
+    	if (command.equals(COMMAND_TYPE.RENAME.name())) {
+    		this.taskTitle = fieldInfo;
+    		this.cmdDescription = locateLine;
+    	} else if (command.equals(COMMAND_TYPE.DESCRIBE.name())) {
+    		this.description = fieldInfo;
+    		this.cmdDescription = locateLine;
+    	} else if (command.equals(COMMAND_TYPE.REPEAT.name())) {
+            this.rpDate = fieldInfo;
+            this.cmdDescription = locateLine;
+    	}	
     }
+    
+    // For reschedule only
+    public RawCommand(String command, String startDay, String endDay, String locateLine) {
+    	this.command = command;
+    	this.startDay = startDay;
+    	this.endDay = endDay;
+    	this.cmdDescription = locateLine;
+    } 
         
     // Strictly only for add command
     public RawCommand(String command, String taskTitle, 

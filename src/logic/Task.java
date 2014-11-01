@@ -9,8 +9,22 @@ public class Task {
 	private String description;
 	private String repeatDays;
 	private JDate startDate;
-	private JDate endDate;
+	private JDate endDate; 
+	private boolean done;
 	
+	//added by Zhang Ji
+	private int pointer;
+	public void setPointer(int pointer) {
+		this.pointer = pointer;
+	}
+	public int getPointer() {
+		return pointer;
+	}
+	public boolean matchPointer(int ptr){
+		return this.pointer == ptr;
+	}
+	
+	// constructor
 	public Task(){
 		// empty constructor
 	}
@@ -21,6 +35,7 @@ public class Task {
 		this.repeatDays = null;
 		this.startDate = null;
 		this.endDate = null;
+		this.done = false;
 	}
 	
 	public Task(String name, String description){
@@ -29,6 +44,7 @@ public class Task {
 		this.repeatDays = null;
 		this.startDate = null;
 		this.endDate = null;
+		this.done = false;
 	}
 	
 	public Task(String name, String description, String repeatDays){
@@ -37,6 +53,7 @@ public class Task {
 		this.repeatDays = repeatDays;
 		this.startDate = null;
 		this.endDate = null;
+		this.done = false;
 	}
 	
 	public Task(String name, String description, String repeatDays, JDate startDate2, JDate endDate2){
@@ -45,8 +62,11 @@ public class Task {
 		this.repeatDays = repeatDays;
 		this.startDate = startDate2;
 		this.endDate = endDate2;
+		this.done = false;
 	}
 	
+	
+	// API for get info
 	public String getName(){
 		return this.name;
 	}
@@ -67,6 +87,11 @@ public class Task {
 		return this.endDate;
 	}
 	
+	public boolean getDone(){
+		return this.done;
+	}
+	
+	// API for modify
 	public void rename(String newName){
 		this.name = newName;
 	}
@@ -84,6 +109,15 @@ public class Task {
 		this.repeatDays = newRepeatDays;
 	}
 	
+	public void setDone(){
+		this.done = true;
+	}
+	
+	public void setUndone(){
+		this.done = false;
+	}
+	
+	// API for compare
 	public boolean equals(Task task){
 		if(!this.name.equals(task.name)){
 			return false;
@@ -98,6 +132,9 @@ public class Task {
 			return false;
 		}
 		if(!this.repeatDays.equals(task.repeatDays)){
+			return false;
+		}
+		if((this.done || task.done) && !(this.done && task.done)){
 			return false;
 		}
 		return true;

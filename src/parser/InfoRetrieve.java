@@ -79,11 +79,30 @@ public class InfoRetrieve {
         		break;
         	}
         }
-    	return new RawInfoPair(result, tokenPair);
+    	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
+    }
+    
+    /**
+     * get front contents that is unidentifiable
+     * 
+     * @return RawInfoPair
+     * */
+    static RawInfoPair getAllSubInfo(ArrayList<TokenPair> tokenPair) {
+    	String result = "";
+    	TokenPair front;
+    	
+    	while(!tokenPair.isEmpty()) {
+			front = tokenPair.get(0);
+        	result += front.getCotent() + ParserKeys.SPACE;
+        	tokenPair.remove(0);
+        }
+    	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
     }
     
     /**
      * Count number of quoted contents in the tokenPairs
+     * 
+     * @return total quotation count
      * */
     static int countQuoted(ArrayList<TokenPair> tokenPairs) {
     	int result = 0;
@@ -169,7 +188,7 @@ public class InfoRetrieve {
         	description = ParserKeys.EMPTY_DIS;
         }
         
-        return description;
+        return description.substring(0, description.length()-1);
     }
     
     /**
@@ -198,21 +217,6 @@ public class InfoRetrieve {
             return rawString;
         }
     }
-    
-    /**
-     * Judge the validity of repeat date input
-     * */
-    /*
-    static boolean isValidRP(String repDate) {
-        boolean result = false;
-        for (int i = 0; i < ParserKeys.REPEAT_KEYS.length; i++) {
-            if (repDate.equalsIgnoreCase(ParserKeys.REPEAT_KEYS[i])){
-                result = true;
-            }
-        }
-        return result;
-    }
-    */
     
     /**
      * Return index of quotation mark in raw input String

@@ -8,9 +8,9 @@ public class GUIStatus {
 	private boolean hasNext;
 	private boolean hasPrevious;
 	private int currentTask;
-	private String date;
+	private JDate date;
 
-	public GUIStatus(VIEW_MODE viewMode, boolean hasNext, boolean hasPrevious, int currentTask, String date){
+	public GUIStatus(VIEW_MODE viewMode, boolean hasNext, boolean hasPrevious, int currentTask, JDate date){
 		this.viewMode = viewMode;
 		this.hasNext = hasNext;
 		this.hasPrevious = hasPrevious;
@@ -34,7 +34,7 @@ public class GUIStatus {
 		return this.currentTask;
 	}
 	
-	public String getDate(){
+	public JDate getDate(){
 		return this.date;
 	}
 	
@@ -54,7 +54,7 @@ public class GUIStatus {
 		this.currentTask = task;
 	}
 	
-	public void changeDate(String newDate){
-		this.date = newDate;
+	public void changeDate(JDate date){
+		this.date = date;
 	}
 }

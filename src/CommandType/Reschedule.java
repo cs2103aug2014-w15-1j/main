@@ -5,39 +5,72 @@ import java.util.ArrayList;
 import data_store.DataStore;
 import logic.*;
 
-public class Reschedule implements Command{
+public class Reschedule implements Command {
 	private static String feedback;
 	private static String title;
-	
-	JDate newStartDate;
-	JDate newEndDate;
-	//local memory
-	private static ArrayList<Task> taskList;
 
-	//values for GUI and I/O
-	private static DisplayInfo passToGui;
-		
-	
-	public Reschedule(JDate startDate, JDate endDate, String myFeedback, String myTitle){
+	private static JDate newStartDate;
+	private static JDate newEndDate;
+	private static int lineIndex;
+
+	// local memory
+	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+
+	// added by Zhang Ji
+	private long taskPointer;
+
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+
+	public Reschedule(JDate startDate, JDate endDate, String myFeedback,
+			String myTitle) {
 		feedback = myFeedback;
 		title = myTitle;
-		
+
 		initialize();
 		newStartDate = startDate;
 		newEndDate = endDate;
+		lineIndex = 1;
 	}
-	
-	
+
+	public Reschedule(int line, JDate startDate, JDate endDate,
+			String myFeedback, String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		newStartDate = startDate;
+		newEndDate = endDate;
+		lineIndex = line;
+	}
+
 	@Override
 	public DisplayInfo execute() {
-		taskList.get(RunLogic.getGuiStatus().getTaskIndex()).reschedule(newStartDate, newEndDate);
-		ArrayList<Task> display = new ArrayList<Task>();
-		display.add(taskList.get(RunLogic.getGuiStatus().getTaskIndex()));
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
+				newStartDate, newEndDate);
 		update();
-		
-		constructBridges(display, feedback, title);
+
+		update();
+
 		DataStore.writeTask(taskList);
-		return passToGui;
+		
+		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHightlight(Default.HIGHLIGHT_PROPERTY);
+		if(newStartDate != null){
+			dis.setHighlightItem(Default.STARTDATE);
+		}
+		if(newEndDate != null){
+			dis.setHighlightItem(Default.ENDDATE);
+		}
+		return dis;
 	}
 
 	@Override
@@ -46,19 +79,15 @@ public class Reschedule implements Command{
 		return null;
 	}
 
-	
-	
-	//---------------helper function--------------
-	
-	private static void initialize(){
+	// ---------------helper function--------------
+
+	private static void initialize() {
 		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
 	}
-		
-	private static void update(){
+
+	private static void update() {
 		RunLogic.updateTaskList(taskList);
-	}
-	
-	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
-		passToGui = new DisplayInfo(RunLogic.getGuiStatus(), display, feedback, title);
 	}
 }

@@ -1,7 +1,5 @@
 package parser;
 
-import parser.CMDTypes.COMMAND_TYPE;
-
 /**
  * class ParserKeys: Special characters reserved for Parser
  * 
@@ -33,6 +31,8 @@ class ParserKeys {
     public static final String[] REPEAT_KEYS = {"everyday", "monday", "tuesday", 
                                                 "wednesday", "thursday", "friday", 
                                                 "saturday", "sunday", "no_repeat", ""};
+    public static final String[] VIEW_DATE = {"yesterday", "today", "tomorrow",
+    												"nextweek"};
     public static final String INVALID_INFO = "invalid info";
     
     public static final int DATE_LENGTH = 8;

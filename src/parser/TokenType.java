@@ -17,6 +17,9 @@ class TokenType {
 	    DT,
 	    
 	    // REPEATING TIME
-	    RP
+	    RP,
+	    
+	    // NUMBER
+	    NB
 	}
 }

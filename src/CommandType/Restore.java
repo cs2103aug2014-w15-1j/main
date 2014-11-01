@@ -10,43 +10,61 @@ import logic.LogicToStore;
 import logic.RunLogic;
 import logic.Task;
 
-public class Restore implements Command{
+public class Restore implements Command {
 	private static String feedback;
 	private static String title;
-	
+
 	int restoreIndex;
-	
-	//local memory
+
+	// local memory
 	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay;
-		
+	private static int[] currentListIndex;
+
 	private static LogicToStore passToStore;
-	
-	public Restore(int line, String myFeedback, String myTitle){
+
+	// added by Zhang Ji
+	private long taskPointer;
+
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+
+	public Restore(int line, String myFeedback, String myTitle) {
 		feedback = myFeedback;
 		title = myTitle;
-		
+
 		initialize();
 		this.restoreIndex = currentDisplay[line];
 	}
-		
-		
+
 	@Override
 	public DisplayInfo execute() {
-		taskList.add(trashbinList.remove(restoreIndex));
-		
-		if(currentDisplay[1] > trashbinList.size()){
-			currentDisplay[1] -= Default.MAX_DISPLAY_LINE;
-		}
+		taskList.add(trashbinList.remove(currentListIndex[restoreIndex]));
+
+		currentListIndex = updateListIndex(currentListIndex);
+
 		update();
-		
+
 		constructBridges();
 		DataStore.writeAllData(passToStore);
-		
-		ViewTrashBin viewTrashbin = new ViewTrashBin(currentDisplay[1], feedback, title);
-		return viewTrashbin.execute();
+
+		ViewTrashBin viewTrashBin;
+		if (currentListIndex[restoreIndex] != -1) {
+			viewTrashBin = new ViewTrashBin(restoreIndex, feedback, title);
+		} else if (GUI.hasPrevious()) {
+			viewTrashBin = new ViewTrashBin(restoreIndex
+					- Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTrashBin = new ViewTrashBin(feedback, title);
+		}
+		return viewTrashBin.execute();
 	}
 
 	@Override
@@ -54,28 +72,37 @@ public class Restore implements Command{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
-	
-	//-----------helper functions-----------------
-	
-	
-	private static void initialize(){
+
+	// -----------helper functions-----------------
+
+	private static void initialize() {
 		GUI = RunLogic.getGuiStatus();
 		taskList = RunLogic.getTaskList();
 		trashbinList = RunLogic.getTrashbinList();
 		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
 	}
-	
-	private static void update(){
+
+	private static void update() {
 		RunLogic.updateGuiStatus(GUI);
 		RunLogic.updateTaskList(taskList);
 		RunLogic.updateTrashbinList(trashbinList);
 		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
-	
-	private static void constructBridges(){
-		passToStore = new LogicToStore(taskList,trashbinList);
+
+	private int[] updateListIndex(int[] currentList) {
+		for (int i = 0; i < trashbinList.size(); i++) {
+			currentList[i] = i;
+		}
+		for (int i = trashbinList.size(); i < currentList.length; i++) {
+			currentList[i] = -1;
+		}
+		return currentList;
+	}
+
+	private static void constructBridges() {
+		passToStore = new LogicToStore(taskList, trashbinList);
 	}
 
 }

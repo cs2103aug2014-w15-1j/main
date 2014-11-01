@@ -3,13 +3,16 @@ package CommandType;
 import java.util.ArrayList;
 
 import data_store.DataStore;
-import logic.*;
+import logic.Default;
+import logic.DisplayInfo;
+import logic.RunLogic;
+import logic.Task;
 
-public class Rename implements Command {
+public class Mark implements Command{
 	private static String feedback;
 	private static String title;
 
-	private static String newName;
+	private static boolean status;
 	private static int lineIndex;
 
 	// local memory
@@ -27,29 +30,33 @@ public class Rename implements Command {
 	public long getTaskPointer() {
 		return taskPointer;
 	}
-
-	public Rename(int line, String name, String myFeedback, String myTitle) {
+	
+	public Mark(boolean myStatus, String myFeedback, String myTitle) {
 		feedback = myFeedback;
 		title = myTitle;
 
 		initialize();
-		newName = name;
-		lineIndex = line;
-	}
-
-	public Rename(String name, String myFeedback, String myTitle) {
-		feedback = myFeedback;
-		title = myTitle;
-
-		initialize();
-		newName = name;
+		status = myStatus;
 		lineIndex = 1;
 	}
 
+	public Mark(int line, boolean myStatus, String myFeedback,
+			String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		status = myStatus;
+		lineIndex = line;
+	}
+	
 	@Override
 	public DisplayInfo execute() {
-		taskList.get(currentListIndex[currentDisplay[lineIndex]]).rename(
-				newName);
+		if(status){
+			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setDone();
+		} else {
+			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setUndone();
+		}
 		update();
 
 		DataStore.writeTask(taskList);
@@ -67,6 +74,7 @@ public class Rename implements Command {
 		return null;
 	}
 
+	
 	// -----------helper functions-----------------
 
 	private static void initialize() {
@@ -78,5 +86,4 @@ public class Rename implements Command {
 	private static void update() {
 		RunLogic.updateTaskList(taskList);
 	}
-
 }
