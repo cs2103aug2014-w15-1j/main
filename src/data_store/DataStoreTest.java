@@ -1,5 +1,6 @@
 package data_store;
 
+import read_file.ReadFile;
 import static org.junit.Assert.*;
 import logic.JDate;
 import logic.Task;
@@ -10,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DataStoreTest {
-
+	
     String name = "Test Name";
     String description = "Buy New Birthday Gift";
     String repeatTimes = "twice a day";
@@ -27,47 +28,40 @@ public class DataStoreTest {
     private   ArrayList<Task> TestTasks = new ArrayList<Task>();
     private   ArrayList<Task> TestTrash = new ArrayList<Task>();
 
+    public ReadFile testRead;
 
-    private   DataStore testStoreTask; 
-    private   DataStore testStoreTrash; 
-    
-    @Before 
+
+	@Before 
     public void setUp() { 
-        setTestStoreTask(new DataStore()); 
-        setTestStoreTrash(new DataStore()); 
-
+		
+		testRead = new ReadFile();
+		
         TestTasks.add(testTask);
-        TestTasks.add(testTask);
+        TestTrash.add(testTask);
 
-        TestTrash.add(testTask);
-        TestTrash.add(testTask);
     }
-
-    @Test
+ 
+	@Test
     public void test() {
-        DataStore.writeTask(TestTasks);
-        String resultTA = "Tasks results";
-        assertEquals("Testing Tasks store", "Tasks results", resultTA);
-
+		  	
+		/*
+		 * Test Writing into a task list file and Retrieving it to check it
+		 */
+        DataStore.writeTask(TestTasks);       
+        
+        ArrayList<Task> resultTA = new ArrayList<Task>();    
+        resultTA = testRead.getEventTask();      
+        assertTrue(resultTA.equals(TestTasks));
+        
+        /*
+         * Test Writing into a trash list file and Retrieving it to check
+         */
         DataStore.writeTrash(TestTrash);
-        String resultTR = "Store Trash results";
-        assertEquals("Testing Trash store", "Store Trash results", resultTR);
+        
+        ArrayList<Task> resultTR = new ArrayList<Task>();    
+        resultTR = testRead.getTrashFile(); 
+        assertTrue(resultTR.equals(TestTrash));
+        
     }
 
-
-	public DataStore getTestStoreTrash() {
-		return testStoreTrash;
-	}
-
-	public void setTestStoreTrash(DataStore testStoreTrash) {
-		this.testStoreTrash = testStoreTrash;
-	}
-
-	public DataStore getTestStoreTask() {
-		return testStoreTask;
-	}
-
-	public void setTestStoreTask(DataStore testStoreTask) {
-		this.testStoreTask = testStoreTask;
-	}
 }

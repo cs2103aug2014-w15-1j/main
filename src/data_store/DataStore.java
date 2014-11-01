@@ -17,7 +17,7 @@ public class DataStore {
 	 */
 	public static String getFilePath(String nameList){
 		
-		String workingDirectory = System.getProperty("user.home");  
+		String workingDirectory = System.getProperty("user.dir");  
 		String absoluteEvent = workingDirectory + File.separator + nameList;
 		
         return absoluteEvent;
@@ -109,7 +109,7 @@ public class DataStore {
 
     }
 	
-	 static void initalizeWriter(String fileName, String errorMesg) {
+	private static void initalizeWriter(String fileName, String errorMesg) {
 	    try {
             FileWriter fw = new FileWriter (fileName);
             BufferedWriter bw = new BufferedWriter (fw);

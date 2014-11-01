@@ -1,2 +1,1 @@
-Test Name=Buy New Birthday Gift=1 month=2014-8-22=2014-9-22
-Test Name=Buy New Birthday Gift=1 month=2014-8-22=2014-9-22
+NAME=DISCIP=REDATE=2000-01-01=2000-01-01

@@ -18,7 +18,7 @@ public class ReadFile {
     private ArrayList<Task> EVENTTASK;
     private ArrayList<Task> TRASHFILE;
 
-    private ArrayList<Task> EMPTYDATA = new ArrayList<Task>();
+    private static ArrayList<Task> EMPTYDATA = new ArrayList<Task>();
 
     public ReadFile() {
         this.EVENTTASK = new ArrayList<Task>();
@@ -122,7 +122,7 @@ public class ReadFile {
      *      Return a Task object if local file format valid
      *      Else return null
      */
-    private Task makeTask(String taskString) {
+    private static Task makeTask(String taskString) {
 
         String[] tempoTaskSplit = taskString.split(SystemInfo.SEPERATESIMBOL);
         
@@ -145,7 +145,7 @@ public class ReadFile {
     /**
      * Make a Date object
      * */
-    private JDate dateMaker(String[] dateInfo) {
+    private static JDate dateMaker(String[] dateInfo) {
         try {
             return new JDate(Integer.parseInt(dateInfo[0]),
                     Integer.parseInt(dateInfo[1]),
@@ -156,5 +156,8 @@ public class ReadFile {
             return null;
         }
     }
+
+
+	
 
 }
