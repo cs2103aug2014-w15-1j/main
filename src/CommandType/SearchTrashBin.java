@@ -24,10 +24,10 @@ public class SearchTrashBin implements Command{
 	
 	@Override
 	public DisplayInfo execute() {
-		currentDisplay = initializeDisplayList(currentDisplay);
-		int[] tempListIndex = initializeDisplayList(currentListIndex);
-		for(int i = 0, j = 0; i < trashbinList.size(); i++){
-			if(trashbinList.get(currentListIndex[i]).getName().contentEquals(keyWord)){
+		currentDisplay = initializeDisplayList(currentDisplay.length);
+		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
+		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
+			if(trashbinList.get(currentListIndex[i]).getName().contains(keyWord)){
 				tempListIndex[j] = currentListIndex[i];
 				j++;
 			}
@@ -64,11 +64,12 @@ public class SearchTrashBin implements Command{
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int[] currentDisplay) {
-		for(int i = 0; i < currentDisplay.length; i++){
-			currentDisplay[i] = -1;
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
 		}
-		return currentDisplay;
+		return temp;
 	}
 	
 

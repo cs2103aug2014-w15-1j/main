@@ -40,7 +40,7 @@ public class ViewTrashBin implements Command{
 	@Override
 	public DisplayInfo execute() {
 		ArrayList<Task> display = new ArrayList<Task>();
-		currentDisplay = initializeDisplayList(currentDisplay);
+		currentDisplay = initializeDisplayList(currentDisplay.length);
 		
 		if(trashbinList.isEmpty()){
 			GUI = new GUIStatus(VIEW_MODE.BIN, false, false, -1, GUI.getDate());
@@ -86,11 +86,12 @@ public class ViewTrashBin implements Command{
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int[] currentDisplay) {
-		for(int i = 0; i < currentDisplay.length; i++){
-			currentDisplay[i] = -1;
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
 		}
-		return currentDisplay;
+		return temp;
 	}
 
 	private static void constructBridges(ArrayList<Task> display, String feedback, String title){

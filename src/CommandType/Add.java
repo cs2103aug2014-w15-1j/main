@@ -49,7 +49,7 @@ public class Add implements Command{
 		currentListIndex = updateListIndex(currentListIndex);
 		GUI.changeCurretnTask((taskList.size() - 1));
 		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
-		currentDisplay = initializeDisplayList(currentDisplay);
+		currentDisplay = initializeDisplayList(currentDisplay.length);
 		currentDisplay[1] = GUI.getTaskIndex();
 		update();
 		
@@ -87,11 +87,12 @@ public class Add implements Command{
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int[] currentDisplay) {
-		for(int i = 0; i < currentDisplay.length; i++){
-			currentDisplay[i] = -1;
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
 		}
-		return currentDisplay;
+		return temp;
 	}
 	
 	private int[] updateListIndex(int[] currentList) {

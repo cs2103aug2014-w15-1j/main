@@ -38,8 +38,8 @@ public class ViewDate implements Command{
 		
 		
 		
-		currentDisplay = initializeDisplayList(currentDisplay);
-		int[] tempListIndex = initializeDisplayList(currentListIndex);
+		currentDisplay = initializeDisplayList(currentDisplay.length);
+		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
 		for(int i = 0, j = 0; i < targetList.size(); i++){
 			if(targetList.get(currentListIndex[i]).getStartDate().equals(date) || 
 					targetList.get(currentListIndex[i]).getEndDate().equals(date)){
@@ -86,11 +86,12 @@ public class ViewDate implements Command{
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int[] currentDisplay) {
-		for(int i = 0; i < currentDisplay.length; i++){
-			currentDisplay[i] = -1;
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
 		}
-		return currentDisplay;
+		return temp;
 	}
 
 }
