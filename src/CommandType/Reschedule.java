@@ -18,9 +18,6 @@ public class Reschedule implements Command {
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
 
-	// values for GUI and I/O
-	private static DisplayInfo passToGui;
-
 	// added by Zhang Ji
 	private long taskPointer;
 
@@ -58,13 +55,22 @@ public class Reschedule implements Command {
 	public DisplayInfo execute() {
 		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
 				newStartDate, newEndDate);
-		ArrayList<Task> display = new ArrayList<Task>();
-		display.add(taskList.get(RunLogic.getGuiStatus().getTaskIndex()));
 		update();
 
-		constructBridges(display, feedback, title);
+		update();
+
 		DataStore.writeTask(taskList);
-		return passToGui;
+		
+		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHightlight(Default.HIGHLIGHT_PROPERTY);
+		if(newStartDate != null){
+			dis.setHighlightItem(Default.STARTDATE);
+		}
+		if(newEndDate != null){
+			dis.setHighlightItem(Default.ENDDATE);
+		}
+		return dis;
 	}
 
 	@Override
@@ -83,11 +89,5 @@ public class Reschedule implements Command {
 
 	private static void update() {
 		RunLogic.updateTaskList(taskList);
-	}
-
-	private static void constructBridges(ArrayList<Task> display,
-			String feedback, String title) {
-		passToGui = new DisplayInfo(RunLogic.getGuiStatus(), display, feedback,
-				title);
 	}
 }

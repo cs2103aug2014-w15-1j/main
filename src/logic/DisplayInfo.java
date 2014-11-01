@@ -27,6 +27,11 @@ public class DisplayInfo {
 	private String feedback;
 	private String title;
 	private JDate date;
+	
+	// info for highlight
+	private int highlight = Default.NO_HIGHLIGHT;
+	private int highlightLine;
+	private int highlightItem;
 
 	/*
 	 * ====================================================================
@@ -100,6 +105,32 @@ public class DisplayInfo {
 	
 	public JDate getDate(){
 		return this.date;
+	}
+	
+	
+	// public method for highlight
+	public void setHightlight(int newHighlight){
+		this.highlight = newHighlight;
+	}
+	
+	public void setHighlightLine(int line){
+		this.highlightLine = line;
+	}
+	
+	public void setHighlightItem(int item){
+		this.highlightItem = item;
+	}
+	
+	public int getHightlight(){
+		return this.highlight;
+	}
+	
+	public int getHighlightLine(){
+		return this.highlightLine;
+	}
+	
+	public int getHighlightItem(){
+		return this.highlightItem;
 	}
 
 	/*

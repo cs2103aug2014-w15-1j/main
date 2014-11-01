@@ -17,9 +17,6 @@ public class Rename implements Command {
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
 
-	// values for GUI and I/O
-	private static DisplayInfo passToGui;
-
 	// added by Zhang Ji
 	private long taskPointer;
 
@@ -53,13 +50,15 @@ public class Rename implements Command {
 	public DisplayInfo execute() {
 		taskList.get(currentListIndex[currentDisplay[lineIndex]]).rename(
 				newName);
-		ArrayList<Task> display = new ArrayList<Task>();
-		display.add(taskList.get(RunLogic.getGuiStatus().getTaskIndex()));
 		update();
 
-		constructBridges(display, feedback, title);
 		DataStore.writeTask(taskList);
-		return passToGui;
+		
+		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHightlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.NAME);
+		return dis;
 	}
 
 	@Override
@@ -80,9 +79,4 @@ public class Rename implements Command {
 		RunLogic.updateTaskList(taskList);
 	}
 
-	private static void constructBridges(ArrayList<Task> display,
-			String feedback, String title) {
-		passToGui = new DisplayInfo(RunLogic.getGuiStatus(), display, feedback,
-				title);
-	}
 }
