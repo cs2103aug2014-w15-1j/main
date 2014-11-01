@@ -13,12 +13,15 @@ public class Task {
 	private boolean done;
 	
 	//added by Zhang Ji
-	private long pointer;
-	public void setPointer(long pointer) {
+	private int pointer;
+	public void setPointer(int pointer) {
 		this.pointer = pointer;
 	}
-	public long getPointer() {
+	public int getPointer() {
 		return pointer;
+	}
+	public boolean matchPointer(int ptr){
+		return this.pointer == ptr;
 	}
 	
 	// constructor
