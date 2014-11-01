@@ -31,13 +31,12 @@ public class TestSimpleCMD {
     RawCommand viewDateTest2;
     RawCommand searchTest;
     
-    
     @Before
     public void initTestString() {
         testDeleStr = "delete 1";
         testReadStr = "read 2";
         testViewStr = "view tasklist";
-        testUpdateStr = "update name \"a new name\"";
+        testUpdateStr = "update 1 name \"a new name\"";
         testUndoStr = "undo";
         testReDescribeStr = "update description \"a new description\"";
         testRescheduleStr = "reschedule 2012-10-12 2012-10-13";
@@ -63,6 +62,7 @@ public class TestSimpleCMD {
         
         updateTest = ParserProcesser.interpretCommand(testUpdateStr);
         Assert.assertEquals("Test command: ", "RENAME", updateTest.getCommand());
+        Assert.assertEquals("Test command: ", "1", updateTest.getCMDDescription());
         Assert.assertEquals("Test target index: ", "a new name", updateTest.getTitle());
         
         reDescribe = ParserProcesser.interpretCommand(testReDescribeStr);
@@ -93,6 +93,5 @@ public class TestSimpleCMD {
         searchTest = ParserProcesser.interpretCommand(testSearchStr);
         Assert.assertEquals("Test command: Search", "SEARCH", searchTest.getCommand());
         Assert.assertEquals("Test search contents: ", "a task name", searchTest.getCMDDescription());
-        
     }
 }

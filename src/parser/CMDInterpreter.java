@@ -2,9 +2,6 @@ package parser;
 
 import java.util.ArrayList;
 
-import parser.CMDTypes.COMMAND_TYPE;
-
-
 /**
  * class CmdInterpretor: Identify commands in input string
  * 

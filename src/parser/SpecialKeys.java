@@ -1,7 +1,5 @@
 package parser;
 
-import parser.CMDTypes.COMMAND_TYPE;
-
 /**
  * class ParserKeys: Special characters reserved for Parser
  * 

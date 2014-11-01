@@ -50,38 +50,57 @@ public class CMDMaker {
 	 * 
 	 * @param tokenPairs
 	 *              String of sub-information following the update command
+	 * @param lacateLine
+	 * 				The line number that the task is locating at
 	 * @return -RawCommand
 	 */
 	static RawCommand update(ArrayList<TokenPair> tokenPairs){
 		
 		try {
-			String field = tokenPairs.get(0).getCotent();
+			TokenPair firstPair = tokenPairs.get(0);
+			String field1 = firstPair.getCotent();
 			
-			if (field.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.NAME.name())){
+			TokenPair SecondPair = tokenPairs.get(1);
+			String field2 = SecondPair.getCotent();
+			
+			if (field1.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.NAME.name())){
 				tokenPairs.remove(0);
 				return rename(tokenPairs);
-			} else if (field.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.DESCRIPTION.name())){
+			} else if (field2.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.NAME.name())){
+				tokenPairs.remove(1);
+				return rename(tokenPairs);
+			} else if (field1.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.DESCRIPTION.name())){
 				tokenPairs.remove(0);
 				return describe(tokenPairs);
-			} else if (field.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RESCHEDULE.name())){
+			} else if (field2.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.DESCRIPTION.name())){
+				tokenPairs.remove(1);
+				return describe(tokenPairs);
+			} else if (field1.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RESCHEDULE.name())){
 				tokenPairs.remove(0);
 				return reschedule(tokenPairs);
-			} else if (field.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.REPEAT.name())){
+			} else if (field2.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RESCHEDULE.name())){
+				tokenPairs.remove(1);
+				return reschedule(tokenPairs);
+			} else if (field1.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.REPEAT.name())){
+				tokenPairs.remove(0);
+				return repeat(tokenPairs);
+			} else if (field2.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.REPEAT.name())){
+				tokenPairs.remove(1);
 				return repeat(tokenPairs);
 			} else {
 				return makeInvalid();
 			}
 		} catch (Exception e) {
-			ErrorGenerator.popError(ErrorMSG.UNEXPECTED_QUOTATION_ERR);
+			ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
 			return makeInvalid(); 
 		}
 	}
 	
 	/**
-	 * Return a RawCommand for rename operation
+	 * Return a RawCommand for Search operation
 	 * 
 	 * @param tokenPairs
-	 *              String of sub-information following the update command
+	 *              String of sub-information following the search command
 	 * @return -RawCommand
 	 * */
 	static RawCommand search(ArrayList<TokenPair> tokenPairs) {
@@ -102,11 +121,22 @@ public class CMDMaker {
 	 * */
 	static RawCommand rename(ArrayList<TokenPair> tokenPairs) {
 		try {
+			TokenPair firstPair = tokenPairs.get(0);
+			String locateLine;
+			
+			// Get locate Line
+			if (firstPair.getToken() == TokenType.TOKEN_TYPE.NB){
+				locateLine = tokenPairs.remove(0).getCotent();
+			} else {
+				locateLine = null;
+			}
+			
 			if(tokenPairs.isEmpty()){
 				return makeInvalid();
 			} else {
 				return new RawCommand(CMDTypes.COMMAND_TYPE.RENAME.name(), 
-									  tokenPairs.get(0).getCotent());
+									  tokenPairs.get(0).getCotent(),
+									  locateLine);
 			}
 		} catch (Exception e) {
 			return makeInvalid();
@@ -117,16 +147,27 @@ public class CMDMaker {
 	 * Return a RawCommand for re-describe operation
 	 * 
 	 * @param subInfoStr
-	 *              String of sub-information following the update command
+	 *              String of sub-information following the re-describe command
 	 * @return -RawCommand
 	 * */
 	static RawCommand describe(ArrayList<TokenPair> tokenPairs) {
 		try {
+			TokenPair firstPair = tokenPairs.get(0);
+			String locateLine;
+			
+			// Get locate Line
+			if (firstPair.getToken() == TokenType.TOKEN_TYPE.NB){
+				locateLine = tokenPairs.remove(0).getCotent();
+			} else {
+				locateLine = null;
+			}
+			
 			if(tokenPairs.isEmpty()){
 				return makeInvalid();
 			}
 			return new RawCommand(CMDTypes.COMMAND_TYPE.DESCRIBE.name(), 
-								  tokenPairs.get(0).getCotent());
+								  tokenPairs.get(0).getCotent(),
+								  locateLine);
 		} catch (Exception e) {
 			return makeInvalid();
 		}
@@ -136,17 +177,35 @@ public class CMDMaker {
 	 * Return a RawCommand for re-schedule operation
 	 * 
 	 * @param subInfoStr
-	 *              String of sub-information following the update command
+	 *              String of sub-information following the reschedule command
 	 * @param string 
 	 * @return -RawCommand
 	 * */
 	static RawCommand reschedule(ArrayList<TokenPair> tokenPairs) {
 		try {
-			String startDate = InfoRetrieve.makeDay(tokenPairs.get(0).getCotent());
-			String endDate = InfoRetrieve.makeDay(tokenPairs.get(1).getCotent());
-			return new RawCommand(CMDTypes.COMMAND_TYPE.RESCHEDULE.name(), 
-								  startDate,
-								  endDate);
+			TokenPair firstPair = tokenPairs.get(0);
+			String locateLine;
+			
+			// Get locate Line
+			if (firstPair.getToken() == TokenType.TOKEN_TYPE.NB){
+				locateLine = tokenPairs.remove(0).getCotent();
+			} else {
+				locateLine = null;
+			}
+			if (tokenPairs.size() > 1){
+				String startDate = InfoRetrieve.makeDay(tokenPairs.get(0).getCotent());
+				String endDate = InfoRetrieve.makeDay(tokenPairs.get(1).getCotent());
+				return new RawCommand(CMDTypes.COMMAND_TYPE.RESCHEDULE.name(), 
+									  startDate,
+									  endDate,
+									  locateLine);
+			} else {
+				String endDate = InfoRetrieve.makeDay(tokenPairs.get(0).getCotent());
+				return new RawCommand(CMDTypes.COMMAND_TYPE.RESCHEDULE.name(), 
+									  null,
+									  endDate,
+									  locateLine);
+			}
 		} catch (Exception e) {
 			return makeInvalid();
 		}
@@ -156,16 +215,27 @@ public class CMDMaker {
 	 * Return a RawCommand for repeat operation
 	 * 
 	 * @param subInfoStr
-	 *              String of sub-information following the update command
+	 *              String of sub-information following the repeat command
 	 * @return -RawCommand
 	 * */
 	static RawCommand repeat(ArrayList<TokenPair> tokenPairs) {
 		try {
+			TokenPair firstPair = tokenPairs.get(0);
+			String locateLine;
+			
+			// Get locate Line
+			if (firstPair.getToken() == TokenType.TOKEN_TYPE.NB){
+				locateLine = tokenPairs.remove(0).getCotent();
+			} else {
+				locateLine = null;
+			}
+			
 			if(tokenPairs.isEmpty()){
 				return makeInvalid();
 			}
 			return new RawCommand(CMDTypes.COMMAND_TYPE.REPEAT.name(), 
-								  tokenPairs.get(0).getCotent());
+								  tokenPairs.get(0).getCotent(),
+								  locateLine);
 		} catch (Exception e) {
 			return makeInvalid();
 		}
