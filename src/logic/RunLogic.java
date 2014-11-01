@@ -9,6 +9,8 @@ import parser.ParserProcesser;
 import read_file.ReadFile;
 import CommandType.*;
 
+import java.util.*;
+
 public class RunLogic {
 	private static String WELCOME = "Welcome to MagiCal!";
 	private static String TITLE = "Task List";
@@ -46,7 +48,11 @@ public class RunLogic {
 		trashbinList = rf.getTrashFile();
 		initializeTaskPointer();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
-		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, convertDate("20141022"));
+		
+		Calendar c=Calendar.getInstance();
+		
+		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, 
+				new JDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH)));
 
 		currentListIndex = updateListIndexOfTaskList(currentListIndex);
 		Command start = new ViewTaskList(WELCOME, TITLE);
@@ -113,11 +119,5 @@ public class RunLogic {
 		}
 		return currentList;
 	}
-	
-	private static JDate convertDate(String date){
-		int year = Integer.parseInt(date.substring(0, 4));
-		int month = Integer.parseInt(date.substring(4, 6));
-		int day = Integer.parseInt(date.substring(6, 8));
-		return new JDate(year, month, day);
-	}
+
 }
