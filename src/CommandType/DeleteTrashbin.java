@@ -114,5 +114,9 @@ public class DeleteTrashbin implements Command{
 		}
 		return currentList;
 	}
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
 
 }

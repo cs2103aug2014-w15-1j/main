@@ -23,5 +23,10 @@ public class Invalid implements Command{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
 
 }

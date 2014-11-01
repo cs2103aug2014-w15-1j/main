@@ -71,5 +71,10 @@ public class SearchTaskList implements Command{
 		}
 		return temp;
 	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
 
 }

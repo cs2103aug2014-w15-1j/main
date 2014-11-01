@@ -1,7 +1,6 @@
 package CommandType;
 
 import gui.VIEW_MODE;
-
 import logic.*;
 
 public class Back implements Command{
@@ -41,7 +40,11 @@ public class Back implements Command{
 	}
 	
 	
-	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
 	
 	//-----------helper functions-----------------
 

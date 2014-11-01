@@ -3,6 +3,7 @@ package logic;
 import gui.VIEW_MODE;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 import parser.RawCommand;
 import parser.ParserProcesser;
@@ -21,6 +22,20 @@ public class RunLogic {
 	private static int[] currentListIndex = new int[Default.MAX_TASKS];
 	
 	//added by Zhang Ji
+	private static Stack<Command> pastCommands;
+	
+	public static boolean hasPastCommands() {
+		return !pastCommands.isEmpty();
+	}
+	public static void undo() {
+		pastCommands.pop().undo();
+	}
+	private static void addPastCommands(Command cmd){
+		if(cmd.supportUndo()) {
+			pastCommands.push(cmd);
+		}
+	}
+	
 	private static int nextTaskPointer;
 	private static void initializeTaskPointer() {
 		nextTaskPointer = 0;
@@ -60,7 +75,6 @@ public class RunLogic {
 		}
 	}
 	
-	
 	// end of Zhang Ji's modification
 	
 	public static DisplayInfo initialize() {
@@ -68,6 +82,7 @@ public class RunLogic {
 		taskList = rf.getEventTask();
 		trashbinList = rf.getTrashFile();
 		initializeTaskPointer();
+		pastCommands = new Stack<Command>();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, convertDate("20141022"));
 
@@ -80,7 +95,7 @@ public class RunLogic {
 		// pass user command to CLI for auto-correction
 		RawCommand stringCommand = ParserProcesser.interpretCommand(inputCommand);
 		Command userCommand = ConvertCommand.convert(stringCommand);
-		
+		addPastCommands(userCommand);
 		return userCommand.execute();
 	}
 	
