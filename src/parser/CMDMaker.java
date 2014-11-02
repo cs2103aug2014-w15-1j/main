@@ -38,7 +38,11 @@ public class CMDMaker {
 			endDate = endPair.getFront();
 			
 			description = InfoRetrieve.getDescription(endPair.getSubInfo());
-
+			
+			if (endDate == null) {
+				endDate = startDate;
+				startDate = null;
+			}
 			return new RawCommand(CMDTypes.COMMAND_TYPE.ADD.name(), taskTitle, 
 								  repeatDate, startDate, 
 								  endDate, description);

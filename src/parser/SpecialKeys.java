@@ -6,7 +6,6 @@ package parser;
  * @author A0119493X
  *          Containing special keys to help interpreting input strings, including separating
  *          symbols, special field names, and invalid symbols
- *          
  * */
 
 class ParserKeys {
@@ -17,7 +16,7 @@ class ParserKeys {
     public static final String EMPTY_STR = "";
     public static final String EMPTY_TITLE = "EMPTY TITLE";
     public static final String EMPTY_DIS = "EMPTY DESCRIPTION";
-    public static final String EMPTY_DATE = "20000101";
+    public static final String EMPTY_DATE = null;
     
     public static final String RP_EVREYDAY = "everyday";
     public static final String RP_MON = "monday";

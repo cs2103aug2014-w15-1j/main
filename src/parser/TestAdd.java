@@ -42,8 +42,8 @@ public class TestAdd {
         Assert.assertEquals("Get the command title", "title", getTitle);
         Assert.assertEquals("Get the command discription", "EMPTY DESCRIPTION", getDescription);
         Assert.assertEquals("Get the repeated day", "no_repeat", getRPDate);
-        Assert.assertEquals("Get the start day", "20000101", getStartDay);
-        Assert.assertEquals("Get the end day", "20000101", getEndDay);
+        Assert.assertEquals("Get the start day", null, getStartDay);
+        Assert.assertEquals("Get the end day", null, getEndDay);
         
         resultCTL1 = ParserProcesser.interpretCommand(testAddStr1);
         getCommand = resultCTL1.getCommand();
