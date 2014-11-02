@@ -13,7 +13,7 @@ import parser.TokenType.TOKEN_TYPE;
 public class ValidityChecker {
 
 	/**
-	 * Check if token type is UN
+	 * Check if token type is DT
 	 * */
 	static boolean isDT(TOKEN_TYPE tType) {
 		return tType == TOKEN_TYPE.DT;
@@ -27,10 +27,24 @@ public class ValidityChecker {
 	}
 
 	/**
-	 * Check if token type is DT
+	 * Check if token type is UN
 	 * */
 	static boolean isUN(TOKEN_TYPE tType) {
 		return tType == TOKEN_TYPE.UN;
+	}
+	
+	/**
+	 * Check if token type is QT
+	 * */
+	static boolean isQT(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.QT;
+	}
+	
+	/**
+	 * Check if token type is NB
+	 * */
+	static boolean isNB(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.NB;
 	}
 
 	/***
