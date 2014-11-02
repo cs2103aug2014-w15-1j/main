@@ -96,9 +96,10 @@ public class RunLogic {
  		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, 
  				new JDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH)));
  
-
+ 		System.out.println(c.get(Calendar.MONTH) + 1);
+ 		
 		currentListIndex = updateListIndexOfTaskList(currentListIndex);
-		Command start = new ViewTaskList(WELCOME, TITLE);
+		Command start = new ViewDate(GUI.getDate(), WELCOME, TITLE);
 		return start.execute();
 	}
 	
