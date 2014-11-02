@@ -10,6 +10,13 @@ import logic.LogicToStore;
 
 import java.io.File;
 
+/*
+ * @author A0100792M
+ * 
+ * DataStore will store object LogicToStore containing commands input strings into text files Trashlist.txt and Tasklist.txt
+ * 
+ */
+
 public class DataStore {
 	
 	/**
@@ -17,7 +24,7 @@ public class DataStore {
 	 */
 	public static String getFilePath(String nameList){
 		
-		String workingDirectory = System.getProperty("user.dir");  
+		String workingDirectory = System.getProperty("user.home");  
 		String absoluteEvent = workingDirectory + File.separator + nameList;
 		
         return absoluteEvent;
