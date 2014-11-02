@@ -56,7 +56,7 @@ public class ViewTrashBin implements Command{
 					break;
 				}
 			}
-			GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, hasPrevious, currentDisplay[1], GUI.getDate());
+			GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, hasPrevious, currentListIndex[currentDisplay[1]], GUI.getDate());
 		}
 		constructBridges(display, feedback, title);
 		update();

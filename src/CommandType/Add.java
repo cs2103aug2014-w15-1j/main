@@ -61,22 +61,34 @@ public class Add implements Command{
 
 	@Override
 	public DisplayInfo undo() {
-		
-		ArrayList<Task> display = new ArrayList<Task>();
-		RunLogic.removeTaskByPointer(taskList ,getTaskPointer());
-		
 		initialize();
-		currentListIndex = updateListIndex(currentListIndex);
-		GUI.changeViewMode(VIEW_MODE.TASK_LIST);
-		currentDisplay = initializeDisplayList(currentDisplay.length);
-		currentDisplay[1] = GUI.getTaskIndex();
-		update();
-		
-		
-		constructBridges(display, feedback, title);
-		DataStore.writeTask(taskList);
-		return passToGui;
-		
+
+		int index = RunLogic.getIndexInList(taskList, getTaskPointer());
+		if(RunLogic.removeTaskByPointer(taskList ,getTaskPointer())){
+			currentListIndex = updateListIndex(currentListIndex);
+			
+			DataStore.writeTask(taskList);
+			update();
+
+			int highlightLine = index % Default.MAX_DISPLAY_LINE;
+			index -= index % Default.MAX_DISPLAY_LINE;
+			ViewTaskList viewTaskList;
+			if(currentListIndex[index] != -1){
+				viewTaskList = new ViewTaskList(index, feedback, title);
+			} else if (currentListIndex[index -= Default.MAX_DISPLAY_LINE] != -1){
+				viewTaskList = new ViewTaskList(currentDisplay[1] - Default.MAX_DISPLAY_LINE, feedback, title);
+			} else {
+				viewTaskList = new ViewTaskList(feedback, title);
+			}
+			DisplayInfo dis = viewTaskList.execute();
+			dis.setHightlight(Default.HIGHLIGHT_LINE);
+			dis.setHighlightLine(highlightLine);
+			return dis;
+			
+		} else {
+			Command invalid = new Invalid("Task not found!", null);
+			return invalid.execute();
+		}
 	}
 	
 	//-----------helper functions-----------------
