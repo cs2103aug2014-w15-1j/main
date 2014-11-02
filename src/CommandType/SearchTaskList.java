@@ -10,7 +10,6 @@ public class SearchTaskList implements Command{
 	private static String title;
 	
 	//local memory
-	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
@@ -52,14 +51,12 @@ public class SearchTaskList implements Command{
 	
 	
 	private static void initialize(){
-		GUI = RunLogic.getGuiStatus();
 		taskList = RunLogic.getTaskList();
 		currentDisplay = RunLogic.getCurrentDisplay();
 		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 	
 	private static void update(){
-		RunLogic.updateGuiStatus(GUI);
 		RunLogic.updateCurrentdiaplay(currentDisplay);
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}

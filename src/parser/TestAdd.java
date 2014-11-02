@@ -29,7 +29,7 @@ public class TestAdd {
     @Test
     public void testAdd() {
     	
-    	/*
+    	
         resultCTL0 = ParserProcesser.interpretCommand(testAddStr0);
         getCommand = resultCTL0.getCommand();
         getTitle = resultCTL0.getTitle();
@@ -59,7 +59,7 @@ public class TestAdd {
         Assert.assertEquals("Get the repeated day", "tuesday", getRPDate);
         Assert.assertEquals("Get the start day", "20121010", getStartDay);
         Assert.assertEquals("Get the end day", "20121015", getEndDay);
-        */
+        
         resultCTL2 = ParserProcesser.interpretCommand(testAddStr2);
         getCommand = resultCTL2.getCommand();
         getTitle = resultCTL2.getTitle();

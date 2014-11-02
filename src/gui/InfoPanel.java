@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicArrowButton;
 
@@ -15,16 +17,22 @@ public class InfoPanel extends JPanel{
 	private boolean isPreviousPage;
 	
 	
-	public InfoPanel() {
+	public InfoPanel(boolean isPreviousPage, boolean isNextPage) {
 		super();
 		this.setLayout(new FlowLayout());
-		add(new BasicArrowButton(BasicArrowButton.EAST), BorderLayout.EAST);
-	}
-	
-	
-	public static void main(String[] args){
-		InfoPanel j = new InfoPanel();
+		this.add(createImageButton("nextArrowY"));
 		
 	}
+	
+	public JButton createImageButton(String path) {
+		ImageIcon icon = new ImageIcon(path);
+		JButton btn = new JButton(icon);
+		return btn;
+	}
+	
+	
+	
+	
+	
 	
 }
