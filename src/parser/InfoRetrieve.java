@@ -258,15 +258,18 @@ public class InfoRetrieve {
 	 * */
 	public static String getCommand(String rawString) {
 		
-		String getCommand;
-		int getCommandEnd = rawString.indexOf(ParserKeys.SPACE);
+		String command = ParserKeys.EMPTY_STR;
+		String curFront;
 		
-	    if (getCommandEnd == ParserKeys.INDEX_NOT_EXIST) {
-	        getCommand = rawString;
-	    } else {
-	        getCommand = rawString.substring(0, getCommandEnd);
-	    }
-	    
-	    return getCommand;
+		while (command.isEmpty()) {
+			rawString = StringCutter.cleanFrontSpace(rawString);
+			curFront = StringCutter.getFrontBlock(rawString);
+			if (ValidityChecker.isCommand(curFront)) {
+				command = curFront;
+			}
+			rawString = StringCutter.rmFrontBlock(rawString);
+		}
+		
+	    return command;
 	}
 }

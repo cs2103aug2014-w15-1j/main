@@ -14,34 +14,38 @@ public class CMDMaker {
 	 * @return -CliToLog
 	 * */
 	static RawCommand add(ArrayList<TokenPair> tokenPairs) {
-		String taskTitle;
-		String repeatDate;
-		String startDate;
-		String endDate;
-		String description;
-		
-		RawInfoPair titlePair;
-		titlePair = InfoRetrieve.getTaskTitle(tokenPairs);
-		taskTitle = titlePair.getFront();
-		
-		RawInfoPair repeatPair;
-		repeatPair = InfoRetrieve.getRepeatDate(titlePair.getSubInfo());
-		repeatDate = repeatPair.getFront();
-		
-		RawInfoPair startPair;
-		startPair = InfoRetrieve.getDate(repeatPair.getSubInfo());
-		startDate = startPair.getFront();
-		
-		RawInfoPair endPair;
-		endPair = InfoRetrieve.getDate(startPair.getSubInfo());
-		endDate = endPair.getFront();
-		
-		
-		description = InfoRetrieve.getDescription(endPair.getSubInfo());
-		
-		return new RawCommand(CMDTypes.COMMAND_TYPE.ADD.name(), taskTitle, 
-							  repeatDate, startDate, 
-							  endDate, description);
+		try {
+			String taskTitle;
+			String repeatDate;
+			String startDate;
+			String endDate;
+			String description;
+			
+			RawInfoPair titlePair;
+			titlePair = InfoRetrieve.getTaskTitle(tokenPairs);
+			taskTitle = titlePair.getFront();
+			
+			RawInfoPair repeatPair;
+			repeatPair = InfoRetrieve.getRepeatDate(titlePair.getSubInfo());
+			repeatDate = repeatPair.getFront();
+			
+			RawInfoPair startPair;
+			startPair = InfoRetrieve.getDate(repeatPair.getSubInfo());
+			startDate = startPair.getFront();
+			
+			RawInfoPair endPair;
+			endPair = InfoRetrieve.getDate(startPair.getSubInfo());
+			endDate = endPair.getFront();
+			
+			
+			description = InfoRetrieve.getDescription(endPair.getSubInfo());
+			
+			return new RawCommand(CMDTypes.COMMAND_TYPE.ADD.name(), taskTitle, 
+								  repeatDate, startDate, 
+								  endDate, description);
+		} catch (Exception e) {
+			return makeInvalid();
+		}
 	}
 	
 	/**
@@ -135,7 +139,7 @@ public class CMDMaker {
 				return makeInvalid();
 			} else {
 				return new RawCommand(CMDTypes.COMMAND_TYPE.RENAME.name(), 
-									  tokenPairs.get(0).getCotent(),
+									  InfoRetrieve.getAllSubInfo(tokenPairs).getFront(),
 									  locateLine);
 			}
 		} catch (Exception e) {
@@ -166,7 +170,7 @@ public class CMDMaker {
 				return makeInvalid();
 			}
 			return new RawCommand(CMDTypes.COMMAND_TYPE.DESCRIBE.name(), 
-								  tokenPairs.get(0).getCotent(),
+								  InfoRetrieve.getAllSubInfo(tokenPairs).getFront(),
 								  locateLine);
 		} catch (Exception e) {
 			return makeInvalid();

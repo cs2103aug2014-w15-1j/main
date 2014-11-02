@@ -95,6 +95,21 @@ public class ValidityChecker {
 		for (int i = 0; i < ParserKeys.VIEW_DATE.length; i++) {
 			if (viewDate.equalsIgnoreCase(ParserKeys.VIEW_DATE[i])){
 				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Judge the string is a recognizable command
+	 * */
+	static boolean isCommand(String inputStr) {
+		boolean result = false;
+		for (int i = 0; i < ParserKeys.COMMANDS.length; i++) {
+			if (inputStr.equalsIgnoreCase(ParserKeys.COMMANDS[i])){
+				result = true;
+				break;
 			}
 		}
 		return result;
