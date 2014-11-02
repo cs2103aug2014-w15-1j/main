@@ -25,13 +25,13 @@ public class RunLogic {
 	private static int[] currentListIndex = new int[Default.MAX_TASKS];
 	
 	//added by Zhang Ji
-	private static Stack<Command> pastCommands;
+	private static Stack<Command> pastCommands ;
 	
 	public static boolean hasPastCommands() {
 		return !pastCommands.isEmpty();
 	}
-	public static void undo() {
-		pastCommands.pop().undo();
+	public static DisplayInfo undo() {
+		return pastCommands.pop().undo();
 	}
 	private static void addPastCommands(Command cmd){
 		if(cmd.supportUndo()) {
@@ -61,7 +61,7 @@ public class RunLogic {
 	}
 	
 
-	public int getIndexInList(ArrayList<Task> lst, int ptr) {
+	public static int getIndexInList(ArrayList<Task> lst, int ptr) {
 		for(int i=0; i<lst.size(); i++) {
 			if(lst.get(i).matchPointer(ptr)){
 				return i;
@@ -70,7 +70,7 @@ public class RunLogic {
 		return -1;
 	}
 	
-	public boolean removeTaskByPointer(ArrayList<Task> lst, int ptr){
+	public static boolean removeTaskByPointer(ArrayList<Task> lst, int ptr){
 		int index = getIndexInList(lst, ptr);
 		if(index != -1){
 			lst.remove(index);
@@ -106,6 +106,7 @@ public class RunLogic {
 		// pass user command to CLI for auto-correction
 		RawCommand stringCommand = ParserProcesser.interpretCommand(inputCommand);
 		Command userCommand = ConvertCommand.convert(stringCommand);
+		
 		addPastCommands(userCommand);
 		return userCommand.execute();
 	}

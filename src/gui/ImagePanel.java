@@ -25,7 +25,7 @@ public class ImagePanel extends JPanel {
 
 	private BufferedImage background;
 	private String imageFilePath;
-	private String defaultImageFilePath = "backgroundw.jpg";
+	private String defaultImageFilePath = "background.jpg";
 
 	float[] scales = { 1f, 1f, 1f, 1f };
 	float[] offsets = new float[4];

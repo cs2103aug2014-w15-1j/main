@@ -26,6 +26,7 @@ public class GuiInfoTranslator {
 
 	private ArrayList<String> firstCol = new ArrayList<String>();
 	private ArrayList<String> secondCol = new ArrayList<String>();
+	private ArrayList<String> thirdCol = new ArrayList<String>();
 
 	// constants
 	//private final static String MESSAGE_EMPTY_LIST = "No relevent information here";
@@ -59,7 +60,7 @@ public class GuiInfoTranslator {
 	}
 
 	public boolean changeTitle() {
-		return false;
+		return info.changeTitle();
 	}
 
 	public String getTitleString() {
@@ -77,6 +78,10 @@ public class GuiInfoTranslator {
 	public ArrayList<String> getSecondCol() {
 		return secondCol;
 	}
+	public ArrayList<String> getThirdCol() {
+		return thirdCol;
+	}
+
 
 	public String getFeedbackString() {
 		return info.getFeedbackString();
@@ -141,10 +146,15 @@ public class GuiInfoTranslator {
 
 		for (int i = 0; i < lst.size(); i++) {
 			firstCol.add(lst.get(i).getName());
-			if (lst.get(i).getEndDate() != null) {
-				secondCol.add(lst.get(i).getEndDate().toString());
+			if (lst.get(i).getStartDate() != null) {
+				secondCol.add(lst.get(i).getStartDate().toString());
 			} else {
 				secondCol.add(EMPTY_STRING);
+			}
+			if (lst.get(i).getEndDate() != null) {
+				thirdCol.add(lst.get(i).getEndDate().toString());
+			} else {
+				thirdCol.add(EMPTY_STRING);
 			}
 		}
 
@@ -190,4 +200,5 @@ public class GuiInfoTranslator {
 		secondCol.add(repetition);
 
 	}
-}
+
+	}
