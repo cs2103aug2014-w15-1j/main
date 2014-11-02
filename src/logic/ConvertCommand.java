@@ -148,7 +148,7 @@ public class ConvertCommand {
 					return new Invalid(INVALID_ADD_ENDDATE, null);
 				}
 				endDate = convertDate(command.getEndDay());
-				if(startDate == null){
+				if(endDate == null){
 					return new Invalid(INVALID_ADD_ENDDATE, null);
 				}
 			}
