@@ -81,10 +81,10 @@ public class DeleteTaskList implements Command{
 			DataStore.writeAllData(passToStore);
 			
 			ViewTaskList viewTaskList;
-			if(currentListIndex[deleteIndex] != -1){
-				viewTaskList = new ViewTaskList(deleteIndex, feedback, title);
+			if(currentListIndex[currentDisplay[1]] != -1){
+				viewTaskList = new ViewTaskList(currentDisplay[1], feedback, title);
 			} else if (GUI.hasPrevious()){
-				viewTaskList = new ViewTaskList(deleteIndex - Default.MAX_DISPLAY_LINE, feedback, title);
+				viewTaskList = new ViewTaskList(currentDisplay[1] - Default.MAX_DISPLAY_LINE, feedback, title);
 			} else {
 				viewTaskList = new ViewTaskList(feedback, title);
 			}
