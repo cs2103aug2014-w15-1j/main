@@ -131,7 +131,7 @@ public class InfoRetrieve {
      * if cannot find the return system default repeat
      * */
     static RawInfoPair getRepeatDate(ArrayList<TokenPair> tokens) {
-    	String repeatDate = "";
+    	String repeatDate = ParserKeys.EMPTY_STR;
     	TokenPair curPair;
     	
         for (int i = 0; i < tokens.size(); i++) {
@@ -151,11 +151,31 @@ public class InfoRetrieve {
     }
     
     /**
+     * get repeated date for a task
+     * if cannot find the return empty string
+     * */
+    static RawInfoPair getNB(ArrayList<TokenPair> tokens) {
+    	String number = ParserKeys.EMPTY_STR;
+    	TokenPair curPair;
+    	
+        for (int i = 0; i < tokens.size(); i++) {
+        	curPair = tokens.get(i);
+        	if (ValidityChecker.isNB(curPair.getToken())) {
+        		number = curPair.getCotent();
+        		tokens.remove(i);
+        		break;
+        	}
+        }
+        
+        return new RawInfoPair(number, tokens);
+    }
+    
+    /**
      * get start day for a task
      * if cannot find the return system default date
      * */
     static RawInfoPair getDate(ArrayList<TokenPair> tokens) {
-    	String date = "";
+    	String date = ParserKeys.EMPTY_STR;
     	TokenPair curPair;
     	
         for (int i = 0; i < tokens.size(); i++) {
@@ -280,7 +300,6 @@ public class InfoRetrieve {
 		if (ValidityChecker.isCommand(curFront)) {
 			command = curFront;
 		}
-		rawString = StringCutter.rmFrontBlock(rawString);
 		
 	    return command;
 	}

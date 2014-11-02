@@ -15,8 +15,7 @@ public class ConvertCommand {
 	private static String CANNOT_FORMAT = "Cannot command %s in current view mode!";
 	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %s: %s invalid!";
 	private static String UNKNOWN = "Invalid Command!";
-	
-	
+		
 	private static String SUCCESSFUL_ADD = "New task added successfully!";
 	private static String CANNOT_ADD = String.format(CANNOT_FORMAT, "Add");
 	private static String INVALID_ADD_NAME = String.format(INVALID_ARGUMENT_FORMAT, "Add", "task title");
@@ -149,7 +148,7 @@ public class ConvertCommand {
 					return new Invalid(INVALID_ADD_ENDDATE, null);
 				}
 				endDate = convertDate(command.getEndDay());
-				if(startDate == null){
+				if(endDate == null){
 					return new Invalid(INVALID_ADD_ENDDATE, null);
 				}
 			}
@@ -281,9 +280,6 @@ public class ConvertCommand {
 				return new Invalid(INVALID_RESCHEDULE_STARTDATE, null);
 			}
 			startDate = convertDate(newStartDate);
-			if(startDate == null){
-				return new Invalid(INVALID_RESCHEDULE_STARTDATE, null);
-			}
 		}
 		
 		if(command.getEndDay() != null){
@@ -291,9 +287,6 @@ public class ConvertCommand {
 				return new Invalid(INVALID_RESCHEDULE_ENDDATE, null);
 			}
 			endDate = convertDate(newEndDate);
-			if(startDate == null){
-				return new Invalid(INVALID_RESCHEDULE_ENDDATE, null);
-			}
 		}
 		
 
@@ -373,7 +366,7 @@ public class ConvertCommand {
 			}
 			
 			int readLine = Integer.parseInt(command.getCMDDescription());
-			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
+			if(readLine > Default.MAX_DISPLAY_LINE || readLine <= 0 || RunLogic.getCurrentDisplay()[readLine] == -1){
 				return new Invalid(INVALID_MARK_ITEM, null);
 			}
 			return new Mark(readLine, status, SUCCESSFUL_MARK, String.format(DETAIL_TITLE_FORMAT, task.getName()));
@@ -467,14 +460,13 @@ public class ConvertCommand {
 			return new Invalid(INVALID_KEYWORD, null);
 		}
 		
-		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
-			return new SearchTaskList(keyWord, SUCCESSFUL_SEARCH, String.format(SEARCH_TITLE, keyWord));
-		} else if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN_DETAIL)){
 			return new SearchTrashBin(keyWord, SUCCESSFUL_SEARCH, String.format(SEARCH_TITLE, keyWord));
-		} 
-		
-		
-		return new Invalid(CANNOT_SEARCH, null);
+		} else if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)){
+			return new SearchTrashBin(keyWord, SUCCESSFUL_SEARCH, String.format(SEARCH_TITLE, keyWord));
+		} else {
+			return new SearchTaskList(keyWord, SUCCESSFUL_SEARCH, String.format(SEARCH_TITLE, keyWord));
+		}
 	}
 
 	private static Command convertBack(RawCommand command) {
@@ -557,6 +549,6 @@ public class ConvertCommand {
 				return null;
 			}
 		}
-		return new JDate(year, month, day);
+		return new JDate(year, month - 1, day);
 	}
 }

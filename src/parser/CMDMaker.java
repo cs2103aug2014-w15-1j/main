@@ -1,6 +1,7 @@
 package parser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import parser.CMDTypes.COMMAND_TYPE;
 
@@ -38,7 +39,11 @@ public class CMDMaker {
 			endDate = endPair.getFront();
 			
 			description = InfoRetrieve.getDescription(endPair.getSubInfo());
-
+			
+			if (endDate == null) {
+				endDate = startDate;
+				startDate = null;
+			}
 			return new RawCommand(CMDTypes.COMMAND_TYPE.ADD.name(), taskTitle, 
 								  repeatDate, startDate, 
 								  endDate, description);
@@ -310,7 +315,7 @@ public class CMDMaker {
 	
 				return new RawCommand(CMDTypes.COMMAND_TYPE.VIEW.name(), getFields);
 			} else if (ValidityChecker.isValidViewDate(getFields)) {
-				return viewDate(getFields);
+				return translateDate(getFields);
 			} else if (ValidityChecker.isValidDate(getFields)) {
 				return viewDate(InfoRetrieve.makeDay(getFields));
 			} else {
@@ -319,6 +324,42 @@ public class CMDMaker {
 			}
 		} catch (Exception e) {
 			return makeInvalid();
+		}
+	}
+	
+	/**
+	 * Translate plain date to standardized date
+	 * 
+	 * @return RawCommand
+	 * */
+	private static RawCommand translateDate(String getFields) {
+		Calendar cal = Calendar.getInstance();
+		String date = ParserKeys.EMPTY_STR;
+		
+		if (getFields.equalsIgnoreCase("Today")) {
+			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
+			date += toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
+			date += toTwoDigit(cal.get(Calendar.DATE));
+			return viewDate(InfoRetrieve.makeDay(date));
+		} else if (getFields.equalsIgnoreCase("Tomorrow")) {
+			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
+			date += toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
+			date += toTwoDigit((cal.get(Calendar.DATE) + 1));
+			return viewDate(InfoRetrieve.makeDay(date));
+		} else {
+			// getFields.equals("Yesterday")
+			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
+			date += toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
+			date += toTwoDigit((cal.get(Calendar.DATE) - 1));
+			return viewDate(InfoRetrieve.makeDay(date));
+		} 
+	}
+	
+	private static String toTwoDigit(int rawNum) {
+		if (rawNum < 10 && rawNum >0) {
+			return ParserKeys.ZERO + rawNum;
+		} else {
+			return (rawNum + ParserKeys.EMPTY_STR);
 		}
 	}
 
@@ -330,6 +371,24 @@ public class CMDMaker {
 	private static RawCommand viewDate(String getDate) {
 		try {
 			return new RawCommand(CMDTypes.COMMAND_TYPE.VIEWDATE.name(), getDate);
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+	
+	/**
+	 * Return a RawCommand for mark a task
+	 * 
+	 * @return -RawCommand
+	 * */
+	static RawCommand mark(ArrayList<TokenPair> tokenPairs) {
+		try {
+			RawInfoPair getLinePair = InfoRetrieve.getNB(tokenPairs);
+			String getLine = getLinePair.getFront();
+			
+			String getMarkInfo = InfoRetrieve.getFrontUN(getLinePair.getSubInfo()).getFront();
+			
+			return new RawCommand(CMDTypes.COMMAND_TYPE.MARK.name(), getMarkInfo, getLine);
 		} catch (Exception e) {
 			return makeInvalid();
 		}

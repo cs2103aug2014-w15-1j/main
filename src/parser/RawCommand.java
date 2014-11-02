@@ -58,7 +58,10 @@ public class RawCommand{
     	} else if (command.equals(COMMAND_TYPE.REPEAT.name())) {
             this.rpDate = fieldInfo;
             this.cmdDescription = locateLine;
-    	}	
+    	} else if (command.equals(COMMAND_TYPE.MARK.name())){
+    		this.description = fieldInfo;
+    		this.cmdDescription = locateLine;
+    	}
     }
     
     // For reschedule only

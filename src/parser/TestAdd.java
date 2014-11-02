@@ -9,9 +9,11 @@ public class TestAdd {
     RawCommand resultCTL0;
     RawCommand resultCTL1;
     RawCommand resultCTL2;
+    RawCommand resultCTL3;
     String testAddStr0;
     String testAddStr1;
     String testAddStr2;
+    String testAddStr3;
     String getCommand;
     String getTitle;
     String getDescription;
@@ -24,6 +26,7 @@ public class TestAdd {
         testAddStr0 = "add title";
         testAddStr1 = "add a new task tuesday 2012-10-10 2012-10-15 some description";
         testAddStr2 = "add 1";
+        testAddStr3 = "add";
     }
     
     @Test
@@ -42,8 +45,8 @@ public class TestAdd {
         Assert.assertEquals("Get the command title", "title", getTitle);
         Assert.assertEquals("Get the command discription", "EMPTY DESCRIPTION", getDescription);
         Assert.assertEquals("Get the repeated day", "no_repeat", getRPDate);
-        Assert.assertEquals("Get the start day", "20000101", getStartDay);
-        Assert.assertEquals("Get the end day", "20000101", getEndDay);
+        Assert.assertEquals("Get the start day", null, getStartDay);
+        Assert.assertEquals("Get the end day", null, getEndDay);
         
         resultCTL1 = ParserProcesser.interpretCommand(testAddStr1);
         getCommand = resultCTL1.getCommand();
@@ -68,6 +71,12 @@ public class TestAdd {
         Assert.assertEquals("Get the add command", "ADD", getCommand);
         Assert.assertEquals("Get the command title", "1", getTitle);
         
+        resultCTL3 = ParserProcesser.interpretCommand(testAddStr3);
+        getCommand = resultCTL3.getCommand();
+        getTitle = resultCTL3.getTitle();
         
+        
+        Assert.assertEquals("Get the add command", "ADD", getCommand);
+        Assert.assertEquals("Get the command title", "", getTitle);
     }
 }

@@ -55,6 +55,8 @@ public class CMDInterpreter {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.EXIT, getSubInfo);
         } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RESTORE.name())) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.RESTORE, getSubInfo);
+        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.MARK.name())) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.MARK, getSubInfo);
         } else {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.INVALID, getSubInfo);
         }
