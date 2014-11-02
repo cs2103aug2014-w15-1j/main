@@ -60,12 +60,8 @@ public class RunLogic {
 		nextTaskPointer++;
 	}
 	
-<<<<<<< HEAD
-	public static int getIndexInList(ArrayList<Task> lst, int ptr) {
-=======
 
-	public int getIndexInList(ArrayList<Task> lst, int ptr) {
->>>>>>> 529c62c7b22098107db06287a05c09215beef974
+	public static int getIndexInList(ArrayList<Task> lst, int ptr) {
 		for(int i=0; i<lst.size(); i++) {
 			if(lst.get(i).matchPointer(ptr)){
 				return i;
