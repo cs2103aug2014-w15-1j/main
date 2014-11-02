@@ -47,7 +47,8 @@ public class ReadBin implements Command {
 		currentDisplay[1] = readIndex;
 
 		GUI.changeViewMode(VIEW_MODE.BIN_DETAIL);
-
+		GUI.changeCurretnTask(RunLogic.getCurrentListIndex()[readIndex]);
+		
 		display.add(trashbinList.get(RunLogic.getCurrentListIndex()[readIndex]));
 
 		constructBridges(display, feedback, title);

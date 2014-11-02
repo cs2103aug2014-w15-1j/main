@@ -232,11 +232,7 @@ public class ConvertCommand {
 	}
 
 	private static Command convertRename(RawCommand command) {
-		String newName = command.getTitle();
-		if(newName == null){
-			return new Invalid(INVALID_RENAME_NAME, null);
-		}
-		
+
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
 			if(!isInt(command.getCMDDescription())){
 				return new Invalid(INVALID_RENAME_ITEM, null);
@@ -246,12 +242,25 @@ public class ConvertCommand {
 			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
 				return new Invalid(INVALID_RENAME_ITEM, null);
 			}
+			String newName = command.getTitle();
+			if(newName == null){
+				return new Invalid(INVALID_RENAME_NAME, null);
+			}
+			
 			return new Rename(readLine, newName, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, newName));
 		} 
 
 		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
 			return new Invalid(CANNOT_RENAME, null);
 		}
+		
+		
+		if(command.getCMDDescription() == null && command.getTitle() == null){
+			return new Invalid(INVALID_RENAME_NAME, null);
+		}
+		
+		String newName = command.getCMDDescription() + " " + command.getTitle();
+		
 		return new Rename(newName, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, newName));
 	}
 
@@ -310,7 +319,6 @@ public class ConvertCommand {
 	}
 
 	private static Command ConvertDescribe(RawCommand command) {
-		String newDescription = command.getDescription();
 
 		Task task = RunLogic.getTaskList().get(RunLogic.getGuiStatus().getTaskIndex());
 		
@@ -323,13 +331,23 @@ public class ConvertCommand {
 			if(readLine > Default.MAX_DISPLAY_LINE || RunLogic.getCurrentDisplay()[readLine] == -1){
 				return new Invalid(INVALID_DESCRIBE_ITEM, null);
 			}
+			String newDescription = command.getDescription();
+			
 			return new Describe(readLine, newDescription, SUCCESSFUL_DESCRIBE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		} 
 
 		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
 			return new Invalid(CANNOT_DESCRIBE, null);
 		}
-
+		
+		String newDescription = command.getCMDDescription();
+		if(newDescription == null){
+			newDescription = command.getDescription();
+		}
+		if(command.getDescription() != null){
+			newDescription += " " + command.getDescription();
+		}
+		
 		return new Describe(newDescription, SUCCESSFUL_DESCRIBE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 	}
 	

@@ -13,7 +13,7 @@ public class StringCutter {
 	static String getFrontBlock(String originStr) {
 		String frontBlock;
 		String frontSPclean = StringCutter.cleanFrontSpace(originStr);
-		if (frontSPclean.startsWith(ParserKeys.SPLITSYMBOL)) {
+		if (originStr != null && frontSPclean.startsWith(ParserKeys.SPLITSYMBOL)) {
 			frontBlock = StringCutter.getFrontQuoted(frontSPclean);
 		} else {
 			frontBlock = StringCutter.getFrontUnquoted(frontSPclean);
@@ -26,12 +26,16 @@ public class StringCutter {
 	 * Get front unquoted block
 	 * */
 	private static String getFrontUnquoted(String frontSPclean) {
-		int getFirstSpace = frontSPclean.indexOf(ParserKeys.SPACE);
-		
-		if (getFirstSpace != ParserKeys.INDEX_NOT_EXIST) {
-			return frontSPclean.substring(0, getFirstSpace);
+		if (frontSPclean != null) {
+			int getFirstSpace = frontSPclean.indexOf(ParserKeys.SPACE);
+			
+			if (getFirstSpace != ParserKeys.INDEX_NOT_EXIST) {
+				return frontSPclean.substring(0, getFirstSpace);
+			} else {
+				return frontSPclean;
+			}
 		} else {
-			return frontSPclean;
+			return ParserKeys.EMPTY_STR;
 		}
 	}
 
@@ -74,12 +78,16 @@ public class StringCutter {
 	 * Remove front unquoted block
 	 * */
 	static String rmFrontUnquoted(String orginStr) {
-		int getFirstSpace = orginStr.indexOf(ParserKeys.SPACE);
-		
-		if (getFirstSpace != ParserKeys.INDEX_NOT_EXIST) {
-			return orginStr.substring(getFirstSpace + 1, orginStr.length());
+		if (orginStr != null) {
+			int getFirstSpace = orginStr.indexOf(ParserKeys.SPACE);
+			
+			if (getFirstSpace != ParserKeys.INDEX_NOT_EXIST) {
+				return orginStr.substring(getFirstSpace + 1, orginStr.length());
+			} else {
+				return ParserKeys.EMPTY_STR;
+			}
 		} else {
-			return null;
+			return ParserKeys.EMPTY_STR;
 		}
 	}
 	
@@ -87,11 +95,8 @@ public class StringCutter {
 	 * Remove front blocks until commands
 	 * */
 	static String rmAfterCommand(String originStr) {
-		String curFront = ParserKeys.EMPTY_STR;
-		while (!ValidityChecker.isCommand(curFront)) {
-			curFront = getFrontBlock(originStr);
-			originStr = rmFrontBlock(originStr);
-		}
+		
+		originStr = rmFrontBlock(originStr);
 		
 		return originStr;
 	}
@@ -100,7 +105,7 @@ public class StringCutter {
 	 * Clean the white space at the start of a string
 	 * */
 	static String cleanFrontSpace(String rawString) {
-	    if(rawString.startsWith(ParserKeys.SPACE)) {
+		if(rawString != null && rawString.startsWith(ParserKeys.SPACE)) {
 	        return cleanFrontSpace(rawString.substring(1, rawString.length()));
 	    } else {
 	        return rawString;

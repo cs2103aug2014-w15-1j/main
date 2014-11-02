@@ -10,7 +10,6 @@ public class SearchTrashBin implements Command{
 	private static String title;
 	
 	//local memory
-	private static GUIStatus GUI;
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
@@ -51,14 +50,12 @@ public class SearchTrashBin implements Command{
 	
 	
 	private static void initialize(){
-		GUI = RunLogic.getGuiStatus();
 		trashbinList = RunLogic.getTrashbinList();
 		currentDisplay = RunLogic.getCurrentDisplay();
 		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 	
 	private static void update(){
-		RunLogic.updateGuiStatus(GUI);
 		RunLogic.updateTrashbinList(trashbinList);
 		RunLogic.updateCurrentdiaplay(currentDisplay);
 		RunLogic.updateCurrentListIndex(currentListIndex);

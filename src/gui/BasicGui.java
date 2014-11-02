@@ -427,8 +427,8 @@ public class BasicGui extends JFrame {
 		mainPanel.add(layered);
 		mainPanel.validate();
 	}
-	public void showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c) {
-		ColumnListPanel listed = new ColumnListPanel(a, b, c);
+	public void showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d, boolean pre, boolean nxt) {
+		ColumnListPanel listed = new ColumnListPanel(a, b, c, d, pre, nxt);
 		mainPanel.removeAll();
 		mainPanel.add(listed);
 		mainPanel.validate();

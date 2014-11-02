@@ -13,35 +13,35 @@ public class CMDCaller {
 	static RawCommand transformCmd(CMDInfoPair infoPair){
 	    RawCommand resultCMD;
 	    CMDTypes.COMMAND_TYPE getCMD = infoPair.getCMD();
-	    ArrayList<TokenPair> subInfoStr = infoPair.getSubInfo();
+	    ArrayList<TokenPair> subInfoPairs = infoPair.getSubInfo();
 	
 	    switch(getCMD){
 	    case ADD:
-	        resultCMD = CMDMaker.add(subInfoStr);
+	        resultCMD = CMDMaker.add(subInfoPairs);
 	        break;
 	    case UPDATE:
-	        resultCMD = CMDMaker.update(subInfoStr);
+	        resultCMD = CMDMaker.update(subInfoPairs);
 	        break;
 	    case RENAME:
-	        resultCMD = CMDMaker.rename(subInfoStr);
+	        resultCMD = CMDMaker.rename(subInfoPairs);
 	        break;
 	    case RESCHEDULE:
-	        resultCMD = CMDMaker.reschedule(subInfoStr);
+	        resultCMD = CMDMaker.reschedule(subInfoPairs);
 	        break;
 	    case DESCRIBE:
-	        resultCMD = CMDMaker.describe(subInfoStr);
+	        resultCMD = CMDMaker.describe(subInfoPairs);
 	        break;
 	    case REPEAT:
-	        resultCMD = CMDMaker.repeat(subInfoStr);
+	        resultCMD = CMDMaker.repeat(subInfoPairs);
 	        break;
 	    case READ:
-	        resultCMD = CMDMaker.read(subInfoStr);
+	        resultCMD = CMDMaker.read(subInfoPairs);
 	        break;
 	    case DELETE:
-	        resultCMD = CMDMaker.delete(subInfoStr);
+	        resultCMD = CMDMaker.delete(subInfoPairs);
 	        break;
 	    case VIEW:
-	        resultCMD = CMDMaker.view(subInfoStr);
+	        resultCMD = CMDMaker.view(subInfoPairs);
 	        break;
 	    case UNDO:
 	        resultCMD = CMDMaker.undo();
@@ -56,13 +56,13 @@ public class CMDCaller {
 	        resultCMD = CMDMaker.exit();
 	        break;
 	    case RESTORE:
-	    	resultCMD = CMDMaker.restore(subInfoStr);
+	    	resultCMD = CMDMaker.restore(subInfoPairs);
 	    	break;
 	    case BACK:
 	    	resultCMD = CMDMaker.back();
 	    	break;
 	    case SEARCH:
-	    	resultCMD = CMDMaker.search(subInfoStr);
+	    	resultCMD = CMDMaker.search(subInfoPairs);
 	    	break;
 	    default:
 	        resultCMD = CMDMaker.makeInvalid();
