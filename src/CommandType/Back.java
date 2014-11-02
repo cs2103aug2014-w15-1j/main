@@ -18,7 +18,7 @@ public class Back implements Command{
 
 	@Override
 	public DisplayInfo execute() {
-		int highlightLine = GUI.getTaskIndex();
+		int highlightLine = GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE;
 		GUI.changeCurretnTask(GUI.getTaskIndex() - GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE);
 		
 		Command view;
