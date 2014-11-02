@@ -19,9 +19,8 @@ public class Add implements Command{
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
 
-	//values for GUI and I/O
+	//values for GUI
 	private static DisplayInfo passToGui;
-	private static LogicToStore passToStore;
 	
 	//added by Zhang Ji
 	private int taskPointer;
@@ -130,7 +129,6 @@ public class Add implements Command{
 	
 	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
 		passToGui = new DisplayInfo(GUI, display, feedback, title);
-		passToStore = new LogicToStore(taskList,trashbinList);
 	}
 
 	@Override
