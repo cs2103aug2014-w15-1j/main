@@ -36,9 +36,9 @@ public class TestSimpleCMD {
         testDeleStr = "delete 1";
         testReadStr = "read 2";
         testViewStr = "view tasklist";
-        testUpdateStr = "update 1 name \"a new name\"";
+        testUpdateStr = "update 1 name \"a 1 new name\"";
         testUndoStr = "undo";
-        testReDescribeStr = "update description \"a new description\"";
+        testReDescribeStr = "update description \"a 1 new description\"";
         testRescheduleStr = "reschedule 2012-10-12 2012-10-13";
         testUpdateScheduleStr = "update schedule 2012-10-12 2012-10-13";
         testViewDateStr1 = "view today";
@@ -63,11 +63,11 @@ public class TestSimpleCMD {
         updateTest = ParserProcesser.interpretCommand(testUpdateStr);
         Assert.assertEquals("Test command: ", "RENAME", updateTest.getCommand());
         Assert.assertEquals("Test command: ", "1", updateTest.getCMDDescription());
-        Assert.assertEquals("Test target index: ", "a new name", updateTest.getTitle());
+        Assert.assertEquals("Test target index: ", "a 1 new name", updateTest.getTitle());
         
         reDescribe = ParserProcesser.interpretCommand(testReDescribeStr);
         Assert.assertEquals("Test command: ", "DESCRIBE", reDescribe.getCommand());
-        Assert.assertEquals("Test target index: ", "a new description", reDescribe.getDescription());
+        Assert.assertEquals("Test target index: ", "a 1 new description", reDescribe.getDescription());
        
         undoTest = ParserProcesser.interpretCommand(testUndoStr);
         Assert.assertEquals("Test command: ", "UNDO", undoTest.getCommand());

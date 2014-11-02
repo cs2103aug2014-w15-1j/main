@@ -41,7 +41,7 @@ class Tokenizer {
 		ArrayList<TokenPair> infoList = new ArrayList<TokenPair>();
 		String frontBlock;
 		TokenPair frontPair;
-		while (subInfoStr != null) {
+		while (!subInfoStr.isEmpty()) {
 			frontBlock = StringCutter.getFrontBlock(subInfoStr);
 			frontPair = judgeContent(frontBlock);
 			infoList.add(frontPair);
@@ -56,6 +56,7 @@ class Tokenizer {
 	 * Judge contents and form corresponding token pair
 	 * */
 	private static TokenPair judgeContent(String frontBlock) {
+		
 		if (ValidityChecker.isValidDate(frontBlock)) {
 			return new TokenPair(frontBlock, TOKEN_TYPE.DT);
 		} else if (ValidityChecker.isValidRP(frontBlock)) {

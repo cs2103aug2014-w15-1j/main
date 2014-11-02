@@ -21,6 +21,7 @@ public class InfoRetrieve {
      * @return {RawInfoPair}
      * */
     static RawInfoPair getTaskTitle(ArrayList<TokenPair> tokenPairs) {
+    	
     	TokenPair front;
     	TOKEN_TYPE frontToken;
     	int numOfQuotes;
@@ -32,7 +33,7 @@ public class InfoRetrieve {
     	} else if (numOfQuotes == 1) {
     		front = tokenPairs.get(0);
         	frontToken = front.getToken();
-        	
+    
         	if (ValidityChecker.isUN(frontToken)) {
         		return getFrontUN(tokenPairs);
         	} else {
@@ -48,7 +49,7 @@ public class InfoRetrieve {
      * get the first contents that is Quoted
      * */
     static RawInfoPair getOneQT(ArrayList<TokenPair> tokenPairs) {
-    	String result = "";
+    	String result = ParserKeys.EMPTY_STR;
     	TokenPair curPair;
     	for (int i = 0; i < tokenPairs.size(); i++) {
     		curPair = tokenPairs.get(i);
@@ -64,22 +65,27 @@ public class InfoRetrieve {
      * get front contents that is unidentifiable
      * */
     static RawInfoPair getFrontUN(ArrayList<TokenPair> tokenPair) {
-    	String result = "";
+    	String result = ParserKeys.EMPTY_STR;
     	TokenPair front;
     	TOKEN_TYPE frontToken;
     	
     	while(!tokenPair.isEmpty()) {
 			front = tokenPair.get(0);
-        	frontToken = front.getToken();
-        	
-        	if (ValidityChecker.isUN(frontToken)){
+			frontToken = front.getToken();
+			
+			if (ValidityChecker.isUN(frontToken) || 
+				ValidityChecker.isNB(frontToken)){
         		result += front.getCotent() + ParserKeys.SPACE;
         		tokenPair.remove(0);
         	} else {
         		break;
         	}
         }
-    	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
+    	if (result.endsWith(ParserKeys.SPACE)) {
+        	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
+        } else {
+        	return new RawInfoPair(result, tokenPair);
+        }
     }
     
     /**
@@ -88,7 +94,7 @@ public class InfoRetrieve {
      * @return RawInfoPair
      * */
     static RawInfoPair getAllSubInfo(ArrayList<TokenPair> tokenPair) {
-    	String result = "";
+    	String result = ParserKeys.EMPTY_STR;
     	TokenPair front;
     	
     	while(!tokenPair.isEmpty()) {
@@ -96,7 +102,12 @@ public class InfoRetrieve {
         	result += front.getCotent() + ParserKeys.SPACE;
         	tokenPair.remove(0);
         }
-    	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
+    	
+    	if (result.endsWith(ParserKeys.SPACE)) {
+        	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
+        } else {
+        	return new RawInfoPair(result, tokenPair);
+        }
     }
     
     /**
@@ -188,7 +199,11 @@ public class InfoRetrieve {
         	description = ParserKeys.EMPTY_DIS;
         }
         
-        return description.substring(0, description.length()-1);
+        if (description.endsWith(ParserKeys.SPACE)) {
+        	return description.substring(0, description.length()-1);
+        } else {
+        	return description;
+        }
     }
     
     /**
@@ -261,14 +276,11 @@ public class InfoRetrieve {
 		String command = ParserKeys.EMPTY_STR;
 		String curFront;
 		
-		while (command.isEmpty()) {
-			rawString = StringCutter.cleanFrontSpace(rawString);
-			curFront = StringCutter.getFrontBlock(rawString);
-			if (ValidityChecker.isCommand(curFront)) {
-				command = curFront;
-			}
-			rawString = StringCutter.rmFrontBlock(rawString);
+		curFront = StringCutter.getFrontBlock(rawString);
+		if (ValidityChecker.isCommand(curFront)) {
+			command = curFront;
 		}
+		rawString = StringCutter.rmFrontBlock(rawString);
 		
 	    return command;
 	}
