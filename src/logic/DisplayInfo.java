@@ -22,6 +22,7 @@ public class DisplayInfo {
 	private boolean hasPreviousPage;
 
 	private boolean changeTasklist;
+	private boolean changeTitle;
 	
 	private ArrayList<Task> taskList;
 	private String feedback;
@@ -60,7 +61,7 @@ public class DisplayInfo {
 	}
 	
 	public DisplayInfo(GUIStatus status,
-			String feedback, Boolean change, String title) {
+			String feedback, Boolean changeTaskList, String title) {
 		this.mode = status.getMode();
 		this.hasNextPage = status.hasNext();
 		this.hasPreviousPage = status.hasPrevious();
@@ -70,7 +71,20 @@ public class DisplayInfo {
 		this.feedback = feedback;
 		this.title = title;
 			
-		this.changeTasklist = change;
+		this.changeTasklist = changeTaskList;
+	}
+	public DisplayInfo(GUIStatus status,
+			String feedback, Boolean changeTaskList, Boolean changeTitle) {
+		this.mode = status.getMode();
+		this.hasNextPage = status.hasNext();
+		this.hasPreviousPage = status.hasPrevious();
+		this.date = status.getDate();
+		setIsPageInvolved();
+
+		this.feedback = feedback;
+		
+		this.changeTitle = changeTitle;
+		this.changeTasklist = changeTaskList;
 	}
 	
 	public VIEW_MODE getViewMode(){
@@ -101,6 +115,9 @@ public class DisplayInfo {
 	}
 	public boolean changeTasklist() {
 		return changeTasklist;
+	}
+	public boolean changeTitle() {
+		return changeTitle;
 	}
 	
 	public JDate getDate(){

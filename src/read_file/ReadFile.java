@@ -15,14 +15,14 @@ import logic.Task;
  * */
 public class ReadFile {
 
-    private ArrayList<Task> EVENTTASK;
-    private ArrayList<Task> TRASHFILE;
+    private static ArrayList<Task> EVENTTASK;
+    private static ArrayList<Task> TRASHFILE;
 
     private static ArrayList<Task> EMPTYDATA = new ArrayList<Task>();
 
     public ReadFile() {
-        this.EVENTTASK = new ArrayList<Task>();
-        this.TRASHFILE = new ArrayList<Task>();
+        this.setEVENTTASK(new ArrayList<Task>());
+        this.setTRASHFILE(new ArrayList<Task>());
     }
     
 
@@ -52,7 +52,7 @@ public class ReadFile {
      * @return
      *     return null if not no file exist, else return file content
      */
-    private ArrayList<Task> getOSEventTask(String fileName) {
+    private static ArrayList<Task> getOSEventTask(String fileName) {
         try {
             FileReader inputFile = new FileReader(fileName);
             BufferedReader bufferReader = new BufferedReader(inputFile);
@@ -61,14 +61,14 @@ public class ReadFile {
             if (line != null) {
                 if (!line.isEmpty()) {
                     while (line != null) {
-                        this.EVENTTASK.add(makeTask(line));
+                        EVENTTASK.add(makeTask(line));
                         line = bufferReader.readLine();
                     }
                 }
             }
             bufferReader.close();
 
-            return this.EVENTTASK;
+            return EVENTTASK;
 
         } catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
@@ -88,7 +88,7 @@ public class ReadFile {
      * @return
      *     return null if not no file exist, else return file content
      */
-    private ArrayList<Task> getOSTrashFile(String fileName) {
+    private static ArrayList<Task> getOSTrashFile(String fileName) {
         try {
             FileReader inputFile = new FileReader(fileName);
             BufferedReader bufferReader = new BufferedReader(inputFile);
@@ -97,14 +97,14 @@ public class ReadFile {
             if (line != null) {
                 if (!line.isEmpty()) {
                     while (line != null) {
-                        this.TRASHFILE.add(makeTask(line));
+                        TRASHFILE.add(makeTask(line));
                         line = bufferReader.readLine();
                     }
                 }
             }
             bufferReader.close();
 
-            return this.TRASHFILE;
+            return TRASHFILE;
 
         } catch (FileNotFoundException e) {
             DataStore.initializeFile(); 
@@ -156,6 +156,26 @@ public class ReadFile {
             return null;
         }
     }
+
+
+	public ArrayList<Task> getEVENTTASK() {
+		return EVENTTASK;
+	}
+
+
+	public void setEVENTTASK(ArrayList<Task> eVENTTASK) {
+		EVENTTASK = eVENTTASK;
+	}
+
+
+	public ArrayList<Task> getTRASHFILE() {
+		return TRASHFILE;
+	}
+
+
+	public void setTRASHFILE(ArrayList<Task> tRASHFILE) {
+		TRASHFILE = tRASHFILE;
+	}
 
 
 	

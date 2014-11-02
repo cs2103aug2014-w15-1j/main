@@ -26,6 +26,7 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
@@ -35,6 +36,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.BevelBorder;
 
 import java.awt.Frame;
 import java.awt.Dialog.ModalExclusionType;
@@ -97,8 +99,8 @@ public class BasicGui extends JFrame {
 	// constants for FRAME initialization (unit in pixel)
 	private final static int TOP_LEFT_X_VALUE = 100;
 	private final static int TOP_LEFT_Y_VALUE = 100;
-	private final static int FRAME_WIDTH = 400;
-	private final static int FRAME_HEIGHT = 460;
+	private final static int FRAME_WIDTH = 1000;
+	private final static int FRAME_HEIGHT = 600;
 	
 	int pX,pY;
 
@@ -199,7 +201,7 @@ public class BasicGui extends JFrame {
 	private void constructMenuArea() {
 		menuArea = new JPanel();
 		menuArea.setOpaque(false);
-		menuArea.setPreferredSize(new Dimension(FRAME_WIDTH,20));
+		menuArea.setPreferredSize(new Dimension(FRAME_WIDTH,25));
 		menuArea.setLayout(new BorderLayout(0, 0));
 		
 		getContentPane().add(menuArea, BorderLayout.NORTH);
@@ -208,16 +210,23 @@ public class BasicGui extends JFrame {
 	private void constructTitlePanel() {
 		titlePanel = new JPanel();
 		titlePanel.setLayout(new BorderLayout());
+		titlePanel.setOpaque(false);
 		
 		menuArea.add(titlePanel, BorderLayout.CENTER);
 	}
 	private void constructTitleWindow() {
 		titleWindow = new JTextField();
-		titleWindow.setBackground(new Color(255, 192, 203,120));
+		
+		Font font1 = new Font("DIALOG", Font.ITALIC, 15); 
+		 
+		titleWindow.setFont(font1);
+		titleWindow.setBackground(new Color(255, 255, 255, 230));
+		//new Color(66, 161, 223, 220)
 		titleWindow.setEditable(false);
 		titleWindow.setText("Today is Sep 29 2014");
-		titleWindow.setForeground(Color.white);
-		titleWindow.setBorder(null);
+		
+		titleWindow.setForeground(new Color(66, 161, 223, 220));
+		titleWindow.setBorder(BorderFactory.createMatteBorder(0,0,1,0 ,new Color(66, 161, 223, 255) ));
 		
 		enableDraggableTitle();
 		
@@ -285,6 +294,9 @@ public class BasicGui extends JFrame {
 		
 		
 		mainPanel.add(mainWindow);
+	}
+	private void constructInfoPanel() {
+		
 	}
 
 	private void constructFeedbackPanel() {
@@ -415,8 +427,8 @@ public class BasicGui extends JFrame {
 		mainPanel.add(layered);
 		mainPanel.validate();
 	}
-	public void showListed(ArrayList<String> a, ArrayList<String> b) {
-		ColumnListPanel listed = new ColumnListPanel(a, b);
+	public void showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c) {
+		ColumnListPanel listed = new ColumnListPanel(a, b, c);
 		mainPanel.removeAll();
 		mainPanel.add(listed);
 		mainPanel.validate();

@@ -15,7 +15,7 @@ public class ConvertCommand {
 	private static String CANNOT_FORMAT = "Cannot command %s in current view mode!";
 	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %s: %s invalid!";
 	private static String UNKNOWN = "Invalid Command!";
-	private static String NO_UNDO = "No available undo!";
+	
 	
 	private static String SUCCESSFUL_ADD = "New task added successfully!";
 	private static String CANNOT_ADD = String.format(CANNOT_FORMAT, "Add");
@@ -109,7 +109,7 @@ public class ConvertCommand {
 		} else if (command.getCommand().equalsIgnoreCase("viewdate")) {
 			return convertViewDate(command);
 		} else if (command.getCommand().equalsIgnoreCase("undo")) {
-			return convertUndo(command);
+			return convertUndo();
 		} else if (command.getCommand().equalsIgnoreCase("next")) {
 			return convertNext(command);
 		} else if (command.getCommand().equalsIgnoreCase("previous")) {
@@ -120,10 +120,8 @@ public class ConvertCommand {
 			return convertBack(command);
 		} else if (command.getCommand().equalsIgnoreCase("exit")) {
 			return convertExit(command);
-		} else if(command.getCommand().equalsIgnoreCase("undo")){
-			return convertUndo();
 		} else {
-			return new Invalid(UNKNOWN, null);
+			return new Invalid(UNKNOWN);
 		}
 	}
 
@@ -419,11 +417,7 @@ public class ConvertCommand {
 		}
 	}
 
-	private static Command convertUndo(RawCommand command) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	private static Command convertNext(RawCommand command) {
 		if(RunLogic.getGuiStatus().hasNext()){
 			if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){

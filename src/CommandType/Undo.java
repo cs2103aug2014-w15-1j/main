@@ -1,18 +1,22 @@
 package CommandType;
 
+import logic.RunLogic;
 import logic.DisplayInfo;
+
 
 public class Undo implements Command {
 	
 	
-	
-	
-	
+	private static String NO_UNDO = "No available undo!";	
 	
 	
 	@Override
 	public DisplayInfo execute() {
-		return null;
+		if(!RunLogic.hasPastCommands()) {
+			return new Invalid(NO_UNDO).execute();
+		} else {
+			return RunLogic.undo();
+		}
 	}
 
 	@Override
