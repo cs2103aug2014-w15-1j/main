@@ -33,6 +33,11 @@ class ParserKeys {
                                                 "saturday", "sunday", "no_repeat", ""};
     public static final String[] VIEW_DATE = {"yesterday", "today", "tomorrow",
     												"nextweek"};
+    public static final String[] COMMANDS = {"add", "update", "rename","reschedule",
+    										 "repeat","describe","delete","view",
+    										 "read","undo","restore","exit","next", 
+    										 "previous", "search", "viewdate"};
+    
     public static final String INVALID_INFO = "invalid info";
     
     public static final int DATE_LENGTH = 8;

@@ -22,7 +22,7 @@ class Tokenizer {
 		
 		command = InfoRetrieve.getCommand(rawInputStr);
 		
-		String commandRemoved = StringCutter.rmFrontBlock(rawInputStr);
+		String commandRemoved = StringCutter.rmAfterCommand(rawInputStr);
 		
 		if (commandRemoved == null || commandRemoved.isEmpty()) {
 			subInfo = null;
