@@ -152,7 +152,7 @@ public class InfoRetrieve {
     
     /**
      * get repeated date for a task
-     * if cannot find the return system default repeat
+     * if cannot find the return empty string
      * */
     static RawInfoPair getNB(ArrayList<TokenPair> tokens) {
     	String number = ParserKeys.EMPTY_STR;
@@ -167,10 +167,6 @@ public class InfoRetrieve {
         	}
         }
         
-        if (number.isEmpty()) {
-        	number = ParserKeys.EMPTY_STR;
-        }
-        
         return new RawInfoPair(number, tokens);
     }
     
@@ -179,7 +175,7 @@ public class InfoRetrieve {
      * if cannot find the return system default date
      * */
     static RawInfoPair getDate(ArrayList<TokenPair> tokens) {
-    	String date = "";
+    	String date = ParserKeys.EMPTY_STR;
     	TokenPair curPair;
     	
         for (int i = 0; i < tokens.size(); i++) {

@@ -19,6 +19,7 @@ public class TestSimpleCMD {
     String testViewDateStr2;
     String testSearchStr;
     String backTestStr;
+    String markStr;
     
     RawCommand deleteTest;
     RawCommand readTest;
@@ -32,6 +33,7 @@ public class TestSimpleCMD {
     RawCommand viewDateTest2;
     RawCommand searchTest;
     RawCommand backTest;
+    RawCommand markTest;
     
     @Before
     public void initTestString() {
@@ -46,10 +48,12 @@ public class TestSimpleCMD {
         testViewDateStr1 = "view Today";
         testViewDateStr2 = "view 2012-10-10";
         testSearchStr = "search a task name";
+        markStr = "mark 1 done";
     }
     
     @Test
     public void test() {
+    	/*
         deleteTest = ParserProcesser.interpretCommand(testDeleStr);
         Assert.assertEquals("Test command: ", "DELETE", deleteTest.getCommand());
         Assert.assertEquals("Test target index: ", "1", deleteTest.getCMDDescription());
@@ -97,6 +101,10 @@ public class TestSimpleCMD {
         Assert.assertEquals("Test search contents: ", "a task name", searchTest.getCMDDescription());
         
         backTest = ParserProcesser.interpretCommand(backTestStr);
-        Assert.assertEquals("Test command: BACK", "BACK", backTest.getCommand());    
+        Assert.assertEquals("Test command: BACK", "BACK", backTest.getCommand());  
+        */
+        markTest = ParserProcesser.interpretCommand(markStr);
+        Assert.assertEquals("Test command: Mark", "MARK", markTest.getCommand()); 
+        Assert.assertEquals("Test command: Mark", "1", markTest.getCMDDescription()); 
     }
 }

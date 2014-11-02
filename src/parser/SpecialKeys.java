@@ -36,7 +36,7 @@ class ParserKeys {
     public static final String[] COMMANDS = {"add", "update", "rename","reschedule",
     										 "repeat","describe","delete","view",
     										 "read","undo","restore","exit","next", 
-    										 "previous", "back", "search", "viewdate"};
+    										 "previous", "back", "search", "viewdate", "mark"};
     
     public static final String INVALID_INFO = "invalid info";
     
