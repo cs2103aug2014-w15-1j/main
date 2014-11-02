@@ -71,7 +71,7 @@ public class StringCutter {
 	}
 
 	/**
-	 * Remove fron unquoted block
+	 * Remove front unquoted block
 	 * */
 	static String rmFrontUnquoted(String orginStr) {
 		int getFirstSpace = orginStr.indexOf(ParserKeys.SPACE);
@@ -81,6 +81,19 @@ public class StringCutter {
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * Remove front blocks until commands
+	 * */
+	static String rmAfterCommand(String originStr) {
+		String curFront = ParserKeys.EMPTY_STR;
+		while (!ValidityChecker.isCommand(curFront)) {
+			curFront = getFrontBlock(originStr);
+			originStr = rmFrontBlock(originStr);
+		}
+		
+		return originStr;
 	}
 
 	/**
