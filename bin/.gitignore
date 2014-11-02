@@ -1,10 +1,13 @@
-/parser
-/CommandType
-/logic
-<<<<<<< HEAD
-/parser
 /read_file/
+<<<<<<< HEAD
+/data_store/
+/logic/
+=======
 =======
 >>>>>>> c42825fe92b7fc34ad3567fea65c60c44de53ce7
 /data_store
+<<<<<<< HEAD
 /gui
+=======
+>>>>>>> ba65536747cfa19673427b3a1fc60ee79d9b600c
+>>>>>>> 72a8c16bbf56391d9a0fb862f2556745cece055c
