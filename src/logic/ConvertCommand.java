@@ -340,8 +340,14 @@ public class ConvertCommand {
 			return new Invalid(CANNOT_DESCRIBE, null);
 		}
 		
-		String newDescription = command.getCMDDescription().concat(" ").concat(command.getDescription());
-
+		String newDescription = command.getCMDDescription();
+		if(newDescription == null){
+			newDescription = command.getDescription();
+		}
+		if(command.getDescription() != null){
+			newDescription += " " + command.getDescription();
+		}
+		
 		return new Describe(newDescription, SUCCESSFUL_DESCRIBE, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 	}
 	
