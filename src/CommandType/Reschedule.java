@@ -41,7 +41,7 @@ public class Reschedule implements Command {
 	}
 
 	public Reschedule(int line, JDate startDate, JDate endDate,
-			String myFeedback, String myTitle) {
+		String myFeedback, String myTitle) {
 		feedback = myFeedback;
 		title = myTitle;
 
