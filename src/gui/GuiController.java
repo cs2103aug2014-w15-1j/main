@@ -79,7 +79,10 @@ public class GuiController {
 		if (gui == null) {
 			run();
 		}
-		gui.setTitleText(info.getTitleString());
+		if(info.changeTitle()) {
+			gui.setTitleText(info.getTitleString());
+		}
+		
 		gui.setFeedbackText(info.getFeedbackString());
 
 		if (info.changeTaskList()) {
@@ -94,7 +97,7 @@ public class GuiController {
 				throw new UnsupportedOperationException(
 						"view in Month is not supported yet");
 			default:
-				gui.showListed(info.getFirstCol(), info.getSecondCol());
+				gui.showListed(info.getFirstCol(), info.getSecondCol(), info.getThirdCol());
 			}
 		}
 

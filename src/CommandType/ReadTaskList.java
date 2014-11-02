@@ -87,4 +87,10 @@ public class ReadTaskList implements Command {
 			String feedback, String title) {
 		passToGui = new DisplayInfo(GUI, display, feedback, title);
 	}
+	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
 }

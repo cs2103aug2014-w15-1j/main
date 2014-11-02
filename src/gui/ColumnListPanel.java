@@ -35,12 +35,13 @@ public class ColumnListPanel extends JPanel {
 	// info of task list
 	private ArrayList<String> firstCol;
 	private ArrayList<String> secondCol;
+	private ArrayList<String> thirdCol;
 	private ArrayList<String> indexCol;
 	private final static String SPACE = " ";
 	private final static String indexColTitle = "Index";
 	private final static String firstColTitle = "Title";
-	private final static String secondColTitle = "End Date";
-
+	private final static String secondColTitle = "Start Date";
+	private final static String thirdColTitle = "End Date";
 	// length of rows firstColTitle
 	private int NUM_OF_COL = 10;
 
@@ -64,10 +65,11 @@ public class ColumnListPanel extends JPanel {
 	 *            ArrayList of all task endDates
 	 */
 	public ColumnListPanel(ArrayList<String> firstCol,
-			ArrayList<String> secondCol) {
+			ArrayList<String> secondCol, ArrayList<String> thirdCol) {
 		super();
 		this.firstCol = firstCol;
 		this.secondCol = secondCol;
+		this.thirdCol = thirdCol;
 		this.indexCol = new ArrayList<String>();
 		
 		setUp();
@@ -85,7 +87,7 @@ public class ColumnListPanel extends JPanel {
 		setOpaque(false);
 		setLayout(new GridBagLayout());
 	}
-
+		
 	/**
 	 * construct all columns using <em>constructCol<em>
 	 * 
@@ -110,16 +112,30 @@ public class ColumnListPanel extends JPanel {
 		c1.fill = GridBagConstraints.BOTH;
 		c1.ipady = 17;
 		c1.insets = new Insets(0, 5, 0, 0);
-		c1.weightx = 0.8;
+		c1.weightx = 0.7;
 		constructCol(colIndex, firstColTitle, firstCol, c1);
 
 		// column 1
 		colIndex = 2;
 		GridBagConstraints c2 = new GridBagConstraints();
 		c2.weightx = 0.1;
-		c2.insets = new Insets(0, 10, 0, 10);
+		c2.insets = new Insets(0, 10, 0, 0);
 		c2.fill = GridBagConstraints.BOTH;
 		constructCol(colIndex, secondColTitle, secondCol, c2);
+		
+		colIndex = 3;
+		GridBagConstraints c3 = new GridBagConstraints();
+		c3.weightx = 0.1;
+		c3.insets = new Insets(0, 10, 0, 10);
+		c3.fill = GridBagConstraints.BOTH;
+		constructCol(colIndex, thirdColTitle, thirdCol, c3);
+		
+		
+		int rowIndex = NUM_OF_COL;
+		colIndex = 0;
+		colIndex = 1;
+		
+		
 
 	}
 

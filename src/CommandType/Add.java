@@ -24,12 +24,12 @@ public class Add implements Command{
 	private static LogicToStore passToStore;
 	
 	//added by Zhang Ji
-	private long taskPointer;
-	public void setTaskPointer(long pointer) {
+	private int taskPointer;
+	public void setTaskPointer(int pointer) {
 		this.taskPointer = pointer;
 	}
 
-	public long getTaskPointer() {
+	public int getTaskPointer() {
 		return taskPointer;
 	}
 	
@@ -61,11 +61,22 @@ public class Add implements Command{
 
 	@Override
 	public DisplayInfo undo() {
-		// TODO Auto-generated method stub
-		if(taskList.remove(task)){
-			
-		};
-		return null;
+		
+		ArrayList<Task> display = new ArrayList<Task>();
+		RunLogic.removeTaskByPointer(taskList ,getTaskPointer());
+		
+		initialize();
+		currentListIndex = updateListIndex(currentListIndex);
+		GUI.changeViewMode(VIEW_MODE.TASK_LIST);
+		currentDisplay = initializeDisplayList(currentDisplay.length);
+		currentDisplay[1] = GUI.getTaskIndex();
+		update();
+		
+		
+		constructBridges(display, feedback, title);
+		DataStore.writeTask(taskList);
+		return passToGui;
+		
 	}
 	
 	//-----------helper functions-----------------
@@ -108,6 +119,11 @@ public class Add implements Command{
 	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
 		passToGui = new DisplayInfo(GUI, display, feedback, title);
 		passToStore = new LogicToStore(taskList,trashbinList);
+	}
+
+	@Override
+	public boolean supportUndo() {
+		return true;
 	}
 
 	

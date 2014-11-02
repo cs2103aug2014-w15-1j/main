@@ -10,12 +10,15 @@ public class Invalid implements Command{
 		feedback = myFeedback;
 		title = myTitle;
 	}
+	public Invalid(String myFeedback) {
+		feedback = myFeedback;
+	}
 	
 	@Override
 	public DisplayInfo execute() {
 		// TODO Auto-generated method stub
 		
-		return new DisplayInfo(RunLogic.getGuiStatus(), feedback, false, title);
+		return new DisplayInfo(RunLogic.getGuiStatus(), feedback, false, false);
 	}
 
 	@Override
@@ -23,5 +26,10 @@ public class Invalid implements Command{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
 
 }

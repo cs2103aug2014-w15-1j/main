@@ -16,6 +16,7 @@ public class ConvertCommand {
 	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %s: %s invalid!";
 	private static String UNKNOWN = "Invalid Command!";
 	
+	
 	private static String SUCCESSFUL_ADD = "New task added successfully!";
 	private static String CANNOT_ADD = String.format(CANNOT_FORMAT, "Add");
 	private static String INVALID_ADD_NAME = String.format(INVALID_ARGUMENT_FORMAT, "Add", "task title");
@@ -108,7 +109,7 @@ public class ConvertCommand {
 		} else if (command.getCommand().equalsIgnoreCase("viewdate")) {
 			return convertViewDate(command);
 		} else if (command.getCommand().equalsIgnoreCase("undo")) {
-			return convertUndo(command);
+			return convertUndo();
 		} else if (command.getCommand().equalsIgnoreCase("next")) {
 			return convertNext(command);
 		} else if (command.getCommand().equalsIgnoreCase("previous")) {
@@ -120,7 +121,7 @@ public class ConvertCommand {
 		} else if (command.getCommand().equalsIgnoreCase("exit")) {
 			return convertExit(command);
 		} else {
-			return new Invalid(UNKNOWN, null);
+			return new Invalid(UNKNOWN);
 		}
 	}
 
@@ -138,6 +139,9 @@ public class ConvertCommand {
 					return new Invalid(INVALID_ADD_STARTDATE, null);
 				}
 				startDate = convertDate(command.getStartDay());
+				if(startDate == null){
+					return new Invalid(INVALID_ADD_STARTDATE, null);
+				}
 			}
 			
 			if(command.getEndDay() != null){
@@ -145,6 +149,9 @@ public class ConvertCommand {
 					return new Invalid(INVALID_ADD_ENDDATE, null);
 				}
 				endDate = convertDate(command.getEndDay());
+				if(startDate == null){
+					return new Invalid(INVALID_ADD_ENDDATE, null);
+				}
 			}
 			
 			Task task = new Task(command.getTitle(), command.getDescription(), command.getRPdate(), startDate, endDate);
@@ -232,7 +239,6 @@ public class ConvertCommand {
 		
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
 			if(!isInt(command.getCMDDescription())){
-				System.out.println("!");
 				return new Invalid(INVALID_RENAME_ITEM, null);
 			}
 			
@@ -266,6 +272,9 @@ public class ConvertCommand {
 				return new Invalid(INVALID_RESCHEDULE_STARTDATE, null);
 			}
 			startDate = convertDate(newStartDate);
+			if(startDate == null){
+				return new Invalid(INVALID_RESCHEDULE_STARTDATE, null);
+			}
 		}
 		
 		if(command.getEndDay() != null){
@@ -273,6 +282,9 @@ public class ConvertCommand {
 				return new Invalid(INVALID_RESCHEDULE_ENDDATE, null);
 			}
 			endDate = convertDate(newEndDate);
+			if(startDate == null){
+				return new Invalid(INVALID_RESCHEDULE_ENDDATE, null);
+			}
 		}
 		
 
@@ -405,11 +417,7 @@ public class ConvertCommand {
 		}
 	}
 
-	private static Command convertUndo(RawCommand command) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	private static Command convertNext(RawCommand command) {
 		if(RunLogic.getGuiStatus().hasNext()){
 			if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
@@ -463,7 +471,9 @@ public class ConvertCommand {
 	private static Command convertExit(RawCommand command) {
 		return new Exit();
 	}
-	
+	private static Command convertUndo(){
+		return new Undo();
+	}
 	
 	
 	//--------------------Helper Function-------------------------
@@ -505,7 +515,30 @@ public class ConvertCommand {
 	private static JDate convertDate(String date){
 		int year = Integer.parseInt(date.substring(0, 4));
 		int month = Integer.parseInt(date.substring(4, 6));
+		
+		// check month valid
+		if(month < 1 || month > 12){
+			return null;
+		}
+		
 		int day = Integer.parseInt(date.substring(6, 8));
+		
+		// check day valid
+		if((day < 1) || (day > 31)){
+			return null;
+		} else if (day == 29){
+			if ( (month == 2) && ((year % 4 != 0) || (year % 400 == 0))){
+				return null;
+			}
+		} else if (day == 30){
+			if(month == 2){
+				return null;
+			}
+		} else if (day == 31){
+			if ((month == 2) || (month == 4) || (month == 6) || (month == 9) || (month == 11)){
+				return null;
+			}
+		}
 		return new JDate(year, month, day);
 	}
 }

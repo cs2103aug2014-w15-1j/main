@@ -4,6 +4,10 @@ import gui.VIEW_MODE;
 
 import java.util.ArrayList;
 
+import java.util.Calendar;
+
+import java.util.Stack;
+
 import parser.RawCommand;
 import parser.ParserProcesser;
 import read_file.ReadFile;
@@ -21,6 +25,20 @@ public class RunLogic {
 	private static int[] currentListIndex = new int[Default.MAX_TASKS];
 	
 	//added by Zhang Ji
+	private static Stack<Command> pastCommands ;
+	
+	public static boolean hasPastCommands() {
+		return !pastCommands.isEmpty();
+	}
+	public static DisplayInfo undo() {
+		return pastCommands.pop().undo();
+	}
+	private static void addPastCommands(Command cmd){
+		if(cmd.supportUndo()) {
+			pastCommands.push(cmd);
+		}
+	}
+	
 	private static int nextTaskPointer;
 	private static void initializeTaskPointer() {
 		nextTaskPointer = 0;
@@ -33,15 +51,17 @@ public class RunLogic {
 			incrementnextTaskPointer();
 		}
 	}
-
+	
 	public static int getNextTaskPointer() {
 		return nextTaskPointer;
 	}
+	
 	public static void incrementnextTaskPointer() {
 		nextTaskPointer++;
 	}
 	
-	public int getIndexInList(ArrayList<Task> lst, int ptr) {
+
+	public static int getIndexInList(ArrayList<Task> lst, int ptr) {
 		for(int i=0; i<lst.size(); i++) {
 			if(lst.get(i).matchPointer(ptr)){
 				return i;
@@ -50,7 +70,7 @@ public class RunLogic {
 		return -1;
 	}
 	
-	public boolean removeTaskByPointer(ArrayList<Task> lst, int ptr){
+	public static boolean removeTaskByPointer(ArrayList<Task> lst, int ptr){
 		int index = getIndexInList(lst, ptr);
 		if(index != -1){
 			lst.remove(index);
@@ -60,16 +80,22 @@ public class RunLogic {
 		}
 	}
 	
-	
 	// end of Zhang Ji's modification
 	
+
 	public static DisplayInfo initialize() {
 		ReadFile rf = new ReadFile();
 		taskList = rf.getEventTask();
 		trashbinList = rf.getTrashFile();
 		initializeTaskPointer();
+		pastCommands = new Stack<Command>();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
-		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, convertDate("20141022"));
+		
+ 		Calendar c = Calendar.getInstance();
+ 		
+ 		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, 
+ 				new JDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH)));
+ 
 
 		currentListIndex = updateListIndexOfTaskList(currentListIndex);
 		Command start = new ViewTaskList(WELCOME, TITLE);
@@ -81,6 +107,7 @@ public class RunLogic {
 		RawCommand stringCommand = ParserProcesser.interpretCommand(inputCommand);
 		Command userCommand = ConvertCommand.convert(stringCommand);
 		
+		addPastCommands(userCommand);
 		return userCommand.execute();
 	}
 	
@@ -135,12 +162,5 @@ public class RunLogic {
 			currentList[i] = -1;
 		}
 		return currentList;
-	}
-	
-	private static JDate convertDate(String date){
-		int year = Integer.parseInt(date.substring(0, 4));
-		int month = Integer.parseInt(date.substring(4, 6));
-		int day = Integer.parseInt(date.substring(6, 8));
-		return new JDate(year, month, day);
 	}
 }

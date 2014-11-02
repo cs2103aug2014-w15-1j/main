@@ -47,6 +47,7 @@ public class ViewTaskList implements Command{
 		} else {
 			boolean hasNext = currentListIndex[firstTaskIndex + Default.MAX_DISPLAY_LINE] > 0;
 			boolean hasPrevious = firstTaskIndex >= Default.MAX_DISPLAY_LINE;
+			
 			for(int i = 1, j = firstTaskIndex; currentListIndex[j] >= 0; j++){
 				if(i <= Default.MAX_DISPLAY_LINE){
 					display.add(taskList.get(currentListIndex[j]));
@@ -99,5 +100,11 @@ public class ViewTaskList implements Command{
 	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
 		passToGui = new DisplayInfo(GUI, display, feedback, title);
 	}
+	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
 
 }
