@@ -3,14 +3,15 @@ package logic;
 import gui.VIEW_MODE;
 
 import java.util.ArrayList;
+
+import java.util.Calendar;
+
 import java.util.Stack;
 
 import parser.RawCommand;
 import parser.ParserProcesser;
 import read_file.ReadFile;
 import CommandType.*;
-
-import java.util.*;
 
 public class RunLogic {
 	private static String WELCOME = "Welcome to MagiCal!";
@@ -50,15 +51,21 @@ public class RunLogic {
 			incrementnextTaskPointer();
 		}
 	}
-
+	
 	public static int getNextTaskPointer() {
 		return nextTaskPointer;
 	}
+	
 	public static void incrementnextTaskPointer() {
 		nextTaskPointer++;
 	}
 	
+<<<<<<< HEAD
 	public static int getIndexInList(ArrayList<Task> lst, int ptr) {
+=======
+
+	public int getIndexInList(ArrayList<Task> lst, int ptr) {
+>>>>>>> 529c62c7b22098107db06287a05c09215beef974
 		for(int i=0; i<lst.size(); i++) {
 			if(lst.get(i).matchPointer(ptr)){
 				return i;
@@ -79,6 +86,7 @@ public class RunLogic {
 	
 	// end of Zhang Ji's modification
 	
+
 	public static DisplayInfo initialize() {
 		ReadFile rf = new ReadFile();
 		taskList = rf.getEventTask();
@@ -87,10 +95,11 @@ public class RunLogic {
 		pastCommands = new Stack<Command>();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 		
-		Calendar c=Calendar.getInstance();
-		
-		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, 
-				new JDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH)));
+ 		Calendar c = Calendar.getInstance();
+ 		
+ 		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, 
+ 				new JDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH)));
+ 
 
 		currentListIndex = updateListIndexOfTaskList(currentListIndex);
 		Command start = new ViewTaskList(WELCOME, TITLE);
@@ -158,5 +167,4 @@ public class RunLogic {
 		}
 		return currentList;
 	}
-
 }
