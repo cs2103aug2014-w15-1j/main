@@ -11,4 +11,7 @@ public class SystemInfo {
     public static final String EVENT_NAME = "Taskfile.txt";
     public static final String TRASH_NAME = "Trashfile.txt";
     
+    public static final String CHECKSTART = "start";
+    public static final String CHECKEND = "end";
+    
 }

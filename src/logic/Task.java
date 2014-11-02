@@ -47,6 +47,36 @@ public class Task {
 		this.done = false;
 	}
 	
+	/*
+	 * @para 3 fields
+	 * Input has No Description,No Start Date
+	 */
+	public Task(String name, String repeatDays, JDate endDate){
+		this.name = name;
+		this.description = null;
+		this.repeatDays = repeatDays;
+		this.startDate = null;
+		this.endDate = endDate;
+		this.done = false;
+	}
+	
+	/*
+	 * @para 3 fields
+	 * Input has No Description, No End Date
+	 */
+	public Task(String name, JDate startDate, String repeatDays){
+		this.name = name;
+		this.description = null;
+		this.repeatDays = repeatDays;
+		this.startDate = startDate;
+		this.endDate = null;
+		this.done = false;
+	}
+	
+	/*
+	 * @para 3 fields
+	 * Input has No Start Date, No End Date
+	 */
 	public Task(String name, String description, String repeatDays){
 		this.name = name;
 		this.description = description;
@@ -56,6 +86,48 @@ public class Task {
 		this.done = false;
 	}
 	
+	/*
+	 * @para 4 fields
+	 * Input has no Description
+	 */
+	public Task(String name, String repeatDays, JDate startDate, JDate endDate){
+		this.name = name;
+		this.description = null;
+		this.repeatDays = repeatDays;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.done = false;
+	}
+	
+	/*
+	 * @para 4 fields
+	 * Input has no Start Date
+	 */
+	public Task(String name, String description, String repeatDays, JDate endDate){
+		this.name = name;
+		this.description = description;
+		this.repeatDays = repeatDays;
+		this.startDate = null;
+		this.endDate = endDate;
+		this.done = false;
+	}
+
+	/*
+	 * @para 4 fields
+	 * Input has no End Date
+	 */
+	public Task(String name, String description, JDate startDate, String repeatDays){
+		this.name = name;
+		this.description = description;
+		this.repeatDays = repeatDays;
+		this.startDate = startDate;
+		this.endDate = null;
+		this.done = false;
+	}
+	
+	/*
+	 * Full 5 parts
+	 */
 	public Task(String name, String description, String repeatDays, JDate startDate2, JDate endDate2){
 		this.name = name;
 		this.description = description;
@@ -117,6 +189,7 @@ public class Task {
 		this.done = false;
 	}
 	
+	/*
 	// API for compare
 	public boolean equals(Task task){
 		if(!this.name.equals(task.name)){
@@ -139,23 +212,28 @@ public class Task {
 		}
 		return true;
 	}
+	*/
 	
 	public String toPersonalString() {
 	    String startDateStr;
 	    String endDateStr;
+	    
 	    if (this.startDate == null) {
 	        startDateStr = SystemInfo.EMPTYDATE;
 	    } else {
 	        startDateStr = "" + this.startDate.getYear() + SystemInfo.SPLIT_DATE_SYMBOL + 
 	                            this.startDate.getMonth() + SystemInfo.SPLIT_DATE_SYMBOL + 
-	                            this.startDate.getDay();
+	                            this.startDate.getDay() + SystemInfo.SPLIT_DATE_SYMBOL +
+	                            SystemInfo.CHECKSTART;
 	    }
+	    
 	    if (this.endDate == null) {
 	        endDateStr = SystemInfo.EMPTYDATE;
 	    } else {
 	        endDateStr =   "" + this.endDate.getYear()  + SystemInfo.SPLIT_DATE_SYMBOL + 
 	                            this.endDate.getMonth()  + SystemInfo.SPLIT_DATE_SYMBOL + 
-	                            this.endDate.getDay();
+	                            this.endDate.getDay() + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            SystemInfo.CHECKEND;
 	    }
 
 	    return this.name + SystemInfo.SEPERATESIMBOL + this.description + 
