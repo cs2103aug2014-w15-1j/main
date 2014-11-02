@@ -1,12 +1,15 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -32,30 +35,33 @@ public class ColumnListPanel extends JPanel {
 
 	private static final long serialVersionUID = -5452419359255825458L;
 
+	private boolean previousPage;
+	private boolean nextPage;
+	
 	// info of task list
 	private ArrayList<String> firstCol;
 	private ArrayList<String> secondCol;
 	private ArrayList<String> thirdCol;
+	private ArrayList<Boolean> fourthCol;
 	private ArrayList<String> indexCol;
+
 	private final static String SPACE = " ";
 	private final static String indexColTitle = "Index";
 	private final static String firstColTitle = "Title";
 	private final static String secondColTitle = "Start Date";
 	private final static String thirdColTitle = "End Date";
+	private final static String fourthColTitle = "Status";
 	// length of rows firstColTitle
 	private int NUM_OF_COL = 10;
 
 	// Pre-defined color
-	private static Color lightCyan120 = new Color(0, 229, 238, 120);
-	private static Color lightCyan20 = new Color(0, 229, 238, 20);
-	
+	private static Color lightCyan120 = new Color(55, 177, 241, 220);
+	private static Color lightCyan20 = new Color(55, 177, 241, 20);
 
-	
-	
 	/********************************************
 	 ************** Constructor *****************
 	 ********************************************/
-	
+
 	/**
 	 * create a new ColumnListPanel with 2-column information filled
 	 * 
@@ -65,17 +71,23 @@ public class ColumnListPanel extends JPanel {
 	 *            ArrayList of all task endDates
 	 */
 	public ColumnListPanel(ArrayList<String> firstCol,
-			ArrayList<String> secondCol, ArrayList<String> thirdCol) {
+			ArrayList<String> secondCol, ArrayList<String> thirdCol,
+			ArrayList<Boolean> fourthCol, boolean previous, boolean next) {
 		super();
+		this.indexCol = new ArrayList<String>();
 		this.firstCol = firstCol;
 		this.secondCol = secondCol;
 		this.thirdCol = thirdCol;
-		this.indexCol = new ArrayList<String>();
+		this.fourthCol = fourthCol;
 		
+		this.previousPage = previous;
+		this.nextPage = next;
+
 		setUp();
 		constructAllCol();
 
 	}
+
 	/*********************************************
 	 ************* Private Method ****************
 	 ********************************************/
@@ -87,25 +99,44 @@ public class ColumnListPanel extends JPanel {
 		setOpaque(false);
 		setLayout(new GridBagLayout());
 	}
-		
+
 	/**
 	 * construct all columns using <em>constructCol<em>
 	 * 
 	 * @see #constructCol(int, String, ArrayList, GridBagConstraints)
 	 */
 	private void constructAllCol() {
-		int colIndex;
-		colIndex = 0;
-		for(int i=1; i<=firstCol.size(); i++) {
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridy = 0;
+		c.gridx = 0;
+		c.insets = new Insets(0, 10, 0, 10);
+		String imgPath;
+		if(previousPage){
+			imgPath = "previousArrowY.png";
+		} else {
+			imgPath = "previousArrowN.png";
+		}
+		this.add(createImageLabel(imgPath, null, new Dimension(50, 50), false), c);
+		c.gridx = 4;
+		
+		if(nextPage){
+			imgPath = "nextArrowY.png";
+		} else {
+			imgPath = "nextArrowN.png";
+		}
+		this.add(createImageLabel(imgPath, null, new Dimension(50, 50), false), c);
+
+		int colIndex = 0;
+		for (int i = 1; i <= firstCol.size(); i++) {
 			indexCol.add(Integer.toString(i));
 		}
 		GridBagConstraints c0 = new GridBagConstraints();
 		c0.fill = GridBagConstraints.BOTH;
-		c0.ipady = 17;
+		c0.ipady = 25;
 		c0.insets = new Insets(0, 10, 0, 0);
 		c0.weightx = 0;
 		constructCol(colIndex, indexColTitle, indexCol, c0);
-		
+
 		// column 0
 		colIndex = 1;
 		GridBagConstraints c1 = new GridBagConstraints();
@@ -118,24 +149,24 @@ public class ColumnListPanel extends JPanel {
 		// column 1
 		colIndex = 2;
 		GridBagConstraints c2 = new GridBagConstraints();
-		c2.weightx = 0.1;
+		c2.weightx = 0.03;
 		c2.insets = new Insets(0, 10, 0, 0);
 		c2.fill = GridBagConstraints.BOTH;
 		constructCol(colIndex, secondColTitle, secondCol, c2);
-		
+
 		colIndex = 3;
 		GridBagConstraints c3 = new GridBagConstraints();
-		c3.weightx = 0.1;
-		c3.insets = new Insets(0, 10, 0, 10);
+		c3.weightx = 0.03;
+		c3.insets = new Insets(0, 10, 0, 0);
 		c3.fill = GridBagConstraints.BOTH;
 		constructCol(colIndex, thirdColTitle, thirdCol, c3);
-		
-		
-		int rowIndex = NUM_OF_COL;
-		colIndex = 0;
-		colIndex = 1;
-		
-		
+
+		colIndex = 4;
+		GridBagConstraints c4 = new GridBagConstraints();
+		c4.weightx = 0.03;
+		c4.insets = new Insets(0, 10, 0, 10);
+		c4.fill = GridBagConstraints.BOTH;
+		constructStatusCol(colIndex, fourthColTitle, fourthCol, c4);
 
 	}
 
@@ -154,14 +185,33 @@ public class ColumnListPanel extends JPanel {
 	private void constructCol(int colIndex, String title,
 			ArrayList<String> lst, GridBagConstraints c) {
 		c.gridx = colIndex;
-		c.gridy = 0;
+		c.gridy = 1;
 		this.add(createColoredLabel(title, lightCyan120), c);
 		for (int i = 0; i < NUM_OF_COL; i++) {
-			c.gridy = i + 1;
+			c.gridy = i + 2;
 			if (i < lst.size()) {
-				this.add(
-						createColoredLabel(lst.get(i),
-								lightCyan20), c);
+				this.add(createColoredLabel(lst.get(i), lightCyan20), c);
+			} else {
+				this.add(createEmptyLabel(), c);
+			}
+
+		}
+	}
+
+	private void constructStatusCol(int colIndex, String title,
+			ArrayList<Boolean> lst, GridBagConstraints c) {
+		c.gridx = colIndex;
+		c.gridy = 1;
+		this.add(createColoredLabel(title, lightCyan120), c);
+		for (int i = 0; i < NUM_OF_COL; i++) {
+			c.gridy = i + 2;
+			if (i < lst.size()) {
+				if (lst.get(i)) {
+					this.add(createImageLabel("tick.png", lightCyan20 , new Dimension(10, 10), true), c);
+				} else {
+					this.add(createImageLabel("untick.png", lightCyan20, new Dimension(25, 25), true), c);
+				}
+
 			} else {
 				this.add(createEmptyLabel(), c);
 			}
@@ -175,7 +225,8 @@ public class ColumnListPanel extends JPanel {
 	 * @return JLabel
 	 */
 	private JLabel createEmptyLabel() {
-		JLabel label = new JLabel(SPACE); //note that empty string cannot be used here
+		JLabel label = new JLabel(SPACE); // note that empty string cannot be
+											// used here
 		label.setFont(label.getFont().deriveFont(Font.BOLD | Font.ITALIC));
 		label.setOpaque(false);
 		return label;
@@ -196,6 +247,16 @@ public class ColumnListPanel extends JPanel {
 		label.setOpaque(true);
 		label.setBackground(color);
 		label.setForeground(Color.black);
+		return label;
+	}
+
+	private JLabel createImageLabel(String path, Color color, Dimension d, boolean opaque) {
+		ImageIcon icon = new ImageIcon(path);
+		JLabel label = new JLabel(icon);
+		label.setOpaque(opaque);
+		label.setBackground(color);
+		label.setMaximumSize(d);
+		label.setPreferredSize(d);
 		return label;
 	}
 }

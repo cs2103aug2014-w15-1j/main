@@ -97,7 +97,7 @@ public class GuiController {
 				throw new UnsupportedOperationException(
 						"view in Month is not supported yet");
 			default:
-				gui.showListed(info.getFirstCol(), info.getSecondCol(), info.getThirdCol());
+				gui.showListed(info.getFirstCol(), info.getSecondCol(), info.getThirdCol(), info.getFourthCol(), info.hasPreviousPage(), info.hasNextPage());
 			}
 		}
 

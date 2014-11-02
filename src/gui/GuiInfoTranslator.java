@@ -27,6 +27,7 @@ public class GuiInfoTranslator {
 	private ArrayList<String> firstCol = new ArrayList<String>();
 	private ArrayList<String> secondCol = new ArrayList<String>();
 	private ArrayList<String> thirdCol = new ArrayList<String>();
+	private ArrayList<Boolean> fourthCol = new ArrayList<Boolean>();
 
 	// constants
 	//private final static String MESSAGE_EMPTY_LIST = "No relevent information here";
@@ -56,7 +57,7 @@ public class GuiInfoTranslator {
 	}
 
 	public boolean hasPreviousPage() {
-		return this.hasPreviousPage();
+		return info.hasPreviousPage();
 	}
 
 	public boolean changeTitle() {
@@ -81,6 +82,10 @@ public class GuiInfoTranslator {
 	public ArrayList<String> getThirdCol() {
 		return thirdCol;
 	}
+	public ArrayList<Boolean> getFourthCol() {
+		return fourthCol;
+	}
+	
 
 
 	public String getFeedbackString() {
@@ -156,6 +161,8 @@ public class GuiInfoTranslator {
 			} else {
 				thirdCol.add(EMPTY_STRING);
 			}
+			fourthCol.add(lst.get(i).getDone());
+			
 		}
 
 	}
