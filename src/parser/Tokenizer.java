@@ -25,7 +25,7 @@ class Tokenizer {
 		String commandRemoved = StringCutter.rmAfterCommand(rawInputStr);
 		
 		if (commandRemoved == null || commandRemoved.isEmpty()) {
-			subInfo = null;
+			subInfo = new ArrayList<TokenPair>();
 		} else {
 			String frontSPRemoved = StringCutter.cleanFrontSpace(commandRemoved);
 			subInfo = splitInfoString(frontSPRemoved);

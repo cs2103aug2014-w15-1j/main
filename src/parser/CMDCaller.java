@@ -64,6 +64,9 @@ public class CMDCaller {
 	    case SEARCH:
 	    	resultCMD = CMDMaker.search(subInfoPairs);
 	    	break;
+	    case MARK:
+	    	resultCMD = CMDMaker.mark(subInfoPairs);
+	    	break;
 	    default:
 	        resultCMD = CMDMaker.makeInvalid();
 	        break;

@@ -16,6 +16,7 @@ class ParserKeys {
     public static final String EMPTY_STR = "";
     public static final String EMPTY_TITLE = "EMPTY TITLE";
     public static final String EMPTY_DIS = "EMPTY DESCRIPTION";
+    public static final String ZERO = "0";
     public static final String EMPTY_DATE = null;
     
     public static final String RP_EVREYDAY = "everyday";
@@ -35,7 +36,7 @@ class ParserKeys {
     public static final String[] COMMANDS = {"add", "update", "rename","reschedule",
     										 "repeat","describe","delete","view",
     										 "read","undo","restore","exit","next", 
-    										 "previous", "search", "viewdate"};
+    										 "previous", "back", "search", "viewdate"};
     
     public static final String INVALID_INFO = "invalid info";
     

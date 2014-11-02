@@ -12,7 +12,7 @@ class CMDTypes {
 	 * */
 	enum COMMAND_TYPE {
 	    ADD, DELETE, UPDATE, READ, VIEW, VIEWDATE, UNDO, INVALID, 
-	    EXIT, NEXT, PREVIOUS, SEARCH, BACK, 
+	    EXIT, NEXT, PREVIOUS, SEARCH, BACK, MARK,
 	    // VIEW_MODE
 	    TASKLIST, BIN, 
 	    // from bin
