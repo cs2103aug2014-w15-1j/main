@@ -87,7 +87,7 @@ public class ColumnListPanel extends JPanel {
 		setOpaque(false);
 		setLayout(new GridBagLayout());
 	}
-
+		
 	/**
 	 * construct all columns using <em>constructCol<em>
 	 * 
@@ -129,6 +129,13 @@ public class ColumnListPanel extends JPanel {
 		c3.insets = new Insets(0, 10, 0, 10);
 		c3.fill = GridBagConstraints.BOTH;
 		constructCol(colIndex, thirdColTitle, thirdCol, c3);
+		
+		
+		int rowIndex = NUM_OF_COL;
+		colIndex = 0;
+		colIndex = 1;
+		
+		
 
 	}
 
