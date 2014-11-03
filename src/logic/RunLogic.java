@@ -19,8 +19,8 @@ public class RunLogic {
 	
 	// keep track on GUI and File status
 	private static GUIStatus GUI;
-	private static ArrayList<Task> taskList;
-	private static ArrayList<Task> trashbinList;
+	private static ArrayList<Task> taskList = new ArrayList<Task>();
+	private static ArrayList<Task> trashbinList = new ArrayList<Task>();
 	private static int[] currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 	private static int[] currentListIndex = new int[Default.MAX_TASKS];
 	
@@ -42,13 +42,17 @@ public class RunLogic {
 	private static int nextTaskPointer;
 	private static void initializeTaskPointer() {
 		nextTaskPointer = 0;
-		for(Task t: taskList) {
-			t.setPointer(nextTaskPointer);
-			incrementnextTaskPointer();
+		if(taskList != null) {
+			for(Task t: taskList) {
+				t.setPointer(nextTaskPointer);
+				incrementnextTaskPointer();
+			}	
 		}
-		for(Task t: trashbinList) {
-			t.setPointer(nextTaskPointer);
-			incrementnextTaskPointer();
+		if(trashbinList != null) {
+			for(Task t: trashbinList) {
+				t.setPointer(nextTaskPointer);
+				incrementnextTaskPointer();
+			}
 		}
 	}
 	
@@ -86,7 +90,13 @@ public class RunLogic {
 	public static DisplayInfo initialize() {
 		ReadFile rf = new ReadFile();
 		taskList = rf.getEventTask();
+		if(taskList == null) {
+			taskList = new ArrayList<Task>();
+		}
 		trashbinList = rf.getTrashFile();
+		if(trashbinList == null) {
+			trashbinList = new ArrayList<Task>();
+		}
 		initializeTaskPointer();
 		pastCommands = new Stack<Command>();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];

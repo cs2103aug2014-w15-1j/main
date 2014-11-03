@@ -15,7 +15,8 @@ public class AttributePanel extends JPanel {
 
 	private ArrayList<String> firstCol;
 	private ArrayList<String> secondCol;
-
+	private static Color lightCyan220 = new Color(55, 177, 241, 220);
+	
 	private int alphaValue = 100;
 	private Color[] layerColors = { new Color(251, 172, 27, alphaValue),
 			new Color(52, 167, 224, alphaValue),
@@ -30,29 +31,33 @@ public class AttributePanel extends JPanel {
 		this.firstCol = firstCol;
 		this.secondCol = secondCol;
 		
+		int currentIndex = 0;
 		setLayout(new GridBagLayout());
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH;
-		c1.ipady = 10;  
+		c1.ipady = 40;  
 		c1.gridx = 0;
-		c1.gridwidth = 2;
+		c1.gridy = 0;
+		c1.gridwidth = 3;
 		c1.insets = new Insets(2,10,1,1);
-		c1.weightx = 0.1;
-		for(int i=0; i<firstCol.size(); i++) {
-			c1.gridy = i;
-			this.add(createColoredLabel(firstCol.get(i), layerColors[1]), c1);
-		}
+		this.add(new InfoPanel(lightCyan220, firstCol.get(currentIndex), secondCol.get(currentIndex)), c1);
 		
-		GridBagConstraints c2 = new GridBagConstraints();
-		c2.gridx = 4;
-		c2.weightx = 0.8;
-		c2.gridwidth = 7;
-		c2.insets = new Insets(2,10,1,10);
-		c2.fill = GridBagConstraints.BOTH;
-		for(int i=0; i<secondCol.size(); i++) {
-			c2.gridy = i;
-			this.add(createColoredLabel(secondCol.get(i), layerColors[3]), c2);
-		}
+		
+//		for(int i=0; i<firstCol.size(); i++) {
+//			c1.gridy = i;
+//			this.add(createColoredLabel(firstCol.get(i), layerColors[1]), c1);
+//		}
+//		
+//		GridBagConstraints c2 = new GridBagConstraints();
+//		c2.gridx = 4;
+//		c2.weightx = 0.8;
+//		c2.gridwidth = 7;
+//		c2.insets = new Insets(2,10,1,10);
+//		c2.fill = GridBagConstraints.BOTH;
+//		for(int i=0; i<secondCol.size(); i++) {
+//			c2.gridy = i;
+//			this.add(createColoredLabel(secondCol.get(i), layerColors[3]), c2);
+//		}
 		
 	}
 	
@@ -64,7 +69,6 @@ public class AttributePanel extends JPanel {
 		label.setOpaque(true);
 		label.setBackground(color);
 		label.setForeground(Color.black);
-		label.setBorder(BorderFactory.createLineBorder(Color.black));
 		return label;
 	}
 

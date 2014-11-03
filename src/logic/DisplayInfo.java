@@ -22,7 +22,7 @@ public class DisplayInfo {
 	private boolean hasPreviousPage;
 
 	private boolean changeTasklist;
-	private boolean changeTitle;
+	private boolean changeTitle = true;
 	
 	private ArrayList<Task> taskList;
 	private String feedback;
