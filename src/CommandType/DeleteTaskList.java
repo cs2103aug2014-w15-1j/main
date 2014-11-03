@@ -132,6 +132,8 @@ public class DeleteTaskList implements Command{
 		
 		currentListIndex = updateListIndex(currentListIndex);
 		
+		update();
+		
 		Command view = new ViewTaskList(reAddedTaskIndexList[firstHighlightTaskIndex] - (reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE), 
 				UNDO_FEEDBACK, title);
 		DisplayInfo dis = view.execute();

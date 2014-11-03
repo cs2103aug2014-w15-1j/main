@@ -97,7 +97,7 @@ public class Mark implements Command{
 		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_MARK, title);
 		DisplayInfo dis = read.execute();
 		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
-		dis.setHighlightItem(Default.NAME);
+		dis.setHighlightItem(Default.MARK);
 		return dis;
 	}
 

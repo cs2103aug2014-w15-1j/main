@@ -11,6 +11,8 @@ import logic.RunLogic;
 import logic.Task;
 
 public class Restore implements Command {
+	private static String UNDO_FEEDBACK = "Restored task deleted!";
+	
 	private static String feedback;
 	private static String title;
 
@@ -73,6 +75,8 @@ public class Restore implements Command {
 
 	@Override
 	public DisplayInfo undo() {
+		initialize();
+		
 		trashbinList.add(taskList.remove(originListIndex));
 		
 		currentListIndex = updateListIndex(currentListIndex);
@@ -82,7 +86,7 @@ public class Restore implements Command {
 		constructBridges();
 		DataStore.writeAllData(passToStore);
 
-		ViewTrashBin viewTrashBin;
+		Command viewTrashBin = new ViewTrashBin(trashbinList.size() - 1 - (trashbinList.size() % Default.MAX_DISPLAY_LINE), UNDO_FEEDBACK, title);
 		if (currentListIndex[originListIndex] != -1) {
 			viewTrashBin = new ViewTrashBin(originListIndex, feedback, title);
 		} else if (GUI.hasPrevious()) {
