@@ -35,7 +35,7 @@ public class GuiInfoTranslator {
 
 	// attributes in task detail view mode
 	private String[] taskDetailAttr = { "Name", "StartDate", "EndDate",
-			"Description", "Repitition" };
+			"Status", "Description" };
 
 	/********************************************
 	 ************** Constructor *****************
@@ -183,7 +183,7 @@ public class GuiInfoTranslator {
 		JDate startDate = task.getStartDate();
 		JDate endDate = task.getEndDate();
 		String descrition = task.getDescription();
-		String repetition = task.getRepeatDays();
+		boolean status = task.getDone();
 
 		for (String attr : taskDetailAttr) {
 			firstCol.add(attr);
@@ -201,10 +201,15 @@ public class GuiInfoTranslator {
 		} else {
 			secondCol.add(EMPTY_STRING);
 		}
-
+		
+		if(status) {
+			secondCol.add("Done");
+		} else {
+			secondCol.add("Undone");
+		}
 		secondCol.add(descrition);
 
-		secondCol.add(repetition);
+		
 
 	}
 

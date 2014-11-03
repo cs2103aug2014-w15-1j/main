@@ -226,7 +226,7 @@ public class BasicGui extends JFrame {
 		titleWindow.setText("Today is Sep 29 2014");
 		
 		titleWindow.setForeground(new Color(66, 161, 223, 220));
-		titleWindow.setBorder(BorderFactory.createMatteBorder(0,0,1,0 ,new Color(66, 161, 223, 255) ));
+		titleWindow.setBorder(BorderFactory.createMatteBorder(1,0,1,0 ,new Color(66, 161, 223, 255) ));
 		
 		enableDraggableTitle();
 		
@@ -257,7 +257,7 @@ public class BasicGui extends JFrame {
 	private void constructMainArea() {
 		mainArea = new ImagePanel();
 		mainArea.setOpaque(true);
-		mainArea.setBackground(new Color(0,0,0,0));
+		mainArea.setBackground(new Color(0,0,0,255));
 		mainArea.setLayout(new BorderLayout(0, 0));
 		
 		getContentPane().add(mainArea, BorderLayout.CENTER);
@@ -295,9 +295,7 @@ public class BasicGui extends JFrame {
 		
 		mainPanel.add(mainWindow);
 	}
-	private void constructInfoPanel() {
 		
-	}
 
 	private void constructFeedbackPanel() {
 		FeedbackPanel = new JPanel();

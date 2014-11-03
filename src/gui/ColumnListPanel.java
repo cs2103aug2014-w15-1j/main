@@ -247,6 +247,7 @@ public class ColumnListPanel extends JPanel {
 		label.setOpaque(true);
 		label.setBackground(color);
 		label.setForeground(Color.black);
+		label.setFont(new Font("Arial", Font.BOLD, 15));
 		return label;
 	}
 
