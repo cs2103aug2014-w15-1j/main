@@ -53,6 +53,7 @@ public class ColumnListPanel extends JPanel {
 	
 	private int highlightedLine;
 	private String highlightedDate;
+	private boolean highlightedMultipleLine;
 
 	private final static String SPACE = " ";
 	private final static String indexColTitle = "Index";
@@ -83,7 +84,7 @@ public class ColumnListPanel extends JPanel {
 	 */
 	public ColumnListPanel(ArrayList<String> firstCol,
 			ArrayList<String> secondCol, ArrayList<String> thirdCol,
-			ArrayList<Boolean> fourthCol, boolean previous, boolean next,  int highlightedLine, String highlightedDate) {
+			ArrayList<Boolean> fourthCol, boolean previous, boolean next,  int highlightedLine,boolean highlightedMultipleLine, String highlightedDate) {
 		super();
 		this.indexCol = new ArrayList<String>();
 		this.firstCol = firstCol;
@@ -93,7 +94,7 @@ public class ColumnListPanel extends JPanel {
 		
 		this.previousPage = previous;
 		this.nextPage = next;
-		
+		this.highlightedMultipleLine =  highlightedMultipleLine;
 		this.highlightedLine = highlightedLine;
 		this.highlightedDate = highlightedDate;
 
@@ -205,7 +206,7 @@ public class ColumnListPanel extends JPanel {
 			c.gridy = i + 2;
 			if (i < lst.size()) {
 				Color bg;
-				if(highlightedLine  == i){
+				if((highlightedLine  < i &&highlightedMultipleLine) || highlightedLine==i){
 					bg = highlightedColor;
 				} else {
 					bg = lightCyan20;
@@ -234,14 +235,14 @@ public class ColumnListPanel extends JPanel {
 			c.gridy = i + 2;
 			if (i < lst.size()) {
 				if (lst.get(i)) {
-					if(highlightedLine  == i){
+					if((highlightedLine  < i &&highlightedMultipleLine) || highlightedLine==i){
 						this.add(createImageLabel("tick.png", highlightedColor , new Dimension(10, 10), true), c);
 					} else {
 						this.add(createImageLabel("tick.png", lightCyan20 , new Dimension(10, 10), true), c);
 					}
 					
 				} else {
-					if(highlightedLine  == i){
+					if((highlightedLine  < i &&highlightedMultipleLine) || highlightedLine==i){
 						this.add(createImageLabel("untick.png", highlightedColor , new Dimension(10, 10), true), c);
 					} else {
 						this.add(createImageLabel("untick.png", lightCyan20 , new Dimension(10, 10), true), c);

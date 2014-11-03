@@ -33,6 +33,7 @@ public class GuiInfoTranslator {
 	private int highlightedLine = -1;
 	private JDate highlightedDate;
 	private int highlightedProperty = -1;
+	private boolean hightlightMultipleLines = false;
 
 	// constants
 	//private final static String MESSAGE_EMPTY_LIST = "No relevent information here";
@@ -113,6 +114,10 @@ public class GuiInfoTranslator {
 	public int getHighlightedProperty() {
 		return this.highlightedProperty;
 	}
+	
+	public boolean getHighlightMultipleLines() {
+		return this.hightlightMultipleLines;
+	}
 
 	/********************************************
 	 ************* Private Method ***************
@@ -172,6 +177,9 @@ public class GuiInfoTranslator {
 			this.highlightedLine = info.getHighlightLine();
 		} else if(info.getHighlight() == Default.HIGHLIGHT_DATE){
 			this.highlightedDate = info.getDate();
+		} else if(info.getHighlight() == Default.HIGHLIGHT_LINES){
+			this.highlightedLine = info.getHighlightLine(); 
+			this.hightlightMultipleLines = true;
 		}
 		
 		
