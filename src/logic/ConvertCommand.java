@@ -11,6 +11,13 @@ public class ConvertCommand {
 	public static String DETAIL_TITLE_FORMAT = "Detail of %s";
 	private static String SEARCH_TITLE = "Search result of %s";
 	
+	// UNDO messages
+	public static String UNDO_MARK = "Undo Mark Successful";
+	public static String UNDO_DESCRIBE = "Undo Describe Successful";
+	public static String UNDO_RENAME = "Undo Rename Successful";
+	public static String UNDO_RESCHEDULE = "Undo Reschedule Successful";
+	public static String UNDO_RESTORE = "Undo Restore Successful";
+	
 	//feedback formats
 	private static String CANNOT_FORMAT = "Cannot command %s in current view mode!";
 	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %s: %s invalid!";
@@ -258,7 +265,14 @@ public class ConvertCommand {
 			return new Invalid(INVALID_RENAME_NAME, null);
 		}
 		
-		String newName = command.getCMDDescription() + " " + command.getTitle();
+		String newName = command.getCMDDescription();
+		
+		if(newName == null){
+			newName = command.getTitle();
+		} else {
+			
+		}
+		newName = newName.concat(" ").concat(command.getTitle());
 		
 		return new Rename(newName, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, newName));
 	}

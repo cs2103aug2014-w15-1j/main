@@ -75,7 +75,7 @@ public class DeleteTaskList implements Command{
 			}
 			return viewTaskList.execute();
 		} else {
-			this.taskPointers[0] = taskList.get(currentListIndex[currentDisplay[1]]).getPointer();
+			this.taskPointers[0] = taskList.get(currentListIndex[deleteIndex]).getPointer();
 			trashbinList.add(taskList.remove(currentListIndex[deleteIndex]));
 			
 			currentListIndex = updateListIndex(currentListIndex);
@@ -129,10 +129,13 @@ public class DeleteTaskList implements Command{
 		
 		currentListIndex = updateListIndex(currentListIndex);
 		
-		Command view = new ViewTaskList(reAddedTaskIndexList[firstHighlightTaskIndex] / Default.MAX_DISPLAY_LINE, feedback, title);
+		Command view = new ViewTaskList(reAddedTaskIndexList[firstHighlightTaskIndex] - (reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE), 
+				feedback, title);
 		DisplayInfo dis = view.execute();
-		dis.setHighlight(Default.HIGHLIGHT_LINES);
-		dis.setHighlightLine(reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE);
+		if(reAddedTaskIndexList[firstHighlightTaskIndex] >= 0){
+			dis.setHighlight(Default.HIGHLIGHT_LINES);
+			dis.setHighlightLine(reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE);
+		}
 		
 		return dis;
 	}
