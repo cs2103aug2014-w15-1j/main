@@ -434,8 +434,8 @@ public class BasicGui extends JFrame {
 		mainPanel.validate();
 	}
 	
-	public void ShowDetailed(ArrayList<String> a, ArrayList<String> b) {
-		AttributePanel detailed = new AttributePanel(a, b);
+	public void ShowDetailed(ArrayList<String> a, ArrayList<String> b, int highlightedProperty) {
+		AttributePanel detailed = new AttributePanel(a, b, highlightedProperty);
 		mainPanel.removeAll();
 		mainPanel.add(detailed);
 		mainPanel.validate();

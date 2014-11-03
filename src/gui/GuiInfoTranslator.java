@@ -32,6 +32,7 @@ public class GuiInfoTranslator {
 	
 	private int highlightedLine = -1;
 	private JDate highlightedDate;
+	private int highlightedProperty = -1;
 
 	// constants
 	//private final static String MESSAGE_EMPTY_LIST = "No relevent information here";
@@ -108,6 +109,9 @@ public class GuiInfoTranslator {
 		} else {
 			return null;
 		}
+	}
+	public int getHighlightedProperty() {
+		return this.highlightedProperty;
 	}
 
 	/********************************************
@@ -231,7 +235,9 @@ public class GuiInfoTranslator {
 		}
 		secondCol.add(descrition);
 
-		
+		if(info.getHighlight() == Default.HIGHLIGHT_PROPERTY){
+			
+		}
 
 	}
 
