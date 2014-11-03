@@ -236,7 +236,7 @@ public class GuiInfoTranslator {
 		secondCol.add(descrition);
 
 		if(info.getHighlight() == Default.HIGHLIGHT_PROPERTY){
-			
+			this.highlightedProperty = info.getHighlightItem();
 		}
 
 	}

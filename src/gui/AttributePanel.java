@@ -19,8 +19,8 @@ public class AttributePanel extends JPanel {
 	private ArrayList<String> firstCol;
 	private ArrayList<String> secondCol;
 	private static Color lightCyan220 = new Color(55, 177, 241, 120);
-	private static Color lightWhite = new Color(255,255,255,100);
-	private static Color highlightedColor = new Color(255, 43, 158,100);
+	private static Color lightWhite = new Color(255,255,255,80);
+	private static Color highlightedColor = new Color(8, 240, 107,100);
 	
 	private int highlightedProperty;
 	
@@ -60,6 +60,7 @@ public class AttributePanel extends JPanel {
 		this.firstCol = firstCol;
 		this.secondCol = secondCol;
 		this.highlightedProperty = highlightedProperty;
+		System.out.println("hp:" + highlightedProperty);
 		
 		determineBG();
 		
