@@ -258,7 +258,14 @@ public class ConvertCommand {
 			return new Invalid(INVALID_RENAME_NAME, null);
 		}
 		
-		String newName = command.getCMDDescription() + " " + command.getTitle();
+		String newName = command.getCMDDescription();
+		
+		if(newName == null){
+			newName = command.getTitle();
+		} else {
+			
+		}
+		newName = newName.concat(" ").concat(command.getTitle());
 		
 		return new Rename(newName, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, newName));
 	}
