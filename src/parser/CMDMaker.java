@@ -139,13 +139,10 @@ public class CMDMaker {
 				locateLine = null;
 			}
 			
-			if(tokenPairs.isEmpty()){
-				return makeInvalid();
-			} else {
-				return new RawCommand(CMDTypes.COMMAND_TYPE.RENAME.name(), 
-									  InfoRetrieve.getAllSubInfo(tokenPairs).getFront(),
-									  locateLine);
-			}
+			return new RawCommand(CMDTypes.COMMAND_TYPE.RENAME.name(), 
+								  InfoRetrieve.getAllSubInfo(tokenPairs).getFront(),
+								  locateLine);
+			
 		} catch (Exception e) {
 			return makeInvalid();
 		}

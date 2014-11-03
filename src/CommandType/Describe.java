@@ -82,7 +82,7 @@ public class Describe implements Command {
 
 		DataStore.writeTask(taskList);
 		
-		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_DESCRIBE, title);
 		DisplayInfo dis = read.execute();
 		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
 		dis.setHighlightItem(Default.DESCRIPTION);
