@@ -20,7 +20,7 @@ public class AttributePanel extends JPanel {
 	private ArrayList<String> secondCol;
 	private static Color lightCyan220 = new Color(55, 177, 241, 120);
 	private static Color lightWhite = new Color(255,255,255,80);
-	private static Color highlightedColor = new Color(8, 240, 107,100);
+	private static Color highlightedColor = new Color(255, 165, 186, 100);
 	
 	private int highlightedProperty;
 	

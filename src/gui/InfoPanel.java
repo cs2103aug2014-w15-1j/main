@@ -23,7 +23,7 @@ public class InfoPanel extends JPanel{
 	private static final long serialVersionUID = -6143438348516086903L;
 	JLabel titleF;
 	JTextPane contentF;
-	private static Color lightCyan220 = new Color(55, 177, 241, 220);
+	private static Color lightCyan220 = new Color(55, 177, 241, 255);
 	
 	
 	public InfoPanel(Color background, String title, String content){
@@ -41,8 +41,7 @@ public class InfoPanel extends JPanel{
 	private void initializeTitleF(String title) {
 		titleF = new JLabel();
 		titleF.setOpaque(false);
-		//titleF.setHorizontalAlignment(JTextField.CENTER);
-		titleF.setBackground(new Color(255,255,255, 150));
+		titleF.setBackground(new Color(255,255,255, 250));
 		titleF.setForeground(lightCyan220);
 		titleF.setFont(new Font("calibri", Font.BOLD | Font.ITALIC, 15));
 		titleF.setText(title+":");
@@ -53,14 +52,11 @@ public class InfoPanel extends JPanel{
 		contentF.setFont(new Font("calibri",  Font.BOLD, 25));
 		contentF.setEditable(false);
 		contentF.setOpaque(true);
-		contentF.setBackground(new Color(255,255,255));
+		contentF.setBackground(new Color(255, 255, 255,210));
 		contentF.setForeground(lightCyan220);
 		contentF.setText(content);
 		contentF.selectAll();
 		contentF.setHighlighter(null);
-		contentF.setMaximumSize(new Dimension(this.getWidth(), 100));
-		contentF.setPreferredSize(new Dimension(200, 200));
-		contentF.setBounds(0,0,200,200);
 		// align text to center
 		StyledDocument doc = contentF.getStyledDocument();
 		SimpleAttributeSet center = new SimpleAttributeSet();

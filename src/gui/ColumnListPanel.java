@@ -66,7 +66,7 @@ public class ColumnListPanel extends JPanel {
 	// Pre-defined color
 	private static Color lightCyan120 = new Color(55, 177, 241, 220);
 	private static Color lightCyan20 = new Color(55, 177, 241, 20);
-	private static Color highlightedColor = new Color(255, 43, 158,100);
+	private static Color highlightedColor = new Color(255, 165, 186, 180);
 	
 
 	/********************************************
