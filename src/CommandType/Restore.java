@@ -108,6 +108,4 @@ public class Restore implements Command {
 	public boolean supportUndo() {
 		return true;
 	}
-
-
 }

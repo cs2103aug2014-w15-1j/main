@@ -74,7 +74,7 @@ public class Add implements Command{
 			ViewTaskList viewTaskList;
 			if(currentListIndex[index] != -1){
 				viewTaskList = new ViewTaskList(index, feedback, title);
-			} else if (currentListIndex[index -= Default.MAX_DISPLAY_LINE] != -1){
+			} else if (((index -= Default.MAX_DISPLAY_LINE) >= 0 ) && currentListIndex[index -= Default.MAX_DISPLAY_LINE] != -1){
 				viewTaskList = new ViewTaskList(currentDisplay[1] - Default.MAX_DISPLAY_LINE, feedback, title);
 			} else {
 				viewTaskList = new ViewTaskList(feedback, title);

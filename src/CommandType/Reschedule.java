@@ -21,6 +21,10 @@ public class Reschedule implements Command {
 	// added by Zhang Ji
 	private long taskPointer;
 
+	// Added by Chen Di
+	private JDate startDayBC;
+	private JDate endDayBC;
+	
 	public void setTaskPointer(long pointer) {
 		this.taskPointer = pointer;
 	}
@@ -53,6 +57,9 @@ public class Reschedule implements Command {
 
 	@Override
 	public DisplayInfo execute() {
+		startDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getStartDate();
+		endDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getEndDate();
+		
 		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
 				newStartDate, newEndDate);
 		update();
@@ -75,8 +82,25 @@ public class Reschedule implements Command {
 
 	@Override
 	public DisplayInfo undo() {
-		// TODO Auto-generated method stub
-		return null;
+		// Added by Chen Di
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
+				startDayBC, endDayBC);
+		update();
+
+		update();
+
+		DataStore.writeTask(taskList);
+		
+		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHightlight(Default.HIGHLIGHT_PROPERTY);
+		if(startDayBC != null){
+			dis.setHighlightItem(Default.STARTDATE);
+		}
+		if(endDayBC != null){
+			dis.setHighlightItem(Default.ENDDATE);
+		}
+		return dis;
 	}
 
 	// ---------------helper function--------------
