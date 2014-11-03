@@ -1,5 +1,7 @@
 package CommandType;
 
+import gui.VIEW_MODE;
+
 import java.util.ArrayList;
 
 import data_store.DataStore;
@@ -68,16 +70,24 @@ public class Reschedule implements Command {
 
 		DataStore.writeTask(taskList);
 		
-		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
-		DisplayInfo dis = read.execute();
-		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
-		dis.setHighlightItem(Default.BOTHDATE);
-		if(newStartDate == null){
-			dis.setHighlightItem(Default.ENDDATE);
-		} else if(newEndDate == null){
-			dis.setHighlightItem(Default.STARTDATE);
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			Command read = new ReadTaskList(lineIndex, feedback, title);
+			DisplayInfo dis = read.execute();
+			dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+			dis.setHighlightItem(Default.BOTHDATE);
+			if(newStartDate == null){
+				dis.setHighlightItem(Default.ENDDATE);
+			} else if(newEndDate == null){
+				dis.setHighlightItem(Default.STARTDATE);
+			}
+			return dis;
+		} else {
+			Command view = new ViewTaskList(RunLogic.getGuiStatus().getTaskIndex(), feedback, title);
+			DisplayInfo dis = view.execute();
+			dis.setHighlight(Default.HIGHLIGHT_LINE);
+			dis.setHighlightLine(lineIndex - 1);
+			return dis;
 		}
-		return dis;
 	}
 
 	@Override

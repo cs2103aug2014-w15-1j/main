@@ -11,6 +11,9 @@ import logic.RunLogic;
 import logic.Task;
 
 public class DeleteTaskList implements Command{
+	private static String UNDO_FEEDBACK = "Deleted tasks added back!";
+	
+	
 	private static String feedback;
 	private static String title;
 	
@@ -130,7 +133,7 @@ public class DeleteTaskList implements Command{
 		currentListIndex = updateListIndex(currentListIndex);
 		
 		Command view = new ViewTaskList(reAddedTaskIndexList[firstHighlightTaskIndex] - (reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE), 
-				feedback, title);
+				UNDO_FEEDBACK, title);
 		DisplayInfo dis = view.execute();
 		if(reAddedTaskIndexList[firstHighlightTaskIndex] >= 0){
 			dis.setHighlight(Default.HIGHLIGHT_LINES);

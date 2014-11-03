@@ -1,5 +1,7 @@
 package CommandType;
 
+import gui.VIEW_MODE;
+
 import java.util.ArrayList;
 
 import data_store.DataStore;
@@ -61,11 +63,19 @@ public class Rename implements Command {
 
 		DataStore.writeTask(taskList);
 		
-		Command read = new ReadTaskList(lineIndex, feedback, title);
-		DisplayInfo dis = read.execute();
-		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
-		dis.setHighlightItem(Default.NAME);
-		return dis;
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			Command read = new ReadTaskList(lineIndex, feedback, title);
+			DisplayInfo dis = read.execute();
+			dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+			dis.setHighlightItem(Default.NAME);
+			return dis;
+		} else {
+			Command view = new ViewTaskList(RunLogic.getGuiStatus().getTaskIndex(), feedback, title);
+			DisplayInfo dis = view.execute();
+			dis.setHighlight(Default.HIGHLIGHT_LINE);
+			dis.setHighlightLine(lineIndex - 1);
+			return dis;
+		}
 	}
 
 	@Override
