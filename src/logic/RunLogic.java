@@ -64,6 +64,13 @@ public class RunLogic {
 		nextTaskPointer++;
 	}
 	
+	public static int getPointerInList(ArrayList<Task> lst, int index){
+		if (lst != null) {
+			return lst.get(index).getPointer();
+		} else {
+			return -1;
+		}
+	}
 
 	public static int getIndexInList(ArrayList<Task> lst, int ptr) {
 		for(int i=0; i<lst.size(); i++) {

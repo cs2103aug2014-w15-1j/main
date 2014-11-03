@@ -20,6 +20,7 @@ public class TestSimpleCMD {
     String testSearchStr;
     String backTestStr;
     String markStr;
+    String describeStr;
     
     RawCommand deleteTest;
     RawCommand readTest;
@@ -34,6 +35,7 @@ public class TestSimpleCMD {
     RawCommand searchTest;
     RawCommand backTest;
     RawCommand markTest;
+    RawCommand describeTest;
     
     @Before
     public void initTestString() {
@@ -49,11 +51,13 @@ public class TestSimpleCMD {
         testViewDateStr2 = "view 2012-10-10";
         testSearchStr = "search a task name";
         markStr = "mark 1 done";
+        describeStr = "describe 1";
+        backTestStr = "back";
     }
     
     @Test
     public void test() {
-    	/*
+    	
         deleteTest = ParserProcesser.interpretCommand(testDeleStr);
         Assert.assertEquals("Test command: ", "DELETE", deleteTest.getCommand());
         Assert.assertEquals("Test target index: ", "1", deleteTest.getCMDDescription());
@@ -90,7 +94,7 @@ public class TestSimpleCMD {
         
         viewDateTest1 = ParserProcesser.interpretCommand(testViewDateStr1);
         Assert.assertEquals("Test command: VIEW", "VIEWDATE", viewDateTest1.getCommand());
-        Assert.assertEquals("Test date: ", "20141102", viewDateTest1.getCMDDescription());
+        Assert.assertEquals("Test date: ", "20141103", viewDateTest1.getCMDDescription());
         
         viewDateTest2 = ParserProcesser.interpretCommand(testViewDateStr2);
         Assert.assertEquals("Test command: VIEW", "VIEWDATE", viewDateTest2.getCommand());
@@ -102,9 +106,13 @@ public class TestSimpleCMD {
         
         backTest = ParserProcesser.interpretCommand(backTestStr);
         Assert.assertEquals("Test command: BACK", "BACK", backTest.getCommand());  
-        */
+        
         markTest = ParserProcesser.interpretCommand(markStr);
         Assert.assertEquals("Test command: Mark", "MARK", markTest.getCommand()); 
         Assert.assertEquals("Test command: Mark", "1", markTest.getCMDDescription()); 
+        
+        describeTest = ParserProcesser.interpretCommand(describeStr);
+        Assert.assertEquals("Test command: Describe", "DESCRIBE", describeTest.getCommand()); 
+        Assert.assertEquals("Test command: Describe", "1", describeTest.getCMDDescription()); 
     }
 }
