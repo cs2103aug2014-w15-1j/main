@@ -336,7 +336,7 @@ public class ConvertCommand {
 		String newDescription = command.getCMDDescription();
 		if(newDescription == null){
 			newDescription = command.getDescription();
-		}
+		} else 
 		if(command.getDescription() != null){
 			newDescription += " " + command.getDescription();
 		}

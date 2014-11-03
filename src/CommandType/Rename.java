@@ -54,7 +54,7 @@ public class Rename implements Command {
 
 		DataStore.writeTask(taskList);
 		
-		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		Command read = new ReadTaskList(lineIndex, feedback, title);
 		DisplayInfo dis = read.execute();
 		dis.setHightlight(Default.HIGHLIGHT_PROPERTY);
 		dis.setHighlightItem(Default.NAME);
