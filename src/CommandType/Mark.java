@@ -3,6 +3,7 @@ package CommandType;
 import java.util.ArrayList;
 
 import data_store.DataStore;
+import logic.ConvertCommand;
 import logic.Default;
 import logic.DisplayInfo;
 import logic.RunLogic;
@@ -83,7 +84,7 @@ public class Mark implements Command{
 
 		DataStore.writeTask(taskList);
 		
-		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_MARK, title);
 		DisplayInfo dis = read.execute();
 		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
 		dis.setHighlightItem(Default.NAME);

@@ -91,7 +91,7 @@ public class Reschedule implements Command {
 
 		DataStore.writeTask(taskList);
 		
-		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_RESCHEDULE, title);
 		DisplayInfo dis = read.execute();
 		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
 		if(startDayBC != null){
