@@ -195,24 +195,42 @@ public class Task {
 		if(!this.name.equals(task.name)){
 			return false;
 		}
-		//no description
-		if(this.description==null){
+		
+		//no description compare
+		if(this.description==null && task.description!=null){
 			return false;
 		}
+		if(description==null && task.description==null){
+			return true;
+		}
+		
+		
 		if(!this.description.equals(task.description)){
 			return false;
 		}
-		//no start date
-		if(this.startDate==null){
+		
+		//no start date compare
+		if(this.startDate==null && task.startDate!=null){
 			return false;
 		}
+		if(this.startDate==null && task.startDate==null){
+			return true;
+		}
+		
+		
 		if(!this.startDate.equals(task.startDate)){
 			return false;
 		}
-		//no end date
-		if(this.endDate==null){
+		
+		//no end date compare
+		if(this.endDate==null && task.endDate!=null){
 			return false;
 		}
+		if(this.endDate==null && task.endDate==null){
+			return true;
+		}
+		
+		
 		if(!this.endDate.equals(task.endDate)){
 			return false;
 		}
