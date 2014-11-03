@@ -42,7 +42,7 @@ public class InfoPanel extends JPanel{
 		titleF = new JLabel();
 		titleF.setOpaque(false);
 		//titleF.setHorizontalAlignment(JTextField.CENTER);
-		titleF.setBackground(new Color(255,255,255, 50));
+		titleF.setBackground(new Color(255,255,255, 150));
 		titleF.setForeground(lightCyan220);
 		titleF.setFont(new Font("calibri", Font.BOLD | Font.ITALIC, 15));
 		titleF.setText(title+":");
@@ -52,8 +52,8 @@ public class InfoPanel extends JPanel{
 		contentF = new JTextPane();
 		contentF.setFont(new Font("calibri",  Font.BOLD, 25));
 		contentF.setEditable(false);
-		contentF.setOpaque(false);
-		contentF.setBackground(new Color(255,255,255, 190));
+		contentF.setOpaque(true);
+		contentF.setBackground(new Color(255,255,255));
 		contentF.setForeground(lightCyan220);
 		contentF.setText(content);
 		contentF.selectAll();

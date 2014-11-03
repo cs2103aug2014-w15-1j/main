@@ -24,6 +24,9 @@ public class DeleteTaskList implements Command{
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
 		
+	// memory for undo 
+	private int[] taskPointers = initializeDisplayList(Default.MAX_DISPLAY_LINE);
+	
 	private static LogicToStore passToStore;
 	
 	public DeleteTaskList(Boolean all, String myFeedback, String myTitle){
@@ -49,6 +52,7 @@ public class DeleteTaskList implements Command{
 		if(deleteAll){
 			for(int i = 1; i<= Default.MAX_DISPLAY_LINE; i++){
 				if(currentDisplay[i] != -1){
+					this.taskPointers[i - 1] = taskList.get(currentListIndex[currentDisplay[1]]).getPointer();
 					trashbinList.add(taskList.remove(currentListIndex[currentDisplay[1]]));
 				} else {
 					break;
@@ -71,6 +75,7 @@ public class DeleteTaskList implements Command{
 			}
 			return viewTaskList.execute();
 		} else {
+			this.taskPointers[0] = taskList.get(currentListIndex[deleteIndex]).getPointer();
 			trashbinList.add(taskList.remove(currentListIndex[deleteIndex]));
 			
 			currentListIndex = updateListIndex(currentListIndex);
@@ -94,8 +99,46 @@ public class DeleteTaskList implements Command{
 
 	@Override
 	public DisplayInfo undo() {
-		// TODO Auto-generated method stub
-		return null;
+		initialize();
+		
+		int[] reAddedTaskIndexList = initializeDisplayList(Default.MAX_DISPLAY_LINE); 
+		for(int i = 0, j = 0; i < Default.MAX_DISPLAY_LINE; i++){
+			if(taskPointers[i] >= 0){
+				int index = RunLogic.getIndexInList(trashbinList, taskPointers[i]);
+				System.out.println(index);
+				if(index >= 0){
+					taskList.add(trashbinList.remove(index));
+					reAddedTaskIndexList[j] = taskList.size() - 1;
+					j++;
+				}
+			} else {
+				break;
+			}
+		}
+		
+		int firstHighlightTaskIndex = 0;
+		for(int i = 0; i < Default.MAX_DISPLAY_LINE; i++){
+			if(reAddedTaskIndexList[i] >= 0){
+				if(reAddedTaskIndexList[i] % Default.MAX_DISPLAY_LINE == 0){
+					firstHighlightTaskIndex = i;
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		
+		currentListIndex = updateListIndex(currentListIndex);
+		
+		Command view = new ViewTaskList(reAddedTaskIndexList[firstHighlightTaskIndex] - (reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE), 
+				feedback, title);
+		DisplayInfo dis = view.execute();
+		if(reAddedTaskIndexList[firstHighlightTaskIndex] >= 0){
+			dis.setHighlight(Default.HIGHLIGHT_LINES);
+			dis.setHighlightLine(reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE);
+		}
+		
+		return dis;
 	}
 
 	//-----------helper functions-----------------
@@ -133,5 +176,13 @@ public class DeleteTaskList implements Command{
 
 	private static void constructBridges(){
 		passToStore = new LogicToStore(taskList,trashbinList);
+	}
+	
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
 	}
 }
