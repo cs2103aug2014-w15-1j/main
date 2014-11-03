@@ -13,15 +13,13 @@ import javax.swing.JPanel;
 
 public class AttributePanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<String> firstCol;
 	private ArrayList<String> secondCol;
-
-	private int alphaValue = 100;
-	private Color[] layerColors = { new Color(251, 172, 27, alphaValue),
-			new Color(52, 167, 224, alphaValue),
-			new Color(246, 40, 52, alphaValue),
-			new Color(248, 113, 0, alphaValue),
-			new Color(141, 196, 0, alphaValue) };
+	private static Color lightCyan220 = new Color(55, 177, 241, 120);
 
 	AttributePanel(ArrayList<String> firstCol, ArrayList<String> secondCol) {
 		super();
@@ -30,43 +28,48 @@ public class AttributePanel extends JPanel {
 		this.firstCol = firstCol;
 		this.secondCol = secondCol;
 		
+		int currentIndex = 0;
 		setLayout(new GridBagLayout());
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH;
-		c1.ipady = 10;  
 		c1.gridx = 0;
-		c1.gridwidth = 2;
-		c1.insets = new Insets(2,10,1,1);
-		c1.weightx = 0.1;
-		for(int i=0; i<firstCol.size(); i++) {
-			c1.gridy = i;
-			this.add(createColoredLabel(firstCol.get(i), layerColors[1]), c1);
-		}
+		c1.gridy = 0;
+		c1.gridwidth = 3;
+		c1.ipady = 20;
+		c1.insets = new Insets(50, 10, 0, 10);
+		c1.weightx = 0.8;
+		this.add(new InfoPanel(new Color(255,255,255,100), firstCol.get(currentIndex), secondCol.get(currentIndex)), c1);
 		
+		currentIndex++;
 		GridBagConstraints c2 = new GridBagConstraints();
-		c2.gridx = 4;
-		c2.weightx = 0.8;
-		c2.gridwidth = 7;
-		c2.insets = new Insets(2,10,1,10);
 		c2.fill = GridBagConstraints.BOTH;
-		for(int i=0; i<secondCol.size(); i++) {
-			c2.gridy = i;
-			this.add(createColoredLabel(secondCol.get(i), layerColors[3]), c2);
-		}
+		c2.gridx = 0;
+		c2.gridy = 1;
+		c2.weightx = 0.3;
+		c2.ipady = 20;
+		c2.insets = new Insets(10, 10, 0, 0);
+		this.add(new InfoPanel(new Color(255,255,255,100), firstCol.get(currentIndex), secondCol.get(currentIndex)), c2);
 		
+		c2.gridx++;
+		currentIndex++;
+		this.add(new InfoPanel(new Color(255,255,255,100), firstCol.get(currentIndex), secondCol.get(currentIndex)), c2);
+		
+		c2.gridx++;
+		c2.insets = new Insets(10, 10, 0, 10);
+		currentIndex++;
+		this.add(new InfoPanel(new Color(255,255,255,100), firstCol.get(currentIndex), secondCol.get(currentIndex)), c2);
+		
+		currentIndex++;
+		GridBagConstraints c3 = new GridBagConstraints();
+		c3.fill = GridBagConstraints.BOTH;
+		c3.gridx = 0;
+		c3.gridy = 2;
+		c3.weightx = 0.9;
+		c3.ipady = 200;
+		c3.insets = new Insets(10, 10, 70, 10);
+		c3.gridwidth = 3;
+		c3.gridheight = 3;
+		this.add(new InfoPanel(new Color(255,255,255,100), firstCol.get(currentIndex), secondCol.get(currentIndex)), c3);
 	}
-	
-	// Create and set up a colored label.
-	private JLabel createColoredLabel(String text, Color color) {
-		JLabel label = new JLabel(text);
-		label.setFont(label.getFont().deriveFont(Font.BOLD | Font.ITALIC));
-		// label.setVerticalAlignment(JLabel.TOP);
-		label.setOpaque(true);
-		label.setBackground(color);
-		label.setForeground(Color.black);
-		label.setBorder(BorderFactory.createLineBorder(Color.black));
-		return label;
-	}
-
 	
 }

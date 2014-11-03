@@ -44,6 +44,15 @@ public class ColumnListPanel extends JPanel {
 	private ArrayList<String> thirdCol;
 	private ArrayList<Boolean> fourthCol;
 	private ArrayList<String> indexCol;
+	
+	private int INDEX_COL = 0;  
+	private int TITLE_COL = 1;
+	private int START_COL = 2;
+	private int END_COL = 3;
+	private int STATUS_COL = 4;
+	
+	private int highlightedLine;
+	private String highlightedDate;
 
 	private final static String SPACE = " ";
 	private final static String indexColTitle = "Index";
@@ -57,6 +66,8 @@ public class ColumnListPanel extends JPanel {
 	// Pre-defined color
 	private static Color lightCyan120 = new Color(55, 177, 241, 220);
 	private static Color lightCyan20 = new Color(55, 177, 241, 20);
+	private static Color highlightedColor = new Color(255, 43, 158,100);
+	
 
 	/********************************************
 	 ************** Constructor *****************
@@ -72,7 +83,7 @@ public class ColumnListPanel extends JPanel {
 	 */
 	public ColumnListPanel(ArrayList<String> firstCol,
 			ArrayList<String> secondCol, ArrayList<String> thirdCol,
-			ArrayList<Boolean> fourthCol, boolean previous, boolean next) {
+			ArrayList<Boolean> fourthCol, boolean previous, boolean next,  int highlightedLine, String highlightedDate) {
 		super();
 		this.indexCol = new ArrayList<String>();
 		this.firstCol = firstCol;
@@ -82,6 +93,9 @@ public class ColumnListPanel extends JPanel {
 		
 		this.previousPage = previous;
 		this.nextPage = next;
+		
+		this.highlightedLine = highlightedLine;
+		this.highlightedDate = highlightedDate;
 
 		setUp();
 		constructAllCol();
@@ -126,7 +140,7 @@ public class ColumnListPanel extends JPanel {
 		}
 		this.add(createImageLabel(imgPath, null, new Dimension(50, 50), false), c);
 
-		int colIndex = 0;
+		int colIndex = INDEX_COL;
 		for (int i = 1; i <= firstCol.size(); i++) {
 			indexCol.add(Integer.toString(i));
 		}
@@ -134,34 +148,34 @@ public class ColumnListPanel extends JPanel {
 		c0.fill = GridBagConstraints.BOTH;
 		c0.ipady = 25;
 		c0.insets = new Insets(0, 10, 0, 0);
-		c0.weightx = 0;
+		c0.weightx = 0.03;
 		constructCol(colIndex, indexColTitle, indexCol, c0);
 
 		// column 0
-		colIndex = 1;
+		colIndex = TITLE_COL;
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH;
-		c1.ipady = 17;
-		c1.insets = new Insets(0, 5, 0, 0);
+		
+		c1.insets = new Insets(0, 10, 0, 0);
 		c1.weightx = 0.7;
 		constructCol(colIndex, firstColTitle, firstCol, c1);
 
 		// column 1
-		colIndex = 2;
+		colIndex = START_COL;
 		GridBagConstraints c2 = new GridBagConstraints();
 		c2.weightx = 0.03;
 		c2.insets = new Insets(0, 10, 0, 0);
 		c2.fill = GridBagConstraints.BOTH;
 		constructCol(colIndex, secondColTitle, secondCol, c2);
 
-		colIndex = 3;
+		colIndex = END_COL;
 		GridBagConstraints c3 = new GridBagConstraints();
 		c3.weightx = 0.03;
 		c3.insets = new Insets(0, 10, 0, 0);
 		c3.fill = GridBagConstraints.BOTH;
 		constructCol(colIndex, thirdColTitle, thirdCol, c3);
 
-		colIndex = 4;
+		colIndex = STATUS_COL;
 		GridBagConstraints c4 = new GridBagConstraints();
 		c4.weightx = 0.03;
 		c4.insets = new Insets(0, 10, 0, 10);
@@ -190,7 +204,20 @@ public class ColumnListPanel extends JPanel {
 		for (int i = 0; i < NUM_OF_COL; i++) {
 			c.gridy = i + 2;
 			if (i < lst.size()) {
-				this.add(createColoredLabel(lst.get(i), lightCyan20), c);
+				Color bg;
+				if(highlightedLine  == i){
+					bg = highlightedColor;
+				} else {
+					bg = lightCyan20;
+				}
+				
+				if(colIndex == START_COL || colIndex == END_COL){
+					if(lst.get(i).equals(this.highlightedDate)){
+						bg = highlightedColor;
+					}
+					
+				}
+				this.add(createColoredLabel(lst.get(i), bg), c);
 			} else {
 				this.add(createEmptyLabel(), c);
 			}
@@ -207,9 +234,18 @@ public class ColumnListPanel extends JPanel {
 			c.gridy = i + 2;
 			if (i < lst.size()) {
 				if (lst.get(i)) {
-					this.add(createImageLabel("tick.png", lightCyan20 , new Dimension(10, 10), true), c);
+					if(highlightedLine  == i){
+						this.add(createImageLabel("tick.png", highlightedColor , new Dimension(10, 10), true), c);
+					} else {
+						this.add(createImageLabel("tick.png", lightCyan20 , new Dimension(10, 10), true), c);
+					}
+					
 				} else {
-					this.add(createImageLabel("untick.png", lightCyan20, new Dimension(25, 25), true), c);
+					if(highlightedLine  == i){
+						this.add(createImageLabel("untick.png", highlightedColor , new Dimension(10, 10), true), c);
+					} else {
+						this.add(createImageLabel("untick.png", lightCyan20 , new Dimension(10, 10), true), c);
+					}
 				}
 
 			} else {
@@ -247,6 +283,8 @@ public class ColumnListPanel extends JPanel {
 		label.setOpaque(true);
 		label.setBackground(color);
 		label.setForeground(Color.black);
+		label.setFont(new Font("Arial", Font.BOLD, 14));
+		label.setHorizontalAlignment(label.CENTER);
 		return label;
 	}
 

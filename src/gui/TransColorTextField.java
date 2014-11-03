@@ -25,7 +25,7 @@ public class TransColorTextField extends JTextField {
 	public TransColorTextField() {
 		super();
 		this.setPreferredSize(new Dimension(200,40));
-		Font font = new Font("DIALOG", Font.ITALIC, 20);
+		Font font = new Font("DIALOG", Font.ITALIC, 40);
 		this.setFont(font);
 		currentColor = colorA;
 

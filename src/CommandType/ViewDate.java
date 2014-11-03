@@ -41,8 +41,8 @@ public class ViewDate implements Command{
 		currentDisplay = initializeDisplayList(currentDisplay.length);
 		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
 		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
-			if(targetList.get(currentListIndex[i]).getStartDate().equals(date) || 
-					targetList.get(currentListIndex[i]).getEndDate().equals(date)){
+			if(date.equals(targetList.get(currentListIndex[i]).getStartDate()) || 
+					date.equals(targetList.get(currentListIndex[i]).getEndDate())){
 				tempListIndex[j] = currentListIndex[i];
 				j++;
 			}
@@ -59,7 +59,7 @@ public class ViewDate implements Command{
 		}
 		
 		DisplayInfo dis = viewDate.execute();
-		dis.setHightlight(Default.HIGHLIGHT_DATE);
+		dis.setHighlight(Default.HIGHLIGHT_DATE);
 		return dis;
 	}
 
