@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("unused")
 public class DataStoreTest {
 	
     String name = "Test Name";
     String description = "Buy New Birthday Gift";
-    String repeatTimes = "twice a day";
     String repeatDays = "1 month";
     
 
@@ -25,16 +25,18 @@ public class DataStoreTest {
     private   Task testTask = new Task(name, description, 
                                        repeatDays, startDate, endDate);
 
-    private   ArrayList<Task> TestTasks = new ArrayList<Task>();
-    private   ArrayList<Task> TestTrash = new ArrayList<Task>();
+    private   ArrayList<Task> TestTasks;
+    private   ArrayList<Task> TestTrash;
 
-    public ReadFile testRead;
+    public ReadFile testReadFile;
 
 
 	@Before 
     public void setUp() { 
+		TestTasks = new ArrayList<Task>();
+	    TestTrash = new ArrayList<Task>();
 		
-		testRead = new ReadFile();
+		testReadFile = new read_file.ReadFile();
 		
         TestTasks.add(testTask);
         TestTrash.add(testTask);
@@ -43,25 +45,34 @@ public class DataStoreTest {
  
 	@Test
     public void test() {
-		  	
+			
 		/*
 		 * Test Writing into a task list file and Retrieving it to check it
-		 */
+		 */	
+		
         DataStore.writeTask(TestTasks);       
         
         ArrayList<Task> resultTA = new ArrayList<Task>();    
-        resultTA = testRead.getEventTask();      
-        assertTrue(resultTA.equals(TestTasks));
+        resultTA = testReadFile.getEventTask();      
+        assertTrue(resultTA,TestTasks);
         
+		
         /*
          * Test Writing into a trash list file and Retrieving it to check
          */
-        DataStore.writeTrash(TestTrash);
+	    DataStore.writeTrash(TestTrash);
         
         ArrayList<Task> resultTR = new ArrayList<Task>();    
-        resultTR = testRead.getTrashFile(); 
-        assertTrue(resultTR.equals(TestTrash));
-        
+        resultTR = testReadFile.getTrashFile(); 
+       
+		assertTrue(resultTR,TestTrash);
     }
+
+	private boolean assertTrue(ArrayList<Task> result, ArrayList<Task> testing ) {
+		if (result.equals(testing))
+			return true;
+			else
+			return false;	
+	}
 
 }

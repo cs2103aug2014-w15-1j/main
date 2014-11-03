@@ -11,7 +11,10 @@ import logic.JDate;
 import logic.Task;
 
 /**
+ * @author A0100792M/A0119493X
+ * 
  * This class read task files and trash files and return them in ArrayList<Task>
+ *            creation of Task objects that includes null fields from string in files
  * */
 public class ReadFile {
 
@@ -19,6 +22,7 @@ public class ReadFile {
     private static ArrayList<Task> TRASHFILE;
 
     private static ArrayList<Task> EMPTYDATA = new ArrayList<Task>();
+	private static Task curTask;
 
     public ReadFile() {
         this.setEVENTTASK(new ArrayList<Task>());
@@ -118,28 +122,85 @@ public class ReadFile {
 
     /**
      * create a event
-     * @return
-     *      Return a Task object if local file format valid
-     *      Else return null
+     * @return 
      */
-    private static Task makeTask(String taskString) {
+    public static Task makeTask(String taskString) {
 
         String[] tempoTaskSplit = taskString.split(SystemInfo.SEPERATESIMBOL);
         
         if (tempoTaskSplit.length == 5) {
             String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
             JDate startDate = dateMaker(startDateStr);
-    
+  
             String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);
             JDate endDate = dateMaker(endDateStr);
     
-            Task curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+             curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
                     tempoTaskSplit[2], startDate, endDate);
             return curTask;
-        } else {
+            
+        }else if(tempoTaskSplit.length == 4)
+        {
+            //No Description
+        	if(tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART) && tempoTaskSplit[3].endsWith(SystemInfo.CHECKEND)){
+        		String[] startDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);
+                JDate startDate = dateMaker(startDateStr);
+                
+                String[] endDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
+                JDate endDate = dateMaker(endDateStr);
+                
+                curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[1], startDate, endDate);
+
+        	}
+        	//No Start Date 
+        	if(!tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART) && tempoTaskSplit[3].endsWith(SystemInfo.CHECKEND)){
+ 
+                String[] endDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
+                JDate endDate = dateMaker(endDateStr);
+                
+                curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[1], tempoTaskSplit[2], endDate);
+        	}
+        	//No End Date
+        	if(!tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART) && tempoTaskSplit[3].endsWith(SystemInfo.CHECKSTART)){
+
+                String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
+                JDate startDate = dateMaker(startDateStr);
+                
+                curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[1], startDate,tempoTaskSplit[2]);
+        	}
+        	
+        }else if(tempoTaskSplit.length == 3)
+        {
+        	//No Description No Start Date
+        	if(tempoTaskSplit[2].endsWith(SystemInfo.CHECKEND)){
+        		String[] endDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);
+                JDate endDate = dateMaker(endDateStr);
+                
+                curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[1], endDate);
+        	}
+        	//No Description No End Date
+        	if(tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART)){
+        		String[] startDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);
+                JDate startDate = dateMaker(startDateStr);
+                
+                curTask = new Task(tempoTaskSplit[0],
+                        startDate, tempoTaskSplit[1]); 		
+        	}
+        	//No Start Date No End Date
+        	if(!tempoTaskSplit[1].endsWith(SystemInfo.CHECKSTART) && !tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART)){
+        		curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[1], tempoTaskSplit[2]);
+        	}
+        }else{
             ErrorGenerator.popError(ErrorMSG.TASK_FORMAT_ERR);
-            return null;
+            return null;       
         }
+        
+        return curTask;
     }
 
     /**
@@ -176,8 +237,6 @@ public class ReadFile {
 	public void setTRASHFILE(ArrayList<Task> tRASHFILE) {
 		TRASHFILE = tRASHFILE;
 	}
-
-
 	
 
 }
