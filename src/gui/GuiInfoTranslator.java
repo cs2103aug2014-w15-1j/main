@@ -2,6 +2,7 @@ package gui;
 
 import java.util.ArrayList;
 
+import logic.Default;
 import logic.DisplayInfo;
 import logic.JDate;
 import logic.Task;
@@ -28,6 +29,9 @@ public class GuiInfoTranslator {
 	private ArrayList<String> secondCol = new ArrayList<String>();
 	private ArrayList<String> thirdCol = new ArrayList<String>();
 	private ArrayList<Boolean> fourthCol = new ArrayList<Boolean>();
+	
+	private int highlightedLine = -1;
+	private JDate highlightedDate;
 
 	// constants
 	//private final static String MESSAGE_EMPTY_LIST = "No relevent information here";
@@ -95,6 +99,16 @@ public class GuiInfoTranslator {
 	public VIEW_MODE getViewMode() {
 		return info.getViewMode();
 	}
+	public int getHighlightedLine() {
+		return this.highlightedLine;
+	}
+	public String getHighlightedDate(){
+		if(this.highlightedDate != null) {
+			return highlightedDate.toString();
+		} else {
+			return null;
+		}
+	}
 
 	/********************************************
 	 ************* Private Method ***************
@@ -148,7 +162,15 @@ public class GuiInfoTranslator {
 		if (lst.size() <= 0) {
 			throw new Error("tasklist cannot be null at this point");
 		}
-
+		
+		
+		if(info.getHighlight() == Default.HIGHLIGHT_LINE){
+			this.highlightedLine = info.getHighlightLine();
+		} else if(info.getHighlight() == Default.HIGHLIGHT_DATE){
+			this.highlightedDate = info.getDate();
+		}
+		
+		
 		for (int i = 0; i < lst.size(); i++) {
 			firstCol.add(lst.get(i).getName());
 			if (lst.get(i).getStartDate() != null) {

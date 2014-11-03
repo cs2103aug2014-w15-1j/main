@@ -57,7 +57,7 @@ public class Describe implements Command {
 		
 		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
 		DisplayInfo dis = read.execute();
-		dis.setHightlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
 		dis.setHighlightItem(Default.DESCRIPTION);
 		return dis;
 	}
