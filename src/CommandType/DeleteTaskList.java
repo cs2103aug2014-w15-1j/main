@@ -105,7 +105,6 @@ public class DeleteTaskList implements Command{
 		for(int i = 0, j = 0; i < Default.MAX_DISPLAY_LINE; i++){
 			if(taskPointers[i] >= 0){
 				int index = RunLogic.getIndexInList(trashbinList, taskPointers[i]);
-				System.out.println(index);
 				if(index >= 0){
 					taskList.add(trashbinList.remove(index));
 					reAddedTaskIndexList[j] = taskList.size() - 1;

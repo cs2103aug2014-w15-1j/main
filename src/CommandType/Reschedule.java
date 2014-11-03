@@ -71,11 +71,11 @@ public class Reschedule implements Command {
 		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
 		DisplayInfo dis = read.execute();
 		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
-		if(newStartDate != null){
-			dis.setHighlightItem(Default.STARTDATE);
-		}
-		if(newEndDate != null){
+		dis.setHighlightItem(Default.BOTHDATE);
+		if(newStartDate == null){
 			dis.setHighlightItem(Default.ENDDATE);
+		} else if(newEndDate == null){
+			dis.setHighlightItem(Default.STARTDATE);
 		}
 		return dis;
 	}
@@ -94,11 +94,11 @@ public class Reschedule implements Command {
 		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
 		DisplayInfo dis = read.execute();
 		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
-		if(startDayBC != null){
-			dis.setHighlightItem(Default.STARTDATE);
-		}
-		if(endDayBC != null){
+		dis.setHighlightItem(Default.BOTHDATE);
+		if(newStartDate == null){
 			dis.setHighlightItem(Default.ENDDATE);
+		} else if(newEndDate == null){
+			dis.setHighlightItem(Default.STARTDATE);
 		}
 		return dis;
 	}
