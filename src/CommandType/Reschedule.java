@@ -70,7 +70,7 @@ public class Reschedule implements Command {
 		
 		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
 		DisplayInfo dis = read.execute();
-		dis.setHightlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
 		if(newStartDate != null){
 			dis.setHighlightItem(Default.STARTDATE);
 		}

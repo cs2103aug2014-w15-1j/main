@@ -80,7 +80,7 @@ public class Add implements Command{
 				viewTaskList = new ViewTaskList(feedback, title);
 			}
 			DisplayInfo dis = viewTaskList.execute();
-			dis.setHightlight(Default.HIGHLIGHT_LINE);
+			dis.setHighlight(Default.HIGHLIGHT_LINE);
 			dis.setHighlightLine(highlightLine);
 			return dis;
 			

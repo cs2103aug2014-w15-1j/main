@@ -65,11 +65,10 @@ public class AttributePanel extends JPanel {
 		c3.gridx = 0;
 		c3.gridy = 2;
 		c3.weightx = 0.9;
-		c3.ipady = 20;
+		c3.ipady = 200;
 		c3.insets = new Insets(10, 10, 70, 10);
 		c3.gridwidth = 3;
 		c3.gridheight = 3;
-		c3.weighty = 0.3;
 		this.add(new InfoPanel(new Color(255,255,255,100), firstCol.get(currentIndex), secondCol.get(currentIndex)), c3);
 	}
 	

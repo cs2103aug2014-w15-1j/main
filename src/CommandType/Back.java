@@ -28,7 +28,7 @@ public class Back implements Command{
 			view = new ViewTaskList(GUI.getTaskIndex(), feedback, title);
 		}
 		DisplayInfo dis = view.execute();
-		dis.setHightlight(Default.HIGHLIGHT_LINE);
+		dis.setHighlight(Default.HIGHLIGHT_LINE);
 		dis.setHighlightLine(highlightLine);
 		return dis;
 	}

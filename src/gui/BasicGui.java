@@ -55,6 +55,8 @@ import java.awt.SystemColor;
 
 import java.util.ArrayList;
 
+import logic.JDate;
+
 /**
  * class BasicGUI: contains the basic structure of GUI
  * 
@@ -425,8 +427,8 @@ public class BasicGui extends JFrame {
 		mainPanel.add(layered);
 		mainPanel.validate();
 	}
-	public void showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d, boolean pre, boolean nxt) {
-		ColumnListPanel listed = new ColumnListPanel(a, b, c, d, pre, nxt);
+	public void showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d, boolean pre, boolean nxt, int highlightedLine, String highlightedDate) {
+		ColumnListPanel listed = new ColumnListPanel(a, b, c, d, pre, nxt, highlightedLine,  highlightedDate);
 		mainPanel.removeAll();
 		mainPanel.add(listed);
 		mainPanel.validate();
