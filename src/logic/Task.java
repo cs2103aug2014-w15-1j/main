@@ -189,21 +189,34 @@ public class Task {
 		this.done = false;
 	}
 	
-	/*
+	
 	// API for compare
 	public boolean equals(Task task){
 		if(!this.name.equals(task.name)){
 			return false;
 		}
+		//no description
+		if(this.description==null){
+			return false;
+		}
 		if(!this.description.equals(task.description)){
+			return false;
+		}
+		//no start date
+		if(this.startDate==null){
 			return false;
 		}
 		if(!this.startDate.equals(task.startDate)){
 			return false;
 		}
+		//no end date
+		if(this.endDate==null){
+			return false;
+		}
 		if(!this.endDate.equals(task.endDate)){
 			return false;
 		}
+		
 		if(!this.repeatDays.equals(task.repeatDays)){
 			return false;
 		}
@@ -212,7 +225,6 @@ public class Task {
 		}
 		return true;
 	}
-	*/
 	
 	public String toPersonalString() {
 	    String startDateStr;
