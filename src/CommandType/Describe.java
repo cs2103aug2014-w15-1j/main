@@ -19,7 +19,11 @@ public class Describe implements Command {
 
 	// added by Zhang Ji
 	private long taskPointer;
-
+	
+	// added by Chen Di
+	private String beforeChangeDes;
+	
+	
 	public void setTaskPointer(long pointer) {
 		this.taskPointer = pointer;
 	}
@@ -34,6 +38,7 @@ public class Describe implements Command {
 
 		initialize();
 		newDescription = description;
+		
 		lineIndex = 1;
 	}
 
@@ -49,6 +54,11 @@ public class Describe implements Command {
 
 	@Override
 	public DisplayInfo execute() {
+		
+		// Get old Description
+		beforeChangeDes = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getDescription();
+		System.out.println("beforeChangeDes:"  + beforeChangeDes);
+		
 		taskList.get(currentListIndex[currentDisplay[lineIndex]]).describe(
 				newDescription);
 		update();
@@ -64,8 +74,20 @@ public class Describe implements Command {
 
 	@Override
 	public DisplayInfo undo() {
-		// TODO Auto-generated method stub
-		return null;
+		// Add by Chen Di
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).describe(
+				beforeChangeDes);
+		
+		update();
+
+		DataStore.writeTask(taskList);
+		
+		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.DESCRIPTION);
+		
+		return dis;
 	}
 
 	// -----------helper functions-----------------

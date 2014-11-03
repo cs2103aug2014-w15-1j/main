@@ -93,10 +93,10 @@ public class GuiController {
 		if (info.changeTaskList()) {
 			switch (info.getViewMode()) {
 			case TASK_DETAIL:
-				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
+				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(),  info.getHighlightedProperty());
 				break;
 			case BIN_DETAIL:
-				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
+				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(), info.getHighlightedProperty());
 				break;
 			case MONTH:
 				throw new UnsupportedOperationException(

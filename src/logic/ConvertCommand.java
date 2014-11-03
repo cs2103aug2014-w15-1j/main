@@ -8,7 +8,7 @@ public class ConvertCommand {
 	// title formats
 	private static String TASKLIST_TITLE = "Task List";
 	private static String BIN_TITLE = "Trash bin";
-	private static String DETAIL_TITLE_FORMAT = "Detail of %s";
+	public static String DETAIL_TITLE_FORMAT = "Detail of %s";
 	private static String SEARCH_TITLE = "Search result of %s";
 	
 	//feedback formats

@@ -20,6 +20,9 @@ public class Rename implements Command {
 	// added by Zhang Ji
 	private long taskPointer;
 
+	// Added by Chen Di
+	private String beforeChangeTitle;
+	
 	public void setTaskPointer(long pointer) {
 		this.taskPointer = pointer;
 	}
@@ -48,6 +51,10 @@ public class Rename implements Command {
 
 	@Override
 	public DisplayInfo execute() {
+		// Added by Chen Di
+		beforeChangeTitle = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getName();
+		// =======
+		
 		taskList.get(currentListIndex[currentDisplay[lineIndex]]).rename(
 				newName);
 		update();
@@ -63,8 +70,18 @@ public class Rename implements Command {
 
 	@Override
 	public DisplayInfo undo() {
-		// TODO Auto-generated method stub
-		return null;
+		// Added by Chen Di
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).rename(
+				beforeChangeTitle);
+		update();
+
+		DataStore.writeTask(taskList);
+		ReadTaskList read = new ReadTaskList(lineIndex, feedback, String.format(ConvertCommand.DETAIL_TITLE_FORMAT, beforeChangeTitle));
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.NAME);
+		return dis;
+		// =======
 	}
 
 	// -----------helper functions-----------------

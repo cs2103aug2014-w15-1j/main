@@ -27,6 +27,9 @@ public class Restore implements Command {
 
 	// added by Zhang Ji
 	private long taskPointer;
+	
+	// added by Chen Di
+	private int originListIndex;
 
 	public void setTaskPointer(long pointer) {
 		this.taskPointer = pointer;
@@ -46,6 +49,7 @@ public class Restore implements Command {
 
 	@Override
 	public DisplayInfo execute() {
+		originListIndex = currentListIndex[restoreIndex];
 		taskList.add(trashbinList.remove(currentListIndex[restoreIndex]));
 
 		currentListIndex = updateListIndex(currentListIndex);
@@ -69,8 +73,25 @@ public class Restore implements Command {
 
 	@Override
 	public DisplayInfo undo() {
-		// TODO Auto-generated method stub
-		return null;
+		trashbinList.add(taskList.remove(originListIndex));
+		
+		currentListIndex = updateListIndex(currentListIndex);
+
+		update();
+
+		constructBridges();
+		DataStore.writeAllData(passToStore);
+
+		ViewTrashBin viewTrashBin;
+		if (currentListIndex[originListIndex] != -1) {
+			viewTrashBin = new ViewTrashBin(originListIndex, feedback, title);
+		} else if (GUI.hasPrevious()) {
+			viewTrashBin = new ViewTrashBin(originListIndex
+					- Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTrashBin = new ViewTrashBin(feedback, title);
+		}
+		return viewTrashBin.execute();
 	}
 
 	// -----------helper functions-----------------
@@ -108,6 +129,4 @@ public class Restore implements Command {
 	public boolean supportUndo() {
 		return true;
 	}
-
-
 }

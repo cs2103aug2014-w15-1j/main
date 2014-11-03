@@ -22,6 +22,9 @@ public class Mark implements Command{
 
 	// added by Zhang Ji
 	private long taskPointer;
+	
+	// Added by Chen Di
+	private boolean oldStatus;
 
 	public void setTaskPointer(long pointer) {
 		this.taskPointer = pointer;
@@ -52,6 +55,7 @@ public class Mark implements Command{
 	
 	@Override
 	public DisplayInfo execute() {
+		oldStatus = status;
 		if(status){
 			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setDone();
 		} else {
@@ -70,8 +74,20 @@ public class Mark implements Command{
 
 	@Override
 	public DisplayInfo undo() {
-		// TODO Auto-generated method stub
-		return null;
+		if(oldStatus){
+			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setUndone();
+		} else {
+			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setDone();
+		}
+		update();
+
+		DataStore.writeTask(taskList);
+		
+		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.NAME);
+		return dis;
 	}
 
 	
