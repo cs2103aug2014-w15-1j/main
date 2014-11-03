@@ -66,8 +66,6 @@ public class Reschedule implements Command {
 				newStartDate, newEndDate);
 		update();
 
-		update();
-
 		DataStore.writeTask(taskList);
 		
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
@@ -95,8 +93,6 @@ public class Reschedule implements Command {
 		// Added by Chen Di
 		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
 				startDayBC, endDayBC);
-		update();
-
 		update();
 
 		DataStore.writeTask(taskList);
