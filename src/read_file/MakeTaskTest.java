@@ -15,7 +15,7 @@ public class MakeTaskTest {
     String repeatDays = "1 month";
     
     JDate startDate = new JDate(2014, 9, 22);
-    JDate endDate = new JDate(2014, 12, 22);
+    JDate endDate = null;
     
     //5 fields
     private   Task testTask5 = new Task(name, description, 

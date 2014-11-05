@@ -14,4 +14,7 @@ public class SystemInfo {
     public static final String CHECKSTART = "start";
     public static final String CHECKEND = "end";
     
+    public static final String STARTWRONG = "swrong";
+    public static final String ENDWRONG = "ewrong";
+    public static final String STUB = "STUB";
 }

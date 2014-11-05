@@ -18,8 +18,8 @@ import logic.Task;
  * */
 public class ReadFile {
 
-    private static ArrayList<Task> EVENTTASK;
-    private static ArrayList<Task> TRASHFILE;
+    private  static ArrayList<Task> EVENTTASK;
+    private  static ArrayList<Task> TRASHFILE;
 
     private static ArrayList<Task> EMPTYDATA = new ArrayList<Task>();
 	private static Task curTask;
@@ -97,12 +97,14 @@ public class ReadFile {
             FileReader inputFile = new FileReader(fileName);
             BufferedReader bufferReader = new BufferedReader(inputFile);
             String line = bufferReader.readLine();
-
+            
             if (line != null) {
-                if (!line.isEmpty()) {
+            	  
+                if (!line.isEmpty()) { 
                     while (line != null) {
                         TRASHFILE.add(makeTask(line));
                         line = bufferReader.readLine();
+                      
                     }
                 }
             }
@@ -115,9 +117,11 @@ public class ReadFile {
             return EMPTYDATA;
 
         } catch (Exception e) {
+        	e.printStackTrace();
             System.out.println(ErrorMSG.READ_TRASHERROR + e.getMessage()); 
             return null;
         }
+ 
     }
 
     /**
@@ -128,74 +132,160 @@ public class ReadFile {
 
         String[] tempoTaskSplit = taskString.split(SystemInfo.SEPERATESIMBOL);
         
-        if (tempoTaskSplit.length == 5) {
-            String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
-            JDate startDate = dateMaker(startDateStr);
-  
-            String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);
-            JDate endDate = dateMaker(endDateStr);
-    
-             curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
-                    tempoTaskSplit[2], startDate, endDate);
-            return curTask;
-            
-        }else if(tempoTaskSplit.length == 4)
+        /*
+        if(tempoTaskSplit == null)
         {
-            //No Description
-        	if(tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART) && tempoTaskSplit[3].endsWith(SystemInfo.CHECKEND)){
-        		String[] startDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);
-                JDate startDate = dateMaker(startDateStr);
-                
-                String[] endDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
-                JDate endDate = dateMaker(endDateStr);
-                
-                curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[1], startDate, endDate);
-
-        	}
-        	//No Start Date 
-        	if(!tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART) && tempoTaskSplit[3].endsWith(SystemInfo.CHECKEND)){
- 
-                String[] endDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
-                JDate endDate = dateMaker(endDateStr);
-                
-                curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[1], tempoTaskSplit[2], endDate);
-        	}
-        	//No End Date
-        	if(!tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART) && tempoTaskSplit[3].endsWith(SystemInfo.CHECKSTART)){
-
-                String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
-                JDate startDate = dateMaker(startDateStr);
-                
-                curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[1], startDate,tempoTaskSplit[2]);
-        	}
+           	JDate startDate = new JDate();
+        	JDate endDate = new JDate();
         	
-        }else if(tempoTaskSplit.length == 3)
-        {
-        	//No Description No Start Date
-        	if(tempoTaskSplit[2].endsWith(SystemInfo.CHECKEND)){
+        	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+                    tempoTaskSplit[2], startDate, endDate);
+        }
+        */
+        
+        if (tempoTaskSplit.length == 5) {
+        	
+        	
+        	/*
+        	 if(     tempoTaskSplit[1]=="null" &&
+        	 
+        			tempoTaskSplit[3].endsWith(SystemInfo.CHECKSTART) && 
+        			tempoTaskSplit[4].endsWith(SystemInfo.CHECKEND))
+        	{
+        		String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
+                JDate startDate = dateMaker(startDateStr);
+                
+                String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);
+                JDate endDate = dateMaker(endDateStr);
+                
+                curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[2], startDate, endDate);
+                
+        	}else if(
+        			  tempoTaskSplit[1]!="null" &&
+        			  tempoTaskSplit[3]=="null" &&
+        			  tempoTaskSplit[4].endsWith(SystemInfo.CHECKEND))
+        	{   // add start
+        		
+                JDate startDate = new JDate();
+        		
+                String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);
+                JDate endDate = dateMaker(endDateStr);
+                
+                curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[1], tempoTaskSplit[2], startDate,endDate);
+        	}else if(
+        			  tempoTaskSplit[1]!="null" &&
+        			  tempoTaskSplit[3].endsWith(SystemInfo.CHECKSTART) &&
+        			  tempoTaskSplit[4]=="null")
+        	{
+        		//add end
+        		JDate endDate = new JDate();
+        		
+        		String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
+            	JDate startDate = dateMaker(startDateStr);
+            
+            	curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[1], tempoTaskSplit[2], startDate,endDate);
+            	
+            	  curTask = new Task(tempoTaskSplit[0],
+            			tempoTaskSplit[1], startDate, tempoTaskSplit[2]);
+            	
+        	}else if(
+        			  tempoTaskSplit[1]!="null" &&
+        			  tempoTaskSplit[3]=="null" &&
+        			  tempoTaskSplit[4]=="null")
+        	{	
+        		JDate startDate = new JDate();
+        		JDate endDate = new JDate();
+        		
+        		curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[1], tempoTaskSplit[2], startDate,endDate);
+        		
+        		 curTask = new Task(tempoTaskSplit[0],
+                    tempoTaskSplit[1], tempoTaskSplit[2]);
+                    
+        	}else if(
+        			tempoTaskSplit[1]=="null" &&
+        		    tempoTaskSplit[3]=="null" &&
+              	    tempoTaskSplit[4]=="null")
+        	{
+        		JDate startDate = new JDate();
+        		JDate endDate = new JDate();
+        		
+        		curTask = new Task(tempoTaskSplit[0],
+                         tempoTaskSplit[2], startDate,endDate);
+        		
+        		curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[2]);  
+                         
+        	}else if(
+        			  tempoTaskSplit[1]=="null" &&
+        			  tempoTaskSplit[3]=="null" &&
+        			  tempoTaskSplit[4].endsWith(SystemInfo.CHECKEND))
+        	{
+        		JDate startDate = new JDate();
+        		
         		String[] endDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);
                 JDate endDate = dateMaker(endDateStr);
                 
                 curTask = new Task(tempoTaskSplit[0],
+                        tempoTaskSplit[2], startDate,endDate);
+                curTask = new Task(tempoTaskSplit[0],
                         tempoTaskSplit[1], endDate);
-        	}
-        	//No Description No End Date
-        	if(tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART)){
+                        
+        	}else if(
+        			  tempoTaskSplit[1]=="null" &&
+        			  tempoTaskSplit[3].endsWith(SystemInfo.CHECKSTART) &&
+        			  tempoTaskSplit[4]=="null")
+        	{
+        		JDate endDate = new JDate();
+        		
         		String[] startDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);
                 JDate startDate = dateMaker(startDateStr);
                 
                 curTask = new Task(tempoTaskSplit[0],
-                        startDate, tempoTaskSplit[1]); 		
-        	}
-        	//No Start Date No End Date
-        	if(!tempoTaskSplit[1].endsWith(SystemInfo.CHECKSTART) && !tempoTaskSplit[2].endsWith(SystemInfo.CHECKSTART)){
-        		curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[1], tempoTaskSplit[2]);
-        	}
-        }else{
+                        tempoTaskSplit[2], startDate,endDate);
+                curTask = new Task(tempoTaskSplit[0],
+                        startDate,tempoTaskSplit[1]);
+                        
+        	
+        	}else{
+        	*/
+        		// ALL 5 FIELDS
+          		
+        		String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);                
+
+                String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);              
+
+                if(endDateStr[0].equals("null") && startDateStr!=null){
+                    JDate startDate = dateMaker(startDateStr);
+          		
+          			curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+                        startDate, tempoTaskSplit[2]);
+          			
+                }else if(startDateStr[0].equals("null") && endDateStr!=null)
+                {
+                	JDate endDate = dateMaker(endDateStr);
+                	
+                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+                            tempoTaskSplit[2], endDate);
+                	
+                }else if (startDateStr[0].equals("null") && endDateStr[0].equals("null"))
+                {
+                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+                            tempoTaskSplit[2]);
+                }else{
+                	
+                	JDate startDate = dateMaker(startDateStr);
+                	JDate endDate = dateMaker(endDateStr);
+                	
+                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+                        tempoTaskSplit[2], startDate, endDate);
+                }      	
+        	
+        } else{
+        	
             ErrorGenerator.popError(ErrorMSG.TASK_FORMAT_ERR);
             return null;       
         }

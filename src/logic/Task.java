@@ -38,10 +38,13 @@ public class Task {
 		this.done = false;
 	}
 	
-	public Task(String name, String description){
+	/*
+	 * @para 2 fields
+	 */
+	public Task(String name, String repeatDays){
 		this.name = name;
-		this.description = description;
-		this.repeatDays = null;
+		this.description = null;
+		this.repeatDays = repeatDays;
 		this.startDate = null;
 		this.endDate = null;
 		this.done = false;
@@ -98,6 +101,7 @@ public class Task {
 		this.endDate = endDate;
 		this.done = false;
 	}
+
 	
 	/*
 	 * @para 4 fields
@@ -136,6 +140,29 @@ public class Task {
 		this.endDate = endDate2;
 		this.done = false;
 	}
+	
+	
+	
+	/*public Task(String name, String description, String repeatDays, JDate startDate2, null){
+		this.name = name;
+		this.description = description;
+		this.repeatDays = repeatDays;
+		this.startDate = startDate2;
+		this.endDate = endDate2;
+		this.done = false;
+	}
+	
+	
+	public Task(String name, String description, String repeatDays, null, JDate endDate2){
+		this.name = name;
+		this.description = description;
+		this.repeatDays = repeatDays;
+		this.startDate = startDate2;
+		this.endDate = endDate2;
+		this.done = false;
+	}
+	*/
+	
 	
 	
 	// API for get info

@@ -32,6 +32,11 @@ public class JDate extends GregorianCalendar {
 		super(year, month, day);
 		setLenient(false);
 	}
+	
+	//empty constructor
+	public JDate(){
+		
+	}
 
 	/********************************************
 	 ************* Public Method ****************

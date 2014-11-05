@@ -21,7 +21,7 @@ public class ReadFIleTest {
     
 
     JDate startDate = new JDate(2014, 8, 22);
-    JDate endDate = new JDate(2014, 9, 22);
+    JDate endDate = null;
     
 
     private   Task testTask = new Task(name, description, 
