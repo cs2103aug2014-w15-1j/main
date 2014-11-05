@@ -11,7 +11,8 @@ import logic.JDate;
 import logic.Task;
 
 /**
- * @author A0100792M/A0119493X
+ * @author A0100792M
+ *         A0119493X
  * 
  * This class read task files and trash files and return them in ArrayList<Task>
  *            creation of Task objects that includes null fields from string in files
