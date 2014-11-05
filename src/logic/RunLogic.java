@@ -43,25 +43,15 @@ public class RunLogic {
 	private static int nextTaskPointer;
 	private static void initializeTaskPointer() {
 		nextTaskPointer = 0;
-<<<<<<< HEAD
-
+		
 		for(Task t: taskList) {
 			t.setPointer(nextTaskPointer);
 			incrementnextTaskPointer();
-=======
-		if(taskList != null) {
-			for(Task t: taskList) {
-				t.setPointer(nextTaskPointer);
-				incrementnextTaskPointer();
-			}	
->>>>>>> 32a9ac999f5c71149a0c13bc1d1758438a8c53d1
-		}
-		if(trashbinList != null) {
-			for(Task t: trashbinList) {
-				t.setPointer(nextTaskPointer);
+		}	
+		for(Task t: trashbinList) {
+			t.setPointer(nextTaskPointer);
 				incrementnextTaskPointer();
 			}
-		}
 	}
 	
 	public static int getNextTaskPointer() {
