@@ -270,9 +270,9 @@ public class ConvertCommand {
 		if(newName == null){
 			newName = command.getTitle();
 		} else {
-			
+			newName = newName.concat(" ").concat(command.getTitle());
 		}
-		newName = newName.concat(" ").concat(command.getTitle());
+		
 		
 		return new Rename(newName, SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT, newName));
 	}
