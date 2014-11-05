@@ -21,7 +21,7 @@ public class ReadFIleTest {
     
 
     JDate startDate = new JDate(2014, 8, 22);
-    JDate endDate = new JDate(2014, 9, 22);
+    JDate endDate = null;
     
 
     private   Task testTask = new Task(name, description, 
@@ -39,8 +39,8 @@ public class ReadFIleTest {
     	testReadTrash = new ReadFile();
     	testReadTask = new ReadFile();
     	
-    	 trashData = new ArrayList<Task>();
-         eventData = new ArrayList<Task>();
+    	trashData = new ArrayList<Task>();
+        eventData = new ArrayList<Task>();
     	
     	trashData.add(testTask);
     	eventData.add(testTask);
@@ -65,7 +65,8 @@ public class ReadFIleTest {
 	private boolean assertTrue(ArrayList<Task> event,ArrayList<Task> result){
 		if (event.equals(result))
 			return true;
-		else return false;
+		else 
+			return false;
 	}
 
 	public ArrayList<Task> getTrashData() {

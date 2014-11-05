@@ -38,10 +38,13 @@ public class Task {
 		this.done = false;
 	}
 	
-	public Task(String name, String description){
+	/*
+	 * @para 2 fields
+	 */
+	public Task(String name, String repeatDays){
 		this.name = name;
-		this.description = description;
-		this.repeatDays = null;
+		this.description = null;
+		this.repeatDays = repeatDays;
 		this.startDate = null;
 		this.endDate = null;
 		this.done = false;
@@ -98,6 +101,7 @@ public class Task {
 		this.endDate = endDate;
 		this.done = false;
 	}
+
 	
 	/*
 	 * @para 4 fields
@@ -136,6 +140,29 @@ public class Task {
 		this.endDate = endDate2;
 		this.done = false;
 	}
+	
+	
+	
+	/*public Task(String name, String description, String repeatDays, JDate startDate2, null){
+		this.name = name;
+		this.description = description;
+		this.repeatDays = repeatDays;
+		this.startDate = startDate2;
+		this.endDate = endDate2;
+		this.done = false;
+	}
+	
+	
+	public Task(String name, String description, String repeatDays, null, JDate endDate2){
+		this.name = name;
+		this.description = description;
+		this.repeatDays = repeatDays;
+		this.startDate = startDate2;
+		this.endDate = endDate2;
+		this.done = false;
+	}
+	*/
+	
 	
 	
 	// API for get info
@@ -195,24 +222,42 @@ public class Task {
 		if(!this.name.equals(task.name)){
 			return false;
 		}
-		//no description
-		if(this.description==null){
+		
+		//no description compare
+		if(this.description==null && task.description!=null){
 			return false;
 		}
+		if(description==null && task.description==null){
+			return true;
+		}
+		
+		
 		if(!this.description.equals(task.description)){
 			return false;
 		}
-		//no start date
-		if(this.startDate==null){
+		
+		//no start date compare
+		if(this.startDate==null && task.startDate!=null){
 			return false;
 		}
+		if(this.startDate==null && task.startDate==null){
+			return true;
+		}
+		
+		
 		if(!this.startDate.equals(task.startDate)){
 			return false;
 		}
-		//no end date
-		if(this.endDate==null){
+		
+		//no end date compare
+		if(this.endDate==null && task.endDate!=null){
 			return false;
 		}
+		if(this.endDate==null && task.endDate==null){
+			return true;
+		}
+		
+		
 		if(!this.endDate.equals(task.endDate)){
 			return false;
 		}

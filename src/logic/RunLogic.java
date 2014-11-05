@@ -1,5 +1,6 @@
 package logic;
 
+import read_file.ReadFile;
 import gui.VIEW_MODE;
 
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.Stack;
 
 import parser.RawCommand;
 import parser.ParserProcesser;
-import read_file.ReadFile;
 import CommandType.*;
 
 public class RunLogic {
@@ -23,6 +23,7 @@ public class RunLogic {
 	private static ArrayList<Task> trashbinList = new ArrayList<Task>();
 	private static int[] currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 	private static int[] currentListIndex = new int[Default.MAX_TASKS];
+	
 	
 	//added by Zhang Ji
 	private static Stack<Command> pastCommands ;
@@ -42,18 +43,15 @@ public class RunLogic {
 	private static int nextTaskPointer;
 	private static void initializeTaskPointer() {
 		nextTaskPointer = 0;
-		if(taskList != null) {
-			for(Task t: taskList) {
-				t.setPointer(nextTaskPointer);
-				incrementnextTaskPointer();
-			}	
-		}
-		if(trashbinList != null) {
-			for(Task t: trashbinList) {
-				t.setPointer(nextTaskPointer);
+		
+		for(Task t: taskList) {
+			t.setPointer(nextTaskPointer);
+			incrementnextTaskPointer();
+		}	
+		for(Task t: trashbinList) {
+			t.setPointer(nextTaskPointer);
 				incrementnextTaskPointer();
 			}
-		}
 	}
 	
 	public static int getNextTaskPointer() {
