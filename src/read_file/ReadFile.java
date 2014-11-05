@@ -11,7 +11,8 @@ import logic.JDate;
 import logic.Task;
 
 /**
- * @author A0100792M/A0119493X
+ * @author A0100792M
+ *         A0119493X
  * 
  * This class read task files and trash files and return them in ArrayList<Task>
  *            creation of Task objects that includes null fields from string in files
@@ -130,22 +131,9 @@ public class ReadFile {
      */
     public static Task makeTask(String taskString) {
 
-        String[] tempoTaskSplit = taskString.split(SystemInfo.SEPERATESIMBOL);
+        String[] tempoTaskSplit = taskString.split(SystemInfo.SEPERATESIMBOL);       
         
-        /*
-        if(tempoTaskSplit == null)
-        {
-           	JDate startDate = new JDate();
-        	JDate endDate = new JDate();
-        	
-        	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
-                    tempoTaskSplit[2], startDate, endDate);
-        }
-        */
-        
-        if (tempoTaskSplit.length == 5) {
-        	
-        	
+        if (tempoTaskSplit.length == 5) {       	
         	/*
         	 if(     tempoTaskSplit[1]=="null" &&
         	 
@@ -258,23 +246,26 @@ public class ReadFile {
 
                 String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);              
 
-                if(endDateStr[0].equals("null") && startDateStr!=null){
-                    JDate startDate = dateMaker(startDateStr);
-          		
-          			curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
-                        startDate, tempoTaskSplit[2]);
+                if(startDateStr[0].equals("null") && endDateStr[0].equals("null"))
+                {
           			
-                }else if(startDateStr[0].equals("null") && endDateStr!=null)
+                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+                            tempoTaskSplit[2]);
+                    
+                }else if(startDateStr[0].equals("null") && !endDateStr.equals("null"))
                 {
                 	JDate endDate = dateMaker(endDateStr);
                 	
                 	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
                             tempoTaskSplit[2], endDate);
                 	
-                }else if (startDateStr[0].equals("null") && endDateStr[0].equals("null"))
+                }else if (endDateStr[0].equals("null") && !startDateStr.equals("null"))
                 {
-                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
-                            tempoTaskSplit[2]);
+                	JDate startDate = dateMaker(startDateStr);
+              		
+          			curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
+                        startDate, tempoTaskSplit[2]);
+
                 }else{
                 	
                 	JDate startDate = dateMaker(startDateStr);
@@ -285,7 +276,6 @@ public class ReadFile {
                 }      	
         	
         } else{
-        	
             ErrorGenerator.popError(ErrorMSG.TASK_FORMAT_ERR);
             return null;       
         }
