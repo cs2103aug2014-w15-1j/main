@@ -16,8 +16,8 @@ import javax.swing.JTextField;
 public class TransColorTextField extends JTextField {
 
 	private static final long serialVersionUID = 2017126697448899239L;
-	private Color colorA = new Color(255, 255, 255, 155);
-	private Color colorB = new Color(128, 138, 135, 155);
+	private Color colorA = new Color(255, 255, 255, 100);
+	private Color colorB = new Color(128, 138, 135, 100);
 	private Color currentColor;
 	/*********************************************
 	 *************** Constructor *****************
@@ -25,7 +25,7 @@ public class TransColorTextField extends JTextField {
 	public TransColorTextField() {
 		super();
 		this.setPreferredSize(new Dimension(200,40));
-		Font font = new Font("DIALOG", Font.ITALIC, 20);
+		Font font = new Font("DIALOG", Font.ITALIC, 40);
 		this.setFont(font);
 		currentColor = colorA;
 

@@ -1,5 +1,7 @@
 package CommandType;
 
+import gui.VIEW_MODE;
+
 import java.util.ArrayList;
 
 import data_store.DataStore;
@@ -21,6 +23,10 @@ public class Reschedule implements Command {
 	// added by Zhang Ji
 	private long taskPointer;
 
+	// Added by Chen Di
+	private JDate startDayBC;
+	private JDate endDayBC;
+	
 	public void setTaskPointer(long pointer) {
 		this.taskPointer = pointer;
 	}
@@ -53,30 +59,54 @@ public class Reschedule implements Command {
 
 	@Override
 	public DisplayInfo execute() {
+		startDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getStartDate();
+		endDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getEndDate();
+		
 		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
 				newStartDate, newEndDate);
 		update();
 
-		update();
-
 		DataStore.writeTask(taskList);
 		
-		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
-		DisplayInfo dis = read.execute();
-		dis.setHightlight(Default.HIGHLIGHT_PROPERTY);
-		if(newStartDate != null){
-			dis.setHighlightItem(Default.STARTDATE);
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			Command read = new ReadTaskList(lineIndex, feedback, title);
+			DisplayInfo dis = read.execute();
+			dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+			dis.setHighlightItem(Default.BOTHDATE);
+			if(newStartDate == null){
+				dis.setHighlightItem(Default.ENDDATE);
+			} else if(newEndDate == null){
+				dis.setHighlightItem(Default.STARTDATE);
+			}
+			return dis;
+		} else {
+			Command view = new ViewTaskList(RunLogic.getGuiStatus().getTaskIndex(), feedback, title);
+			DisplayInfo dis = view.execute();
+			dis.setHighlight(Default.HIGHLIGHT_LINE);
+			dis.setHighlightLine(lineIndex - 1);
+			return dis;
 		}
-		if(newEndDate != null){
-			dis.setHighlightItem(Default.ENDDATE);
-		}
-		return dis;
 	}
 
 	@Override
 	public DisplayInfo undo() {
-		// TODO Auto-generated method stub
-		return null;
+		// Added by Chen Di
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
+				startDayBC, endDayBC);
+		update();
+
+		DataStore.writeTask(taskList);
+		
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_RESCHEDULE, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.BOTHDATE);
+		if(newStartDate == null){
+			dis.setHighlightItem(Default.ENDDATE);
+		} else if(newEndDate == null){
+			dis.setHighlightItem(Default.STARTDATE);
+		}
+		return dis;
 	}
 
 	// ---------------helper function--------------

@@ -12,6 +12,7 @@ public class Default {
 	public static int HIGHLIGHT_LINE = 1;
 	public static int HIGHLIGHT_PROPERTY = 2;
 	public static int HIGHLIGHT_DATE = 3;
+	public static int HIGHLIGHT_LINES = 4;
 	// define properties of a task to integers
 	public static int NAME = 1;
 	public static int STARTDATE = 2;

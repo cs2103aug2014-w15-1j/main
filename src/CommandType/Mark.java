@@ -1,8 +1,11 @@
 package CommandType;
 
+import gui.VIEW_MODE;
+
 import java.util.ArrayList;
 
 import data_store.DataStore;
+import logic.ConvertCommand;
 import logic.Default;
 import logic.DisplayInfo;
 import logic.RunLogic;
@@ -22,6 +25,9 @@ public class Mark implements Command{
 
 	// added by Zhang Ji
 	private long taskPointer;
+	
+	// Added by Chen Di
+	private boolean oldStatus;
 
 	public void setTaskPointer(long pointer) {
 		this.taskPointer = pointer;
@@ -52,6 +58,7 @@ public class Mark implements Command{
 	
 	@Override
 	public DisplayInfo execute() {
+		oldStatus = status;
 		if(status){
 			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setDone();
 		} else {
@@ -60,18 +67,38 @@ public class Mark implements Command{
 		update();
 
 		DataStore.writeTask(taskList);
-		
-		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
-		DisplayInfo dis = read.execute();
-		dis.setHightlight(Default.HIGHLIGHT_PROPERTY);
-		dis.setHighlightItem(Default.NAME);
-		return dis;
+	
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			Command read = new ReadTaskList(lineIndex, feedback, title);
+			DisplayInfo dis = read.execute();
+			dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+			dis.setHighlightItem(Default.MARK);
+			return dis;
+		} else {
+			Command view = new ViewTaskList(RunLogic.getGuiStatus().getTaskIndex(), feedback, title);
+			DisplayInfo dis = view.execute();
+			dis.setHighlight(Default.HIGHLIGHT_LINE);
+			dis.setHighlightLine(lineIndex - 1);
+			return dis;
+		}
 	}
 
 	@Override
 	public DisplayInfo undo() {
-		// TODO Auto-generated method stub
-		return null;
+		if(oldStatus){
+			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setUndone();
+		} else {
+			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setDone();
+		}
+		update();
+
+		DataStore.writeTask(taskList);
+		
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_MARK, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.MARK);
+		return dis;
 	}
 
 	

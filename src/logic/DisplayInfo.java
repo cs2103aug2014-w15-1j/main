@@ -22,7 +22,7 @@ public class DisplayInfo {
 	private boolean hasPreviousPage;
 
 	private boolean changeTasklist;
-	private boolean changeTitle;
+	private boolean changeTitle = true;
 	
 	private ArrayList<Task> taskList;
 	private String feedback;
@@ -126,7 +126,7 @@ public class DisplayInfo {
 	
 	
 	// public method for highlight
-	public void setHightlight(int newHighlight){
+	public void setHighlight(int newHighlight){
 		this.highlight = newHighlight;
 	}
 	
@@ -138,7 +138,7 @@ public class DisplayInfo {
 		this.highlightItem = item;
 	}
 	
-	public int getHightlight(){
+	public int getHighlight(){
 		return this.highlight;
 	}
 	

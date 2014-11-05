@@ -55,6 +55,8 @@ import java.awt.SystemColor;
 
 import java.util.ArrayList;
 
+import logic.JDate;
+
 /**
  * class BasicGUI: contains the basic structure of GUI
  * 
@@ -226,7 +228,7 @@ public class BasicGui extends JFrame {
 		titleWindow.setText("Today is Sep 29 2014");
 		
 		titleWindow.setForeground(new Color(66, 161, 223, 220));
-		titleWindow.setBorder(BorderFactory.createMatteBorder(0,0,1,0 ,new Color(66, 161, 223, 255) ));
+		titleWindow.setBorder(BorderFactory.createMatteBorder(1,0,1,0 ,new Color(66, 161, 223, 255) ));
 		
 		enableDraggableTitle();
 		
@@ -257,7 +259,7 @@ public class BasicGui extends JFrame {
 	private void constructMainArea() {
 		mainArea = new ImagePanel();
 		mainArea.setOpaque(true);
-		mainArea.setBackground(new Color(0,0,0,0));
+		mainArea.setBackground(new Color(0,0,0,255));
 		mainArea.setLayout(new BorderLayout(0, 0));
 		
 		getContentPane().add(mainArea, BorderLayout.CENTER);
@@ -295,9 +297,7 @@ public class BasicGui extends JFrame {
 		
 		mainPanel.add(mainWindow);
 	}
-	private void constructInfoPanel() {
 		
-	}
 
 	private void constructFeedbackPanel() {
 		FeedbackPanel = new JPanel();
@@ -427,15 +427,15 @@ public class BasicGui extends JFrame {
 		mainPanel.add(layered);
 		mainPanel.validate();
 	}
-	public void showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d, boolean pre, boolean nxt) {
-		ColumnListPanel listed = new ColumnListPanel(a, b, c, d, pre, nxt);
+	public void showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d, boolean pre, boolean nxt, int highlightedLine, boolean multiple,String highlightedDate) {
+		ColumnListPanel listed = new ColumnListPanel(a, b, c, d, pre, nxt, highlightedLine,  multiple,highlightedDate);
 		mainPanel.removeAll();
 		mainPanel.add(listed);
 		mainPanel.validate();
 	}
 	
-	public void ShowDetailed(ArrayList<String> a, ArrayList<String> b) {
-		AttributePanel detailed = new AttributePanel(a, b);
+	public void ShowDetailed(ArrayList<String> a, ArrayList<String> b, int highlightedProperty) {
+		AttributePanel detailed = new AttributePanel(a, b, highlightedProperty);
 		mainPanel.removeAll();
 		mainPanel.add(detailed);
 		mainPanel.validate();

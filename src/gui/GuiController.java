@@ -40,9 +40,11 @@ public class GuiController {
 	public static void main(String[] args) {
 		run();
 	}
+
 	/**
-	 * <em>run()</em>is the start point of <strong>MagiCal</strong>. 
-	 * <code>BasicGui</code> instance is obtained and <strong>Gui</strong> initialization is completed here. 
+	 * <em>run()</em>is the start point of <strong>MagiCal</strong>.
+	 * <code>BasicGui</code> instance is obtained and <strong>Gui</strong>
+	 * initialization is completed here.
 	 */
 	public static void run() {
 		gui = BasicGui.getInstance();
@@ -71,33 +73,42 @@ public class GuiController {
 	private static GuiInfoTranslator translate(DisplayInfo info) {
 		return new GuiInfoTranslator(info);
 	}
+
 	/**
-	 * manage and update <strong>GUI</strong> by given <code>GuiInfoTranslator</code>
+	 * manage and update <strong>GUI</strong> by given
+	 * <code>GuiInfoTranslator</code>
+	 * 
 	 * @param info
 	 */
 	private static void display(GuiInfoTranslator info) {
 		if (gui == null) {
 			run();
 		}
-		if(info.changeTitle()) {
+		if (info.changeTitle()) {
 			gui.setTitleText(info.getTitleString());
 		}
-		
+
 		gui.setFeedbackText(info.getFeedbackString());
 
 		if (info.changeTaskList()) {
 			switch (info.getViewMode()) {
 			case TASK_DETAIL:
-				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
+				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(),
+						info.getHighlightedProperty());
 				break;
 			case BIN_DETAIL:
-				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
+				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(),
+						info.getHighlightedProperty());
 				break;
 			case MONTH:
 				throw new UnsupportedOperationException(
 						"view in Month is not supported yet");
 			default:
-				gui.showListed(info.getFirstCol(), info.getSecondCol(), info.getThirdCol(), info.getFourthCol(), info.hasPreviousPage(), info.hasNextPage());
+				gui.showListed(info.getFirstCol(), info.getSecondCol(),
+						info.getThirdCol(), info.getFourthCol(),
+						info.hasPreviousPage(), info.hasNextPage(),
+						info.getHighlightedLine(), info.getHighlightMultipleLines(), info.getHighlightedDate());
+
 			}
 		}
 
@@ -105,8 +116,8 @@ public class GuiController {
 
 	/**
 	 * show updated <strong>GUI</strong> by given <code>DisplayInfo</code>
-	 * <strong>Note><strong>: a shortcut method combine <em>display(GuiInfoTranslator)</em> and
-	 * <em>translate(DisplayInfo)</em>.
+	 * <strong>Note><strong>: a shortcut method combine
+	 * <em>display(GuiInfoTranslator)</em> and <em>translate(DisplayInfo)</em>.
 	 * 
 	 * @see #display(GuiInfoTranslator)
 	 * @see #translate(DisplayInfo)
@@ -115,8 +126,11 @@ public class GuiController {
 	private static void display(DisplayInfo info) {
 		display(translate(info));
 	}
+
 	/**
-	 * pass the command to <strong>Logic</strong> and update <strong>GUI</strong> accordingly
+	 * pass the command to <strong>Logic</strong> and update
+	 * <strong>GUI</strong> accordingly
+	 * 
 	 * @param command
 	 */
 	static void passToLogic(String command) {

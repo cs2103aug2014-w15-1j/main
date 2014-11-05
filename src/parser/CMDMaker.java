@@ -139,13 +139,10 @@ public class CMDMaker {
 				locateLine = null;
 			}
 			
-			if(tokenPairs.isEmpty()){
-				return makeInvalid();
-			} else {
-				return new RawCommand(CMDTypes.COMMAND_TYPE.RENAME.name(), 
-									  InfoRetrieve.getAllSubInfo(tokenPairs).getFront(),
-									  locateLine);
-			}
+			return new RawCommand(CMDTypes.COMMAND_TYPE.RENAME.name(), 
+								  InfoRetrieve.getAllSubInfo(tokenPairs).getFront(),
+								  locateLine);
+			
 		} catch (Exception e) {
 			return makeInvalid();
 		}
@@ -166,13 +163,11 @@ public class CMDMaker {
 			// Get locate Line
 			if (firstPair.getToken() == TokenType.TOKEN_TYPE.NB){
 				locateLine = tokenPairs.remove(0).getCotent();
+				
 			} else {
 				locateLine = null;
 			}
-			
-			if(tokenPairs.isEmpty()){
-				return makeInvalid();
-			}
+		
 			return new RawCommand(CMDTypes.COMMAND_TYPE.DESCRIBE.name(), 
 								  InfoRetrieve.getAllSubInfo(tokenPairs).getFront(),
 								  locateLine);

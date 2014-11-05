@@ -19,8 +19,8 @@ public class RunLogic {
 	
 	// keep track on GUI and File status
 	private static GUIStatus GUI;
-	private static ArrayList<Task> taskList;
-	private static ArrayList<Task> trashbinList;
+	private static ArrayList<Task> taskList = new ArrayList<Task>();
+	private static ArrayList<Task> trashbinList = new ArrayList<Task>();
 	private static int[] currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
 	private static int[] currentListIndex = new int[Default.MAX_TASKS];
 	
@@ -43,14 +43,24 @@ public class RunLogic {
 	private static int nextTaskPointer;
 	private static void initializeTaskPointer() {
 		nextTaskPointer = 0;
+<<<<<<< HEAD
 
 		for(Task t: taskList) {
 			t.setPointer(nextTaskPointer);
 			incrementnextTaskPointer();
+=======
+		if(taskList != null) {
+			for(Task t: taskList) {
+				t.setPointer(nextTaskPointer);
+				incrementnextTaskPointer();
+			}	
+>>>>>>> 32a9ac999f5c71149a0c13bc1d1758438a8c53d1
 		}
-		for(Task t: trashbinList) {
-			t.setPointer(nextTaskPointer);
-			incrementnextTaskPointer();
+		if(trashbinList != null) {
+			for(Task t: trashbinList) {
+				t.setPointer(nextTaskPointer);
+				incrementnextTaskPointer();
+			}
 		}
 	}
 	
@@ -62,6 +72,13 @@ public class RunLogic {
 		nextTaskPointer++;
 	}
 	
+	public static int getPointerInList(ArrayList<Task> lst, int index){
+		if (lst != null) {
+			return lst.get(index).getPointer();
+		} else {
+			return -1;
+		}
+	}
 
 	public static int getIndexInList(ArrayList<Task> lst, int ptr) {
 		for(int i=0; i<lst.size(); i++) {
@@ -88,7 +105,13 @@ public class RunLogic {
 	public static DisplayInfo initialize() {
 		ReadFile rf = new ReadFile();
 		taskList = rf.getEventTask();
+		if(taskList == null) {
+			taskList = new ArrayList<Task>();
+		}
 		trashbinList = rf.getTrashFile();
+		if(trashbinList == null) {
+			trashbinList = new ArrayList<Task>();
+		}
 		initializeTaskPointer();
 		pastCommands = new Stack<Command>();
 		currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
