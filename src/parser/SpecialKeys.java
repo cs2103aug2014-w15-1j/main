@@ -40,7 +40,7 @@ class ParserKeys {
 	static final String[] KEYS_ADD = 	{"a", "d"};
 	static final String[] KEYS_UPDATE = {"u", "p"};
 	static final String[] KEYS_RENAME = {"r", "n"};
-	static final String[] KEYS_RESCHEDULE = {"r", "s", "e"};
+	static final String[] KEYS_RESCHEDULE = {"r", "s", "c", "d"};
 	static final String[] KEYS_REPEAT =   {"r", "p"};
 	static final String[] KEYS_DESCRIBE = {"d", "s", "b"};
 	static final String[] KEYS_DELETE =   {"d", "l"};

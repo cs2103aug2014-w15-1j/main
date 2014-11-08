@@ -24,7 +24,8 @@ public class CMDInterpreter {
         ArrayList<TokenPair> getSubInfo = rawCMDPair.getSubInfo();
 
         if (ValidityChecker.isAdd(getCommand) &&
-        	!ValidityChecker.isRead(getCommand)) {
+        	!ValidityChecker.isRead(getCommand) &&
+        	!ValidityChecker.isUpdate(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.ADD, getSubInfo);
         } else if (ValidityChecker.isUpdate(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.UPDATE, getSubInfo);
@@ -58,6 +59,8 @@ public class CMDInterpreter {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.RESTORE, getSubInfo);
         } else if (ValidityChecker.isMark(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.MARK, getSubInfo);
+        } else if (ValidityChecker.isHelp(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.HELP, getSubInfo);
         } else {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.INVALID, getSubInfo);
         }
