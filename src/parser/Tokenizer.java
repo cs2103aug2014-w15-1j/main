@@ -16,7 +16,7 @@ class Tokenizer {
 	 * 
 	 * @return subInfo list is null if there is only a command exists;
 	 * */
-	public static RawInfoPair SplitRawInput(String rawInputStr) {
+	public static RawInfoPair splitRawInput(String rawInputStr) {
 		String command;
 		ArrayList<TokenPair> subInfo;
 		
