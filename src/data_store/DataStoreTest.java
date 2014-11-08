@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+/*
+ * @author A0100792 testing
+ * 
+ */
+
 @SuppressWarnings("unused")
 public class DataStoreTest {
 	
@@ -23,7 +28,7 @@ public class DataStoreTest {
     
 
     private   Task testTask = new Task(name,  description,
-                                       repeatDays, startDate, endDate);
+                                       startDate, endDate);
 
     private   ArrayList<Task> TestTasks;
     private   ArrayList<Task> TestTrash;

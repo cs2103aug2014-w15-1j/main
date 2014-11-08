@@ -42,7 +42,7 @@ public class ViewTrashBin implements Command{
 		ArrayList<Task> display = new ArrayList<Task>();
 		currentDisplay = initializeDisplayList(currentDisplay.length);
 		
-		if(trashbinList.isEmpty()){
+		if(currentListIndex[0] < 0){
 			GUI = new GUIStatus(VIEW_MODE.BIN, false, false, -1, GUI.getDate());
 		} else {
 			boolean hasNext = currentListIndex[firstTaskIndex + Default.MAX_DISPLAY_LINE] > 0;

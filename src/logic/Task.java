@@ -7,7 +7,6 @@ import data_store.SystemInfo;
 public class Task implements Comparable<Task> {
 	private String name;
 	private String description;
-	private String repeatDays;
 	private JDate startDate;
 	private JDate endDate; 
 	private boolean done;
@@ -32,7 +31,6 @@ public class Task implements Comparable<Task> {
 	public Task(String name){
 		this.name = name;
 		this.description = null;
-		this.repeatDays = null;
 		this.startDate = null;
 		this.endDate = null;
 		this.done = false;
@@ -41,10 +39,9 @@ public class Task implements Comparable<Task> {
 	/*
 	 * @para 2 fields
 	 */
-	public Task(String name, String repeatDays){
+	public Task(String name, String description){
 		this.name = name;
-		this.description = null;
-		this.repeatDays = repeatDays;
+		this.description = description;
 		this.startDate = null;
 		this.endDate = null;
 		this.done = false;
@@ -54,10 +51,9 @@ public class Task implements Comparable<Task> {
 	 * @para 3 fields
 	 * Input has No Description,No Start Date
 	 */
-	public Task(String name, String repeatDays, JDate endDate){
+	public Task(String name, String description, JDate endDate){
 		this.name = name;
-		this.description = null;
-		this.repeatDays = repeatDays;
+		this.description = description;
 		this.startDate = null;
 		this.endDate = endDate;
 		this.done = false;
@@ -67,25 +63,11 @@ public class Task implements Comparable<Task> {
 	 * @para 3 fields
 	 * Input has No Description, No End Date
 	 */
-	public Task(String name, JDate startDate, String repeatDays){
+	public Task(String name, JDate endDate){
 		this.name = name;
 		this.description = null;
-		this.repeatDays = repeatDays;
-		this.startDate = startDate;
-		this.endDate = null;
-		this.done = false;
-	}
-	
-	/*
-	 * @para 3 fields
-	 * Input has No Start Date, No End Date
-	 */
-	public Task(String name, String description, String repeatDays){
-		this.name = name;
-		this.description = description;
-		this.repeatDays = repeatDays;
 		this.startDate = null;
-		this.endDate = null;
+		this.endDate = endDate;
 		this.done = false;
 	}
 	
@@ -93,49 +75,20 @@ public class Task implements Comparable<Task> {
 	 * @para 4 fields
 	 * Input has no Description
 	 */
-	public Task(String name, String repeatDays, JDate startDate, JDate endDate){
+	public Task(String name, JDate startDate, JDate endDate){
 		this.name = name;
 		this.description = null;
-		this.repeatDays = repeatDays;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.done = false;
-	}
-
-	
-	/*
-	 * @para 4 fields
-	 * Input has no Start Date
-	 */
-	public Task(String name, String description, String repeatDays, JDate endDate){
-		this.name = name;
-		this.description = description;
-		this.repeatDays = repeatDays;
-		this.startDate = null;
-		this.endDate = endDate;
-		this.done = false;
-	}
-
-	/*
-	 * @para 4 fields
-	 * Input has no End Date
-	 */
-	public Task(String name, String description, JDate startDate, String repeatDays){
-		this.name = name;
-		this.description = description;
-		this.repeatDays = repeatDays;
-		this.startDate = startDate;
-		this.endDate = null;
 		this.done = false;
 	}
 	
 	/*
 	 * Full 5 parts
 	 */
-	public Task(String name, String description, String repeatDays, JDate startDate2, JDate endDate2){
+	public Task(String name, String description, JDate startDate2, JDate endDate2){
 		this.name = name;
 		this.description = description;
-		this.repeatDays = repeatDays;
 		this.startDate = startDate2;
 		this.endDate = endDate2;
 		this.done = false;
@@ -174,10 +127,6 @@ public class Task implements Comparable<Task> {
 		return this.description;
 	}
 	
-	public String getRepeatDays(){
-		return this.repeatDays;
-	}
-	
 	public JDate getStartDate(){
 		return this.startDate;
 	}
@@ -202,10 +151,6 @@ public class Task implements Comparable<Task> {
 	
 	public void describe(String newDescription){
 		this.description = newDescription;
-	}
-	
-	public void repeat(String newRepeatDays){
-		this.repeatDays = newRepeatDays;
 	}
 	
 	public void setDone(){
@@ -261,10 +206,7 @@ public class Task implements Comparable<Task> {
 		if(!this.endDate.equals(task.endDate)){
 			return false;
 		}
-		
-		if(!this.repeatDays.equals(task.repeatDays)){
-			return false;
-		}
+
 		if((this.done || task.done) && !(this.done && task.done)){
 			return false;
 		}
@@ -274,6 +216,7 @@ public class Task implements Comparable<Task> {
 	public String toPersonalString() {
 	    String startDateStr;
 	    String endDateStr;
+	    String status;
 	    
 	    if (this.startDate == null) {
 	        startDateStr = SystemInfo.EMPTYDATE;
@@ -293,10 +236,17 @@ public class Task implements Comparable<Task> {
 	                            SystemInfo.CHECKEND;
 	    }
 
-	    return this.name + SystemInfo.SEPERATESIMBOL + this.description + 
-	           SystemInfo.SEPERATESIMBOL + this.repeatDays + 
-	           SystemInfo.SEPERATESIMBOL + startDateStr + 
-	           SystemInfo.SEPERATESIMBOL + endDateStr;
+	    if (this.done){
+	    	status = SystemInfo.CHECKDONE;
+	    } else {
+	    	status = SystemInfo.CHECKUNDONE;
+	    }
+	    
+	    return this.name + 
+	    		SystemInfo.SEPERATESIMBOL + this.description +  
+	    		SystemInfo.SEPERATESIMBOL + startDateStr + 
+	    		SystemInfo.SEPERATESIMBOL + endDateStr +
+	    		SystemInfo.SEPERATESIMBOL + status;
 	}
 	@Override
 	public int compareTo(Task o) {

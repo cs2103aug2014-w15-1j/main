@@ -30,7 +30,10 @@ public class ReadFile {
         this.setTRASHFILE(new ArrayList<Task>());
     }
     
-
+    /*
+     * Edited by A0100792M to retrieve home path for file
+ 	*/
+    
     /**
      * get event ArrayList<Task>
      */
@@ -48,6 +51,10 @@ public class ReadFile {
        
       return getOSTrashFile(filePathName);
     }
+    
+    /*
+     * End
+     */
 
     /** 
      * Read tasks file line by line and store them into temporal ArrayList
@@ -126,6 +133,8 @@ public class ReadFile {
     }
 
     /**
+     * 
+     * By A0100792 to accept null date
      * create a event
      * @return 
      */
@@ -242,38 +251,53 @@ public class ReadFile {
         	*/
         		// ALL 5 FIELDS
           		
-        		String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);                
+        		String[] startDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);                
 
-                String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);              
+                String[] endDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);              
 
+                /*
                 if(startDateStr[0].equals("null") && endDateStr[0].equals("null"))
                 {
           			
-                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
-                            tempoTaskSplit[2]);
+                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1]);
                     
-                }else if(startDateStr[0].equals("null") && !endDateStr.equals("null"))
+                }else if(startDateStr[0].equals("null") && !endDateStr[0].equals("null"))
                 {
                 	JDate endDate = dateMaker(endDateStr);
                 	
-                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
-                            tempoTaskSplit[2], endDate);
+                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1], endDate);
                 	
-                }else if (endDateStr[0].equals("null") && !startDateStr.equals("null"))
+                }else if (endDateStr[0].equals("null") && !startDateStr[0].equals("null"))
                 {
                 	JDate startDate = dateMaker(startDateStr);
+                	JDate endDate = null;
               		
           			curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
-                        startDate, tempoTaskSplit[2]);
+                        startDate, endDate);
 
                 }else{
                 	
                 	JDate startDate = dateMaker(startDateStr);
                 	JDate endDate = dateMaker(endDateStr);
                 	
-                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1],
-                        tempoTaskSplit[2], startDate, endDate);
-                }      	
+                	curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1], startDate, endDate);
+                }    
+                */
+                JDate startDate = null;
+                JDate endDate = null;
+                if(!startDateStr[0].equals("null")){
+                	startDate = dateMaker(startDateStr);
+                }
+                if(!endDateStr[0].equals("null")){
+                	endDate = dateMaker(endDateStr);
+                }
+                curTask = new Task(tempoTaskSplit[0], tempoTaskSplit[1], startDate, endDate);
+                
+                if(tempoTaskSplit[4].equalsIgnoreCase(SystemInfo.CHECKDONE)){
+                	curTask.setDone();
+                } else {
+                	curTask.setUndone();
+                }
         	
         } else{
             ErrorGenerator.popError(ErrorMSG.TASK_FORMAT_ERR);

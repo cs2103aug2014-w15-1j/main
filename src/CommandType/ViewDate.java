@@ -37,7 +37,6 @@ public class ViewDate implements Command{
 		}
 		
 		
-		
 		currentDisplay = initializeDisplayList(currentDisplay.length);
 		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
 		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){

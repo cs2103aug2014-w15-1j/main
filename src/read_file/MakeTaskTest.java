@@ -1,12 +1,16 @@
 package read_file;
 
 import logic.JDate;
+
 import logic.Task;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
+/*
+ * @author A0100792 more testing
+ */
 @SuppressWarnings("unused")
 public class MakeTaskTest {
 	
@@ -19,7 +23,7 @@ public class MakeTaskTest {
     
     //5 fields
     private   Task testTask5 = new Task(name, description, 
-            repeatDays, startDate, endDate);
+             startDate, endDate);
 
     public ReadFile testMakeTask;
 	
