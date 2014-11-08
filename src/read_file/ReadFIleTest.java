@@ -29,7 +29,7 @@ public class ReadFIleTest {
     //new JDate(2014, 8, 22)
 
     private   Task testTask = new Task(name, description, 
-                                       repeatDays, startDate, endDate);
+                                       startDate, endDate);
 
     private ArrayList<Task> trashData;
     private ArrayList<Task> eventData;

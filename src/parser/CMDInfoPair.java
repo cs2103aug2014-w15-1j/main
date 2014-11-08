@@ -12,8 +12,8 @@ import parser.CMDTypes.COMMAND_TYPE;
  * */
 
 class CMDInfoPair {
-    private COMMAND_TYPE cmd;
-    private ArrayList<TokenPair> subInfo;
+    protected COMMAND_TYPE cmd;
+    protected ArrayList<TokenPair> subInfo;
     
     public CMDInfoPair(COMMAND_TYPE add, ArrayList<TokenPair> getSubInfo) {
         this.cmd = add;

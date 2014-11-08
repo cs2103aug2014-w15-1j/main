@@ -1,14 +1,8 @@
 package CommandType;
 
-import gui.VIEW_MODE;
-
 import java.util.ArrayList;
 
-import logic.Default;
-import logic.DisplayInfo;
-import logic.GUIStatus;
-import logic.RunLogic;
-import logic.Task;
+import logic.*;
 
 public class ViewUndone implements Command{
 	private static String feedback;
@@ -71,8 +65,8 @@ public class ViewUndone implements Command{
 	private int[] initializeCurrentDisplay(int length) {
 		int[] result = initializeDisplayList(length);
 		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
-			if(!taskList.get(i).getDone()){
-				result[j] = i;
+			if(!taskList.get(currentListIndex[i]).getDone()){
+				result[j] = currentListIndex[i];
 				j++;
 			}
 		}

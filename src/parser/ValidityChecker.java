@@ -214,7 +214,6 @@ public class ValidityChecker {
 				break;
 			}
 		}
-		
 		return result;
 	}
 }
