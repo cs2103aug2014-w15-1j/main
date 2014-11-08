@@ -23,7 +23,8 @@ public class CMDInterpreter {
         String getCommand = rawCMDPair.getFront();
         ArrayList<TokenPair> getSubInfo = rawCMDPair.getSubInfo();
 
-        if (ValidityChecker.isAdd(getCommand)) {
+        if (ValidityChecker.isAdd(getCommand) &&
+        	!ValidityChecker.isRead(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.ADD, getSubInfo);
         } else if (ValidityChecker.isUpdate(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.UPDATE, getSubInfo);

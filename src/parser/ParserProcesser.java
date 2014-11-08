@@ -22,13 +22,13 @@ public class ParserProcesser {
 	public static RawCommand interpretCommand(String inputString){
 
 		// Tokenize command and information, split sentence into words.
-		RawInfoPair RawCmdPair = Tokenizer.SplitRawInput(inputString);
+		RawInfoPair rawCmdPair = Tokenizer.splitRawInput(inputString);
 		
 		// Identify command, form a pair of command and sub information.
-		CMDInfoPair CmdPair = CMDInterpreter.makeCmdPair(RawCmdPair);
+		CMDInfoPair cmdPair = CMDInterpreter.makeCmdPair(rawCmdPair);
 		
 		// Call corresponding commands information retrieval.
-		RawCommand interpretedCm = CMDCaller.transformCmd(CmdPair);
+		RawCommand interpretedCm = CMDCaller.transformCmd(cmdPair);
 		return interpretedCm;
 	}
 
