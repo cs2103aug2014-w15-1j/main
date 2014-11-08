@@ -109,7 +109,7 @@ public class RunLogic {
  		Calendar c = Calendar.getInstance();
  		
  		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, 
- 				new JDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH)));
+ 				new JDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)));
  		
 		currentListIndex = updateListIndexOfTaskList(currentListIndex.length);
 		

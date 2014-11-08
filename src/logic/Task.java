@@ -39,9 +39,9 @@ public class Task {
 	/*
 	 * @para 2 fields
 	 */
-	public Task(String name, String repeatDays){
+	public Task(String name, String description){
 		this.name = name;
-		this.description = null;
+		this.description = description;
 		this.startDate = null;
 		this.endDate = null;
 		this.done = false;
@@ -51,9 +51,9 @@ public class Task {
 	 * @para 3 fields
 	 * Input has No Description,No Start Date
 	 */
-	public Task(String name, String repeatDays, JDate endDate){
+	public Task(String name, String description, JDate endDate){
 		this.name = name;
-		this.description = null;
+		this.description = description;
 		this.startDate = null;
 		this.endDate = endDate;
 		this.done = false;
@@ -63,23 +63,11 @@ public class Task {
 	 * @para 3 fields
 	 * Input has No Description, No End Date
 	 */
-	public Task(String name, JDate startDate, String repeatDays){
+	public Task(String name, JDate endDate){
 		this.name = name;
 		this.description = null;
-		this.startDate = startDate;
-		this.endDate = null;
-		this.done = false;
-	}
-	
-	/*
-	 * @para 3 fields
-	 * Input has No Start Date, No End Date
-	 */
-	public Task(String name, String description, String repeatDays){
-		this.name = name;
-		this.description = description;
 		this.startDate = null;
-		this.endDate = null;
+		this.endDate = endDate;
 		this.done = false;
 	}
 	
@@ -87,43 +75,18 @@ public class Task {
 	 * @para 4 fields
 	 * Input has no Description
 	 */
-	public Task(String name, String repeatDays, JDate startDate, JDate endDate){
+	public Task(String name, JDate startDate, JDate endDate){
 		this.name = name;
 		this.description = null;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.done = false;
 	}
-
-	
-	/*
-	 * @para 4 fields
-	 * Input has no Start Date
-	 */
-	public Task(String name, String description, String repeatDays, JDate endDate){
-		this.name = name;
-		this.description = description;
-		this.startDate = null;
-		this.endDate = endDate;
-		this.done = false;
-	}
-
-	/*
-	 * @para 4 fields
-	 * Input has no End Date
-	 */
-	public Task(String name, String description, JDate startDate, String repeatDays){
-		this.name = name;
-		this.description = description;
-		this.startDate = startDate;
-		this.endDate = null;
-		this.done = false;
-	}
 	
 	/*
 	 * Full 5 parts
 	 */
-	public Task(String name, String description, String repeatDays, JDate startDate2, JDate endDate2){
+	public Task(String name, String description, JDate startDate2, JDate endDate2){
 		this.name = name;
 		this.description = description;
 		this.startDate = startDate2;

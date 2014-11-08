@@ -161,7 +161,7 @@ public class ConvertCommand {
 				}
 			}
 			
-			Task task = new Task(command.getTitle(), command.getDescription(), command.getRPdate(), startDate, endDate);
+			Task task = new Task(command.getTitle(), command.getDescription(), startDate, endDate);
 			task.setPointer(taskPointer);
 			return new Add(task, SUCCESSFUL_ADD, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		}

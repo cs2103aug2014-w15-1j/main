@@ -19,7 +19,7 @@ public class MakeTaskTest {
     
     //5 fields
     private   Task testTask5 = new Task(name, description, 
-            repeatDays, startDate, endDate);
+             startDate, endDate);
 
     public ReadFile testMakeTask;
 	

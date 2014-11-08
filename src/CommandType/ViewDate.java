@@ -46,7 +46,6 @@ public class ViewDate implements Command{
 				j++;
 			}
 		}
-		//System.out.println(tempListIndex[0]);
 		currentListIndex = tempListIndex;
 		GUI.changeDate(date);
 		update();
