@@ -38,13 +38,13 @@ class ParserKeys {
 									  "previous", "back", "search", "viewdate", "mark", "help"};
 
 	static final String[] KEYS_ADD = 	{"a", "d"};
-	static final String[] KEYS_UPDATE = {"u", "p"};
+	static final String[] KEYS_UPDATE = {"u", "p", "d"};
 	static final String[] KEYS_RENAME = {"r", "n"};
 	static final String[] KEYS_RESCHEDULE = {"r", "s", "c", "d"};
-	static final String[] KEYS_REPEAT =   {"r", "p"};
+	static final String[] KEYS_REPEAT =   {"r", "p", "t"};
 	static final String[] KEYS_DESCRIBE = {"d", "s", "b"};
 	static final String[] KEYS_DELETE =   {"d", "l"};
-	static final String[] KEYS_VIEW = {"v", "e"};
+	static final String[] KEYS_VIEW = {"v", "e", "w"};
 	static final String[] KEYS_READ = {"r", "d"};
 	static final String[] KEYS_UNDO = {"u", "d"};
 	static final String[] KEYS_RESTORE = {"r", "s", "t"};
@@ -52,7 +52,7 @@ class ParserKeys {
 	static final String[] KEYS_NEXT = 	 {"n", "x"};
 	static final String[] KEYS_PREVIOUS = {"p", "r"};
 	static final String[] KEYS_BACK = 	  {"b", "c"};
-	static final String[] KEYS_SEARCH =   {"s", "r"};
+	static final String[] KEYS_SEARCH =   {"s", "r", "c"};
 	static final String[] KEYS_VIEWDATE = {"v", "d"};
 	static final String[] KEYS_MARK = {"m"};
 	static final String[] KEYS_HELP = {"h", "l"};

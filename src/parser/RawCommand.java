@@ -36,7 +36,7 @@ public class RawCommand{
     
     // For commands with no subInfo
     public RawCommand(String command) {
-        this.command = command;
+    	this.command = command;
     }
     
     // For commands with only one subInfo

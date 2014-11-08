@@ -22,7 +22,8 @@ public class CMDInterpreter {
     static CMDInfoPair makeCmdPair(RawInfoPair rawCMDPair){
         String getCommand = rawCMDPair.getFront();
         ArrayList<TokenPair> getSubInfo = rawCMDPair.getSubInfo();
-
+        System.out.println("!!!" + getCommand);
+    	
         if (ValidityChecker.isAdd(getCommand) &&
         	!ValidityChecker.isRead(getCommand) &&
         	!ValidityChecker.isUpdate(getCommand)) {
@@ -46,7 +47,7 @@ public class CMDInterpreter {
         } else if (ValidityChecker.isNext(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.NEXT, getSubInfo);
         } else if (ValidityChecker.isPrevious(getCommand)) {
-            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.PREVIOUS, getSubInfo);
+        	return new CMDInfoPair(CMDTypes.COMMAND_TYPE.PREVIOUS, getSubInfo);
         } else if (ValidityChecker.isUndo(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.UNDO, getSubInfo);
         } else if (ValidityChecker.isSearch(getCommand)) {

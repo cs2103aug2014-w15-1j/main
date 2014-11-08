@@ -377,7 +377,7 @@ public class CMDMaker {
 			String getLine = getLinePair.getFront();
 			
 			String getMarkInfo = InfoRetrieve.getFrontUN(getLinePair.getSubInfo()).getFront();
-			
+			System.out.println("!" + getMarkInfo + "!");
 			return new RawCommand(CMDTypes.COMMAND_TYPE.MARK.name(), getMarkInfo, getLine);
 		} catch (Exception e) {
 			return makeInvalid();
