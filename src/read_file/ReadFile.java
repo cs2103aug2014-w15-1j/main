@@ -30,7 +30,10 @@ public class ReadFile {
         this.setTRASHFILE(new ArrayList<Task>());
     }
     
-
+    /*
+     * Edited by A0100792M to retrieve home path for file
+ 	*/
+    
     /**
      * get event ArrayList<Task>
      */
@@ -48,6 +51,10 @@ public class ReadFile {
        
       return getOSTrashFile(filePathName);
     }
+    
+    /*
+     * End
+     */
 
     /** 
      * Read tasks file line by line and store them into temporal ArrayList
@@ -126,6 +133,8 @@ public class ReadFile {
     }
 
     /**
+     * 
+     * By A0100792 to accept null date
      * create a event
      * @return 
      */
