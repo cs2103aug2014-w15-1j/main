@@ -437,12 +437,19 @@ public class CMDMaker {
 	/**
 	 * Return a RawCommand of any invalid operation
 	 * 
-	 * @param subInfoStr
-	 *              String of sub-information following the update command
 	 * @return -RawCommand
 	 * */
 	static RawCommand makeInvalid() {
 		return new RawCommand(CMDTypes.COMMAND_TYPE.INVALID.name());
+	}
+	
+	/**
+	 * Return a RawCommand of help operation
+	 * 
+	 * @return -RawCommand
+	 * */
+	static RawCommand help() {
+		return new RawCommand(CMDTypes.COMMAND_TYPE.HELP.name());
 	}
 	
 	/** 

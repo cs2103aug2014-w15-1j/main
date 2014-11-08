@@ -94,7 +94,7 @@ public class TestSimpleCMD {
         
         viewDateTest1 = ParserProcesser.interpretCommand(testViewDateStr1);
         Assert.assertEquals("Test command: VIEW", "VIEWDATE", viewDateTest1.getCommand());
-        Assert.assertEquals("Test date: ", "20141103", viewDateTest1.getCMDDescription());
+        Assert.assertEquals("Test date: ", "20141108", viewDateTest1.getCMDDescription());
         
         viewDateTest2 = ParserProcesser.interpretCommand(testViewDateStr2);
         Assert.assertEquals("Test command: VIEW", "VIEWDATE", viewDateTest2.getCommand());
