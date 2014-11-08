@@ -46,8 +46,8 @@ public class ImagePanel extends JPanel {
 	}
 
 	/**
-	 * create a new <code>ImagePanel</code> given a background image. if the given path is
-	 * invalid, default background image is used instead.
+	 * create a new <code>ImagePanel</code> given a background image. if the
+	 * given path is invalid, default background image is used instead.
 	 * 
 	 * @param path
 	 *            file path of image
@@ -82,19 +82,8 @@ public class ImagePanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (background != null) {
-			int x = (getWidth() - background.getWidth()) / 2;
-			int y = (getHeight() - background.getHeight()) / 2;
-			g.drawImage(background, x, y, this);
-		}
-		int w = background.getWidth(null);
-		int h = background.getHeight(null);
-		BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		setOpacity(0.1f);
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.drawImage(bi, rop, 0, 0);
-	}
-
+		g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+	}	
 	/********************************************
 	 ************* Private Method ****************
 	 ********************************************/
@@ -102,6 +91,15 @@ public class ImagePanel extends JPanel {
 		scales[3] = opacity;
 		rop = new RescaleOp(scales, offsets, null);
 
+	}
+
+	private BufferedImage resizeImage(BufferedImage originalImage, int width,
+			int height, int type) throws IOException {
+		BufferedImage resizedImage = new BufferedImage(width, height, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(originalImage, 0, 0, width, height, null);
+		g.dispose();
+		return resizedImage;
 	}
 
 }

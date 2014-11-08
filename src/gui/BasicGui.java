@@ -60,8 +60,9 @@ import logic.JDate;
 /**
  * class BasicGUI: contains the basic structure of GUI
  * 
- * @author JJ GUI is mainly constructs by 4 container: titlePanel(for title),
- *         desktopPanel(for main), toolBar(for helper) and inputPanel(for input)
+ * @author A0119391
+ *  GUI is mainly constructs by 4 container: titlePanel(for title),
+ * 	desktopPanel(for main), toolBar(for helper) and inputPanel(for input)
  *         And inside each container, there exist a hierarchy of container and
  *         field. Note: singleton pattern is applied in this class
  */
@@ -78,8 +79,6 @@ public class BasicGui extends JFrame {
 
 
 	private JPanel menuArea;
-	private JMenuBar menuBar;
-	private JPanel menuPanel;
 	private JPanel titlePanel;
 	private JTextField titleWindow;
 	
@@ -93,46 +92,15 @@ public class BasicGui extends JFrame {
 	private JPanel inputPanel;
 	private JTextField inputWindow;
 	
-	private JToolBar helperArea;
-	private JPanel helperPanel;
-	private JTextArea HelpWindow;
 	
 	
 	// constants for FRAME initialization (unit in pixel)
 	private final static int TOP_LEFT_X_VALUE = 100;
 	private final static int TOP_LEFT_Y_VALUE = 100;
 	private final static int FRAME_WIDTH = 1000;
-	private final static int FRAME_HEIGHT = 600;
+	private final static int FRAME_HEIGHT = 640;
 	
 	int pX,pY;
-
-	/*
-	 * ====================================================================
-	 * ===================== END OF PRIVATE FIELD =========================
-	 * ====================================================================
-	 */
-
-	
-
-//	private void constructgetContentPane()() {
-//		GraphicsEnvironment ge = GraphicsEnvironment
-//				.getLocalGraphicsEnvironment();
-//		GraphicsDevice gd = ge.getDefaultScreenDevice();
-//		boolean isPerPixelTranslucencySupported = gd
-//				.isWindowTranslucencySupported(PERPIXEL_TRANSLUCENT);
-//
-//		// If translucent windows aren't supported, exit.
-//		if (!isPerPixelTranslucencySupported) {
-//			System.out.println("Per-pixel translucency is not supported");
-//			System.exit(0);
-//		}
-//		getContentPane() = new PerPixelTranslucencyPanel();
-//			
-//
-//		setContentPane(getContentPane());
-//		getContentPane().setLayout(new BorderLayout());
-//
-//	}
 
 	/*
 	 * ====================================================================
@@ -143,6 +111,57 @@ public class BasicGui extends JFrame {
 	/*
 	 * ====================================================================
 	 * ===================== START OF PUBLIC METHOD =======================
+	 * ====================================================================
+	 */
+	
+	public static BasicGui getInstance() {
+		if (instance == null) {
+			instance = new BasicGui();
+		}
+		return instance;
+	}
+
+		
+	public void setTitleText(String text) {
+		titleWindow.setText(text);
+	}
+
+	public void setFeedbackText(String text) {
+		feedbackWindow.setTextTransColor(text);
+	}
+
+	
+
+	public void showLayered() {
+		MultiLayeredPanel layered = new MultiLayeredPanel();
+		mainPanel.removeAll();
+		mainPanel.add(layered);
+		mainPanel.validate();
+	}
+	public ColumnListPanel showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d) {
+		ColumnListPanel listed = new ColumnListPanel(a, b, c, d);
+		mainPanel.removeAll();
+		mainPanel.add(listed);
+		mainPanel.validate();
+		return listed;
+	}
+	
+	public void ShowDetailed(ArrayList<String> a, ArrayList<String> b, int highlightedProperty) {
+		AttributePanel detailed = new AttributePanel(a, b, highlightedProperty);
+		mainPanel.removeAll();
+		mainPanel.add(detailed);
+		mainPanel.validate();
+		
+	}
+	public void refreshMainPanel(){
+		mainPanel.validate();
+	}
+
+	
+	
+	/*
+	 * ====================================================================
+	 * ===================== START OF Private METHOD =======================
 	 * ====================================================================
 	 */
 	
@@ -165,10 +184,6 @@ public class BasicGui extends JFrame {
 		constructFeedbackPanel();
 		constructFeedbackWindow();
 		
-//		constructHelperArea();
-//		constructHelperPane();
-//		constructHelperWindow();
-		
 		constructControlArea();
 		constructInputPanel();
 		constructInputWindow();
@@ -180,9 +195,9 @@ public class BasicGui extends JFrame {
 	 * 
 	 */
 	private void constructFrame() {
-		setUndecorated(true);
-		//setOpacity(0.8f);
-		setBackground(new Color(0, 0, 0, 0));
+		
+		
+		//setBackground(new Color(0, 0, 0, 0));
 		setLocationRelativeTo(null);
 		setRootPaneCheckingEnabled(false);
 		setType(Type.UTILITY);
@@ -198,6 +213,7 @@ public class BasicGui extends JFrame {
 		getContentPane().setBackground(new Color(0,0,0));
 		getContentPane().setLayout(new BorderLayout());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setMinimumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 		setBounds(TOP_LEFT_X_VALUE, TOP_LEFT_Y_VALUE, FRAME_WIDTH, FRAME_HEIGHT);
 	}
 	private void constructMenuArea() {
@@ -353,42 +369,6 @@ public class BasicGui extends JFrame {
 		inputWindow.requestFocus();
 	}
 
-	private void constructHelperArea() {
-		helperArea = new JToolBar();
-		helperArea.setBorder(null);
-		helperArea.setFloatable(false);
-		helperArea.setSize(new Dimension(2314, 0));
-		helperArea.setRollover(true);
-		
-		getContentPane().add(helperArea, BorderLayout.EAST);
-	}
-	
-	private void constructHelperPane() {
-		helperPanel = new JPanel();
-		helperPanel.setBorder(null);
-		helperPanel.setLayout(new BorderLayout());
-		
-		helperArea.add(helperPanel);
-	}
-
-	/**
-	 * 
-	 */
-	private void constructHelperWindow() {
-		HelpWindow = new JTextArea();
-		HelpWindow.setTabSize(1);
-		HelpWindow.setRows(2);
-		HelpWindow.setWrapStyleWord(true);
-		HelpWindow.setBorder(null);
-		HelpWindow.setEditable(false);
-		HelpWindow.setBackground(new Color(135, 206, 250, 220));
-		HelpWindow.setText("command");
-		
-		helperPanel.add(HelpWindow);
-	}
-
-	
-
 	
 
 	/*
@@ -396,65 +376,6 @@ public class BasicGui extends JFrame {
 	 * ===================== END OF PRIVATE FIELD =========================
 	 * ====================================================================
 	 */
-	
-	/*
-	 * ====================================================================
-	 * ===================== START OF PUBLIC METHOD =======================
-	 * ====================================================================
-	 */
-	
-	public static BasicGui getInstance() {
-		if (instance == null) {
-			instance = new BasicGui();
-		}
-		return instance;
-	}
-
-		
-	public void setTitleText(String text) {
-		titleWindow.setText(text);
-	}
-
-	public void setFeedbackText(String text) {
-		feedbackWindow.setTextTransColor(text);
-	}
 
 	
-
-	public void showLayered() {
-		MultiLayeredPanel layered = new MultiLayeredPanel();
-		mainPanel.removeAll();
-		mainPanel.add(layered);
-		mainPanel.validate();
-	}
-	public void showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d, boolean pre, boolean nxt, int highlightedLine, boolean multiple,String highlightedDate) {
-		ColumnListPanel listed = new ColumnListPanel(a, b, c, d, pre, nxt, highlightedLine,  multiple,highlightedDate);
-		mainPanel.removeAll();
-		mainPanel.add(listed);
-		mainPanel.validate();
-	}
-	
-	public void ShowDetailed(ArrayList<String> a, ArrayList<String> b, int highlightedProperty) {
-		AttributePanel detailed = new AttributePanel(a, b, highlightedProperty);
-		mainPanel.removeAll();
-		mainPanel.add(detailed);
-		mainPanel.validate();
-		
-	}
-	
-
-	/*
-	 * ====================================================================
-	 * ===================== END OF PUBLIC METHOD =========================
-	 * ====================================================================
-	 */
-//	public static void main(String[] args){
-//		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//            public void run() {
-//            	BasicGui gui = BasicGui.getInstance();
-//            }
-//        });
-//		
-//	}
-
 }

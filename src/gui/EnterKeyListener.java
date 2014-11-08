@@ -21,7 +21,7 @@ class EnterKeyListener implements ActionListener {
 		
 		String inputCommand =input.getText().trim(); 
 		input.setText(EMPTY_STRING);
-		GuiController.passToLogic(inputCommand);
+		GuiController.processCommand(inputCommand);
 
 	}
 }

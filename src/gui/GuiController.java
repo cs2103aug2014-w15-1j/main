@@ -46,7 +46,7 @@ public class GuiController {
 	 * <code>BasicGui</code> instance is obtained and <strong>Gui</strong>
 	 * initialization is completed here.
 	 */
-	public static void run() {
+	private static void run() {
 		gui = BasicGui.getInstance();
 		logger.info("Gui instance gotten");
 		assert gui != null : "GuiController cannot get instance of Gui.";
@@ -81,37 +81,45 @@ public class GuiController {
 	 * @param info
 	 */
 	private static void display(GuiInfoTranslator info) {
-		if (gui == null) {
-			run();
-		}
+		assert(gui != null);
 		if (info.changeTitle()) {
 			gui.setTitleText(info.getTitleString());
 		}
-
+		
 		gui.setFeedbackText(info.getFeedbackString());
 
 		if (info.changeTaskList()) {
-			switch (info.getViewMode()) {
-			case TASK_DETAIL:
-				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(),
-						info.getHighlightedProperty());
-				break;
-			case BIN_DETAIL:
-				gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(),
-						info.getHighlightedProperty());
-				break;
-			case MONTH:
-				throw new UnsupportedOperationException(
-						"view in Month is not supported yet");
-			default:
-				gui.showListed(info.getFirstCol(), info.getSecondCol(),
-						info.getThirdCol(), info.getFourthCol(),
-						info.hasPreviousPage(), info.hasNextPage(),
-						info.getHighlightedLine(), info.getHighlightMultipleLines(), info.getHighlightedDate());
-
-			}
+			setMainText(info);
 		}
 
+	}
+	private static void setMainText(GuiInfoTranslator info) {
+		switch (info.getViewMode()) {
+		case TASK_DETAIL:
+			gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(),
+					info.getHighlightedProperty());
+			break;
+		case BIN_DETAIL:
+			gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(),
+					info.getHighlightedProperty());
+			break;
+		case MONTH:
+			throw new UnsupportedOperationException(
+					"view in Month is not supported yet");
+		default:
+			ColumnListPanel listPanel = gui.showListed(info.getFirstCol(), info.getSecondCol(),
+					info.getThirdCol(), info.getFourthCol());
+			listPanel.setPreviousPage(info.hasPreviousPage());
+			listPanel.setNextPage(info.hasNextPage());
+			listPanel.setIsHighlightedMultipleLine(info.getHighlightMultipleLines());
+			listPanel.setHighlightedLine(info.getHighlightedLine());
+			listPanel.setHighlightedDate(info.getHighlightedDate());
+			listPanel.constructAllPanel();
+			gui.refreshMainPanel();
+			
+			
+
+		}
 	}
 
 	/**
@@ -133,7 +141,7 @@ public class GuiController {
 	 * 
 	 * @param command
 	 */
-	static void passToLogic(String command) {
+	static void processCommand(String command) {
 		DisplayInfo info = RunLogic.logic(command);
 		logger.info("user enters command: " + command);
 		display(info);
