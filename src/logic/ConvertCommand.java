@@ -8,6 +8,7 @@ public class ConvertCommand {
 	// title formats
 	private static String TASKLIST_TITLE = "Task List";
 	private static String BIN_TITLE = "Trash bin";
+	private static String UNDONE_TITLE = "Undone Tasks";
 	public static String DETAIL_TITLE_FORMAT = "Detail of %s";
 	private static String SEARCH_TITLE = "Search result of %s";
 	
@@ -426,7 +427,9 @@ public class ConvertCommand {
 		} else if(newMode.equalsIgnoreCase("bin")){
 			RunLogic.updateCurrentListIndex(updateListIndexOfTrashBin(RunLogic.getCurrentListIndex()));
 			return new ViewTrashBin(0, SUCCESSFUL_VIEW, BIN_TITLE);
-		} else {
+		} else if (newMode.equalsIgnoreCase("undone")){
+			return new ViewUndone(SUCCESSFUL_VIEW, UNDONE_TITLE);
+		}else {
 			return new Invalid(INVALID_VIEW_MODE, null);
 		}
 	}

@@ -20,9 +20,9 @@ public class ReadFIleTest {
     String repeatDays = "1 month";
     
 
-    JDate startDate = new JDate(2014, 8, 22);
-    JDate endDate = null;
-    
+    JDate startDate = null;
+    JDate endDate = new JDate(2014, 8, 22);
+    //new JDate(2014, 8, 22)
 
     private   Task testTask = new Task(name, description, 
                                        repeatDays, startDate, endDate);
