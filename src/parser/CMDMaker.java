@@ -305,17 +305,12 @@ public class CMDMaker {
 	static RawCommand view(ArrayList<TokenPair> tokenPairs){
 		try {
 			String getFields = tokenPairs.get(0).getCotent();
-			if (getFields.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.TASKLIST.name()) ||
-				getFields.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.BIN.name())) {
-	
-				return new RawCommand(CMDTypes.COMMAND_TYPE.VIEW.name(), getFields);
-			} else if (ValidityChecker.isValidViewDate(getFields)) {
+			if (ValidityChecker.isValidViewDate(getFields)) {
 				return translateDate(getFields);
 			} else if (ValidityChecker.isValidDate(getFields)) {
 				return viewDate(InfoRetrieve.makeDay(getFields));
 			} else {
-				ErrorGenerator.popError(ErrorMSG.VIEW_MODE_ERR);
-				return makeInvalid();
+				return new RawCommand(CMDTypes.COMMAND_TYPE.VIEW.name(), getFields);
 			}
 		} catch (Exception e) {
 			return makeInvalid();

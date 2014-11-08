@@ -294,12 +294,7 @@ public class InfoRetrieve {
 	public static String getCommand(String rawString) {
 		
 		String command = ParserKeys.EMPTY_STR;
-		String curFront;
-		
-		curFront = StringCutter.getFrontBlock(rawString);
-		if (ValidityChecker.isCommand(curFront)) {
-			command = curFront;
-		}
+		command = StringCutter.getFrontBlock(rawString);
 		
 	    return command;
 	}

@@ -114,20 +114,6 @@ public class ValidityChecker {
 		}
 		return result;
 	}
-	
-	/**
-	 * Judge the string is a recognizable command
-	 * */
-	static boolean isCommand(String inputStr) {
-		boolean result = false;
-		for (int i = 0; i < ParserKeys.COMMANDS.length; i++) {
-			if (inputStr.equalsIgnoreCase(ParserKeys.COMMANDS[i])){
-				result = true;
-				break;
-			}
-		}
-		return result;
-	}
 
 	/**
 	 * Check if ends with quotation mark;
@@ -141,5 +127,94 @@ public class ValidityChecker {
 	 * */
 	static boolean noInvalidKeys(String inputString) {
 		return !inputString.contains(ParserKeys.INVALID_SYMBOL);
+	}
+	
+	// Command Matcher
+	static boolean isAdd(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_ADD);	
+	}
+	
+	static boolean isUpdate(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_UPDATE);
+	}
+	
+	static boolean isRename(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_RENAME);
+	}
+	
+	static boolean isReschedule(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_RESCHEDULE);
+	}
+	
+	static boolean isRepeat(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_REPEAT);
+	}
+	
+	static boolean isDescribe(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_DESCRIBE);
+	}
+	
+	static boolean isDelete(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_DELETE);
+	}
+	
+	static boolean isView(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_VIEW);
+	}
+	
+	static boolean isRead(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_READ);
+	}
+	
+	static boolean isUndo(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_UNDO);
+	}
+	
+	static boolean isRestore(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_RESTORE);
+	}
+	
+	static boolean isExit(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_EXIT);
+	}
+	
+	static boolean isNext(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_NEXT);
+	}
+	
+	static boolean isPrevious(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_PREVIOUS);
+	}
+	
+	static boolean isBack(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_BACK);
+	}
+	
+	static boolean isSearch(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_SEARCH);
+	}
+	
+	static boolean isViewDate(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_VIEWDATE);
+	}
+	
+	static boolean isMark(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_MARK);
+	}
+	
+	static boolean isHelp(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_HELP);
+	}
+	
+	static boolean matchCommand(String rawStr, String[] matcher) {
+		boolean result = true;
+		for (int i = 0; i < matcher.length; i++) {
+			if (!rawStr.contains(matcher[i])) {
+				result = false;
+				break;
+			}
+		}
+		
+		return result;
 	}
 }

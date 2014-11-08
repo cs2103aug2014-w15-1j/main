@@ -23,39 +23,39 @@ public class CMDInterpreter {
         String getCommand = rawCMDPair.getFront();
         ArrayList<TokenPair> getSubInfo = rawCMDPair.getSubInfo();
 
-        if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.ADD.name())) {
+        if (ValidityChecker.isAdd(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.ADD, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.UPDATE.name())) {
+        } else if (ValidityChecker.isUpdate(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.UPDATE, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RENAME.name())) {
+        } else if (ValidityChecker.isRename(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.RENAME, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.DESCRIBE.name())) {
+        } else if (ValidityChecker.isDescribe(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.DESCRIBE, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RESCHEDULE.name())) {
+        } else if (ValidityChecker.isReschedule(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.RESCHEDULE, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.REPEAT.name())) {
+        } else if (ValidityChecker.isRepeat(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.REPEAT, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.DELETE.name())) {
+        } else if (ValidityChecker.isDelete(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.DELETE, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.READ.name())) {
+        } else if (ValidityChecker.isRead(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.READ, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.VIEW.name())) {
+        } else if (ValidityChecker.isView(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.VIEW, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.NEXT.name())) {
+        } else if (ValidityChecker.isNext(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.NEXT, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.PREVIOUS.name())) {
+        } else if (ValidityChecker.isPrevious(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.PREVIOUS, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.UNDO.name())) {
+        } else if (ValidityChecker.isUndo(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.UNDO, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.SEARCH.name())) {
+        } else if (ValidityChecker.isSearch(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.SEARCH, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.BACK.name())) {
+        } else if (ValidityChecker.isBack(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.BACK, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.EXIT.name())) {
+        } else if (ValidityChecker.isExit(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.EXIT, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RESTORE.name())) {
+        } else if (ValidityChecker.isRestore(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.RESTORE, getSubInfo);
-        } else if (getCommand.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.MARK.name())) {
+        } else if (ValidityChecker.isMark(getCommand)) {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.MARK, getSubInfo);
         } else {
             return new CMDInfoPair(CMDTypes.COMMAND_TYPE.INVALID, getSubInfo);
