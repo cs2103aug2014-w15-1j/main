@@ -23,7 +23,7 @@ public class DataStoreTest {
     
 
     private   Task testTask = new Task(name,  description,
-                                       repeatDays, startDate, endDate);
+                                       startDate, endDate);
 
     private   ArrayList<Task> TestTasks;
     private   ArrayList<Task> TestTrash;
