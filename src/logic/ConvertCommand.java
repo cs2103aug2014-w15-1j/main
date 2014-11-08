@@ -360,20 +360,6 @@ public class ConvertCommand {
 	}
 	
 	private static Command ConvertMark(RawCommand command) {
-		String newDescription = command.getDescription();
-		boolean status = true;
-		
-		if(newDescription == null){
-			status = true;
-		} else if(newDescription.equalsIgnoreCase("done")) {
-			status = true;
-		} else if(newDescription.equalsIgnoreCase("undone")) {
-			status = false;
-		} else {
-			return new Invalid(INVALID_MARK_STATUS, null);
-		}
-
-		Task task = RunLogic.getTaskList().get(RunLogic.getGuiStatus().getTaskIndex());
 		
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)){
 			if(!isInt(command.getCMDDescription())){
@@ -384,13 +370,43 @@ public class ConvertCommand {
 			if(readLine > Default.MAX_DISPLAY_LINE || readLine <= 0 || RunLogic.getCurrentDisplay()[readLine] == -1){
 				return new Invalid(INVALID_MARK_ITEM, null);
 			}
+			Task task = RunLogic.getTaskList().get(RunLogic.getCurrentListIndex()[RunLogic.getCurrentDisplay()[readLine]]);
+			
+			String newDescription = command.getDescription();
+			boolean status = true;
+			
+			if(newDescription == null){
+				status = !task.getDone();
+			} else if(newDescription.equalsIgnoreCase("done")) {
+				status = true;
+			} else if(newDescription.equalsIgnoreCase("undone")) {
+				status = false;
+			} else {
+				status = !task.getDone();
+			}
+			
 			return new Mark(readLine, status, SUCCESSFUL_MARK, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 		} 
 
 		if(!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
 			return new Invalid(CANNOT_MARK, null);
 		}
-
+		
+		Task task = RunLogic.getTaskList().get(RunLogic.getGuiStatus().getTaskIndex());
+		
+		String newDescription = command.getDescription();
+		boolean status = true;
+		
+		if(newDescription == null){
+			status = !task.getDone();
+		} else if(newDescription.equalsIgnoreCase("done")) {
+			status = true;
+		} else if(newDescription.equalsIgnoreCase("undone")) {
+			status = false;
+		} else {
+			status = !task.getDone();
+		}
+		
 		return new Mark(status, SUCCESSFUL_MARK, String.format(DETAIL_TITLE_FORMAT, task.getName()));
 	}
 
@@ -505,7 +521,7 @@ public class ConvertCommand {
 	
 	//--------------------Helper Function-------------------------
 	private static boolean isInt(String str){
-		if(str == null){
+		if(str == null || str == ""){
 			return false;
 		}
 		

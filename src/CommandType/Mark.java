@@ -75,7 +75,7 @@ public class Mark implements Command{
 			dis.setHighlightItem(Default.MARK);
 			return dis;
 		} else {
-			Command view = new ViewTaskList(RunLogic.getGuiStatus().getTaskIndex(), feedback, title);
+			Command view = new ViewTaskList(RunLogic.getCurrentDisplay()[1], feedback, title);
 			DisplayInfo dis = view.execute();
 			dis.setHighlight(Default.HIGHLIGHT_LINE);
 			dis.setHighlightLine(lineIndex - 1);
