@@ -42,6 +42,19 @@ public class GuiController {
 	}
 
 	/**
+	 * pass the command to <strong>Logic</strong> and update
+	 * <strong>GUI</strong> accordingly
+	 * 
+	 * @param command
+	 */
+	public static void processCommand(String command) {
+		DisplayInfo info = RunLogic.logic(command);
+		logger.info("user enters command: " + command);
+		display(info);
+		logger.info("user receives feedback");
+	}
+
+	/**
 	 * <em>run()</em>is the start point of <strong>MagiCal</strong>.
 	 * <code>BasicGui</code> instance is obtained and <strong>Gui</strong>
 	 * initialization is completed here.
@@ -55,7 +68,6 @@ public class GuiController {
 		display(info);
 		logger.info("MagiCal initialization completed.");
 
-		// gui.showLayered();
 	}
 
 	/*********************************************
@@ -81,45 +93,59 @@ public class GuiController {
 	 * @param info
 	 */
 	private static void display(GuiInfoTranslator info) {
-		assert(gui != null);
+		assert (gui != null);
 		if (info.changeTitle()) {
 			gui.setTitleText(info.getTitleString());
 		}
-		
+
 		gui.setFeedbackText(info.getFeedbackString());
 
 		if (info.changeTaskList()) {
-			setMainText(info);
+			setMainPanel(info);
 		}
 
 	}
-	private static void setMainText(GuiInfoTranslator info) {
-		switch (info.getViewMode()) {
-		case TASK_DETAIL:
-			gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(),
-					info.getHighlightedProperty());
-			break;
-		case BIN_DETAIL:
-			gui.ShowDetailed(info.getFirstCol(), info.getSecondCol(),
-					info.getHighlightedProperty());
-			break;
-		case MONTH:
+
+	/**
+	 * determine and update main panel in <strong>GUI</strong> by given
+	 * <code>GuiInfoTranslator</code>
+	 * @param info
+	 */
+	private static void setMainPanel(GuiInfoTranslator info) {
+		VIEW_MODE mode = info.getViewMode();
+		CustomizedJPanel panel;
+
+		if (mode.equals(VIEW_MODE.TASK_DETAIL)) {
+			panel = gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
+			((AttributePanel) panel).setHighlightedProperty(info
+					.getHighlightedProperty());
+		} else if (mode.equals(VIEW_MODE.BIN_DETAIL)) {
+			panel = gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
+			((AttributePanel) panel).setHighlightedProperty(info
+					.getHighlightedProperty());
+		} else if (mode.equals(VIEW_MODE.MONTH)) {
 			throw new UnsupportedOperationException(
 					"view in Month is not supported yet");
-		default:
-			ColumnListPanel listPanel = gui.showListed(info.getFirstCol(), info.getSecondCol(),
+		} else if (mode.equals(VIEW_MODE.HELP)) {
+			throw new UnsupportedOperationException(
+					"Help info is not supported yet");
+		} else {
+			panel = gui.showListed(info.getFirstCol(), info.getSecondCol(),
 					info.getThirdCol(), info.getFourthCol());
-			listPanel.setPreviousPage(info.hasPreviousPage());
-			listPanel.setNextPage(info.hasNextPage());
-			listPanel.setIsHighlightedMultipleLine(info.getHighlightMultipleLines());
-			listPanel.setHighlightedLine(info.getHighlightedLine());
-			listPanel.setHighlightedDate(info.getHighlightedDate());
-			listPanel.constructAllPanel();
-			gui.refreshMainPanel();
-			
-			
 
+			((TaskListPanel) panel).setPreviousPage(info.hasPreviousPage());
+			((TaskListPanel) panel).setNextPage(info.hasNextPage());
+			((TaskListPanel) panel).setIsHighlightedMultipleLine(info
+					.getHighlightMultipleLines());
+			((TaskListPanel) panel).setHighlightedLine(info
+					.getHighlightedLine());
+			((TaskListPanel) panel).setHighlightedDate(info
+					.getHighlightedDate());
 		}
+
+		assert (panel != null);
+		panel.construct();
+		gui.refreshMainPanel();
 	}
 
 	/**
@@ -133,18 +159,5 @@ public class GuiController {
 	 */
 	private static void display(DisplayInfo info) {
 		display(translate(info));
-	}
-
-	/**
-	 * pass the command to <strong>Logic</strong> and update
-	 * <strong>GUI</strong> accordingly
-	 * 
-	 * @param command
-	 */
-	static void processCommand(String command) {
-		DisplayInfo info = RunLogic.logic(command);
-		logger.info("user enters command: " + command);
-		display(info);
-		logger.info("user receives feedback");
 	}
 }

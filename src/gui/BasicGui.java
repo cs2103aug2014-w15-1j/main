@@ -38,6 +38,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.ComponentOrientation;
@@ -58,7 +59,7 @@ import java.util.ArrayList;
 import logic.JDate;
 
 /**
- * class BasicGUI: contains the basic structure of GUI
+ * class BasicGUI: contains the  structure of GUI
  * 
  * @author A0119391
  *  GUI is mainly constructs by 4 container: titlePanel(for title),
@@ -136,21 +137,19 @@ public class BasicGui extends JFrame {
 		MultiLayeredPanel layered = new MultiLayeredPanel();
 		mainPanel.removeAll();
 		mainPanel.add(layered);
-		mainPanel.validate();
 	}
-	public ColumnListPanel showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d) {
-		ColumnListPanel listed = new ColumnListPanel(a, b, c, d);
-		mainPanel.removeAll();
-		mainPanel.add(listed);
-		mainPanel.validate();
+	public TaskListPanel showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d) {
+		TaskListPanel listed = new TaskListPanel(a, b, c, d);
+		changeMainPanel(listed);
+		
 		return listed;
 	}
 	
-	public void ShowDetailed(ArrayList<String> a, ArrayList<String> b, int highlightedProperty) {
-		AttributePanel detailed = new AttributePanel(a, b, highlightedProperty);
-		mainPanel.removeAll();
-		mainPanel.add(detailed);
-		mainPanel.validate();
+	public AttributePanel ShowDetailed(ArrayList<String> a, ArrayList<String> b) {
+		AttributePanel detailed = new AttributePanel(a, b);
+		changeMainPanel(detailed);
+		
+		return detailed;
 		
 	}
 	public void refreshMainPanel(){
@@ -170,11 +169,9 @@ public class BasicGui extends JFrame {
 	 */
 	private BasicGui() {
 		constructFrame();
-		
 		constructContentPanel();
 		
 		constructMenuArea();
-		//constructMenuBar();
 		constructTitlePanel();
 		constructTitleWindow();
 		
@@ -188,7 +185,7 @@ public class BasicGui extends JFrame {
 		constructInputPanel();
 		constructInputWindow();
 		
-		this.validate();
+		validate();
 	}
 
 	/**
@@ -238,7 +235,7 @@ public class BasicGui extends JFrame {
 		Font font1 = new Font("DIALOG", Font.ITALIC, 15); 
 		 
 		titleWindow.setFont(font1);
-		titleWindow.setBackground(new Color(255, 255, 255, 230));
+		titleWindow.setBackground(new Color(255, 255, 255, 255));
 		//new Color(66, 161, 223, 220)
 		titleWindow.setEditable(false);
 		titleWindow.setText("Today is Sep 29 2014");
@@ -369,7 +366,10 @@ public class BasicGui extends JFrame {
 		inputWindow.requestFocus();
 	}
 
-	
+	private void changeMainPanel(CustomizedJPanel panel) {
+		mainPanel.removeAll();
+		mainPanel.add((Component) panel);
+	}
 
 	/*
 	 * ====================================================================

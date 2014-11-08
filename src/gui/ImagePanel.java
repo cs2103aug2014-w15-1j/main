@@ -27,10 +27,7 @@ public class ImagePanel extends JPanel {
 	private String imageFilePath;
 	private String defaultImageFilePath = "background.jpg";
 
-	float[] scales = { 1f, 1f, 1f, 1f };
-	float[] offsets = new float[4];
-	RescaleOp rop;
-
+	
 	/********************************************
 	 ************** Constructor *****************
 	 ********************************************/
@@ -84,22 +81,4 @@ public class ImagePanel extends JPanel {
 		super.paintComponent(g);
 		g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
 	}	
-	/********************************************
-	 ************* Private Method ****************
-	 ********************************************/
-	private void setOpacity(float opacity) {
-		scales[3] = opacity;
-		rop = new RescaleOp(scales, offsets, null);
-
-	}
-
-	private BufferedImage resizeImage(BufferedImage originalImage, int width,
-			int height, int type) throws IOException {
-		BufferedImage resizedImage = new BufferedImage(width, height, type);
-		Graphics2D g = resizedImage.createGraphics();
-		g.drawImage(originalImage, 0, 0, width, height, null);
-		g.dispose();
-		return resizedImage;
-	}
-
 }

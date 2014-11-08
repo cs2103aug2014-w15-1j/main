@@ -14,11 +14,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * <code>ColumnListPanel</code> is a customized swing container that extends
+ * <code>TaskListPanel</code> is a customized swing container that extends
  * <code>JPanel</code>. Its can function as a template to display the
  * information of a task list in four columns.
  * <p>
- * Layout manager used in <code>ColumnListPanel</code> is
+ * Layout manager used in <code>TaskListPanel</code> is
  * <code>GridBagLayout</code>. All sub components inside are JLabel with
  * customized colors.
  * </p>
@@ -31,7 +31,7 @@ import javax.swing.JPanel;
  * @author A0119391A
  * 
  */
-public class ColumnListPanel extends JPanel {
+public class TaskListPanel extends JPanel implements CustomizedJPanel{
 
 	private static final long serialVersionUID = -5452419359255825458L;
 
@@ -80,7 +80,7 @@ public class ColumnListPanel extends JPanel {
 	 * @param secondCol
 	 *            ArrayList of all task endDates
 	 */
-	public ColumnListPanel(ArrayList<String> firstCol,
+	public TaskListPanel(ArrayList<String> firstCol,
 			ArrayList<String> secondCol, ArrayList<String> thirdCol,
 			ArrayList<Boolean> fourthCol) {
 		super();
@@ -93,10 +93,8 @@ public class ColumnListPanel extends JPanel {
 		this.previousPage = false;
 		this.nextPage = false;
 		this.isHighlightedMultipleLine = false;
-		
+
 		setUp();
-		
-		
 
 	}
 
@@ -137,7 +135,7 @@ public class ColumnListPanel extends JPanel {
 	 * 
 	 * @see #constructCol(int, String, ArrayList, GridBagConstraints)
 	 */
-	public void constructAllPanel() {
+	public void construct() {
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridy = 0;
 		c.gridx = 0;
@@ -169,6 +167,7 @@ public class ColumnListPanel extends JPanel {
 		c0.ipady = 25;
 		c0.insets = new Insets(0, 10, 0, 0);
 		c0.weightx = 0.03;
+		c0.weighty = 0.1;
 		constructCol(colIndex, indexColTitle, indexCol, c0);
 
 		// column 0
@@ -220,6 +219,7 @@ public class ColumnListPanel extends JPanel {
 			ArrayList<String> lst, GridBagConstraints c) {
 		c.gridx = colIndex;
 		c.gridy = 1;
+		
 		this.add(createColoredLabel(title, lightCyan120), c);
 		for (int i = 0; i < NUM_OF_COL; i++) {
 			c.gridy = i + 2;
@@ -330,4 +330,6 @@ public class ColumnListPanel extends JPanel {
 		label.setPreferredSize(d);
 		return label;
 	}
+
+	
 }
