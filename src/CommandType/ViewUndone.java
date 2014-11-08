@@ -17,13 +17,8 @@ public class ViewUndone implements Command{
 	int firstTaskIndex;
 	
 	//local memory
-	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
-	private static int[] currentDisplay;
 	private static int[] currentListIndex;
-	
-	//values for GUI and I/O
-	private static DisplayInfo passToGui;
 	
 	public ViewUndone(String myFeedback, String myTitle){
 		feedback = myFeedback;
@@ -35,8 +30,8 @@ public class ViewUndone implements Command{
 	
 	@Override
 	public DisplayInfo execute() {
-		ArrayList<Task> display = new ArrayList<Task>();
-		currentDisplay = initializeCurrentDisplay(currentDisplay.length);
+		currentListIndex = initializeCurrentDisplay(currentListIndex.length);
+		update();
 		
 		Command view  = new ViewTaskList(0, feedback, title);
 		return view.execute();
@@ -57,15 +52,11 @@ public class ViewUndone implements Command{
 	
 	
 	private static void initialize(){
-		GUI = RunLogic.getGuiStatus();
 		taskList = RunLogic.getTaskList();
-		currentDisplay = RunLogic.getCurrentDisplay();
 		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 	
 	private static void update(){
-		RunLogic.updateGuiStatus(GUI);
-		RunLogic.updateCurrentdiaplay(currentDisplay);
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
@@ -78,9 +69,8 @@ public class ViewUndone implements Command{
 	}
 	
 	private int[] initializeCurrentDisplay(int length) {
-		int j = 0;
-		int[] result = new int[length];
-		for(int i = 0; i < length; i++){
+		int[] result = initializeDisplayList(length);
+		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
 			if(!taskList.get(i).getDone()){
 				result[j] = i;
 				j++;
@@ -88,11 +78,7 @@ public class ViewUndone implements Command{
 		}
 		return result;
 	}
-	
-	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
-		passToGui = new DisplayInfo(GUI, display, feedback, title);
-	}
-	
+
 	@Override
 	public boolean supportUndo() {
 		return false;
