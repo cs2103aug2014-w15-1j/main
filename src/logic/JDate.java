@@ -1,5 +1,6 @@
 package logic;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -93,6 +94,31 @@ public class JDate extends GregorianCalendar {
 	 */
 	public String toString() {
 		return toString(" ");
+	}
+	
+	public int compareTo(JDate another) {
+		if(another == null) {
+			return 1;
+		}
+		if(this.getYear() < another.getYear()) {
+			return -1;
+		} else if(this.getYear() > another.getYear()){
+			return 1;
+		} else {
+			if(this.getMonth() < another.getMonth()) {
+				return -1;
+			} else if(this.getMonth() > another.getMonth()){
+				return 1;
+			} else {
+				if(this.getDay() < another.getDay()) {
+					return 1;
+				} else if(this.getDay() > another.getDay()){
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		}
 	}
 
 	/********************************************

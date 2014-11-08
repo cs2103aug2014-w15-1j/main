@@ -13,31 +13,25 @@ import javax.swing.JPanel;
 
 import logic.Default;
 
-public class AttributePanel extends JPanel {
+public class AttributePanel extends JPanel implements CustomizedJPanel {
 
 	private static final long serialVersionUID = 1L;
 	private ArrayList<String> firstCol;
 	private ArrayList<String> secondCol;
+	
 	private static Color lightCyan220 = new Color(55, 177, 241, 120);
 	
 	private static Color highlightedColor = new Color(255, 157, 180,100);
 	private static Color lightWhite = new Color(255,255,255,80);
-//	private static Color highlightedColor = new Color(255, 165, 186, 100);
 
 	private int highlightedProperty;
+
 	
-	public static int NAME = 0;
-	public static int STARTDATE = 1;
-	public static int ENDDATE = 2;
-	public static int BOTHDATE = 3;
-	public static int DESCRIPTION = 4;
-	public static int STATUS = 5;
-	
-	private Color NAME_BG = lightWhite;
-	private Color START_BG = lightWhite;
-	private Color END_BG = lightWhite;
-	private Color STATUS_BG = lightWhite;
-	private Color DESCRIPTION_BG = lightWhite;
+	private Color NAME_BG;
+	private Color START_BG;
+	private Color END_BG;
+	private Color STATUS_BG;
+	private Color DESCRIPTION_BG;
 	
 	private void determineBG() {
 		if(highlightedProperty == Default.NAME){
@@ -55,21 +49,38 @@ public class AttributePanel extends JPanel {
 			STATUS_BG = highlightedColor;
 		}	
 	}
+	public void setHighlightedProperty(int propertyNum) {
+		this.highlightedProperty = propertyNum;
+	}
 
-	AttributePanel(ArrayList<String> firstCol, ArrayList<String> secondCol, int highlightedProperty) {
+	public AttributePanel(ArrayList<String> firstCol, ArrayList<String> secondCol) {
 		super();
-		this.setOpaque(false);
+		
 		this.firstCol = firstCol;
 		this.secondCol = secondCol;
-		this.highlightedProperty = highlightedProperty;
-		System.out.println("hp:" + highlightedProperty);
 		
-		determineBG();
+		initialize();
+	}
+	private void initialize() {
+		NAME_BG = lightWhite;
+		START_BG = lightWhite;
+		END_BG = lightWhite;
+		STATUS_BG = lightWhite;
+		DESCRIPTION_BG = lightWhite;
 		
-		
-		// Name attribute 
-		int currentIndex = 0;
 		setLayout(new GridBagLayout());
+		this.setOpaque(false);
+	}
+
+	public void construct() {
+		determineBG();
+		contructAllColumns(firstCol, secondCol);
+	}
+	private void contructAllColumns(ArrayList<String> firstCol,
+			ArrayList<String> secondCol) {
+		int currentIndex = 0;
+		
+		// Name attribute
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH;
 		c1.gridx = 0;
@@ -78,6 +89,7 @@ public class AttributePanel extends JPanel {
 		c1.ipady = 20;
 		c1.insets = new Insets(50, 10, 0, 10);
 		c1.weightx = 0.8;
+		c1.weighty = 0.2;
 		
 		this.add(new InfoPanel(NAME_BG, firstCol.get(currentIndex), secondCol.get(currentIndex)), c1);
 		
@@ -88,6 +100,7 @@ public class AttributePanel extends JPanel {
 		c2.gridx = 0;
 		c2.gridy = 1;
 		c2.weightx = 0.3;
+		c2.weighty = 0.2;
 		c2.ipady = 20;
 		c2.insets = new Insets(10, 10, 0, 0);
 		this.add(new InfoPanel(START_BG, firstCol.get(currentIndex), secondCol.get(currentIndex)), c2);
@@ -115,6 +128,7 @@ public class AttributePanel extends JPanel {
 		c3.insets = new Insets(10, 10, 70, 10);
 		c3.gridwidth = 3;
 		c3.gridheight = 3;
+		c3.weighty = 0.4;
 		this.add(new InfoPanel(DESCRIPTION_BG, firstCol.get(currentIndex), secondCol.get(currentIndex)), c3);
 	}
 	

@@ -14,11 +14,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * <code>ColumnListPanel</code> is a customized swing container that extends
+ * <code>TaskListPanel</code> is a customized swing container that extends
  * <code>JPanel</code>. Its can function as a template to display the
- * information of a certain task list in two columns.
+ * information of a task list in four columns.
  * <p>
- * Layout manager used in <code>ColumnListPanel</code> is
+ * Layout manager used in <code>TaskListPanel</code> is
  * <code>GridBagLayout</code>. All sub components inside are JLabel with
  * customized colors.
  * </p>
@@ -31,29 +31,28 @@ import javax.swing.JPanel;
  * @author A0119391A
  * 
  */
-public class ColumnListPanel extends JPanel {
+public class TaskListPanel extends JPanel implements CustomizedJPanel{
 
 	private static final long serialVersionUID = -5452419359255825458L;
 
-	private boolean previousPage;
-	private boolean nextPage;
-	
 	// info of task list
 	private ArrayList<String> firstCol;
 	private ArrayList<String> secondCol;
 	private ArrayList<String> thirdCol;
 	private ArrayList<Boolean> fourthCol;
 	private ArrayList<String> indexCol;
-	
-	private int INDEX_COL = 0;  
+
+	private int INDEX_COL = 0;
 	private int TITLE_COL = 1;
 	private int START_COL = 2;
 	private int END_COL = 3;
 	private int STATUS_COL = 4;
-	
+
+	private boolean previousPage;
+	private boolean nextPage;
+	private boolean isHighlightedMultipleLine;
 	private int highlightedLine;
 	private String highlightedDate;
-	private boolean highlightedMultipleLine;
 
 	private final static String SPACE = " ";
 	private final static String indexColTitle = "Index";
@@ -66,9 +65,8 @@ public class ColumnListPanel extends JPanel {
 
 	// Pre-defined color
 	private static Color lightCyan120 = new Color(55, 177, 241, 220);
-	private static Color lightCyan20 = new Color(55, 177, 241, 20);
+	private static Color lightCyan20 = new Color(255, 255, 255, 150);
 	private static Color highlightedColor = new Color(255, 165, 186, 180);
-	
 
 	/********************************************
 	 ************** Constructor *****************
@@ -82,24 +80,21 @@ public class ColumnListPanel extends JPanel {
 	 * @param secondCol
 	 *            ArrayList of all task endDates
 	 */
-	public ColumnListPanel(ArrayList<String> firstCol,
+	public TaskListPanel(ArrayList<String> firstCol,
 			ArrayList<String> secondCol, ArrayList<String> thirdCol,
-			ArrayList<Boolean> fourthCol, boolean previous, boolean next,  int highlightedLine,boolean highlightedMultipleLine, String highlightedDate) {
+			ArrayList<Boolean> fourthCol) {
 		super();
 		this.indexCol = new ArrayList<String>();
 		this.firstCol = firstCol;
 		this.secondCol = secondCol;
 		this.thirdCol = thirdCol;
 		this.fourthCol = fourthCol;
-		
-		this.previousPage = previous;
-		this.nextPage = next;
-		this.highlightedMultipleLine =  highlightedMultipleLine;
-		this.highlightedLine = highlightedLine;
-		this.highlightedDate = highlightedDate;
+
+		this.previousPage = false;
+		this.nextPage = false;
+		this.isHighlightedMultipleLine = false;
 
 		setUp();
-		constructAllCol();
 
 	}
 
@@ -115,31 +110,53 @@ public class ColumnListPanel extends JPanel {
 		setLayout(new GridBagLayout());
 	}
 
+	public void setPreviousPage(boolean flag) {
+		this.previousPage = flag;
+	}
+
+	public void setNextPage(boolean flag) {
+		this.nextPage = flag;
+	}
+
+	public void setHighlightedLine(int lineNum) {
+		this.highlightedLine = lineNum;
+	}
+
+	public void setIsHighlightedMultipleLine(boolean flag) {
+		this.isHighlightedMultipleLine = flag;
+	}
+
+	public void setHighlightedDate(String date) {
+		this.highlightedDate = date;
+	}
+
 	/**
 	 * construct all columns using <em>constructCol<em>
 	 * 
 	 * @see #constructCol(int, String, ArrayList, GridBagConstraints)
 	 */
-	private void constructAllCol() {
+	public void construct() {
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridy = 0;
 		c.gridx = 0;
 		c.insets = new Insets(0, 10, 0, 10);
 		String imgPath;
-		if(previousPage){
+		if (previousPage) {
 			imgPath = "previousArrowY.png";
 		} else {
 			imgPath = "previousArrowN.png";
 		}
-		this.add(createImageLabel(imgPath, null, new Dimension(50, 50), false), c);
+		this.add(createImageLabel(imgPath, null, new Dimension(50, 50), false),
+				c);
 		c.gridx = 4;
-		
-		if(nextPage){
+
+		if (nextPage) {
 			imgPath = "nextArrowY.png";
 		} else {
 			imgPath = "nextArrowN.png";
 		}
-		this.add(createImageLabel(imgPath, null, new Dimension(50, 50), false), c);
+		this.add(createImageLabel(imgPath, null, new Dimension(50, 50), false),
+				c);
 
 		int colIndex = INDEX_COL;
 		for (int i = 1; i <= firstCol.size(); i++) {
@@ -150,13 +167,14 @@ public class ColumnListPanel extends JPanel {
 		c0.ipady = 25;
 		c0.insets = new Insets(0, 10, 0, 0);
 		c0.weightx = 0.03;
+		c0.weighty = 0.1;
 		constructCol(colIndex, indexColTitle, indexCol, c0);
 
 		// column 0
 		colIndex = TITLE_COL;
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.BOTH;
-		
+
 		c1.insets = new Insets(0, 10, 0, 0);
 		c1.weightx = 0.7;
 		constructCol(colIndex, firstColTitle, firstCol, c1);
@@ -201,22 +219,24 @@ public class ColumnListPanel extends JPanel {
 			ArrayList<String> lst, GridBagConstraints c) {
 		c.gridx = colIndex;
 		c.gridy = 1;
+		
 		this.add(createColoredLabel(title, lightCyan120), c);
 		for (int i = 0; i < NUM_OF_COL; i++) {
 			c.gridy = i + 2;
 			if (i < lst.size()) {
 				Color bg;
-				if((highlightedLine  < i &&highlightedMultipleLine) || highlightedLine==i){
+				if ((highlightedLine < i && isHighlightedMultipleLine)
+						|| highlightedLine == i) {
 					bg = highlightedColor;
 				} else {
 					bg = lightCyan20;
 				}
-				
-				if(colIndex == START_COL || colIndex == END_COL){
-					if(lst.get(i).equals(this.highlightedDate)){
+
+				if (colIndex == START_COL || colIndex == END_COL) {
+					if (lst.get(i).equals(this.highlightedDate)) {
 						bg = highlightedColor;
 					}
-					
+
 				}
 				this.add(createColoredLabel(lst.get(i), bg), c);
 			} else {
@@ -235,17 +255,28 @@ public class ColumnListPanel extends JPanel {
 			c.gridy = i + 2;
 			if (i < lst.size()) {
 				if (lst.get(i)) {
-					if((highlightedLine  < i &&highlightedMultipleLine) || highlightedLine==i){
-						this.add(createImageLabel("tick.png", highlightedColor , new Dimension(10, 10), true), c);
+					if ((highlightedLine < i && isHighlightedMultipleLine)
+							|| highlightedLine == i) {
+						this.add(
+								createImageLabel("tick.png", highlightedColor,
+										new Dimension(10, 10), true), c);
 					} else {
-						this.add(createImageLabel("tick.png", lightCyan20 , new Dimension(10, 10), true), c);
+						this.add(
+								createImageLabel("tick.png", lightCyan20,
+										new Dimension(10, 10), true), c);
 					}
-					
+
 				} else {
-					if((highlightedLine  < i &&highlightedMultipleLine) || highlightedLine==i){
-						this.add(createImageLabel("untick.png", highlightedColor , new Dimension(10, 10), true), c);
+					if ((highlightedLine < i && isHighlightedMultipleLine)
+							|| highlightedLine == i) {
+						this.add(
+								createImageLabel("untick.png",
+										highlightedColor,
+										new Dimension(10, 10), true), c);
 					} else {
-						this.add(createImageLabel("untick.png", lightCyan20 , new Dimension(10, 10), true), c);
+						this.add(
+								createImageLabel("untick.png", lightCyan20,
+										new Dimension(10, 10), true), c);
 					}
 				}
 
@@ -289,7 +320,8 @@ public class ColumnListPanel extends JPanel {
 		return label;
 	}
 
-	private JLabel createImageLabel(String path, Color color, Dimension d, boolean opaque) {
+	private JLabel createImageLabel(String path, Color color, Dimension d,
+			boolean opaque) {
 		ImageIcon icon = new ImageIcon(path);
 		JLabel label = new JLabel(icon);
 		label.setOpaque(opaque);
@@ -298,4 +330,6 @@ public class ColumnListPanel extends JPanel {
 		label.setPreferredSize(d);
 		return label;
 	}
+
+	
 }

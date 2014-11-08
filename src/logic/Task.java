@@ -4,7 +4,7 @@ import logic.JDate;
 
 import data_store.SystemInfo;
 
-public class Task {
+public class Task implements Comparable<Task> {
 	private String name;
 	private String description;
 	private JDate startDate;
@@ -247,5 +247,42 @@ public class Task {
 	    		SystemInfo.SEPERATESIMBOL + startDateStr + 
 	    		SystemInfo.SEPERATESIMBOL + endDateStr +
 	    		SystemInfo.SEPERATESIMBOL + status;
+	}
+	@Override
+	public int compareTo(Task o) {
+		if(this.endDateCompareTo(o) != 0){
+			return this.endDateCompareTo(o);
+		} else {
+			return this.startDateCompareTo(o);
+		}
+		
+	}
+	private int endDateCompareTo(Task o) {
+		if(o == null) {
+			return 1;
+		}
+		if(getEndDate() == null) {	
+			if(o.getEndDate() != null) {
+				return -1;
+			} else {
+				return 0;
+			}
+		} else {
+			return getEndDate().compareTo(o.getEndDate());
+		}
+	}
+	private int startDateCompareTo(Task o) {
+		if(o == null) {
+			return 1;
+		}
+		if(getStartDate() == null) {	
+			if(o.getStartDate() != null) {
+				return -1;
+			} else {
+				return 0;
+			}
+		} else {
+			return getStartDate().compareTo(o.getStartDate());
+		}
 	}
 }
