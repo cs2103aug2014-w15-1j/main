@@ -5,12 +5,16 @@ import read_file.ReadFile;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import parser.RawCommand;
 import parser.ParserProcesser;
 import CommandType.*;
 
 public class RunLogic {
+	private static Logger logger = Logger.getLogger("RunLogic");
+	
 	private static String WELCOME = "Welcome to MagiCal!";
 	private static String TITLE = "Today's tasks";
 	
@@ -26,7 +30,11 @@ public class RunLogic {
 	
 
 	public static DisplayInfo initialize() {
-		initializeTaskLists();
+		try{
+			initializeTaskLists();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "failed to read file");
+		}
 		initializeTaskPointer();
 		initializeCommandList();
 		initializeGUI();
@@ -36,8 +44,9 @@ public class RunLogic {
 	
 	public static DisplayInfo logic(String inputCommand){
 		RawCommand stringCommand = ParserProcesser.interpretCommand(inputCommand);
-		Command userCommand = ConvertCommand.convert(stringCommand);
-		
+		assert stringCommand == null : "logic cannot get correct command from parser!";
+		Command userCommand = ConvertCommand.convert(stringCommand);	
+		assert userCommand == null : "logic cannot convert command!";
 		addPastCommands(userCommand);
 		return userCommand.execute();
 	}

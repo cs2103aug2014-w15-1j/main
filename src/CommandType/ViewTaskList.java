@@ -114,7 +114,11 @@ public class ViewTaskList implements Command{
 	}
 
 	private void modifyGUI(boolean hasNext, boolean hasPrevious) {
-		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, currentListIndex[currentDisplay[1]], GUI.getDate());
+		int firstTask = -1;
+		if(currentDisplay[1] >= 0 ){
+			firstTask = currentListIndex[currentDisplay[1]];
+		}
+		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, firstTask, GUI.getDate());
 	}
 
 }

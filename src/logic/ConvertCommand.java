@@ -1,9 +1,14 @@
 package logic;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import parser.RawCommand;
 import CommandType.*;
 
 public class ConvertCommand {
+	private static Logger logger = Logger.getLogger("Convert");
+	
 	// title formats
 	private static String TASKLIST_TITLE = "Task List";
 	private static String BIN_TITLE = "Trash bin";
@@ -107,8 +112,11 @@ public class ConvertCommand {
 
 	public static Command convert(RawCommand command) {
 		if (command == null) {
+			logger.log(Level.WARNING, "Convertor get null raw command!");
 			return new Invalid(UNKNOWN);
 		}
+
+		logger.info("Command : " + command.getCommand());
 
 		if (command.getCommand().equalsIgnoreCase("add")) {
 			int nextTaskPointer = RunLogic.getNextTaskPointer();
