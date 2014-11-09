@@ -11,7 +11,9 @@ public class ViewUndone implements Command{
 	int firstTaskIndex;
 	
 	//local memory
+	private static GUIStatus GUI;
 	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> trashbinList;
 	private static int[] currentListIndex;
 	
 	public ViewUndone(String myFeedback, String myTitle){
@@ -24,7 +26,8 @@ public class ViewUndone implements Command{
 	
 	@Override
 	public DisplayInfo execute() {
-		currentListIndex = initializeCurrentDisplay(currentListIndex.length);
+		ArrayList<Task> targetList = determineTargetList();
+		currentListIndex = initializeCurrentDisplay(currentListIndex.length, targetList);
 		update();
 		
 		Command view  = new ViewTaskList(0, feedback, title);
@@ -46,7 +49,9 @@ public class ViewUndone implements Command{
 	
 	
 	private static void initialize(){
+		GUI = RunLogic.getGuiStatus();
 		taskList = RunLogic.getTaskList();
+		trashbinList = RunLogic.getTrashbinList();
 		currentListIndex = RunLogic.getCurrentListIndex();
 	}
 	
@@ -54,7 +59,7 @@ public class ViewUndone implements Command{
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int length) {
+	private static int[] initializeList(int length) {
 		int[] temp = new int[length];
 		for(int i = 0; i < length; i++){
 			temp[i] = -1;
@@ -62,15 +67,25 @@ public class ViewUndone implements Command{
 		return temp;
 	}
 	
-	private int[] initializeCurrentDisplay(int length) {
-		int[] result = initializeDisplayList(length);
-		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
-			if(!taskList.get(currentListIndex[i]).getDone()){
-				result[j] = currentListIndex[i];
+	private int[] initializeCurrentDisplay(int length, ArrayList<Task> targetList) {
+		int[] result = initializeList(length);
+		for(int i = 0, j = 0; i < targetList.size(); i++){
+			if(!targetList.get(i).getDone()){
+				result[j] = i;
 				j++;
 			}
 		}
 		return result;
+	}
+	
+	private ArrayList<Task> determineTargetList() {
+		ArrayList<Task> targetList = new ArrayList<Task>();
+		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			targetList = trashbinList;
+		} else {
+			targetList = taskList;
+		}
+		return targetList;
 	}
 
 	@Override

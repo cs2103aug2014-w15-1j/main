@@ -61,6 +61,14 @@ public class DisplayInfo {
 		this.highlight = Default.NO_HIGHLIGHT;
 	}
 	
+	public DisplayInfo(VIEW_MODE newMode, String help, String feedback, String title) {
+		this.mode = newMode;
+		this.helpInfo = help;
+		this.feedback = feedback;
+		this.title = title;
+
+	}
+	
 	public DisplayInfo(GUIStatus status, ArrayList<Task> taskList,
 			String feedback, String title) {
 		this(status);
