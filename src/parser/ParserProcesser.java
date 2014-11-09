@@ -1,5 +1,7 @@
 package parser;
 
+import java.util.logging.Logger;
+
 /**
  * class <Strong>ParserProcess</Strong>: 
  * 
@@ -17,6 +19,8 @@ package parser;
  * */
 public class ParserProcesser {
 
+	private static Logger logger = Logger.getLogger("ParserProcessor");
+
 	/*
 	 * ====================================================================
 	 * ===================== START OF PUBLIC METHOD =======================
@@ -31,14 +35,19 @@ public class ParserProcesser {
 	 * */
 	public static RawCommand interpretCommand(String inputString){
 
+		assert inputString == null : "input String passed to parser cannot be null";
+		
 		// Tokenize command and information, split sentence into words.
 		RawInfoPair rawCmdPair = Tokenizer.splitRawInput(inputString);
+		logger.info("Raw String splitted");
 		
 		// Identify command, form a pair of command and sub information.
 		CMDInfoPair cmdPair = CMDInterpreter.makeCmdPair(rawCmdPair);
+		logger.info("CMDInfoPair generated, current interpreted command: " + cmdPair.getCMD());
 		
 		// Call corresponding commands information retrieval.
 		RawCommand interpretedCm = CMDCaller.transformCmd(cmdPair);
+		logger.info("RawCommand generated, command passed to Logic: " + interpretedCm.getCommand());
 		return interpretedCm;
 	}
 
