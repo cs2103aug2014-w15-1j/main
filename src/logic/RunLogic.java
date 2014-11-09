@@ -12,7 +12,7 @@ import CommandType.*;
 
 public class RunLogic {
 	private static String WELCOME = "Welcome to MagiCal!";
-	private static String TITLE = "Today's undone tasks";
+	private static String TITLE = "Today's tasks";
 	
 	// keep track on GUI and File status
 	private static GUIStatus GUI;
@@ -121,8 +121,6 @@ public class RunLogic {
 	
 	private static DisplayInfo startupDisplay(){
 		Command start = new ViewDate(GUI.getDate(), WELCOME, TITLE);
-		start.execute();
-		start = new ViewUndone(WELCOME, TITLE);
 		return start.execute();
 	}
 	

@@ -66,7 +66,7 @@ public class DisplayInfo {
 		this.helpInfo = help;
 		this.feedback = feedback;
 		this.title = title;
-
+		this.changeTasklist = true;
 	}
 	
 	public DisplayInfo(GUIStatus status, ArrayList<Task> taskList,
