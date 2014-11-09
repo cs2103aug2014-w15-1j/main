@@ -389,9 +389,9 @@ public class ConvertCommand {
 
 		// describe in task detail mode
 		if (newDescription == null) {
-			newDescription = command.getDescription();
+			newDescription = command.getCMDDescription();
 		} else if (command.getDescription() != null) {
-			newDescription += " " + command.getDescription();
+			newDescription = command.getCMDDescription() + " " + command.getDescription();
 		}
 		Task task = RunLogic.getTaskList().get(
 				RunLogic.getGuiStatus().getTaskIndex());
