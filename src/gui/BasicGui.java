@@ -137,7 +137,9 @@ public class BasicGui extends JFrame {
 	}
 
 	public CustomizedJPanel showHelp(String helpInfo) {
-		return null;
+		HelperPanel help = new HelperPanel(helpInfo);
+		changeMainPanel(help);
+		return help;
 	}
 
 
@@ -178,7 +180,7 @@ public class BasicGui extends JFrame {
 		constructControlArea();
 		constructInputPanel();
 		constructInputWindow();
-
+		
 		validate();
 	}
 
@@ -258,6 +260,9 @@ public class BasicGui extends JFrame {
 		mainWindow = new JTextPane();
 		
 		mainPanel.add(mainWindow);
+		mainPanel.validate();
+		mainPanel.removeAll();
+		mainPanel.add(new JPanel());
 	}
 
 	private void constructFeedbackPanel() {

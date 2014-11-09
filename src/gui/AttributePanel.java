@@ -66,8 +66,7 @@ public class AttributePanel extends JPanel implements CustomizedJPanel {
 		} else if (highlightedProperty == Default.MARK) {
 			STATUS_BG = highlightedColor;
 		} else {
-			// program should never go to this point
-			assert false: "highlightedProperty passed is illegal";
+			
 		}
 	}
 

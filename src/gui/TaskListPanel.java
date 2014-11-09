@@ -79,7 +79,7 @@ public class TaskListPanel extends JPanel implements CustomizedJPanel {
 
 	// Pre-defined color
 	private static Color lightCyan120 = new Color(55, 177, 241, 220);
-	private static Color lightCyan20 = new Color(255, 255, 255, 150);
+	private static Color lightWhite = new Color(255, 255, 255, 150);
 	private static Color highlightedColor = new Color(255, 165, 186, 180);
 	
 	private final static String MESSAGE_IMAGE_LOST = "image lost";
@@ -155,6 +155,7 @@ public class TaskListPanel extends JPanel implements CustomizedJPanel {
 	 */
 	private void setUp() {
 		setOpaque(false);
+//		this.setBackground(Color.white.);
 		setLayout(new GridBagLayout());
 		// initialize index column
 		for (int i = 1; i <= firstCol.size(); i++) {
@@ -274,7 +275,7 @@ public class TaskListPanel extends JPanel implements CustomizedJPanel {
 				if (checkHightedLines(i)) {
 					bg = highlightedColor;
 				} else {
-					bg = lightCyan20;
+					bg = lightWhite;
 				}
 				// check for date highlight
 				if (colIndex == START_COL || colIndex == END_COL) {
@@ -316,7 +317,7 @@ public class TaskListPanel extends JPanel implements CustomizedJPanel {
 			if (i < lst.size()) {
 				Dimension labelSize = new Dimension(10, 10);
 				String imagePath = untickPath;
-				Color backgroundColor = lightCyan20;
+				Color backgroundColor = lightWhite;
 				if (lst.get(i)) {
 					imagePath = tickPath;
 				}
@@ -348,6 +349,7 @@ public class TaskListPanel extends JPanel implements CustomizedJPanel {
 		JLabel label = new JLabel(text);
 		label.setFont(label.getFont().deriveFont(Font.BOLD | Font.ITALIC));
 		label.setOpaque(true);
+		
 		label.setBackground(color);
 		label.setForeground(Color.black);
 		label.setFont(new Font("Arial", Font.BOLD, 14));
@@ -375,9 +377,10 @@ public class TaskListPanel extends JPanel implements CustomizedJPanel {
 
 			InputStream pic = ResourceLoader.load(path);
 			icon = new ImageIcon(ImageIO.read(pic));
-
+			
 			JLabel label = new JLabel(icon);
 			label.setOpaque(opaque);
+			
 			label.setBackground(color);
 			label.setMaximumSize(d);
 			label.setPreferredSize(d);
