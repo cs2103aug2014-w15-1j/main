@@ -6,14 +6,20 @@ import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.JTextField;
 
+/**
+ * 
+ * @author A0119391A
+ *
+ */
 public class ShortcutKeyListener extends AbstractAction {
 	
+	private static final long serialVersionUID = 1L;
 	HashMap<String, String> map = new HashMap<String, String>();
 	private JTextField input;
 	private String inputString;
 	private final static String EMPTY_STRING = "";
 	
-	
+	// initialize map using action key and corresponding command
 	private void initializeMap() {
 		map.put("F1", "view today");
 		map.put("F2", "view tomorrow");

@@ -82,8 +82,7 @@ public class BasicGui extends JFrame {
 	// font info
 	private final static Font FONT_MAIN_WINDOW = new Font("Calibri",
 			Font.PLAIN, 29);
-	private final static Font FONT_FEEDBACK_WINDOW = new Font("Ayuthaya",
-			Font.PLAIN, 13);
+	
 	
 	//all available keyboard shortcut
 	private String[] keyboardShortcut = {"F1", "F2","F3","F4","F5", "F6"};
@@ -204,7 +203,7 @@ public class BasicGui extends JFrame {
 
 	private void constructMenuArea() {
 		menuArea = new JPanel();
-		menuArea.setOpaque(false);
+		menuArea.setOpaque(true);
 		menuArea.setPreferredSize(new Dimension(MENU_AREA_WIDTH,
 				MENU_AREA_HEIGHT));
 		menuArea.setLayout(new BorderLayout(0, 0));
@@ -215,7 +214,7 @@ public class BasicGui extends JFrame {
 	private void constructTitlePanel() {
 		titlePanel = new JPanel();
 		titlePanel.setLayout(new BorderLayout());
-		titlePanel.setOpaque(false);
+		titlePanel.setOpaque(true);
 
 		menuArea.add(titlePanel, BorderLayout.CENTER);
 	}
@@ -253,15 +252,11 @@ public class BasicGui extends JFrame {
 		mainPanel.setBorder(null);
 		mainPanel.setLayout(new BorderLayout(0, 0));
 
-		mainArea.add(mainPanel);
+		mainArea.add(mainPanel, BorderLayout.CENTER);
 	}
 
 	private void constructMainWindow() {
 		mainWindow = new JTextPane();
-		
-		mainPanel.add(mainWindow);
-		mainPanel.validate();
-		mainPanel.removeAll();
 		mainPanel.add(new JPanel());
 	}
 
@@ -276,18 +271,15 @@ public class BasicGui extends JFrame {
 
 	private void constructFeedbackWindow() {
 		feedbackWindow = new TransColorTextField();
-		feedbackWindow.setBorder(null);
+		
+		
 
-		feedbackWindow.setFont(FONT_FEEDBACK_WINDOW);
-		feedbackWindow.setHorizontalAlignment(SwingConstants.CENTER);
-		feedbackWindow.setEditable(false);
-
-		FeedbackPanel.add(feedbackWindow, BorderLayout.NORTH);
+		FeedbackPanel.add(feedbackWindow, BorderLayout.CENTER);
 	}
 
 	private void constructControlArea() {
 		controlArea = new JPanel();
-		controlArea.setOpaque(false);
+		controlArea.setOpaque(true);
 		controlArea.setBorder(null);
 		controlArea.setLayout(new BorderLayout(0, 0));
 
