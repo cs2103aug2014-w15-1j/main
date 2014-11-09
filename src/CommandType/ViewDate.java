@@ -36,6 +36,7 @@ public class ViewDate implements Command{
 		
 		
 		currentDisplay = initializeDisplayList(currentDisplay.length);
+		currentListIndex = updateListIndex(currentListIndex.length, targetList);
 		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
 		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
 			if(date.equals(targetList.get(currentListIndex[i]).getStartDate()) || 
@@ -97,5 +98,14 @@ public class ViewDate implements Command{
 		return false;
 	}
 
-
+	private int[] updateListIndex(int length,  ArrayList<Task> targetList) {
+		int[] currentList = new int[length];
+		for(int i = 0; i < targetList.size(); i++){
+			currentList[i] = i;
+		}
+		for(int i = targetList.size(); i < currentList.length; i++){
+			currentList[i] = -1;
+		}
+		return currentList;
+	}
 }
