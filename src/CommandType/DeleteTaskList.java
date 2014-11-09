@@ -96,15 +96,17 @@ public class DeleteTaskList implements Command{
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private int[] updateListIndex(int[] currentList) {
+	private int[] updateListIndex(int length) {
+		int[] temp = new int[length];
 		for(int i = 0; i < taskList.size(); i++){
-			currentList[i] = i;
+			temp[i] = i;
 		}
-		for(int i = taskList.size(); i < currentList.length; i++){
-			currentList[i] = -1;
+		for(int i = taskList.size(); i < length; i++){
+			temp[i] = -1;
 		}
-		return currentList;
+		return temp;
 	}
+	
 	@Override
 	public boolean supportUndo() {
 		return true;
@@ -152,7 +154,7 @@ public class DeleteTaskList implements Command{
 	}
 	
 	private void modifyIndexList() {
-		currentListIndex = updateListIndex(currentListIndex);
+		currentListIndex = updateListIndex(currentListIndex.length);
 	}
 	
 	private DisplayInfo constructUndoDisplay(int firstHighlightTaskIndex, int[] reAddedTaskIndexList) {

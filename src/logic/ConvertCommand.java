@@ -98,6 +98,9 @@ public class ConvertCommand {
 	private static String INVALID_KEYWORD = String.format(
 			INVALID_ARGUMENT_FORMAT, "Search", "Key word");
 	private static String SUCCESSFUL_VIEW_DATE = "Search result!";
+	
+	private static String HELP_FEEDBACK = "All the valid command format!";
+	private static String HELP_TITLE = "Helper";
 
 	// some command format
 	private static String DELETE_ALL = "all";
@@ -141,6 +144,8 @@ public class ConvertCommand {
 			return convertBack(command);
 		} else if (command.getCommand().equalsIgnoreCase("exit")) {
 			return convertExit(command);
+		} else if (command.getCommand().equalsIgnoreCase("help")) {
+			return convertHelp();
 		} else {
 			return new Invalid(UNKNOWN);
 		}
@@ -562,6 +567,10 @@ public class ConvertCommand {
 
 	private static Command convertUndo() {
 		return new Undo();
+	}
+	
+	private static Command convertHelp() {
+		return new Helper(HELP_FEEDBACK, HELP_TITLE);
 	}
 
 	// --------------------Helper Function-------------------------
