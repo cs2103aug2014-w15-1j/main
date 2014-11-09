@@ -4,6 +4,11 @@ import logic.JDate;
 
 import data_store.SystemInfo;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class Task implements Comparable<Task> {
 	private String name;
 	private String description;

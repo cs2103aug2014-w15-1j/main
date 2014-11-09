@@ -6,6 +6,13 @@ import java.util.logging.Logger;
 import parser.RawCommand;
 import CommandType.*;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
+
+
 public class ConvertCommand {
 	private static Logger logger = Logger.getLogger("Convert");
 	

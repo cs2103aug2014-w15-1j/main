@@ -2,6 +2,11 @@ package CommandType;
 
 import logic.*;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class Next implements Command{
 	private static String feedback;
 	private static String title;

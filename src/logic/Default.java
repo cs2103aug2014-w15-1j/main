@@ -1,5 +1,10 @@
 package logic;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class Default {
 	// the line number to display in GUI
 	public static int MAX_DISPLAY_LINE = 10;

@@ -2,6 +2,11 @@ package CommandType;
 
 import logic.DisplayInfo;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class Exit implements Command{
 
 	public Exit(){

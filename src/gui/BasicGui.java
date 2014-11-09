@@ -55,7 +55,7 @@ public class BasicGui extends JFrame {
 	private JPanel FeedbackPanel;
 	private TransColorTextField feedbackWindow;
 	private JPanel mainPanel;
-	private JTextPane mainWindow;
+	private CustomizedJPanel mainWindow;
 
 	private JPanel controlArea;
 	private JPanel inputPanel;
@@ -256,8 +256,7 @@ public class BasicGui extends JFrame {
 	}
 
 	private void constructMainWindow() {
-		mainWindow = new JTextPane();
-		mainPanel.add(new JPanel());
+		
 	}
 
 	private void constructFeedbackPanel() {
@@ -319,6 +318,7 @@ public class BasicGui extends JFrame {
 	 * @param panel
 	 */
 	private void changeMainPanel(CustomizedJPanel panel) {
+		
 		mainPanel.removeAll();
 		mainPanel.add((Component) panel);
 	}

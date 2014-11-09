@@ -2,14 +2,14 @@ package CommandType;
 
 import logic.*;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class Invalid implements Command{
 	private static String feedback;
-	private static String title;
 	
-	public Invalid(String myFeedback, String myTitle){
-		feedback = myFeedback;
-		title = myTitle;
-	}
 	public Invalid(String myFeedback) {
 		feedback = myFeedback;
 	}

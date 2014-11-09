@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import data_store.DataStore;
 import logic.*;
 
+/**
+ * 
+ * @author a0119456Y
+ * @author A0119493X
+ *
+ */
 public class Rename implements Command {
 	private static String feedback;
 	private static String title;

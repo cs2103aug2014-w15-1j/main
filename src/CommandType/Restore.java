@@ -10,6 +10,12 @@ import logic.LogicToStore;
 import logic.RunLogic;
 import logic.Task;
 
+/**
+ * 
+ * @author a0119456Y
+ * @author A0119493X
+ *
+ */
 public class Restore implements Command {
 	private static String UNDO_FEEDBACK = "Restored task deleted!";
 	

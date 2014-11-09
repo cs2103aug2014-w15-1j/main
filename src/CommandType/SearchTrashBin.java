@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 import logic.*;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class SearchTrashBin implements Command{
 	private static String[] keyWord;
 	private static String feedback;

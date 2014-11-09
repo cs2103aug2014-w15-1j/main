@@ -12,6 +12,11 @@ import parser.RawCommand;
 import parser.ParserProcesser;
 import CommandType.*;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class RunLogic {
 	private static Logger logger = Logger.getLogger("RunLogic");
 	

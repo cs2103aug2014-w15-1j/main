@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 import logic.*;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class ViewDate implements Command{
 	private static JDate date;
 	private static String feedback;
