@@ -1,7 +1,12 @@
 package parser;
 
 /**
- * class ErrorMSG: String type error messages
+ * class <Strong>ErrorMSG</Strong>: 
+ * 
+ * <p>
+ * This class containing all the error messages and a error
+ * pop function
+ * </p>
  * 
  * @author A0119493X
  *          Parser error messages of all scenarios.
@@ -20,9 +25,8 @@ class ErrorMSG {
 }
 
 class ErrorGenerator {
-    /**
-     * Print out error
-     * */
+	
+    //Print out error
     public static void popError(String errorMSG) {
         System.err.println(errorMSG);
     }

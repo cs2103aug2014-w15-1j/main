@@ -1,8 +1,11 @@
 package parser;
 
 /**
- * Types of token that is recognizable
+ * class <Strong>TokenType</Strong>: 
  * 
+ * <p>
+ * Types of token that is recognizable
+ * </p>
  * @author A0119493X
  * */
 class TokenType {

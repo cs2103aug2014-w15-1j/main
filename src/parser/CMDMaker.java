@@ -1,18 +1,32 @@
 package parser;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import parser.CMDTypes.COMMAND_TYPE;
 
-public class CMDMaker {
+/**
+ * class <Strong>CMDMaker</Strong>: 
+ *
+ *<p>
+ * CMDMaker accept an <code>ArrayList</code> of <code>TokenPairs</code>, it retrieves valid information 
+ * regarding to different commands. it will packaging all the information by creating 
+ * an object called <code>RawCommand</code>, it would contains the command and categorized sub-information.
+ *</p>
+ *
+ *<p>
+ * Each type of commands possess their own information retrieving patterns
+ *</p>
+ * 
+ * @author A0119493X
+ * @see RawCommand
+ * */
+class CMDMaker {
 
 	/**
-	 * Interpret "add" command and get its sub-information
-	 * Split quotation mark contents with other contents
+	 * Generate a RawCommand for "Add" operation.
 	 * 
-	 * @param tokenPairs -RawCommand
-	 * @return -CliToLog
+	 * @param an <code>ArrayList</code> of <code>TokenPair</code> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand add(ArrayList<TokenPair> tokenPairs) {
 		try {
@@ -53,14 +67,10 @@ public class CMDMaker {
 	}
 	
 	/**
-	 * To change/update a field in an input
-	 * Change command field
+	 * Generate a RawCommand for "Update" operation
 	 * 
-	 * @param tokenPairs
-	 *              String of sub-information following the update command
-	 * @param lacateLine
-	 * 				The line number that the task is locating at
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 */
 	static RawCommand update(ArrayList<TokenPair> tokenPairs){
 		
@@ -105,11 +115,10 @@ public class CMDMaker {
 	}
 	
 	/**
-	 * Return a RawCommand for Search operation
+	 * Generate a RawCommand for "Search" operation
 	 * 
-	 * @param tokenPairs
-	 *              String of sub-information following the search command
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand search(ArrayList<TokenPair> tokenPairs) {
 		try {
@@ -121,11 +130,10 @@ public class CMDMaker {
 	}
 	
 	/**
-	 * Return a RawCommand for rename operation
+	 * Generate a RawCommand for "Rename" operation
 	 * 
-	 * @param tokenPairs
-	 *              String of sub-information following the update command
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand rename(ArrayList<TokenPair> tokenPairs) {
 		try {
@@ -149,11 +157,10 @@ public class CMDMaker {
 	}
 
 	/**
-	 * Return a RawCommand for re-describe operation
+	 * Generate a RawCommand for "Re-describe" operation
 	 * 
-	 * @param subInfoStr
-	 *              String of sub-information following the re-describe command
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand describe(ArrayList<TokenPair> tokenPairs) {
 		try {
@@ -177,12 +184,10 @@ public class CMDMaker {
 	}
 
 	/**
-	 * Return a RawCommand for re-schedule operation
+	 * Generate a RawCommand for "Re-schedule" operation
 	 * 
-	 * @param subInfoStr
-	 *              String of sub-information following the reschedule command
-	 * @param string 
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand reschedule(ArrayList<TokenPair> tokenPairs) {
 		try {
@@ -215,11 +220,10 @@ public class CMDMaker {
 	}
 
 	/**
-	 * Return a RawCommand for repeat operation
+	 * Generate a RawCommand for "Repeat" operation
 	 * 
-	 * @param subInfoStr
-	 *              String of sub-information following the repeat command
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand repeat(ArrayList<TokenPair> tokenPairs) {
 		try {
@@ -245,11 +249,10 @@ public class CMDMaker {
 	}
 
 	/** 
-	 * Read details of a certain task
+	 * Generate a RawCommand for "Read" operation
 	 * 
-	 * @param subInfoStr
-	 *              String of sub-information following the update command
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 */
 	static RawCommand read(ArrayList<TokenPair> tokenPairs){
 		try {
@@ -264,11 +267,10 @@ public class CMDMaker {
 	}
 
 	/**
-	 * Return a RawCommand for undo operation
+	 * Return a RawCommand for "Undo" operation
 	 * 
-	 * @param subInfoStr
-	 *              String of sub-information following the update command
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand undo(){
 		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.UNDO.name());
@@ -277,11 +279,10 @@ public class CMDMaker {
 	}
 
 	/**
-	 * Return a RawCommand for delete operation
+	 * Return a RawCommand for "Delete" operation
 	 * 
-	 * @param subInfoStr
-	 *              String of sub-information following the update command
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand delete(ArrayList<TokenPair> tokenPairs){
 		try {
@@ -296,17 +297,16 @@ public class CMDMaker {
 	}
 	
 	/**
-	 * Return a RawCommand for view operation, switch to different view modes
+	 * Return a RawCommand for "View" operation.
 	 * 
-	 * @param tokenPairs
-	 *              String of sub-information following the update command
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand view(ArrayList<TokenPair> tokenPairs){
 		try {
 			String getFields = tokenPairs.get(0).getCotent();
 			if (ValidityChecker.isValidViewDate(getFields)) {
-				return translateDate(getFields);
+				return InfoRetrieve.translateDate(getFields);
 			} else if (ValidityChecker.isValidDate(getFields)) {
 				return viewDate(InfoRetrieve.makeDay(getFields));
 			} else {
@@ -317,48 +317,13 @@ public class CMDMaker {
 		}
 	}
 	
-	/**
-	 * Translate plain date to standardized date
-	 * 
-	 * @return RawCommand
-	 * */
-	private static RawCommand translateDate(String getFields) {
-		Calendar cal = Calendar.getInstance();
-		String date = ParserKeys.EMPTY_STR;
-		
-		if (getFields.equalsIgnoreCase("Today")) {
-			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
-			date += toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
-			date += toTwoDigit(cal.get(Calendar.DATE));
-			return viewDate(InfoRetrieve.makeDay(date));
-		} else if (getFields.equalsIgnoreCase("Tomorrow")) {
-			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
-			date += toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
-			date += toTwoDigit((cal.get(Calendar.DATE) + 1));
-			return viewDate(InfoRetrieve.makeDay(date));
-		} else {
-			// getFields.equals("Yesterday")
-			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
-			date += toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
-			date += toTwoDigit((cal.get(Calendar.DATE) - 1));
-			return viewDate(InfoRetrieve.makeDay(date));
-		} 
-	}
-	
-	private static String toTwoDigit(int rawNum) {
-		if (rawNum < 10 && rawNum >0) {
-			return ParserKeys.ZERO + rawNum;
-		} else {
-			return (rawNum + ParserKeys.EMPTY_STR);
-		}
-	}
-
 	/** 
-	 * Return a RawCommand for viewing a certain date
+	 * Generate a RawCommand for viewing a certain date
 	 * 
+	 * @param String date
 	 * @return -RawCommand
 	 */
-	private static RawCommand viewDate(String getDate) {
+	static RawCommand viewDate(String getDate) {
 		try {
 			return new RawCommand(CMDTypes.COMMAND_TYPE.VIEWDATE.name(), getDate);
 		} catch (Exception e) {
@@ -367,9 +332,10 @@ public class CMDMaker {
 	}
 	
 	/**
-	 * Return a RawCommand for mark a task
+	 * Generate a RawCommand for marking a task
 	 * 
-	 * @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 * */
 	static RawCommand mark(ArrayList<TokenPair> tokenPairs) {
 		try {
@@ -385,7 +351,7 @@ public class CMDMaker {
 	}
 
 	/** 
-	 * Return a RawCommand for viewing Next page for current state of view
+	 * Generate a RawCommand for viewing Next page for current state of view
 	 * 
 	 * @return -RawCommand
 	 */
@@ -396,7 +362,7 @@ public class CMDMaker {
 	}
 
 	/** 
-	 * Go to previous page for current state of view
+	 * Generate a RawCommand for going to previous page for current state of view
 	 * 
 	 * @return -RawCommand
 	 */
@@ -407,12 +373,10 @@ public class CMDMaker {
 	}
 
 	/**
-	 *  Restore item from bin
+	 * Generate a RawCommand for restoring item from bin
 	 *  
-	 *  @param tokenPairs
-	 *         String of target restore index
-	 *         
-	 *  @return -RawCommand
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
 	 */
 	static RawCommand restore(ArrayList<TokenPair> tokenPairs){
 		try {
@@ -426,7 +390,9 @@ public class CMDMaker {
 	}
 
 	/**
-	 * Back to the previous page
+	 * Generate a RawCommand for backing to the previous page
+	 * 
+	 * @return a RawCommand object
 	 * */
 	static RawCommand back(){
 		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.BACK.name());
@@ -435,7 +401,7 @@ public class CMDMaker {
 	}
 	
 	/**
-	 * Return a RawCommand of any invalid operation
+	 * Generate a RawCommand of any invalid operation
 	 * 
 	 * @return -RawCommand
 	 * */
@@ -444,7 +410,7 @@ public class CMDMaker {
 	}
 	
 	/**
-	 * Return a RawCommand of help operation
+	 * Generate a RawCommand of help operation
 	 * 
 	 * @return -RawCommand
 	 * */
@@ -453,7 +419,9 @@ public class CMDMaker {
 	}
 	
 	/** 
-	 * Exiting the program
+	 * Generate a RawCommand for exiting the program
+	 *
+	 * @return a RawCommand object
 	 */
 	static RawCommand exit(){
 		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.EXIT.name());

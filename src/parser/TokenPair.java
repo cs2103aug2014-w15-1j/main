@@ -3,7 +3,11 @@ package parser;
 import parser.TokenType.TOKEN_TYPE;
 
 /**
- * A pair of contents and it's type token.
+ * class <Strong>TokenPair</Strong>:
+ * 
+ * <p>
+ * A pair of <code>String</code> contents and it's type token.
+ * </p>
  * 
  * @author A0119493X
  * */

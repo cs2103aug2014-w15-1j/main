@@ -2,7 +2,14 @@ package parser;
 
 import java.util.ArrayList;
 
-public class CMDCaller {
+/**
+ * class <Strong>CMDCaller</Strong>: Calling corresponding command operation regarding 
+ * different command types. 
+ * 
+ * @see CMDTypes
+ * @author A0119493X
+ * */
+class CMDCaller {
 
 	/**
 	 * Transform string command into corresponding CliToLog objects

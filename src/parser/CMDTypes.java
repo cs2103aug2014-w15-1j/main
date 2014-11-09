@@ -1,7 +1,16 @@
 package parser;
 
 /**
- * class CMDTypes: All the commands supported by the application
+ * class <Strong>CMDTypes</Strong>: 
+ * 
+ * <p>
+ * This class all the commands and special fields supported by the application.
+ * </p>
+ * 
+ * <p>
+ * Commands including all the basic task manipulations. Fields including all the identifiable
+ * fields such as date and view objects
+ * </p>
  * 
  * @author A0119493X
  * */

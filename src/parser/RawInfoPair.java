@@ -3,12 +3,17 @@ package parser;
 import java.util.ArrayList;
 
 /**
- * class RawInfoPair: A pair of input command and command's sub-information
+ * class <Strong>RawInfoPair</Strong>: 
  * 
- * @author A0119493X
- *          
+ * <p>
+ * A pair of input command and command's sub-information. It is used for the first interpretation
+ * of raw <code>String</code> input. This class contains 2 attribute, one is the front(retrieved)
+ * <code>String</code> information and the rest of the <code>TokenPair</code> list
+ * </p>
+ * 
+ * @author A0119493X    
  * */
-public class RawInfoPair {
+class RawInfoPair {
 	private String front;
     private ArrayList<TokenPair> subInfo;
     

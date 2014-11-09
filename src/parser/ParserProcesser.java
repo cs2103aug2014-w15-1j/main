@@ -1,8 +1,18 @@
 package parser;
 
 /**
- * class ParserProcess: Interpret raw input strings and wrap valid information into RawCommand objects
+ * class <Strong>ParserProcess</Strong>: 
  * 
+ * <p>
+ * This class interpret raw <code>String</code> inputs, and wrap valid <code>String</code> information 
+ * into <code>RawCommand</code> objects.
+ * </p>
+ * 
+ * <p>
+ * When taking in a input, it will cut input and tokenize each word with corresponding tokens.
+ * Then it calls <code>CMDInterpreter</code> to identify commands and then calls <code>CMDMaker</code>
+ * to generate a <code>RawCommand</code> that contains all the basic information.
+ * </p>
  * @author A0119493X        
  * */
 public class ParserProcesser {

@@ -3,27 +3,30 @@ package parser;
 import java.util.ArrayList;
 
 /**
- * class CmdInterpretor: Identify commands in input string
- * 
+ * class <Strong>CmdInterpretor</Strong>: Identify commands in input string
+ * <p>
+ * CmdInterpretor takes in a raw <code>String</code> input, identifies the command
+ * in the raw input and return a <code>RawCommand</code> object that contains basic
+ * information.
+ * </p>
  * @author A0119493X
- * 			CmdInterpretor takes in a raw string input, identifies the command
- * 			in the raw input and return a RawCommand object that contains basic
- * 			information 
+ * 			
  * */
-public class CMDInterpreter {
+class CMDInterpreter {
 	
 	/**
      * Interpret strings by their own commands
      * 
      * @param rawString -String
-     * @return a CmdInfoPair object that contains a pair of command and sub-information string 
-     * 		   of an raw input 
+     * @return CmdInfoPair
+     * 		   this object contains a pair of command and sub-information string 
+     * 		   of an raw input. For unidentified commands, an RawCommand containing 
+     * 		   command "Invalid" would be returned
      * */
     static CMDInfoPair makeCmdPair(RawInfoPair rawCMDPair){
         String getCommand = rawCMDPair.getFront();
         ArrayList<TokenPair> getSubInfo = rawCMDPair.getSubInfo();
-        System.out.println("!!!" + getCommand);
-    	
+        
         if (ValidityChecker.isAdd(getCommand) &&
         	!ValidityChecker.isRead(getCommand) &&
         	!ValidityChecker.isUpdate(getCommand)) {

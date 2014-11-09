@@ -1,24 +1,33 @@
 package parser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import parser.TokenType.TOKEN_TYPE;
 
 /**
- * class InfoRetrieve: Retrieve specific information from raw input string
+ * class <Strong>InfoRetrieve</Strong>: 
  * 
- *@author A0119493X
+ * <p>
+ * This class retrieve specific information from raw input string.
+ * All types of information including <code>tasktitle</code>, <code>description</code>,
+ * <code>startDate</code>, <code>endDate</code>, <code>viewField</code> could be retrieved 
+ * from input 
+ * </p>
+ * 
+ * @author A0119493X
  * 
  * */
-public class InfoRetrieve {
+class InfoRetrieve {
 	
 	/**
-     * Get task title, if title is empty, return an system EMPYT_TITLE
+     * Get task title, 
      * 
-     * @param {String}
-     * @param {ArrayList<TokenPair>}
-     * 
-     * @return {RawInfoPair}
+     * @param tokenPairs
+     * 			a <code>ArrayList<code> of <code>TokenPair<code> object 
+     * @return RawInfoPair
+     * 			Return a RawInfoPair containing tasktitle and subInformation, 
+     * 			Title would be EMPYT_TITLE if title is empty, 
      * */
     static RawInfoPair getTaskTitle(ArrayList<TokenPair> tokenPairs) {
     	
@@ -34,19 +43,37 @@ public class InfoRetrieve {
     		front = tokenPairs.get(0);
         	frontToken = front.getToken();
     
-        	if (ValidityChecker.isUN(frontToken)) {
-        		return getFrontUN(tokenPairs);
-        	} else {
-        		return getOneQT(tokenPairs);
-        	}
+        	return judgeUN(tokenPairs, frontToken);
     	} else {
     		// numOfQuotes == 2
     		return getOneQT(tokenPairs);
     	}
     }
+
+    /**
+     * Judge if the front element has the token UN
+     * 
+     * @param tokenPairs
+     * 			an list of tokenPairs
+     * @param frontToken
+     * 			front element's token
+     * */
+	private static RawInfoPair judgeUN(ArrayList<TokenPair> tokenPairs,
+									   TOKEN_TYPE frontToken) {
+		if (ValidityChecker.isUN(frontToken)) {
+			return getFrontUN(tokenPairs);
+		} else {
+			return getOneQT(tokenPairs);
+		}
+	}
     
     /**
-     * get the first contents that is Quoted
+     * Get the first contents that is Quoted
+     * 
+     * @param tokenPairs
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object
      * */
     static RawInfoPair getOneQT(ArrayList<TokenPair> tokenPairs) {
     	String result = ParserKeys.EMPTY_STR;
@@ -62,58 +89,63 @@ public class InfoRetrieve {
     }
     
     /**
-     * get front contents that is unidentifiable
+     * Get front contents that is unidentifiable
+     * 
+     * @param tokenPairs
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object
      * */
-    static RawInfoPair getFrontUN(ArrayList<TokenPair> tokenPair) {
+    static RawInfoPair getFrontUN(ArrayList<TokenPair> tokenPairs) {
     	String result = ParserKeys.EMPTY_STR;
     	TokenPair front;
     	TOKEN_TYPE frontToken;
     	
-    	while(!tokenPair.isEmpty()) {
-			front = tokenPair.get(0);
+    	while(!tokenPairs.isEmpty()) {
+			front = tokenPairs.get(0);
 			frontToken = front.getToken();
 			
 			if (ValidityChecker.isUN(frontToken) || 
 				ValidityChecker.isNB(frontToken)){
         		result += front.getCotent() + ParserKeys.SPACE;
-        		tokenPair.remove(0);
+        		tokenPairs.remove(0);
         	} else {
         		break;
         	}
         }
-    	if (result.endsWith(ParserKeys.SPACE)) {
-        	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
-        } else {
-        	return new RawInfoPair(result, tokenPair);
-        }
+    	
+    	return cleanEndSpace(tokenPairs, result);
     }
+
     
     /**
-     * get front contents that is unidentifiable
+     * Fet all the sub contents in the token-pair list
      * 
-     * @return RawInfoPair
+     * @param tokenPairs
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object containing a subInformation
      * */
-    static RawInfoPair getAllSubInfo(ArrayList<TokenPair> tokenPair) {
+    static RawInfoPair getAllSubInfo(ArrayList<TokenPair> tokenPairs) {
     	String result = ParserKeys.EMPTY_STR;
     	TokenPair front;
     	
-    	while(!tokenPair.isEmpty()) {
-			front = tokenPair.get(0);
+    	while(!tokenPairs.isEmpty()) {
+			front = tokenPairs.get(0);
         	result += front.getCotent() + ParserKeys.SPACE;
-        	tokenPair.remove(0);
+        	tokenPairs.remove(0);
         }
     	
-    	if (result.endsWith(ParserKeys.SPACE)) {
-        	return new RawInfoPair(result.substring(0, result.length()-1), tokenPair);
-        } else {
-        	return new RawInfoPair(result, tokenPair);
-        }
+    	return cleanEndSpace(tokenPairs, result);
     }
     
     /**
      * Count number of quoted contents in the tokenPairs
      * 
-     * @return total quotation count
+     * @param tokens
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object
      * */
     static int countQuoted(ArrayList<TokenPair> tokenPairs) {
     	int result = 0;
@@ -127,8 +159,12 @@ public class InfoRetrieve {
     }
 	
 	/**
-     * get repeated date for a task
-     * if cannot find the return system default repeat
+     * Get repeated date for a task
+     * 
+     * @param tokens
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object, return system default repeat if cannot find a valid repeat date
      * */
     static RawInfoPair getRepeatDate(ArrayList<TokenPair> tokens) {
     	String repeatDate = ParserKeys.EMPTY_STR;
@@ -151,8 +187,12 @@ public class InfoRetrieve {
     }
     
     /**
-     * get repeated date for a task
-     * if cannot find the return empty string
+     * Get tokenPairs with token NB
+     * 
+     * @param tokens
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object
      * */
     static RawInfoPair getNB(ArrayList<TokenPair> tokens) {
     	String number = ParserKeys.EMPTY_STR;
@@ -171,8 +211,12 @@ public class InfoRetrieve {
     }
     
     /**
-     * get start day for a task
-     * if cannot find the return system default date
+     * Get identifiable dates
+     * 
+     * @param tokens
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object, return EMPTY_DATE if cannot find date
      * */
     static RawInfoPair getDate(ArrayList<TokenPair> tokens) {
     	String date = ParserKeys.EMPTY_STR;
@@ -197,13 +241,13 @@ public class InfoRetrieve {
     /**
      * Get the description at the end
      * 
-     * @param {String}
-     * @param {ArrayList<Integer>}
-     * 
-     * @return {String}
+     * @param tokenPairs 
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return String 
+	 * 			a string containing descriptions
      * */
     static String getDescription(ArrayList<TokenPair> tokenPairs) {
-    	String description = "";
+    	String description = ParserKeys.EMPTY_STR;
     	int numOfQuotes;
     	numOfQuotes = countQuoted(tokenPairs);
     	
@@ -231,6 +275,8 @@ public class InfoRetrieve {
      * 
      * @param rawDay
      *          String of date
+     * @return String
+     * 			a standardized date YYYYMMDD
      * */
     static String makeDay(String rawDay) {
         String resultDay = ParserKeys.EMPTY_STR;
@@ -242,19 +288,14 @@ public class InfoRetrieve {
         return resultDay;
     }
     
-    /**
-     * Clean the white space at the start of a string
-     * */
-    static String cleanFrontSpace(String rawString) {
-        if(rawString.startsWith(ParserKeys.SPACE)) {
-            return cleanFrontSpace(rawString.substring(1, rawString.length()));
-        } else {
-            return rawString;
-        }
-    }
+    
     
     /**
-     * Return index of quotation mark in raw input String
+     * Get the index of quotation mark in raw input String
+     * 
+     * @param subInfoStr
+     * @return ArrayList<Integer>
+     * 			an list containing index of date marker
      * */
     static ArrayList<Integer> getQuoteMark(String subInfoStr) {
         ArrayList<Integer> quotationIndex = new ArrayList<Integer>();
@@ -273,7 +314,11 @@ public class InfoRetrieve {
     }
     
     /**
-     * Return index of quotation mark in raw input String
+     * Get the index of date mark in raw input String
+     * 
+     * @param subInfoStr
+     * @return ArrayList<Integer>
+     * 			an list containing index of date marker
      * */
     static ArrayList<Integer> getDateMarker(String subInfoStr) {
         ArrayList<Integer> dateMarkIndex = new ArrayList<Integer>();
@@ -290,12 +335,88 @@ public class InfoRetrieve {
 
 	/**
 	 * Get front command
+	 * 
+	 * @param rawString
+	 * @return String
 	 * */
-	public static String getCommand(String rawString) {
+    static String getCommand(String rawString) {
 		
 		String command = ParserKeys.EMPTY_STR;
 		command = StringCutter.getFrontBlock(rawString);
 		
 	    return command;
+	}
+
+	/**
+	 * Translate plain date to standardized date
+	 * 
+	 * @param getFields
+	 * 			a string containing dates fields
+	 * @return RawCommand
+	 * */
+	static RawCommand translateDate(String getFields) {
+		Calendar cal = Calendar.getInstance();
+		String date = ParserKeys.EMPTY_STR;
+		
+		if (getFields.equalsIgnoreCase(ParserKeys.FIELD_TODAY)) {
+			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit(cal.get(Calendar.DATE));
+			return CMDMaker.viewDate(makeDay(date));
+		} else if (getFields.equalsIgnoreCase(ParserKeys.FIELD_TMR)) {
+			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit((cal.get(Calendar.DATE) + 1));
+			return CMDMaker.viewDate(makeDay(date));
+		} else {
+			// Yesterday
+			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit((cal.get(Calendar.DATE) - 1));
+			return CMDMaker.viewDate(makeDay(date));
+		} 
+	}
+
+	/**
+     * Clean the white space at the start of a string
+     * 
+     * @param rawString
+     * 			-String
+     * @return String
+     * */
+    static String cleanFrontSpace(String rawString) {
+        if(rawString.startsWith(ParserKeys.SPACE)) {
+            return cleanFrontSpace(rawString.substring(1, rawString.length()));
+        } else {
+            return rawString;
+        }
+    }
+    
+	/**
+     * Remove the end space of a string
+     * 
+     * @param tokenPairs
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object		
+     * */
+	private static RawInfoPair cleanEndSpace(ArrayList<TokenPair> tokenPairs,
+										  String result) {
+		if (result.endsWith(ParserKeys.SPACE)) {
+        	return new RawInfoPair(result.substring(0, result.length()-1), tokenPairs);
+        } else {
+        	return new RawInfoPair(result, tokenPairs);
+        }
+	}
+	
+	/**
+	 * Make integer to two digit string
+	 * */
+	static String toTwoDigit(int rawNum) {
+		if (rawNum < 10 && rawNum >0) {
+			return ParserKeys.ZERO + rawNum;
+		} else {
+			return (rawNum + ParserKeys.EMPTY_STR);
+		}
 	}
 }
