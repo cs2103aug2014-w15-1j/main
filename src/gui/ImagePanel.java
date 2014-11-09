@@ -2,10 +2,7 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -24,8 +21,8 @@ public class ImagePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private BufferedImage background;
-	private String imageFilePath;
-	private String defaultImageFilePath = "background.jpg";
+	
+	private String defaultImageFilePath = "images/background.jpg";
 
 	
 	/********************************************
@@ -36,7 +33,7 @@ public class ImagePanel extends JPanel {
 	 */
 	public ImagePanel() {
 		try {
-			background = ImageIO.read(new File(defaultImageFilePath));
+			background = ImageIO.read(ResourceLoader.load(defaultImageFilePath));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -50,20 +47,16 @@ public class ImagePanel extends JPanel {
 	 *            file path of image
 	 */
 	public ImagePanel(String path) {
-		File image = new File(imageFilePath);
-		if (image.exists()) {
-			try {
-				background = ImageIO.read(image);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
+		try {
+			background = ImageIO.read(ResourceLoader.load(path));
+        } catch (IOException ex) {
+        	try {
 				background = ImageIO.read(new File(defaultImageFilePath));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+        }  
+		
 
 	}
 

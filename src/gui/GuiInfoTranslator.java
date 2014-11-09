@@ -6,6 +6,7 @@ import logic.Default;
 import logic.DisplayInfo;
 import logic.JDate;
 import logic.Task;
+import logic.VIEW_MODE;
 
 /**
  * <code>GuiInfoTranslator</code> functions as the translator between GUI and
@@ -36,9 +37,11 @@ public class GuiInfoTranslator {
 	private boolean hightlightMultipleLines = false;
 
 	// constants
-	//private final static String MESSAGE_EMPTY_LIST = "No relevent information here";
+	
 	private final static String EMPTY_STRING = "";
-
+	private final static String STR_DONE = "Done";
+	private final static String STR_UNDDONE = "Undone"; 
+	
 	// attributes in task detail view mode
 	private String[] taskDetailAttr = { "Name", "StartDate", "EndDate",
 			"Status", "Description" };
@@ -56,10 +59,6 @@ public class GuiInfoTranslator {
 	 ********************************************/
 	public boolean hasNextPage() {
 		return info.hasNextPage();
-	}
-
-	public boolean isPageInvolved() {
-		return info.isPageInvolved();
 	}
 
 	public boolean hasPreviousPage() {
@@ -131,19 +130,23 @@ public class GuiInfoTranslator {
 		if (taskList == null || taskList.size() <= 0) {
 			return;
 		}
+		int expectedListSize;
+		int firstIndex = 0;
 		switch (info.getViewMode()) {
 		case TASK_DETAIL:
-			if (taskList.size() != 1) {
+			expectedListSize = 1;
+			if (taskList.size() != expectedListSize) {
 				throw new Error("taskList does not contain one task exactly");
 			}
-			task = taskList.get(0);
+			task = taskList.get(firstIndex);
 			processTaskDetail(task);
 			return;
 		case BIN_DETAIL:
-			if (taskList.size() != 1) {
+			expectedListSize = 1;
+			if (taskList.size() != expectedListSize) {
 				throw new Error("taskList does not contain one task exactly");
 			}
-			task = taskList.get(0);
+			task = taskList.get(firstIndex);
 			processTaskDetail(task);
 			return;
 		case MONTH:
@@ -202,7 +205,7 @@ public class GuiInfoTranslator {
 	}
 
 	/**
-	 * process detail information of a certain task into two
+	 * process detail information of a certain task into several
 	 * <code>ArrayList</code>. The first <code>ArrayList</code> is stored in
 	 * <em>firstCol</em> The second <code>ArrayList</code> is stored in
 	 * <em>secondCol</em>.
@@ -237,9 +240,10 @@ public class GuiInfoTranslator {
 		}
 		
 		if(status) {
-			secondCol.add("Done");
+			
+			secondCol.add(STR_DONE);
 		} else {
-			secondCol.add("Undone");
+			secondCol.add(STR_UNDDONE);
 		}
 		secondCol.add(descrition);
 

@@ -1,7 +1,5 @@
 package CommandType;
 
-import gui.VIEW_MODE;
-
 import java.util.ArrayList;
 
 import logic.*;

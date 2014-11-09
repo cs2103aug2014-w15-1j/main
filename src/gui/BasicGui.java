@@ -52,20 +52,25 @@ import java.awt.GridBagLayout;
 import java.awt.Paint;
 import java.awt.SystemColor;
 
-
-
 import java.util.ArrayList;
 
 import logic.JDate;
 
 /**
- * class BasicGUI: contains the  structure of GUI
+ * class BasicGUI: contains the all visual composition and structure of GUI
  * 
- * @author A0119391
- *  GUI is mainly constructs by 4 container: titlePanel(for title),
- * 	desktopPanel(for main), toolBar(for helper) and inputPanel(for input)
- *         And inside each container, there exist a hierarchy of container and
- *         field. Note: singleton pattern is applied in this class
+ * <p>
+ * GUI is mainly constructs by 3 main container: MeunuArea(for title),
+ * MainArea(for main) and ControlArea(for input) And inside each container,
+ * there exist a hierarchy of container and field. All components contribute to
+ * the appearance and layout of GUI. In particular, components inside mainPanel
+ * are substitutable, which allows the customization to some extent.
+ * 
+ * <p>
+ * <strong>Note</strong>: singleton pattern is applied in this class.
+ * 
+ * @author A0119391A
+ * 
  */
 public class BasicGui extends JFrame {
 
@@ -76,45 +81,60 @@ public class BasicGui extends JFrame {
 	 */
 
 	private static final long serialVersionUID = 1L;
+	// instance of BasicGui
 	private static BasicGui instance;
 
-
+	// all relevant components
 	private JPanel menuArea;
 	private JPanel titlePanel;
 	private JTextField titleWindow;
-	
+
 	private JPanel mainArea;
 	private JPanel FeedbackPanel;
 	private TransColorTextField feedbackWindow;
 	private JPanel mainPanel;
 	private JTextPane mainWindow;
-	
+
 	private JPanel controlArea;
 	private JPanel inputPanel;
 	private JTextField inputWindow;
-	
-	
-	
-	// constants for FRAME initialization (unit in pixel)
+
+	// constants for component size (unit in pixel)
 	private final static int TOP_LEFT_X_VALUE = 100;
 	private final static int TOP_LEFT_Y_VALUE = 100;
 	private final static int FRAME_WIDTH = 1000;
 	private final static int FRAME_HEIGHT = 640;
-	
-	int pX,pY;
+	private final static int MINIMUM_FRAME_WIDTH = 500;
+	private final static int MINIMUM_FRAME_HEIGHT = 320;
+
+	private final static int MENU_AREA_WIDTH = FRAME_WIDTH;
+	private final static int MENU_AREA_HEIGHT = 30;
+
+	String inputWindowHelperText = "Enter your command here:";
+	// color info
+	private final static Color COLOR_TITLE_WINDOW_BACK = Color.WHITE;
+	private final static Color COLOR_TITLE_WINDOW_FORE = new Color(66, 161,
+			223, 220);
+	private final static Color COLOR_TITLE_WINDOW_BORDER = new Color(66, 161,
+			223, 255);
+	// font info
+	private final static Font FONT_MAIN_WINDOW = new Font("Calibri",
+			Font.PLAIN, 29);
+	private final static Font FONT_FEEDBACK_WINDOW = new Font("Ayuthaya",
+			Font.PLAIN, 13);
 
 	/*
 	 * ====================================================================
 	 * ===================== END OF PRIVATE FIELD =========================
 	 * ====================================================================
 	 */
-	
+
 	/*
 	 * ====================================================================
 	 * ===================== START OF PUBLIC METHOD =======================
 	 * ====================================================================
 	 */
-	
+
 	public static BasicGui getInstance() {
 		if (instance == null) {
 			instance = new BasicGui();
@@ -122,7 +142,6 @@ public class BasicGui extends JFrame {
 		return instance;
 	}
 
-		
 	public void setTitleText(String text) {
 		titleWindow.setText(text);
 	}
@@ -131,153 +150,128 @@ public class BasicGui extends JFrame {
 		feedbackWindow.setTextTransColor(text);
 	}
 
-	
-
 	public void showLayered() {
 		MultiLayeredPanel layered = new MultiLayeredPanel();
 		mainPanel.removeAll();
 		mainPanel.add(layered);
 	}
-	public TaskListPanel showListed(ArrayList<String> a, ArrayList<String> b, ArrayList<String> c,  ArrayList<Boolean> d) {
+
+	public TaskListPanel showListed(ArrayList<String> a, ArrayList<String> b,
+			ArrayList<String> c, ArrayList<Boolean> d) {
 		TaskListPanel listed = new TaskListPanel(a, b, c, d);
 		changeMainPanel(listed);
-		
+
 		return listed;
 	}
-	
+
 	public AttributePanel ShowDetailed(ArrayList<String> a, ArrayList<String> b) {
 		AttributePanel detailed = new AttributePanel(a, b);
 		changeMainPanel(detailed);
-		
+
 		return detailed;
-		
-	}
-	public void refreshMainPanel(){
-		mainPanel.validate();
+
 	}
 
-	
-	
+	public void refreshMainPanel() {
+		mainPanel.validate();
+	}
+	/*
+	 * ====================================================================
+	 * ===================== END OF PUBLIC METHOD =========================
+	 * ====================================================================
+	 */
+
 	/*
 	 * ====================================================================
 	 * ===================== START OF Private METHOD =======================
 	 * ====================================================================
 	 */
-	
+
 	/**
-	 * method BasicGUI: constructor of GUI
+	 * method BasicGUI: constructor of GUI. It is private as the singleton
+	 * pattern is applied.
 	 */
 	private BasicGui() {
 		constructFrame();
 		constructContentPanel();
-		
+
 		constructMenuArea();
 		constructTitlePanel();
 		constructTitleWindow();
-		
+
 		constructMainArea();
 		constructMainPanel();
 		constructMainWindow();
 		constructFeedbackPanel();
 		constructFeedbackWindow();
-		
+
 		constructControlArea();
 		constructInputPanel();
 		constructInputWindow();
-		
+
 		validate();
 	}
 
-	/**
-	 * 
-	 */
 	private void constructFrame() {
-		
-		
-		//setBackground(new Color(0, 0, 0, 0));
-		setLocationRelativeTo(null);
+
 		setRootPaneCheckingEnabled(false);
 		setType(Type.UTILITY);
-		
 		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
 		getContentPane().setFocusTraversalPolicyProvider(true);
 		setVisible(true);
 	}
-	
+
 	private void constructContentPanel() {
 		getContentPane().setEnabled(false);
-		getContentPane().setForeground(new Color(0,0,0));
-		getContentPane().setBackground(new Color(0,0,0));
 		getContentPane().setLayout(new BorderLayout());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setMinimumSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		this.setMinimumSize(new Dimension(MINIMUM_FRAME_WIDTH,
+				MINIMUM_FRAME_HEIGHT));
 		setBounds(TOP_LEFT_X_VALUE, TOP_LEFT_Y_VALUE, FRAME_WIDTH, FRAME_HEIGHT);
 	}
+
 	private void constructMenuArea() {
 		menuArea = new JPanel();
 		menuArea.setOpaque(false);
-		menuArea.setPreferredSize(new Dimension(FRAME_WIDTH,25));
+		menuArea.setPreferredSize(new Dimension(MENU_AREA_WIDTH,
+				MENU_AREA_HEIGHT));
 		menuArea.setLayout(new BorderLayout(0, 0));
-		
+
 		getContentPane().add(menuArea, BorderLayout.NORTH);
 	}
-	
+
 	private void constructTitlePanel() {
 		titlePanel = new JPanel();
 		titlePanel.setLayout(new BorderLayout());
 		titlePanel.setOpaque(false);
-		
+
 		menuArea.add(titlePanel, BorderLayout.CENTER);
 	}
+
 	private void constructTitleWindow() {
 		titleWindow = new JTextField();
-		
-		Font font1 = new Font("DIALOG", Font.ITALIC, 15); 
-		 
-		titleWindow.setFont(font1);
-		titleWindow.setBackground(new Color(255, 255, 255, 255));
-		//new Color(66, 161, 223, 220)
+
+		Font titleWindowFont = new Font("DIALOG", Font.ITALIC, 15);
+
+		titleWindow.setFont(titleWindowFont);
 		titleWindow.setEditable(false);
-		titleWindow.setText("Today is Sep 29 2014");
-		
-		titleWindow.setForeground(new Color(66, 161, 223, 220));
-		titleWindow.setBorder(BorderFactory.createMatteBorder(1,0,1,0 ,new Color(66, 161, 223, 255) ));
-		
-		enableDraggableTitle();
-		
+		titleWindow.setBackground(COLOR_TITLE_WINDOW_BACK);
+		titleWindow.setForeground(COLOR_TITLE_WINDOW_FORE);
+		titleWindow.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0,
+				COLOR_TITLE_WINDOW_BORDER));
+
 		titlePanel.add(titleWindow, BorderLayout.CENTER);
 	}
 
-	private void enableDraggableTitle() {
-		titleWindow.addMouseListener(new MouseAdapter(){
-            public void mousePressed(MouseEvent me)
-            {
-                // Get x,y and store them
-                pX=me.getX();
-                pY=me.getY();
-            }
-        });
-		titleWindow.addMouseMotionListener(new MouseAdapter(){
-            public void mouseDragged(MouseEvent me)
-            {
-                // Set the location
-                // get the current location x-co-ordinate and then get
-                // the current drag x co-ordinate, add them and subtract most recent
-                // mouse pressed x co-ordinate
-                // do same for y co-ordinate
-                setLocation(getLocation().x+me.getX()-pX,getLocation().y+me.getY()-pY);
-            }
-        });
-	}
 	private void constructMainArea() {
 		mainArea = new ImagePanel();
 		mainArea.setOpaque(true);
-		mainArea.setBackground(new Color(0,0,0,255));
 		mainArea.setLayout(new BorderLayout(0, 0));
-		
+
 		getContentPane().add(mainArea, BorderLayout.CENTER);
-	
+
 	}
+
 	private void constructMainPanel() {
 		mainPanel = new JPanel();
 		mainPanel.setRequestFocusEnabled(false);
@@ -285,8 +279,8 @@ public class BasicGui extends JFrame {
 		mainPanel.setDoubleBuffered(false);
 		mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		mainPanel.setBorder(null);
-		mainPanel.setLayout(new BorderLayout(0,0));
-		
+		mainPanel.setLayout(new BorderLayout(0, 0));
+
 		mainArea.add(mainPanel);
 	}
 
@@ -298,49 +292,42 @@ public class BasicGui extends JFrame {
 		mainWindow.setFocusable(false);
 		mainWindow.setEditable(false);
 		mainWindow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		mainWindow.setFont(new Font("Calibri", Font.PLAIN, 29));
+		mainWindow.setFont(FONT_MAIN_WINDOW);
 		mainWindow.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 			}
 		});
 		mainWindow.setText("<html><li>sample</li></html>");
-		mainWindow.setBackground(new Color(255,255,255,144));
-		
-		
 		mainPanel.add(mainWindow);
 	}
-		
 
 	private void constructFeedbackPanel() {
 		FeedbackPanel = new JPanel();
 		FeedbackPanel.setOpaque(false);
-		FeedbackPanel.setBackground(new Color(255, 255, 255, 0));
 		FeedbackPanel.setBorder(null);
 		FeedbackPanel.setLayout(new BorderLayout(0, 0));
-		
+
 		mainArea.add(FeedbackPanel, BorderLayout.SOUTH);
 	}
-	
+
 	private void constructFeedbackWindow() {
 		feedbackWindow = new TransColorTextField();
-		feedbackWindow.setMinimumSize(new Dimension(10, 8));
 		feedbackWindow.setBorder(null);
-		feedbackWindow.setFont(new Font("Ayuthaya", Font.PLAIN, 13));
+
+		feedbackWindow.setFont(FONT_FEEDBACK_WINDOW);
 		feedbackWindow.setHorizontalAlignment(SwingConstants.CENTER);
 		feedbackWindow.setEditable(false);
-		feedbackWindow.setTextTransColor("Task Added!");
-		feedbackWindow.setColumns(20);
-		
+
 		FeedbackPanel.add(feedbackWindow, BorderLayout.NORTH);
 	}
-	
+
 	private void constructControlArea() {
 		controlArea = new JPanel();
 		controlArea.setOpaque(false);
 		controlArea.setBorder(null);
 		controlArea.setLayout(new BorderLayout(0, 0));
-		
+
 		getContentPane().add(controlArea, BorderLayout.SOUTH);
 	}
 
@@ -348,24 +335,26 @@ public class BasicGui extends JFrame {
 		inputPanel = new JPanel();
 		inputPanel.setOpaque(false);
 		inputPanel.setLayout(new BorderLayout());
-		
+
 		controlArea.add(inputPanel);
 	}
-	
+
 	private void constructInputWindow() {
 		inputWindow = new JTextField();
 		inputWindow.setOpaque(true);
-		//inputWindow.setBackground(new Color(255, 255, 255, 255));
 		inputWindow.addActionListener(new EnterKeyListener(inputWindow));
-		inputWindow.setText("Enter your"
-				+ " command here:");
+		inputWindow.setText(inputWindowHelperText);
 		inputWindow.selectAll();
-		inputWindow.setColumns(30);
-		
+
 		inputPanel.add(inputWindow);
 		inputWindow.requestFocus();
 	}
 
+	/**
+	 * a helper method to help change the inner component of main panel
+	 * 
+	 * @param panel
+	 */
 	private void changeMainPanel(CustomizedJPanel panel) {
 		mainPanel.removeAll();
 		mainPanel.add((Component) panel);
@@ -377,5 +366,4 @@ public class BasicGui extends JFrame {
 	 * ====================================================================
 	 */
 
-	
 }

@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import logic.DisplayInfo;
 import logic.RunLogic;
+import logic.VIEW_MODE;
 
 /**
  * <code>GuiController</code> is the ultimate driver of
@@ -36,7 +37,8 @@ public class GuiController {
 	/*********************************************
 	 ************** Public Method ****************
 	 ********************************************/
-
+	
+	// start point of the whole program 
 	public static void main(String[] args) {
 		run();
 	}
@@ -84,6 +86,19 @@ public class GuiController {
 	 */
 	private static GuiInfoTranslator translate(DisplayInfo info) {
 		return new GuiInfoTranslator(info);
+	}
+
+	/**
+	 * show updated <strong>GUI</strong> by given <code>DisplayInfo</code>
+	 * <strong>Note><strong>: a shortcut method combine
+	 * <em>display(GuiInfoTranslator)</em> and <em>translate(DisplayInfo)</em>.
+	 * 
+	 * @see #display(GuiInfoTranslator)
+	 * @see #translate(DisplayInfo)
+	 * @param info
+	 */
+	private static void display(DisplayInfo info) {
+		display(translate(info));
 	}
 
 	/**
@@ -146,18 +161,5 @@ public class GuiController {
 		assert (panel != null);
 		panel.construct();
 		gui.refreshMainPanel();
-	}
-
-	/**
-	 * show updated <strong>GUI</strong> by given <code>DisplayInfo</code>
-	 * <strong>Note><strong>: a shortcut method combine
-	 * <em>display(GuiInfoTranslator)</em> and <em>translate(DisplayInfo)</em>.
-	 * 
-	 * @see #display(GuiInfoTranslator)
-	 * @see #translate(DisplayInfo)
-	 * @param info
-	 */
-	private static void display(DisplayInfo info) {
-		display(translate(info));
 	}
 }

@@ -1,6 +1,5 @@
 package logic;
 
-import gui.VIEW_MODE;
 import parser.RawCommand;
 import CommandType.*;
 

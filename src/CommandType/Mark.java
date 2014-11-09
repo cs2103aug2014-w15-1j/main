@@ -1,7 +1,5 @@
 package CommandType;
 
-import gui.VIEW_MODE;
-
 import java.util.ArrayList;
 
 import data_store.DataStore;
@@ -10,6 +8,7 @@ import logic.Default;
 import logic.DisplayInfo;
 import logic.RunLogic;
 import logic.Task;
+import logic.VIEW_MODE;
 
 public class Mark implements Command{
 	private static String feedback;

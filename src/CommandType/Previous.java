@@ -1,6 +1,5 @@
 package CommandType;
 
-import gui.VIEW_MODE;
 import logic.*;
 
 public class Previous implements Command{
