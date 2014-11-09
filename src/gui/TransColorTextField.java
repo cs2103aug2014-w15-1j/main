@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 /**
  * <code>TransColorTextField</code> is a customized <code>JTextField</code>
@@ -17,11 +18,11 @@ public class TransColorTextField extends JTextField {
 
 	private static final long serialVersionUID = 2017126697448899239L;
 	
-	private static final Color COLOR_A = new Color(255, 255, 255, 100);
+	private static final Color COLOR_A = new Color(255, 255, 255, 150);
 	private static final Color COLOR_B = new Color(128, 138, 135, 100);
 	private Color currentColor;
-	
-	private static final Font FONT_TEXT = new Font("DIALOG", Font.ITALIC, 40);
+	private final static Font FONT_FEEDBACK_WINDOW = new Font("Ayuthaya",
+			Font.PLAIN, 13);
 	
 	private static final int PREFEFERRED_WIDTH = 200;
 	private static final int PREFEFERRED_HEIGHT = 40;
@@ -30,8 +31,12 @@ public class TransColorTextField extends JTextField {
 	 ********************************************/
 	public TransColorTextField() {
 		super();
+		setEditable(false);
 		this.setPreferredSize(new Dimension(PREFEFERRED_WIDTH, PREFEFERRED_HEIGHT));
-		this.setFont(FONT_TEXT);
+		this.setFont(FONT_FEEDBACK_WINDOW);
+		this.setBorder(null);
+		this.setHorizontalAlignment(SwingConstants.CENTER);
+		
 		currentColor = COLOR_A;
 
 	}
