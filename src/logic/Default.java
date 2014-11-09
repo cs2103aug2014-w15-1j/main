@@ -20,57 +20,50 @@ public class Default {
 	public static int BOTHDATE = 4;
 	public static int DESCRIPTION = 5;
 	public static int MARK = 6;
-	public static String LINE_BREAK = "\n";
-	public static String helpInfo = 
-			"Help Mode:" 
-					+ LINE_BREAK + LINE_BREAK +
-			"Commands:"
-					+ LINE_BREAK +
+	public static String HTML_BR = "<br>";
+	public static String HTML_TR1 = "<tr>";
+	public static String HTML_TR2 = "</tr>";
+	public static String HTML_TD1 = "<td>";
+	public static String HTML_TD2 = "</td>";
+	public static String helpInfo = "<html>" + "<table style='width:100%'>" + 
+			HTML_TR1 + HTML_TD1 + "Add" + HTML_TD2  + HTML_TD1 + "Add a new Tasklist "+ HTML_TD2  + HTML_TD1 + "[Add &lt;title&gt; &lt;Start Time YYYY-MM-DD&gt; &lt;End Time YYYY-MM-DD&gt; &lt;Description&gt;]" + HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Back" + HTML_TD2  + HTML_TD1 + "Back to Tasklist View "+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Delete" + HTML_TD2  + HTML_TD1 + "Delete a task"+ HTML_TD2  + HTML_TD1 + "HTML_TD2"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + " [Delete all]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Describe" + HTML_TD2  + HTML_TD1 + "Redescribe a task"+ HTML_TD2  + HTML_TD1 + "[Describe &lt;new description&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Mark" + HTML_TD2  + HTML_TD1 + "Mark the status "+ HTML_TD2  + HTML_TD1 + " [Mark &lt;index&gt; &lt;status 'Done' or 'Undone'&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Next" + HTML_TD2  + HTML_TD1 + "View next page"+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Previous " + HTML_TD2  + HTML_TD1 + "View previous page"+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Read" + HTML_TD2  + HTML_TD1 + "Read a specific task "+ HTML_TD2  + HTML_TD1 + "[Read &lt;index&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Rename" + HTML_TD2  + HTML_TD1 + "Rename a task title"+ HTML_TD2  + HTML_TD1 + " [Rename &lt;index&gt; &lt;new name&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Search" + HTML_TD2  + HTML_TD1 + "Search task title"+ HTML_TD2  + HTML_TD1 + "[Search &lt;keyword&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Update" + HTML_TD2  + HTML_TD1 + "Update task detail"+ HTML_TD2  + HTML_TD1 + "[Update &lt;index (Optional)&gt; name &lt;new name&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + " [Update &lt;index (Optional)&gt; description &lt;new description&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Undo" + HTML_TD2  + HTML_TD1 + "Undo last operation"+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "View" + HTML_TD2  + HTML_TD1 + "View a field"+ HTML_TD2  + HTML_TD1 + "[View &lt;date&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + " [View bin]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + " [View tasklist]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			"</table>"+ "" +
+			"<H2><center>Shortcuts:</center></H2>"
+			+
+			"<H2><Strong><center>F1:    view today"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F2: view tomorrow"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F3: view undone"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F4: view tasklist"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F5: view bin"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F6: help</center></Strong></h2>"
+			+
+			"</html>";
 			
-			"Add      : Add a new Tasklist                   [Add <title> <Start Time YYYY-MM-DD> <End Time YYYY-MM-DD> <Description>]"
-				+ LINE_BREAK +
-			"Back     : Back to Tasklist View                [Delete <index>]"
-				+ LINE_BREAK +
-			"                                                [Delete all]"
-				+ LINE_BREAK +
-			"Delete   : Delete a task"
-				+ LINE_BREAK +
-			"Describe : Redescribe a task                    [Describe <new description>]"
-				+ LINE_BREAK +
-			"Mark     : Mark the status                      [Mark <index> <status 'Done' or 'Undone'>]"
-				+ LINE_BREAK +
-			"Next     : View next page"
-				+ LINE_BREAK +
-			"Previous : View previous page"
-				+ LINE_BREAK +
-			"Read     : Read a specific task                 [Read <index>]"
-				+ LINE_BREAK +
-			"Rename   : Rename a task title                  [Rename <new name>]"
-				+ LINE_BREAK +
-			"Search   : Search task title                    [Search <keyword>]"
-				+ LINE_BREAK +
-			"Update   : Update task detail                   [Update <index (Optional)> name <new name>]"
-				+ LINE_BREAK +
-			"                                                [Update <index (Optional)> description <new description>]"
-			+ LINE_BREAK +	
-			"Undo     : Undo last operation"
-			+ LINE_BREAK + LINE_BREAK + 
-			"View     : View a field                         [View <date>]"
-			+ LINE_BREAK +
-			"                                                [View bin]"
-			+ LINE_BREAK +
-			"                                                [View tasklist]"
-			+ LINE_BREAK +
+ 
+		
 			
-			"Shortcuts:"
-			+ LINE_BREAK +
-			"F1:    view today"
-			+ LINE_BREAK +
-			"F2:    view tomorrow"
-			+ LINE_BREAK +
-			"F3:    view undone"
-			+ LINE_BREAK +
-			"F4:    view tasklist"
-			+ LINE_BREAK +
-			"F5:    view bin";
+			
 }

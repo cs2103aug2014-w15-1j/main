@@ -20,6 +20,7 @@ public class ShortcutKeyListener extends AbstractAction {
 		map.put("F3", "view undone");
 		map.put("F4", "view tasklist");
 		map.put("F5", "view bin");
+		map.put("F6", "help");
 	}
 	// add input JTextField into list of observation
 	public ShortcutKeyListener(String actionKey, JTextField input) {

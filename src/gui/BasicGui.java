@@ -66,8 +66,8 @@ public class BasicGui extends JFrame {
 	private final static int TOP_LEFT_Y_VALUE = 100;
 	private final static int FRAME_WIDTH = 1000;
 	private final static int FRAME_HEIGHT = 640;
-	private final static int MINIMUM_FRAME_WIDTH = 500;
-	private final static int MINIMUM_FRAME_HEIGHT = 320;
+	private final static int MINIMUM_FRAME_WIDTH = 1000;
+	private final static int MINIMUM_FRAME_HEIGHT = 640;
 
 	private final static int MENU_AREA_WIDTH = FRAME_WIDTH;
 	private final static int MENU_AREA_HEIGHT = 30;

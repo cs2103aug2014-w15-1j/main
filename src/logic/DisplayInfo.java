@@ -62,11 +62,13 @@ public class DisplayInfo {
 	}
 	
 	public DisplayInfo(VIEW_MODE newMode, String help, String feedback, String title) {
+		
 		this.mode = newMode;
 		this.helpInfo = help;
 		this.feedback = feedback;
 		this.title = title;
 		this.changeTasklist = true;
+		this.changeTitle = true;
 	}
 	
 	public DisplayInfo(GUIStatus status, ArrayList<Task> taskList,
