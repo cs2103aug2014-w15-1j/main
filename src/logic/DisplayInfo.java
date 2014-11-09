@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * needed information for display
  * 
  * @author A0119391A
+ * @author A0119456Y
  * 
  */
 public class DisplayInfo {

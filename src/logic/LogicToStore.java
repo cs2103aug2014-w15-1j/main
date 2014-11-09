@@ -2,6 +2,11 @@ package logic;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class LogicToStore {
 	private ArrayList<Task> TaskList;
 	private ArrayList<Task> TrashbinList;

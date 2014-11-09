@@ -34,6 +34,8 @@ class Tokenizer {
 			subInfo = new ArrayList<TokenPair>();
 		} else {
 			String frontSPRemoved = StringCutter.cleanFrontSpace(commandRemoved);
+			
+			assert frontSPRemoved != null : "tokenized string cannot be null";
 			subInfo = splitInfoString(frontSPRemoved);
 		}
 		

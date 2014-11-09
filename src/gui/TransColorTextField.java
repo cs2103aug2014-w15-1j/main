@@ -31,6 +31,7 @@ public class TransColorTextField extends JTextField {
 	 ********************************************/
 	public TransColorTextField() {
 		super();
+		this.setOpaque(false);
 		setEditable(false);
 		this.setPreferredSize(new Dimension(PREFEFERRED_WIDTH, PREFEFERRED_HEIGHT));
 		this.setFont(FONT_FEEDBACK_WINDOW);

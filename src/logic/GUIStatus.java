@@ -1,7 +1,11 @@
 package logic;
 
 
-
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class GUIStatus {
 	private VIEW_MODE viewMode;
 	private boolean hasNext;

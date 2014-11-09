@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import data_store.DataStore;
 import logic.*;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class Add implements Command{
 	// feedback format
 	private static String UNDO_INVALID = "Task not found!";

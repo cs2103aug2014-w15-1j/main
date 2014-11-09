@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import logic.*;
 import data_store.DataStore;
 
+/**
+ * 
+ * @author a0119456Y
+ * @author A0119493X
+ *
+ */
 public class DeleteTrashbin implements Command{
 	private static String feedback;
 	private static String title;

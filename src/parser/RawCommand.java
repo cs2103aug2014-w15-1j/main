@@ -29,7 +29,6 @@ public class RawCommand{
     private String command;
     private String taskTitle;
     private String description;
-    private String rpDate;
     private String startDay;
     private String endDay;
     private String cmdDescription;
@@ -61,9 +60,6 @@ public class RawCommand{
     	} else if (command.equals(COMMAND_TYPE.DESCRIBE.name())) {
     		this.description = fieldInfo;
     		this.cmdDescription = locateLine;
-    	} else if (command.equals(COMMAND_TYPE.REPEAT.name())) {
-            this.rpDate = fieldInfo;
-            this.cmdDescription = locateLine;
     	} else if (command.equals(COMMAND_TYPE.MARK.name())){
     		this.description = fieldInfo;
     		this.cmdDescription = locateLine;
@@ -80,12 +76,11 @@ public class RawCommand{
         
     // Strictly only for add command
     public RawCommand(String command, String taskTitle, 
-                   	  String repeatDate, String startDay, String endDay, 
+                   	  String startDay, String endDay, 
                       String description) {
         this.command = command;
         this.taskTitle = taskTitle;
         this.description = description;
-        this.rpDate = repeatDate;
         this.startDay = startDay;
         this.endDay = endDay;
     }
@@ -104,10 +99,6 @@ public class RawCommand{
     
     public String getCMDDescription(){
         return this.cmdDescription;
-    }
-
-    public String getRPdate(){
-        return this.rpDate;
     }
 
     public String getStartDay(){

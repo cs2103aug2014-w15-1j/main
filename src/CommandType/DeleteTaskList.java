@@ -10,6 +10,12 @@ import logic.LogicToStore;
 import logic.RunLogic;
 import logic.Task;
 
+/**
+ * 
+ * @author a0119456Y
+ * @author A0119493X
+ *
+ */
 public class DeleteTaskList implements Command{
 	// feedback format
 	private static String UNDO_FEEDBACK = "Deleted tasks added back!";
