@@ -44,9 +44,9 @@ public class RunLogic {
 	
 	public static DisplayInfo logic(String inputCommand){
 		RawCommand stringCommand = ParserProcesser.interpretCommand(inputCommand);
-		assert stringCommand == null : "logic cannot get correct command from parser!";
+		assert stringCommand != null : "logic cannot get correct command from parser!";
 		Command userCommand = ConvertCommand.convert(stringCommand);	
-		assert userCommand == null : "logic cannot convert command!";
+		assert userCommand != null : "logic cannot convert command!";
 		addPastCommands(userCommand);
 		return userCommand.execute();
 	}
