@@ -9,6 +9,8 @@ import java.awt.Insets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -79,6 +81,10 @@ public class TaskListPanel extends JPanel implements CustomizedJPanel {
 	private static Color lightCyan120 = new Color(55, 177, 241, 220);
 	private static Color lightCyan20 = new Color(255, 255, 255, 150);
 	private static Color highlightedColor = new Color(255, 165, 186, 180);
+	
+	private final static String MESSAGE_IMAGE_LOST = "image lost";
+	
+	private static Logger logger = Logger.getLogger("TaskListPanel");
 
 	/********************************************
 	 ************** Constructor *****************
@@ -358,26 +364,6 @@ public class TaskListPanel extends JPanel implements CustomizedJPanel {
 	 *            background color
 	 * @param d
 	 *            dimension
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
-	 *            
 	 * @param opaque
 	 *            is opaque
 	 * @return JLabel
@@ -397,8 +383,8 @@ public class TaskListPanel extends JPanel implements CustomizedJPanel {
 			label.setPreferredSize(d);
 			return label;
 		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+			logger.log(Level.SEVERE, "cannot load image on label");
+			return new JLabel(MESSAGE_IMAGE_LOST);
 		}
 	}
 

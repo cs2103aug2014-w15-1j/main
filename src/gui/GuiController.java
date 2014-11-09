@@ -1,5 +1,6 @@
 package gui;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import logic.DisplayInfo;
@@ -50,10 +51,14 @@ public class GuiController {
 	 * @param command
 	 */
 	public static void processCommand(String command) {
+		if(gui == null) {
+			gui = BasicGui.getInstance();
+		}
+		
 		DisplayInfo info = RunLogic.logic(command);
 		logger.info("user enters command: " + command);
 		display(info);
-		logger.info("user receives feedback");
+		
 	}
 
 	/**
@@ -63,12 +68,12 @@ public class GuiController {
 	 */
 	private static void run() {
 		gui = BasicGui.getInstance();
-		logger.info("Gui instance gotten");
 		assert gui != null : "GuiController cannot get instance of Gui.";
+		logger.log(Level.CONFIG, "BasicGui instance gotten.");
 
 		DisplayInfo info = RunLogic.initialize();
 		display(info);
-		logger.info("MagiCal initialization completed.");
+		logger.log(Level.CONFIG, "MagiCal initialization completed.");
 
 	}
 
@@ -110,10 +115,12 @@ public class GuiController {
 	private static void display(GuiInfoTranslator info) {
 		assert (gui != null);
 		if (info.changeTitle()) {
+			logger.info("title: " + info.getTitleString());
 			gui.setTitleText(info.getTitleString());
 		}
 
 		gui.setFeedbackText(info.getFeedbackString());
+		logger.info("feedback: " + info.getFeedbackString());
 
 		if (info.changeTaskList()) {
 			setMainPanel(info);
@@ -130,6 +137,7 @@ public class GuiController {
 		VIEW_MODE mode = info.getViewMode();
 		CustomizedJPanel panel;
 
+		logger.info("current view mode:" + mode);
 		if (mode.equals(VIEW_MODE.TASK_DETAIL)) {
 			panel = gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
 			((AttributePanel) panel).setHighlightedProperty(info
@@ -148,6 +156,7 @@ public class GuiController {
 			panel = gui.showListed(info.getFirstCol(), info.getSecondCol(),
 					info.getThirdCol(), info.getFourthCol());
 
+			assert panel != null : "a new component is not returned in main panel";
 			((TaskListPanel) panel).setPreviousPage(info.hasPreviousPage());
 			((TaskListPanel) panel).setNextPage(info.hasNextPage());
 			((TaskListPanel) panel).setIsHighlightedMultipleLine(info
@@ -157,8 +166,7 @@ public class GuiController {
 			((TaskListPanel) panel).setHighlightedDate(info
 					.getHighlightedDate());
 		}
-
-		assert (panel != null);
+		
 		panel.construct();
 		gui.refreshMainPanel();
 	}

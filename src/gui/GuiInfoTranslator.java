@@ -30,18 +30,18 @@ public class GuiInfoTranslator {
 	private ArrayList<String> secondCol = new ArrayList<String>();
 	private ArrayList<String> thirdCol = new ArrayList<String>();
 	private ArrayList<Boolean> fourthCol = new ArrayList<Boolean>();
-	
+
 	private int highlightedLine = -1;
 	private JDate highlightedDate;
 	private int highlightedProperty = -1;
 	private boolean hightlightMultipleLines = false;
 
 	// constants
-	
+
 	private final static String EMPTY_STRING = "";
 	private final static String STR_DONE = "Done";
-	private final static String STR_UNDDONE = "Undone"; 
-	
+	private final static String STR_UNDDONE = "Undone";
+
 	// attributes in task detail view mode
 	private String[] taskDetailAttr = { "Name", "StartDate", "EndDate",
 			"Status", "Description" };
@@ -84,14 +84,14 @@ public class GuiInfoTranslator {
 	public ArrayList<String> getSecondCol() {
 		return secondCol;
 	}
+
 	public ArrayList<String> getThirdCol() {
 		return thirdCol;
 	}
+
 	public ArrayList<Boolean> getFourthCol() {
 		return fourthCol;
 	}
-	
-
 
 	public String getFeedbackString() {
 		return info.getFeedbackString();
@@ -100,20 +100,23 @@ public class GuiInfoTranslator {
 	public VIEW_MODE getViewMode() {
 		return info.getViewMode();
 	}
+
 	public int getHighlightedLine() {
 		return this.highlightedLine;
 	}
-	public String getHighlightedDate(){
-		if(this.highlightedDate != null) {
+
+	public String getHighlightedDate() {
+		if (this.highlightedDate != null) {
 			return highlightedDate.toString();
 		} else {
 			return null;
 		}
 	}
+
 	public int getHighlightedProperty() {
 		return this.highlightedProperty;
 	}
-	
+
 	public boolean getHighlightMultipleLines() {
 		return this.hightlightMultipleLines;
 	}
@@ -135,17 +138,16 @@ public class GuiInfoTranslator {
 		switch (info.getViewMode()) {
 		case TASK_DETAIL:
 			expectedListSize = 1;
-			if (taskList.size() != expectedListSize) {
-				throw new Error("taskList does not contain one task exactly");
-			}
+			assert taskList.size() ==  expectedListSize : 
+				"Length of tasklist passed from Logic must be 1 in Taks detail view mode";
+
 			task = taskList.get(firstIndex);
 			processTaskDetail(task);
 			return;
 		case BIN_DETAIL:
 			expectedListSize = 1;
-			if (taskList.size() != expectedListSize) {
-				throw new Error("taskList does not contain one task exactly");
-			}
+			assert taskList.size() ==  expectedListSize : 
+				"Length of tasklist passed from Logic must be 1 in bin detail view mode";
 			task = taskList.get(firstIndex);
 			processTaskDetail(task);
 			return;
@@ -168,24 +170,18 @@ public class GuiInfoTranslator {
 	 *            ArrayList of task.
 	 */
 	private void processTaskList(ArrayList<Task> lst) {
-		if (lst == null) {
-			throw new Error("tasklist cannot be null at this point");
-		}
-		if (lst.size() <= 0) {
-			throw new Error("tasklist cannot be null at this point");
-		}
-		
-		
-		if(info.getHighlight() == Default.HIGHLIGHT_LINE){
+		assert lst != null : "a null tasklit cannot be processed";
+		assert lst.size() > 0 : "a empty tasklist cannot be processed";
+
+		if (info.getHighlight() == Default.HIGHLIGHT_LINE) {
 			this.highlightedLine = info.getHighlightLine();
-		} else if(info.getHighlight() == Default.HIGHLIGHT_DATE){
+		} else if (info.getHighlight() == Default.HIGHLIGHT_DATE) {
 			this.highlightedDate = info.getDate();
-		} else if(info.getHighlight() == Default.HIGHLIGHT_LINES){
-			this.highlightedLine = info.getHighlightLine(); 
+		} else if (info.getHighlight() == Default.HIGHLIGHT_LINES) {
+			this.highlightedLine = info.getHighlightLine();
 			this.hightlightMultipleLines = true;
 		}
-		
-		
+
 		for (int i = 0; i < lst.size(); i++) {
 			firstCol.add(lst.get(i).getName());
 			if (lst.get(i).getStartDate() != null) {
@@ -199,7 +195,7 @@ public class GuiInfoTranslator {
 				thirdCol.add(EMPTY_STRING);
 			}
 			fourthCol.add(lst.get(i).getDone());
-			
+
 		}
 
 	}
@@ -213,9 +209,9 @@ public class GuiInfoTranslator {
 	 * @param task
 	 */
 	private void processTaskDetail(Task task) {
-		if (task == null) {
-			throw new Error("task cannot be null at this point");
-		}
+		
+		assert task != null : "a null task cannot be processed";
+		
 		String name = task.getName();
 		JDate startDate = task.getStartDate();
 		JDate endDate = task.getEndDate();
@@ -238,19 +234,18 @@ public class GuiInfoTranslator {
 		} else {
 			secondCol.add(EMPTY_STRING);
 		}
-		
-		if(status) {
-			
+
+		if (status) {
 			secondCol.add(STR_DONE);
 		} else {
 			secondCol.add(STR_UNDDONE);
 		}
 		secondCol.add(descrition);
 
-		if(info.getHighlight() == Default.HIGHLIGHT_PROPERTY){
+		if (info.getHighlight() == Default.HIGHLIGHT_PROPERTY) {
 			this.highlightedProperty = info.getHighlightItem();
 		}
 
 	}
 
-	}
+}

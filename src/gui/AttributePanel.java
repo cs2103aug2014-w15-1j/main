@@ -1,14 +1,12 @@
 package gui;
 
+import java.util.ArrayList;
+
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import logic.Default;
@@ -39,7 +37,6 @@ public class AttributePanel extends JPanel implements CustomizedJPanel {
 	private ArrayList<String> firstCol;
 	private ArrayList<String> secondCol;
 
-	private static Color lightCyan220 = new Color(55, 177, 241, 120);
 
 	private static Color highlightedColor = new Color(255, 157, 180, 100);
 	private static Color lightWhite = new Color(255, 255, 255, 80);
@@ -68,6 +65,9 @@ public class AttributePanel extends JPanel implements CustomizedJPanel {
 			DESCRIPTION_BG = highlightedColor;
 		} else if (highlightedProperty == Default.MARK) {
 			STATUS_BG = highlightedColor;
+		} else {
+			// program should never go to this point
+			assert false: "highlightedProperty passed is illegal";
 		}
 	}
 

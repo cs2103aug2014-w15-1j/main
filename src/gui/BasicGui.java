@@ -1,60 +1,23 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
+import javax.swing.BorderFactory;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.TextArea;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.TextField;
-
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
-import java.awt.Cursor;
-
-import javax.swing.SwingConstants;
-
 import java.awt.Font;
 import java.awt.Dimension;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JMenuBar;
-import javax.swing.JTextPane;
-import javax.swing.JToolBar;
-import javax.swing.JLayeredPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.BevelBorder;
-
 import java.awt.Component;
-import java.awt.Frame;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.ComponentOrientation;
-import java.awt.FlowLayout;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagLayout;
-import java.awt.Paint;
-import java.awt.SystemColor;
-
 import java.util.ArrayList;
 
-import logic.JDate;
 
 /**
  * class BasicGUI: contains the all visual composition and structure of GUI
@@ -175,6 +138,7 @@ public class BasicGui extends JFrame {
 	public void refreshMainPanel() {
 		mainPanel.validate();
 	}
+
 	/*
 	 * ====================================================================
 	 * ===================== END OF PUBLIC METHOD =========================
@@ -286,19 +250,7 @@ public class BasicGui extends JFrame {
 
 	private void constructMainWindow() {
 		mainWindow = new JTextPane();
-		mainWindow.setOpaque(false);
-		mainWindow.setBorder(null);
-		mainWindow.setContentType("text/html");
-		mainWindow.setFocusable(false);
-		mainWindow.setEditable(false);
-		mainWindow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		mainWindow.setFont(FONT_MAIN_WINDOW);
-		mainWindow.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-			}
-		});
-		mainWindow.setText("<html><li>sample</li></html>");
+		
 		mainPanel.add(mainWindow);
 	}
 
