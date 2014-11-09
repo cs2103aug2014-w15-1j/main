@@ -1,6 +1,5 @@
 package logic;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -27,16 +26,16 @@ public class JDate extends GregorianCalendar {
 	/********************************************
 	 ************** Constructor *****************
 	 ********************************************/
-	
+
 	// note: input range for month value is from 1 to 12
 	public JDate(int year, int month, int day) {
 		super(year, month, day);
 		setLenient(false);
 	}
-	
-	//empty constructor
-	public JDate(){
-		
+
+	// empty constructor
+	public JDate() {
+
 	}
 
 	/********************************************
@@ -88,31 +87,42 @@ public class JDate extends GregorianCalendar {
 	}
 
 	/**
-	 * default version of <code>toString(String)</code>. with the default splitter as
-	 * the space
+	 * default version of <code>toString(String)</code>. with the default
+	 * splitter as the space
+	 * 
 	 * @see #toString(String)
 	 */
 	public String toString() {
 		return toString(" ");
 	}
-	
+
+	/**
+	 * <em>compareTo</em> method to compare between two JDate.
+	 * 
+	 * <strong>Note</strong>: if the given JDate is null, it is considered as a
+	 * null date without any time information. therefore 1 will be returned
+	 * since we want to place all floating tasks in the end.
+	 * 
+	 * @param another
+	 *            another JDate
+	 */
 	public int compareTo(JDate another) {
-		if(another == null) {
+		if (another == null) {
 			return 1;
 		}
-		if(this.getYear() < another.getYear()) {
+		if (this.getYear() < another.getYear()) {
 			return -1;
-		} else if(this.getYear() > another.getYear()){
+		} else if (this.getYear() > another.getYear()) {
 			return 1;
 		} else {
-			if(this.getMonth() < another.getMonth()) {
+			if (this.getMonth() < another.getMonth()) {
 				return -1;
-			} else if(this.getMonth() > another.getMonth()){
+			} else if (this.getMonth() > another.getMonth()) {
 				return 1;
 			} else {
-				if(this.getDay() < another.getDay()) {
+				if (this.getDay() < another.getDay()) {
 					return 1;
-				} else if(this.getDay() > another.getDay()){
+				} else if (this.getDay() > another.getDay()) {
 					return -1;
 				} else {
 					return 0;

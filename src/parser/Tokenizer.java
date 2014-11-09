@@ -5,15 +5,21 @@ import java.util.ArrayList;
 import parser.TokenType.TOKEN_TYPE;
 
 /**
- * class Tokenizer: split string into tokens
+ * class <Strong>Tokenizer</Strong>: 
+ * 
+ * <p>
+ * This class is to split <code>String</code> inputs into tokens.
+ * </p>
  * 
  * @author A0119493X
+ * @see TokenType
  * */
 class Tokenizer {
 	
 	/**
 	 * Split raw input into a command and a list of sub info.
 	 * 
+	 * @param rawInputStr
 	 * @return subInfo list is null if there is only a command exists;
 	 * */
 	public static RawInfoPair splitRawInput(String rawInputStr) {
@@ -35,7 +41,12 @@ class Tokenizer {
 	}
 	
 	/**
-	 * Split sub info string into blocks and store in a ArrayList<String>;
+	 * Split sub info string into pairs and attach corresponding tokens;
+	 * 
+	 * @param subInfoStr
+	 * 			-String
+	 * @return ArrayList<TokenPair>
+	 * 			a list of TokenPairs
 	 * */
 	private static ArrayList<TokenPair> splitInfoString(String subInfoStr) {
 		ArrayList<TokenPair> infoList = new ArrayList<TokenPair>();
@@ -54,6 +65,11 @@ class Tokenizer {
 
 	/**
 	 * Judge contents and form corresponding token pair
+	 * 
+	 * @param frontBlock
+	 * 			-String
+	 * @return TokenPair
+	 * 			a pair of content and corresponding tokens
 	 * */
 	private static TokenPair judgeContent(String frontBlock) {
 		

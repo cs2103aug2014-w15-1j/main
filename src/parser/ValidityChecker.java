@@ -5,15 +5,22 @@ import java.util.ArrayList;
 import parser.TokenType.TOKEN_TYPE;
 
 /**
- * class ValidityChecker: check if information is valid or not
+ * class <Strong>ValidityChecker</Strong>: 
+ * 
+ * <p>
+ * All the validity checking method in <code>Parser</code> is placed under this class.
+ * </p>
  * 
  * @author A0119493X
  * */
 
-public class ValidityChecker {
+class ValidityChecker {
 
 	/**
 	 * Check if token type is DT
+	 * 
+	 * @param tType
+	 * @return boolean
 	 * */
 	static boolean isDT(TOKEN_TYPE tType) {
 		return tType == TOKEN_TYPE.DT;
@@ -21,6 +28,9 @@ public class ValidityChecker {
 
 	/**
 	 * Check if token is RP
+	 * 
+	 * @param tType
+	 * @return boolean
 	 * */
 	static boolean isRP(TOKEN_TYPE tType) {
 		return tType == TOKEN_TYPE.RP;
@@ -28,6 +38,9 @@ public class ValidityChecker {
 
 	/**
 	 * Check if token type is UN
+	 * 
+	 * @param tType
+	 * @return boolean
 	 * */
 	static boolean isUN(TOKEN_TYPE tType) {
 		return tType == TOKEN_TYPE.UN;
@@ -35,6 +48,9 @@ public class ValidityChecker {
 	
 	/**
 	 * Check if token type is QT
+	 * 
+	 * @param tType
+	 * @return boolean
 	 * */
 	static boolean isQT(TOKEN_TYPE tType) {
 		return tType == TOKEN_TYPE.QT;
@@ -42,6 +58,9 @@ public class ValidityChecker {
 	
 	/**
 	 * Check if token type is NB
+	 * 
+	 * @param tType
+	 * @return boolean
 	 * */
 	static boolean isNB(TOKEN_TYPE tType) {
 		return tType == TOKEN_TYPE.NB;
@@ -49,6 +68,9 @@ public class ValidityChecker {
 
 	/***
 	 * Check if string is an Integer
+	 * 
+	 * @param inputStr
+	 * @return boolean
 	 * */
 	static boolean isInteger(String inputStr) {
 		try { 
@@ -62,6 +84,9 @@ public class ValidityChecker {
 
 	/**
 	 * Check if input contains invalid keys or incomplete quotation marks
+	 * 
+	 * @param inputStr
+	 * @return boolean
 	 * */
 	static boolean isValidInput(String inputStr) {
 		ArrayList<Integer> symbolIndex = InfoRetrieve.getQuoteMark(inputStr);
@@ -78,6 +103,9 @@ public class ValidityChecker {
 
 	/**
 	 * Judge the validity of repeat date input
+	 * 
+	 * @param repDate
+	 * @return boolean
 	 * */
 	static boolean isValidRP(String repDate) {
 		boolean result = false;
@@ -91,6 +119,9 @@ public class ValidityChecker {
 
 	/**
 	 * Check if is valid date
+	 * 
+	 * @param rawStr
+	 * @return boolean
 	 * */
 	static boolean isValidDate(String rawStr) {
 		ArrayList<Integer> dateMarker = InfoRetrieve.getDateMarker(rawStr);
@@ -103,6 +134,9 @@ public class ValidityChecker {
 
 	/**
 	 * Judge the validity of repeat date input
+	 * 
+	 * @param viewDate
+	 * @return boolean
 	 * */
 	static boolean isValidViewDate(String viewDate) {
 		boolean result = false;
@@ -117,6 +151,9 @@ public class ValidityChecker {
 
 	/**
 	 * Check if ends with quotation mark;
+	 * 
+	 * @param rawStr
+	 * @return boolean
 	 * */
 	static boolean endsWithQuo(String rawStr) {
 		return rawStr.endsWith(ParserKeys.SPLITSYMBOL);
@@ -124,6 +161,9 @@ public class ValidityChecker {
 
 	/**
 	 * Check if input contains invalid symbols
+	 * 
+	 * @param inputString
+	 * @return boolean
 	 * */
 	static boolean noInvalidKeys(String inputString) {
 		return !inputString.contains(ParserKeys.INVALID_SYMBOL);
@@ -206,6 +246,14 @@ public class ValidityChecker {
 		return matchCommand(rawStr, ParserKeys.KEYS_HELP);
 	}
 	
+	/**
+	 * Match the command with given matching symbols
+	 * 
+	 * @param rawStr
+	 * @param matcher
+	 * 			an list of matching symbols
+	 * @return boolean
+	 * */
 	static boolean matchCommand(String rawStr, String[] matcher) {
 		boolean result = true;
 		for (int i = 0; i < matcher.length; i++) {

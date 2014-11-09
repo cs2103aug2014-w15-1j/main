@@ -3,7 +3,13 @@ package parser;
 import parser.CMDTypes.COMMAND_TYPE;
 
 /**
- * class RawCommand: Wrapping all command information
+ * class <Strong>RawCommand</Strong>: 
+ * 
+ * <p>
+ * This class is used to wrapping all basic command information and have them 
+ * passed to <code>Logic</code>. Each objects contains basic information regarding to different
+ * command types.
+ * </p>
  * 
  * @author A0119493X
  *          Command information includes command type, command description, 

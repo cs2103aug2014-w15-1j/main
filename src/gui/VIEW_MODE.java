@@ -1,5 +1,0 @@
-package gui;
-
-public enum VIEW_MODE {
-	DATE, MONTH, UNDONE, BIN, TASK_DETAIL, TASK_LIST, FLOAT, BIN_DETAIL, HELP
-}

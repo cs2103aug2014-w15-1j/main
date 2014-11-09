@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import parser.CMDTypes.COMMAND_TYPE;
 
 /**
- * class CmdInfoPair: A pair of command type and command's sub-information
+ * class <Strong>CmdInfoPair</Strong>: This class stores a pair of command and 
+ * command's sub-information. All sub-information are stored in in <code>ArrayList<code> 
+ * of <code>TokenPair</code>
  * 
+ * @see TokenPair
  * @author A0119493X
  *          
  * */

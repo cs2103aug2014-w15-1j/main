@@ -1,7 +1,13 @@
 package parser;
 
 /**
- * class ParserKeys: Special characters reserved for Parser
+ * class <Strong>ParserKeys</Strong>: 
+ * 
+ * <p>
+ * This class contains all the Special characters reserved for Parser, including date fields,
+ * special keys for command identifying and some default information to be filled in 
+ * <code>RawCommand</code>
+ * </p>
  * 
  * @author A0119493X
  *          Containing special keys to help interpreting input strings, including separating
@@ -18,6 +24,8 @@ class ParserKeys {
 	static final String EMPTY_DIS = "EMPTY DESCRIPTION";
 	static final String ZERO = "0";
 	static final String EMPTY_DATE = null;
+	static final String FIELD_TODAY = "today";
+	static final String FIELD_TMR = "tomorrow";
 
 	static final String RP_EVREYDAY = "everyday";
 	static final String RP_MON = "monday";
