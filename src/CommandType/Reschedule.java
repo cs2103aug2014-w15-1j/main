@@ -19,22 +19,11 @@ public class Reschedule implements Command {
 	private static ArrayList<Task> taskList;
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
-
-	// added by Zhang Ji
 	private long taskPointer;
-
-	// Added by Chen Di
 	private JDate startDayBC;
 	private JDate endDayBC;
 	
-	public void setTaskPointer(long pointer) {
-		this.taskPointer = pointer;
-	}
-
-	public long getTaskPointer() {
-		return taskPointer;
-	}
-
+	
 	public Reschedule(JDate startDate, JDate endDate, String myFeedback,
 			String myTitle) {
 		feedback = myFeedback;
@@ -59,15 +48,60 @@ public class Reschedule implements Command {
 
 	@Override
 	public DisplayInfo execute() {
-		startDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getStartDate();
-		endDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getEndDate();
-		
-		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
-				newStartDate, newEndDate);
+		recordOldInfo();
+		modifyTaskList(newStartDate, newEndDate);
 		update();
-
 		DataStore.writeTask(taskList);
-		
+		return constructDisplay();	
+	}
+
+	
+
+	@Override
+	public DisplayInfo undo() {
+		modifyTaskList(startDayBC, endDayBC);
+		update();
+		DataStore.writeTask(taskList);
+		return constructUndoDisplay();
+	}
+
+	// ---------------helper function--------------
+
+	private DisplayInfo constructUndoDisplay() {
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_RESCHEDULE, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.BOTHDATE);
+		if(newStartDate == null){
+			dis.setHighlightItem(Default.ENDDATE);
+		} else if(newEndDate == null){
+			dis.setHighlightItem(Default.STARTDATE);
+		}
+		return dis;
+	}
+
+	private static void initialize() {
+		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+
+	private static void update() {
+		RunLogic.updateTaskList(taskList);
+	}
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+	
+	private DisplayInfo constructDisplay() {
 		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
 			Command read = new ReadTaskList(lineIndex, feedback, title);
 			DisplayInfo dis = read.execute();
@@ -88,41 +122,13 @@ public class Reschedule implements Command {
 		}
 	}
 
-	@Override
-	public DisplayInfo undo() {
-		// Added by Chen Di
+	private void modifyTaskList(JDate startDayBC2, JDate endDayBC2) {
 		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
-				startDayBC, endDayBC);
-		update();
-
-		DataStore.writeTask(taskList);
-		
-		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_RESCHEDULE, title);
-		DisplayInfo dis = read.execute();
-		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
-		dis.setHighlightItem(Default.BOTHDATE);
-		if(newStartDate == null){
-			dis.setHighlightItem(Default.ENDDATE);
-		} else if(newEndDate == null){
-			dis.setHighlightItem(Default.STARTDATE);
-		}
-		return dis;
+			newStartDate, newEndDate);
 	}
 
-	// ---------------helper function--------------
-
-	private static void initialize() {
-		taskList = RunLogic.getTaskList();
-		currentDisplay = RunLogic.getCurrentDisplay();
-		currentListIndex = RunLogic.getCurrentListIndex();
+	private void recordOldInfo() {
+		startDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getStartDate();
+		endDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getEndDate();
 	}
-
-	private static void update() {
-		RunLogic.updateTaskList(taskList);
-	}
-	@Override
-	public boolean supportUndo() {
-		return true;
-	}
-
 }

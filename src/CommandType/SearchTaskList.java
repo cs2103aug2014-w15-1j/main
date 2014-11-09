@@ -24,22 +24,9 @@ public class SearchTaskList implements Command{
 	
 	@Override
 	public DisplayInfo execute() {
-		currentDisplay = initializeDisplayList(currentDisplay.length);
-		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
-		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
-			for(int k = 0; k < keyWord.length; k++){
-				if(taskList.get(currentListIndex[i]).getName().contains(keyWord[k])){
-					tempListIndex[j] = currentListIndex[i];
-					j++;
-					break;
-				}
-			}
-
-		}
-		currentListIndex = tempListIndex;
+		modifyIndexList();
 		update();
-		ViewTaskList search = new ViewTaskList(0, feedback, title);
-		return search.execute();
+		return determineDisplay();
 	}
 
 	@Override
@@ -77,4 +64,23 @@ public class SearchTaskList implements Command{
 	}
 
 
+	private DisplayInfo determineDisplay() {
+		Command search = new ViewTaskList(0, feedback, title);
+		return search.execute();
+	}
+
+	private void modifyIndexList() {
+		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
+		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
+			for(int k = 0; k < keyWord.length; k++){
+				if(taskList.get(currentListIndex[i]).getName().contains(keyWord[k])){
+					tempListIndex[j] = currentListIndex[i];
+					j++;
+					break;
+				}
+			}
+
+		}
+		currentListIndex = tempListIndex;
+	}
 }

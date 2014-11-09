@@ -16,22 +16,10 @@ public class Describe implements Command {
 	private static ArrayList<Task> taskList;
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
-
-	// added by Zhang Ji
 	private long taskPointer;
-	
-	// added by Chen Di
 	private String beforeChangeDes;
 	
 	
-	public void setTaskPointer(long pointer) {
-		this.taskPointer = pointer;
-	}
-
-	public long getTaskPointer() {
-		return taskPointer;
-	}
-
 	public Describe(String description, String myFeedback, String myTitle) {
 		feedback = myFeedback;
 		title = myTitle;
@@ -54,43 +42,25 @@ public class Describe implements Command {
 
 	@Override
 	public DisplayInfo execute() {
-		
-		// Get old Description
-		beforeChangeDes = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getDescription();
-		System.out.println("beforeChangeDes:"  + beforeChangeDes);
-		
-		taskList.get(currentListIndex[currentDisplay[lineIndex]]).describe(
-				newDescription);
+		recordOldInfo();
+		modifyTaskList(newDescription);
 		update();
-
 		DataStore.writeTask(taskList);
-		
-		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
-		DisplayInfo dis = read.execute();
-		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
-		dis.setHighlightItem(Default.DESCRIPTION);
-		return dis;
+		return constructDisplay();
 	}
 
+	
 	@Override
 	public DisplayInfo undo() {
-		// Add by Chen Di
-		taskList.get(currentListIndex[currentDisplay[lineIndex]]).describe(
-				beforeChangeDes);
-		
+		initialize();
+		modifyTaskList(beforeChangeDes);
 		update();
-
 		DataStore.writeTask(taskList);
-		
-		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_DESCRIBE, title);
-		DisplayInfo dis = read.execute();
-		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
-		dis.setHighlightItem(Default.DESCRIPTION);
-		
-		return dis;
+		return constructUndoDisplay();
 	}
 
 	// -----------helper functions-----------------
+
 
 	private static void initialize() {
 		taskList = RunLogic.getTaskList();
@@ -106,4 +76,36 @@ public class Describe implements Command {
 		return true;
 	}
 
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+
+	private DisplayInfo constructDisplay() {
+		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.DESCRIPTION);
+		return dis;
+	}
+
+	private void modifyTaskList(String newDescription2) {		
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).describe(
+			newDescription);
+	}
+
+	private void recordOldInfo() {
+		beforeChangeDes = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getDescription();
+	}
+
+	private DisplayInfo constructUndoDisplay() {
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_DESCRIBE, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.DESCRIPTION);
+		return dis;
+	}
 }

@@ -8,6 +8,9 @@ import data_store.DataStore;
 import logic.*;
 
 public class Add implements Command{
+	// feedback format
+	private static String UNDO_INVALID = "Task not found!";
+	
 	private static Task task;
 	private static String feedback;
 	private static String title;
@@ -18,19 +21,14 @@ public class Add implements Command{
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
-
+	private int taskPointer;
+	
 	//values for GUI
 	private static DisplayInfo passToGui;
 	
-	//added by Zhang Ji
-	private int taskPointer;
-	public void setTaskPointer(int pointer) {
-		this.taskPointer = pointer;
-	}
 
-	public int getTaskPointer() {
-		return taskPointer;
-	}
+
+
 	
 	public Add(Task newTask, String myFeedback, String myTitle){
 		task = newTask;
@@ -42,53 +40,32 @@ public class Add implements Command{
 
 	@Override
 	public DisplayInfo execute() {
-		ArrayList<Task> display = new ArrayList<Task>();
-		
-		taskList.add(task);
-		currentListIndex = updateListIndex(currentListIndex);
-		GUI.changeCurretnTask((taskList.size() - 1));
-		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
-		currentDisplay = initializeDisplayList(currentDisplay.length);
-		currentDisplay[1] = GUI.getTaskIndex();
+		modifyTaskList();
+		modifyIndexList();
+		modifyGUI();
+		modifyDisplayIndex();
 		update();
-		
-		display.add(task);
-		constructBridges(display, feedback, title);
+		constructBridges(constructDisplay(), feedback, title);
 		DataStore.writeTask(taskList);
 		return passToGui;
 	}
 
+
 	@Override
 	public DisplayInfo undo() {
 		initialize();
-
-		int index = RunLogic.getIndexInList(taskList, getTaskPointer());
-		if(RunLogic.removeTaskByPointer(taskList ,getTaskPointer())){
-			currentListIndex = updateListIndex(currentListIndex);
-			
+		if(RunLogic.removeTaskByPointer(taskList, getTaskPointer())){
+			modifyIndexList();	
 			DataStore.writeTask(taskList);
 			update();
-
-			int highlightLine = index % Default.MAX_DISPLAY_LINE;
-			index -= index % Default.MAX_DISPLAY_LINE;
-			ViewTaskList viewTaskList;
-			if(currentListIndex[index] != -1){
-				viewTaskList = new ViewTaskList(index, feedback, title);
-			} else if (((index -= Default.MAX_DISPLAY_LINE) >= 0 ) && currentListIndex[index -= Default.MAX_DISPLAY_LINE] != -1){
-				viewTaskList = new ViewTaskList(currentDisplay[1] - Default.MAX_DISPLAY_LINE, feedback, title);
-			} else {
-				viewTaskList = new ViewTaskList(feedback, title);
-			}
-			DisplayInfo dis = viewTaskList.execute();
-			dis.setHighlight(Default.HIGHLIGHT_LINE);
-			dis.setHighlightLine(highlightLine);
-			return dis;
-			
+			int highlightLine = determinHighlightLine();
+			int firstLine = determinfistLine();
+			return construstDisplay(firstLine, highlightLine);
 		} else {
-			Command invalid = new Invalid("Task not found!", null);
-			return invalid.execute();
+			return constructInvalid();
 		}
 	}
+	
 	
 	//-----------helper functions-----------------
 	
@@ -136,5 +113,66 @@ public class Add implements Command{
 		return true;
 	}
 
+	public void setTaskPointer(int pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public int getTaskPointer() {
+		return taskPointer;
+	}
 	
+
+	private ArrayList<Task> constructDisplay() {
+		ArrayList<Task> display = new ArrayList<Task>();	
+		display.add(task);
+		return display;
+	}
+
+	private void modifyTaskList() {
+		taskList.add(task);
+	}
+
+	private void modifyIndexList() {
+		currentListIndex = updateListIndex(currentListIndex);
+	}
+
+	private void modifyGUI() {
+		GUI.changeCurretnTask((taskList.size() - 1));
+		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
+	}
+
+	private void modifyDisplayIndex() {
+		currentDisplay = initializeDisplayList(currentDisplay.length);
+		currentDisplay[1] = GUI.getTaskIndex();
+	}
+	
+	private DisplayInfo constructInvalid() {
+		Command invalid = new Invalid(UNDO_INVALID);
+		return invalid.execute();
+	}
+
+	private DisplayInfo construstDisplay(int firstLine, int highlightLine) {
+		ViewTaskList viewTaskList = new ViewTaskList(firstLine, feedback, title);
+		DisplayInfo dis = viewTaskList.execute();
+		dis.setHighlight(Default.HIGHLIGHT_LINE);
+		dis.setHighlightLine(highlightLine);
+		return dis;
+	}
+
+	private int determinfistLine() {
+		int index = RunLogic.getIndexInList(taskList, getTaskPointer());
+		index -= index % Default.MAX_DISPLAY_LINE;
+		if(currentListIndex[index] != -1){
+			return index;
+		} else if (((index -= Default.MAX_DISPLAY_LINE) >= 0 ) && currentListIndex[index -= Default.MAX_DISPLAY_LINE] != -1){
+			return currentDisplay[1] - Default.MAX_DISPLAY_LINE;
+		} else {
+			return 0;
+		}
+	}
+
+	private int determinHighlightLine() {
+		return RunLogic.getIndexInList(taskList, getTaskPointer()) % Default.MAX_DISPLAY_LINE;
+	}
+
 }

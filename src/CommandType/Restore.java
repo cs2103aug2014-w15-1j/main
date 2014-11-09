@@ -23,24 +23,14 @@ public class Restore implements Command {
 	private static ArrayList<Task> taskList;
 	private static ArrayList<Task> trashbinList;
 	private static int[] currentDisplay;
-	private static int[] currentListIndex;
-
-	private static LogicToStore passToStore;
-
-	// added by Zhang Ji
+	private static int[] currentListIndex;	
 	private long taskPointer;
-	
-	// added by Chen Di
 	private int originListIndex;
 
-	public void setTaskPointer(long pointer) {
-		this.taskPointer = pointer;
-	}
+	// values for I/O
+	private static LogicToStore passToStore;
 
-	public long getTaskPointer() {
-		return taskPointer;
-	}
-
+	
 	public Restore(int line, String myFeedback, String myTitle) {
 		feedback = myFeedback;
 		title = myTitle;
@@ -51,52 +41,29 @@ public class Restore implements Command {
 
 	@Override
 	public DisplayInfo execute() {
-		originListIndex = currentListIndex[restoreIndex];
-		taskList.add(trashbinList.remove(currentListIndex[restoreIndex]));
-
-		currentListIndex = updateListIndex(currentListIndex);
-
+		recordOldInfo();
+		modifyTaskList();
+		modifyIndexList();
 		update();
-
 		constructBridges();
 		DataStore.writeAllData(passToStore);
-
-		ViewTrashBin viewTrashBin;
-		if (currentListIndex[restoreIndex] != -1) {
-			viewTrashBin = new ViewTrashBin(restoreIndex, feedback, title);
-		} else if (GUI.hasPrevious()) {
-			viewTrashBin = new ViewTrashBin(restoreIndex
-					- Default.MAX_DISPLAY_LINE, feedback, title);
-		} else {
-			viewTrashBin = new ViewTrashBin(feedback, title);
-		}
-		return viewTrashBin.execute();
+		return constructDisplay();	
 	}
 
+	
 	@Override
 	public DisplayInfo undo() {
 		initialize();
-		
-		trashbinList.add(taskList.remove(originListIndex));
-		
-		currentListIndex = updateListIndex(currentListIndex);
-
+		modifyTrashBin();
+		modifyIndexList();
 		update();
-
 		constructBridges();
 		DataStore.writeAllData(passToStore);
-
-		Command viewTrashBin = new ViewTrashBin(trashbinList.size() - 1 - (trashbinList.size() % Default.MAX_DISPLAY_LINE), UNDO_FEEDBACK, title);
-		if (currentListIndex[originListIndex] != -1) {
-			viewTrashBin = new ViewTrashBin(originListIndex, feedback, title);
-		} else if (GUI.hasPrevious()) {
-			viewTrashBin = new ViewTrashBin(originListIndex
-					- Default.MAX_DISPLAY_LINE, feedback, title);
-		} else {
-			viewTrashBin = new ViewTrashBin(feedback, title);
-		}
-		return viewTrashBin.execute();
+		return constructUndoDisplay();
+		
 	}
+
+	
 
 	// -----------helper functions-----------------
 
@@ -133,4 +100,55 @@ public class Restore implements Command {
 	public boolean supportUndo() {
 		return true;
 	}
+	
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+	
+	private DisplayInfo constructDisplay() {
+		ViewTrashBin viewTrashBin;
+		if (currentListIndex[restoreIndex] != -1) {
+			viewTrashBin = new ViewTrashBin(restoreIndex, feedback, title);
+		} else if (GUI.hasPrevious()) {
+			viewTrashBin = new ViewTrashBin(restoreIndex
+					- Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTrashBin = new ViewTrashBin(feedback, title);
+		}
+		return viewTrashBin.execute();
+	}
+
+	private void modifyIndexList() {
+		currentListIndex = updateListIndex(currentListIndex);
+	}
+
+	private void modifyTaskList() {
+		taskList.add(trashbinList.remove(currentListIndex[restoreIndex]));
+	}
+
+	private void recordOldInfo() {
+		originListIndex = currentListIndex[restoreIndex];
+	}
+	
+	private DisplayInfo constructUndoDisplay() {
+		Command viewTrashBin = new ViewTrashBin(trashbinList.size() - 1 - (trashbinList.size() % Default.MAX_DISPLAY_LINE), UNDO_FEEDBACK, title);
+		if (currentListIndex[originListIndex] != -1) {
+			viewTrashBin = new ViewTrashBin(originListIndex, feedback, title);
+		} else if (GUI.hasPrevious()) {
+			viewTrashBin = new ViewTrashBin(originListIndex
+					- Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTrashBin = new ViewTrashBin(feedback, title);
+		}
+		return viewTrashBin.execute();
+	}
+
+	private void modifyTrashBin() {
+		trashbinList.add(taskList.remove(originListIndex));
+	}
+
 }

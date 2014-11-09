@@ -41,17 +41,9 @@ public class ReadBin implements Command {
 
 	@Override
 	public DisplayInfo execute() {
-		ArrayList<Task> display = new ArrayList<Task>();
-
-		currentDisplay = initializeDisplayList(currentDisplay.length);
-		currentDisplay[1] = readIndex;
-
-		GUI.changeViewMode(VIEW_MODE.BIN_DETAIL);
-		GUI.changeCurretnTask(RunLogic.getCurrentListIndex()[readIndex]);
-		
-		display.add(trashbinList.get(RunLogic.getCurrentListIndex()[readIndex]));
-
-		constructBridges(display, feedback, title);
+		modifyDisplayList();
+		modifyGUI();
+		constructBridges(constructDisplay(), feedback, title);
 		update();
 		return passToGui;
 	}
@@ -75,7 +67,7 @@ public class ReadBin implements Command {
 		RunLogic.updateCurrentdiaplay(currentDisplay);
 	}
 
-	private static int[] initializeDisplayList(int length) {
+	private static int[] initializeList(int length) {
 		int[] temp = new int[length];
 		for(int i = 0; i < length; i++){
 			temp[i] = -1;
@@ -91,6 +83,23 @@ public class ReadBin implements Command {
 	@Override
 	public boolean supportUndo() {
 		return false;
+	}
+	
+	
+	private void modifyDisplayList() {		
+		currentDisplay = initializeList(currentDisplay.length);
+		currentDisplay[1] = readIndex;
+	}
+
+	private void modifyGUI() {
+		GUI.changeViewMode(VIEW_MODE.BIN_DETAIL);
+		GUI.changeCurretnTask(RunLogic.getCurrentListIndex()[readIndex]);
+	}
+
+	private ArrayList<Task> constructDisplay() {
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(trashbinList.get(RunLogic.getCurrentListIndex()[readIndex]));
+		return display;
 	}
 
 }

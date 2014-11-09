@@ -17,14 +17,13 @@ public class Previous implements Command{
 	
 	@Override
 	public DisplayInfo execute() {
-		int currentFirstIndex = GUI.getTaskIndex();
+		int firstIndex = GUI.getTaskIndex() - Default.MAX_DISPLAY_LINE;
 		VIEW_MODE mode = GUI.getMode();
-
 		if(mode.equals(VIEW_MODE.TASK_LIST)){
-			ViewTaskList view = new ViewTaskList(currentFirstIndex - Default.MAX_DISPLAY_LINE, feedback, title);
+			ViewTaskList view = new ViewTaskList(firstIndex, feedback, title);
 			return view.execute();
 		} else {
-			ViewTrashBin view = new ViewTrashBin(currentFirstIndex - Default.MAX_DISPLAY_LINE, feedback, title);
+			ViewTrashBin view = new ViewTrashBin(firstIndex, feedback, title);
 			return view.execute();
 		}
 	}

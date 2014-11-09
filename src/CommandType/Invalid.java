@@ -16,8 +16,6 @@ public class Invalid implements Command{
 	
 	@Override
 	public DisplayInfo execute() {
-		// TODO Auto-generated method stub
-		
 		return new DisplayInfo(RunLogic.getGuiStatus(), feedback, false, false);
 	}
 

@@ -29,38 +29,13 @@ public class ViewDate implements Command{
 
 	@Override
 	public DisplayInfo execute() {
-		ArrayList<Task> targetList = new ArrayList<Task>();
-		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
-			targetList = trashbinList;
-		} else {
-			targetList = taskList;
-		}
-		
-		
-		currentDisplay = initializeDisplayList(currentDisplay.length);
-		currentListIndex = updateListIndex(currentListIndex.length, targetList);
-		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
-		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
-			if(date.equals(targetList.get(currentListIndex[i]).getStartDate()) || 
-					date.equals(targetList.get(currentListIndex[i]).getEndDate())){
-				tempListIndex[j] = currentListIndex[i];
-				j++;
-			}
-		}
-		currentListIndex = tempListIndex;
-		GUI.changeDate(date);
+		ArrayList<Task> targetList = determineTargetList();
+		modifyIndexList(targetList);
+		modifyGUI();
 		update();
 		
-		Command viewDate;
-		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
-			viewDate = new ViewTrashBin(0, feedback, title);
-		} else {
-			viewDate = new ViewTaskList(0, feedback, title);
-		}
-		
-		DisplayInfo dis = viewDate.execute();
-		dis.setHighlight(Default.HIGHLIGHT_DATE);
-		return dis;
+
+		return constructDisplay();
 	}
 
 	@Override
@@ -88,7 +63,7 @@ public class ViewDate implements Command{
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int length) {
+	private static int[] initializeList(int length) {
 		int[] temp = new int[length];
 		for(int i = 0; i < length; i++){
 			temp[i] = -1;
@@ -110,4 +85,46 @@ public class ViewDate implements Command{
 		}
 		return currentList;
 	}
+	
+
+	private DisplayInfo constructDisplay() {
+		Command viewDate;
+		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			viewDate = new ViewTrashBin(0, feedback, title);
+		} else {
+			viewDate = new ViewTaskList(0, feedback, title);
+		}
+		
+		DisplayInfo dis = viewDate.execute();
+		dis.setHighlight(Default.HIGHLIGHT_DATE);
+		return dis;
+	}
+
+	private void modifyGUI() {
+		GUI.changeDate(date);
+	}
+
+	private void modifyIndexList(ArrayList<Task> targetList) {
+		currentListIndex = updateListIndex(currentListIndex.length, targetList);
+		int[] tempListIndex = initializeList(currentListIndex.length);
+		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
+			if(date.equals(targetList.get(currentListIndex[i]).getStartDate()) || 
+					date.equals(targetList.get(currentListIndex[i]).getEndDate())){
+				tempListIndex[j] = currentListIndex[i];
+				j++;
+			}
+		}
+		currentListIndex = tempListIndex;
+	}
+
+	private ArrayList<Task> determineTargetList() {
+		ArrayList<Task> targetList = new ArrayList<Task>();
+		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			targetList = trashbinList;
+		} else {
+			targetList = taskList;
+		}
+		return targetList;
+	}
+
 }

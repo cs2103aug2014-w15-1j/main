@@ -39,48 +39,19 @@ public class DeleteTrashbin implements Command{
 	@Override
 	public DisplayInfo execute() {
 		if(deleteAll){
-			for(int i = 1; i<= Default.MAX_DISPLAY_LINE; i++){
-				if(currentDisplay[i] != -1){
-					trashbinList.remove(currentListIndex[currentDisplay[1]]);
-				} else {
-					break;
-				}
-			}
-			currentListIndex = updateListIndex(currentListIndex);
-			
-			update();
-			
-			DataStore.writeTrash(trashbinList);
-			
-			ViewTrashBin viewTrashbin;
-			if(GUI.hasNext()){
-				viewTrashbin = new ViewTrashBin(currentDisplay[1], feedback, title);
-			} else if (GUI.hasPrevious()){
-				viewTrashbin = new ViewTrashBin(currentDisplay[1] - Default.MAX_DISPLAY_LINE, feedback, title);
-			} else {
-				viewTrashbin = new ViewTrashBin(feedback, title);
-			}
-			return viewTrashbin.execute();
+			deleteAll();
 		} else {
-			trashbinList.remove(currentListIndex[deleteIndex]);
-			
-			currentListIndex = updateListIndex(currentListIndex);
-			
-			update();
-
-			DataStore.writeTrash(trashbinList);
-			
-			ViewTrashBin viewTrashbin;
-			if(currentListIndex[deleteIndex] != -1){
-				viewTrashbin = new ViewTrashBin(deleteIndex, feedback, title);
-			} else if (GUI.hasPrevious()){
-				viewTrashbin = new ViewTrashBin(deleteIndex - Default.MAX_DISPLAY_LINE, feedback, title);
-			} else {
-				viewTrashbin = new ViewTrashBin(feedback, title);
-			}
-			return viewTrashbin.execute();
+			deleteLine();
 		}
+		modifyIndexList();	
+		update();
+		DataStore.writeTrash(trashbinList);
+		return constructDisplay();
 	}
+
+
+
+	
 
 	@Override
 	public DisplayInfo undo() {
@@ -119,4 +90,34 @@ public class DeleteTrashbin implements Command{
 		return false;
 	}
 
+	private void deleteLine() {
+		trashbinList.remove(currentListIndex[deleteIndex]);
+	}
+
+	private void deleteAll() {			
+		for(int i = 1; i<= Default.MAX_DISPLAY_LINE; i++){
+			if(currentDisplay[i] != -1){
+				trashbinList.remove(currentListIndex[currentDisplay[1]]);
+			} else {
+				break;
+			}
+		}
+	}
+	
+	private void modifyIndexList() {
+		currentListIndex = updateListIndex(currentListIndex);
+	}
+	
+	private DisplayInfo constructDisplay() {
+		ViewTrashBin viewTrashbin;
+		int index = currentDisplay[1];
+		if(currentListIndex[index] != -1){
+			viewTrashbin = new ViewTrashBin(index, feedback, title);
+		} else if (GUI.hasPrevious()){
+			viewTrashbin = new ViewTrashBin(index - Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTrashbin = new ViewTrashBin(feedback, title);
+		}
+		return viewTrashbin.execute();
+	}
 }

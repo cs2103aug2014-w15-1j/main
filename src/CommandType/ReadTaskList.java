@@ -41,21 +41,14 @@ public class ReadTaskList implements Command {
 
 	@Override
 	public DisplayInfo execute() {
-		ArrayList<Task> display = new ArrayList<Task>();
-
-		currentDisplay = initializeDisplayList(currentDisplay.length);
-		currentDisplay[1] = readIndex;
-
-		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
-		GUI.changeCurretnTask(RunLogic.getCurrentListIndex()[readIndex]);
-
-		display.add(taskList.get(RunLogic.getCurrentListIndex()[readIndex]));
-
-		constructBridges(display, feedback, title);
+		modifyDisplayList();
+		modifyGUI();
+		constructBridges(constructDisplay(), feedback, title);
 		update();
 		return passToGui;
 	}
 
+	
 	@Override
 	public DisplayInfo undo() {
 		// TODO Auto-generated method stub
@@ -75,7 +68,7 @@ public class ReadTaskList implements Command {
 		RunLogic.updateCurrentdiaplay(currentDisplay);
 	}
 
-	private static int[] initializeDisplayList(int length) {
+	private static int[] initializeList(int length) {
 		int[] temp = new int[length];
 		for(int i = 0; i < length; i++){
 			temp[i] = -1;
@@ -92,5 +85,22 @@ public class ReadTaskList implements Command {
 	public boolean supportUndo() {
 		return false;
 	}
+	
+	private void modifyDisplayList() {		
+		currentDisplay = initializeList(currentDisplay.length);
+		currentDisplay[1] = readIndex;
+	}
+
+	private void modifyGUI() {
+		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
+		GUI.changeCurretnTask(RunLogic.getCurrentListIndex()[readIndex]);
+	}
+
+	private ArrayList<Task> constructDisplay() {
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(taskList.get(RunLogic.getCurrentListIndex()[readIndex]));
+		return display;
+	}
+
 
 }

@@ -38,34 +38,18 @@ public class ViewTaskList implements Command{
 	}
 	
 	@Override
-	public DisplayInfo execute() {
-		ArrayList<Task> display = new ArrayList<Task>();
-		currentDisplay = initializeDisplayList(currentDisplay.length);
-		
-		if(currentListIndex[0] < 0){
-			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, GUI.getDate());
-		} else {
-			boolean hasNext = currentListIndex[firstTaskIndex + Default.MAX_DISPLAY_LINE] > 0;
-			boolean hasPrevious = firstTaskIndex >= Default.MAX_DISPLAY_LINE;
-			
-			for(int i = 1, j = firstTaskIndex; currentListIndex[j] >= 0; j++){
-				if(i <= Default.MAX_DISPLAY_LINE){
-					display.add(taskList.get(currentListIndex[j]));
-					currentDisplay[i] = j;
-					i++;
-				} else {
-					break;
-				}
-			}
-			GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, currentListIndex[currentDisplay[1]], GUI.getDate());
-		}
-		constructBridges(display, feedback, title);
+	public DisplayInfo execute() {		
+		boolean hasNext = determineNext();
+		boolean hasPrevious = determinePrevious();
+		ArrayList<Task> display = determineDisplayIndex();
+		modifyGUI(hasNext, hasPrevious);
 		update();
-		
+		constructBridges(display, feedback, title);
 		return passToGui;
 	}
 
 
+	
 	@Override
 	public DisplayInfo undo() {
 		// TODO Auto-generated method stub
@@ -89,7 +73,7 @@ public class ViewTaskList implements Command{
 		RunLogic.updateCurrentListIndex(currentListIndex);
 	}
 	
-	private static int[] initializeDisplayList(int length) {
+	private static int[] initializeList(int length) {
 		int[] temp = new int[length];
 		for(int i = 0; i < length; i++){
 			temp[i] = -1;
@@ -106,5 +90,33 @@ public class ViewTaskList implements Command{
 		return false;
 	}
 
+	private ArrayList<Task> determineDisplayIndex() {
+		ArrayList<Task> display = new ArrayList<Task>();
+		currentDisplay = initializeList(currentDisplay.length);
+		if(currentListIndex[0] >= 0){
+			for(int i = 1, j = firstTaskIndex; currentListIndex[j] >= 0; j++){
+				if(i <= Default.MAX_DISPLAY_LINE){
+					display.add(taskList.get(currentListIndex[j]));
+					currentDisplay[i] = j;
+					i++;
+				} else {
+					break;
+				}
+			}
+		}
+		return display;
+	}
+
+	private boolean determinePrevious() {
+		return firstTaskIndex >= Default.MAX_DISPLAY_LINE;
+	}
+
+	private boolean determineNext() {
+		return currentListIndex[firstTaskIndex + Default.MAX_DISPLAY_LINE] > 0;
+	}
+
+	private void modifyGUI(boolean hasNext, boolean hasPrevious) {
+		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, currentListIndex[currentDisplay[1]], GUI.getDate());
+	}
 
 }

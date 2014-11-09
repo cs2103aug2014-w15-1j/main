@@ -18,21 +18,10 @@ public class Rename implements Command {
 	private static ArrayList<Task> taskList;
 	private static int[] currentDisplay;
 	private static int[] currentListIndex;
-
-	// added by Zhang Ji
 	private long taskPointer;
-
-	// Added by Chen Di
 	private String beforeChangeTitle;
 	
-	public void setTaskPointer(long pointer) {
-		this.taskPointer = pointer;
-	}
-
-	public long getTaskPointer() {
-		return taskPointer;
-	}
-
+	
 	public Rename(int line, String name, String myFeedback, String myTitle) {
 		feedback = myFeedback;
 		title = myTitle;
@@ -53,48 +42,33 @@ public class Rename implements Command {
 
 	@Override
 	public DisplayInfo execute() {
-		// Added by Chen Di
-		beforeChangeTitle = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getName();
-		// =======
-		
-		taskList.get(currentListIndex[currentDisplay[lineIndex]]).rename(
-				newName);
+		recordOldInfo();
+		modifyTaskList(newName);
 		update();
-
 		DataStore.writeTask(taskList);
+		return constructDisplay();
 		
-		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
-			Command read = new ReadTaskList(lineIndex, feedback, title);
-			DisplayInfo dis = read.execute();
-			dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
-			dis.setHighlightItem(Default.NAME);
-			return dis;
-		} else {
-			Command view = new ViewTaskList(RunLogic.getGuiStatus().getTaskIndex(), feedback, title);
-			DisplayInfo dis = view.execute();
-			dis.setHighlight(Default.HIGHLIGHT_LINE);
-			dis.setHighlightLine(lineIndex - 1);
-			return dis;
-		}
 	}
 
+	
 	@Override
 	public DisplayInfo undo() {
-		// Added by Chen Di
-		taskList.get(currentListIndex[currentDisplay[lineIndex]]).rename(
-				beforeChangeTitle);
+		initialize();
+		modifyTaskList(beforeChangeTitle);
 		update();
-
 		DataStore.writeTask(taskList);
+		return constructUndoDisplay();	
+	}
+
+	// -----------helper functions-----------------
+
+	private DisplayInfo constructUndoDisplay() {
 		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_RENAME, String.format(ConvertCommand.DETAIL_TITLE_FORMAT, beforeChangeTitle));
 		DisplayInfo dis = read.execute();
 		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
 		dis.setHighlightItem(Default.NAME);
 		return dis;
-		// =======
 	}
-
-	// -----------helper functions-----------------
 
 	private static void initialize() {
 		taskList = RunLogic.getTaskList();
@@ -109,6 +83,38 @@ public class Rename implements Command {
 	public boolean supportUndo() {
 		return true;
 	}
+	
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
 
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+
+	private DisplayInfo constructDisplay() {
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+		Command read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.NAME);
+		return dis;
+	} else {
+		Command view = new ViewTaskList(RunLogic.getGuiStatus().getTaskIndex(), feedback, title);
+		DisplayInfo dis = view.execute();
+		dis.setHighlight(Default.HIGHLIGHT_LINE);
+		dis.setHighlightLine(lineIndex - 1);
+		return dis;
+	}
+	}
+
+	private void modifyTaskList(String name) {
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).rename(
+				name);
+	}
+
+	private void recordOldInfo() {
+		beforeChangeTitle = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getName();
+	}
 
 }

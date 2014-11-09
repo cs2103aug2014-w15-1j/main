@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import logic.*;
 
 public class SearchTrashBin implements Command{
-	private static String keyWord;
+	private static String[] keyWord;
 	private static String feedback;
 	private static String title;
 	
@@ -15,7 +15,7 @@ public class SearchTrashBin implements Command{
 	private static int[] currentListIndex;
 	
 	public SearchTrashBin(String word, String myFeedback, String myTitle){
-		keyWord = word;
+		keyWord = word.split(" ");
 		feedback = myFeedback;
 		title = myTitle;
 		initialize();
@@ -23,19 +23,9 @@ public class SearchTrashBin implements Command{
 	
 	@Override
 	public DisplayInfo execute() {
-		currentDisplay = initializeDisplayList(currentDisplay.length);
-		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
-		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
-			if(trashbinList.get(currentListIndex[i]).getName().contains(keyWord)){
-				tempListIndex[j] = currentListIndex[i];
-				j++;
-			}
-		}
-		currentListIndex = tempListIndex;
+		modifyIndexList();
 		update();
-		
-		Command search = new ViewTrashBin(0, feedback, title);
-		return search.execute();
+		return determineDisplay();
 	}
 
 	@Override
@@ -73,5 +63,23 @@ public class SearchTrashBin implements Command{
 		return false;
 	}
 
+	private DisplayInfo determineDisplay() {
+		Command search = new ViewTrashBin(0, feedback, title);
+		return search.execute();
+	}
 
+	private void modifyIndexList() {
+		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
+		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
+			for(int k = 0; k < keyWord.length; k++){
+				if(trashbinList.get(currentListIndex[i]).getName().contains(keyWord[k])){
+					tempListIndex[j] = currentListIndex[i];
+					j++;
+					break;
+				}
+			}
+
+		}
+		currentListIndex = tempListIndex;
+	}
 }

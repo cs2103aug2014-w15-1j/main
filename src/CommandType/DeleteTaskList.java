@@ -11,8 +11,8 @@ import logic.RunLogic;
 import logic.Task;
 
 public class DeleteTaskList implements Command{
+	// feedback format
 	private static String UNDO_FEEDBACK = "Deleted tasks added back!";
-	
 	
 	private static String feedback;
 	private static String title;
@@ -28,8 +28,9 @@ public class DeleteTaskList implements Command{
 	private static int[] currentListIndex;
 		
 	// memory for undo 
-	private int[] taskPointers = initializeDisplayList(Default.MAX_DISPLAY_LINE);
+	private int[] taskPointers = initializeList(Default.MAX_DISPLAY_LINE);
 	
+	// value for I/O
 	private static LogicToStore passToStore;
 	
 	public DeleteTaskList(Boolean all, String myFeedback, String myTitle){
@@ -53,98 +54,29 @@ public class DeleteTaskList implements Command{
 	@Override
 	public DisplayInfo execute() {
 		if(deleteAll){
-			for(int i = 1; i<= Default.MAX_DISPLAY_LINE; i++){
-				if(currentDisplay[i] != -1){
-					this.taskPointers[i - 1] = taskList.get(currentListIndex[currentDisplay[1]]).getPointer();
-					trashbinList.add(taskList.remove(currentListIndex[currentDisplay[1]]));
-				} else {
-					break;
-				}
-			}
-			currentListIndex = updateListIndex(currentListIndex);
-			
-			update();
-			
-			constructBridges();
-			DataStore.writeAllData(passToStore);
-			
-			ViewTaskList viewTaskList;
-			if(GUI.hasNext()){
-				viewTaskList = new ViewTaskList(currentDisplay[1], feedback, title);
-			} else if (GUI.hasPrevious()){
-				viewTaskList = new ViewTaskList(currentDisplay[1] - Default.MAX_DISPLAY_LINE, feedback, title);
-			} else {
-				viewTaskList = new ViewTaskList(feedback, title);
-			}
-			return viewTaskList.execute();
+			deleteAll();
 		} else {
-			this.taskPointers[0] = taskList.get(currentListIndex[deleteIndex]).getPointer();
-			trashbinList.add(taskList.remove(currentListIndex[deleteIndex]));
-			
-			currentListIndex = updateListIndex(currentListIndex);
-			
-			update();
-			
-			constructBridges();
-			DataStore.writeAllData(passToStore);
-			
-			ViewTaskList viewTaskList;
-			if(currentListIndex[currentDisplay[1]] != -1){
-				viewTaskList = new ViewTaskList(currentDisplay[1], feedback, title);
-			} else if (GUI.hasPrevious()){
-				viewTaskList = new ViewTaskList(currentDisplay[1] - Default.MAX_DISPLAY_LINE, feedback, title);
-			} else {
-				viewTaskList = new ViewTaskList(feedback, title);
-			}
-			return viewTaskList.execute();
+			deleteLine();
 		}
+		modifyIndexList();	
+		update();
+		constructBridges();
+		DataStore.writeAllData(passToStore);
+		return constructDisplay();
+		
 	}
-
 	@Override
 	public DisplayInfo undo() {
 		initialize();
-		
-		int[] reAddedTaskIndexList = initializeDisplayList(Default.MAX_DISPLAY_LINE); 
-		for(int i = 0, j = 0; i < Default.MAX_DISPLAY_LINE; i++){
-			if(taskPointers[i] >= 0){
-				int index = RunLogic.getIndexInList(trashbinList, taskPointers[i]);
-				if(index >= 0){
-					taskList.add(trashbinList.remove(index));
-					reAddedTaskIndexList[j] = taskList.size() - 1;
-					j++;
-				}
-			} else {
-				break;
-			}
-		}
-		
-		int firstHighlightTaskIndex = 0;
-		for(int i = 0; i < Default.MAX_DISPLAY_LINE; i++){
-			if(reAddedTaskIndexList[i] >= 0){
-				if(reAddedTaskIndexList[i] % Default.MAX_DISPLAY_LINE == 0){
-					firstHighlightTaskIndex = i;
-					break;
-				}
-			} else {
-				break;
-			}
-		}
-		
-		currentListIndex = updateListIndex(currentListIndex);
-		
+		int[] reAddedTaskIndexList = addTasksBack();	
+		int firstHighlightTaskIndex = determinefirstTask(reAddedTaskIndexList);
+		modifyIndexList();		
 		update();
-		
-		Command view = new ViewTaskList(reAddedTaskIndexList[firstHighlightTaskIndex] - (reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE), 
-				UNDO_FEEDBACK, title);
-		DisplayInfo dis = view.execute();
-		if(reAddedTaskIndexList[firstHighlightTaskIndex] >= 0){
-			dis.setHighlight(Default.HIGHLIGHT_LINES);
-			dis.setHighlightLine(reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE);
-		}
-		
-		return dis;
+		return constructUndoDisplay(firstHighlightTaskIndex, reAddedTaskIndexList);
+
 	}
 
+	
 	//-----------helper functions-----------------
 	
 	
@@ -182,11 +114,89 @@ public class DeleteTaskList implements Command{
 		passToStore = new LogicToStore(taskList,trashbinList);
 	}
 	
-	private static int[] initializeDisplayList(int length) {
+	private static int[] initializeList(int length) {
 		int[] temp = new int[length];
 		for(int i = 0; i < length; i++){
 			temp[i] = -1;
 		}
 		return temp;
 	}
+	
+	private DisplayInfo constructDisplay() {
+		ViewTaskList viewTaskList;
+		int index = currentDisplay[1];
+		if(currentListIndex[index] != -1){
+			viewTaskList = new ViewTaskList(index, feedback, title);
+		} else if (GUI.hasPrevious()){
+			viewTaskList = new ViewTaskList(index - Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTaskList = new ViewTaskList(feedback, title);
+		}
+		return viewTaskList.execute();
+	}
+
+	private void deleteLine() {
+		this.taskPointers[0] = taskList.get(currentListIndex[deleteIndex]).getPointer();
+		trashbinList.add(taskList.remove(currentListIndex[deleteIndex]));
+	}
+
+	private void deleteAll() {
+		for(int i = 1; i<= Default.MAX_DISPLAY_LINE; i++){
+			if(currentDisplay[i] != -1){
+				this.taskPointers[i - 1] = taskList.get(currentListIndex[currentDisplay[1]]).getPointer();
+				trashbinList.add(taskList.remove(currentListIndex[currentDisplay[1]]));
+			} else {
+				break;
+			}
+		}
+	}
+	
+	private void modifyIndexList() {
+		currentListIndex = updateListIndex(currentListIndex);
+	}
+	
+	private DisplayInfo constructUndoDisplay(int firstHighlightTaskIndex, int[] reAddedTaskIndexList) {
+		Command view = new ViewTaskList(reAddedTaskIndexList[firstHighlightTaskIndex] - (reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE), 
+				UNDO_FEEDBACK, title);
+		DisplayInfo dis = view.execute();
+		if(reAddedTaskIndexList[firstHighlightTaskIndex] >= 0){
+			dis.setHighlight(Default.HIGHLIGHT_LINES);
+			dis.setHighlightLine(reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE);
+		}
+		
+		return dis;
+	}
+
+	private int determinefirstTask(int[] reAddedTaskIndexList) {
+		int firstHighlightTaskIndex = 0;
+		for(int i = 0; i < Default.MAX_DISPLAY_LINE; i++){
+			if(reAddedTaskIndexList[i] >= 0){
+				if(reAddedTaskIndexList[i] % Default.MAX_DISPLAY_LINE == 0){
+					firstHighlightTaskIndex = i;
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		return firstHighlightTaskIndex;
+	}
+
+	private int[] addTasksBack() {
+		int[] reAddedTaskIndexList = initializeList(Default.MAX_DISPLAY_LINE); 
+		for(int i = 0, j = 0; i < Default.MAX_DISPLAY_LINE; i++){
+			if(taskPointers[i] >= 0){
+				int index = RunLogic.getIndexInList(trashbinList, taskPointers[i]);
+				if(index >= 0){
+					taskList.add(trashbinList.remove(index));
+					reAddedTaskIndexList[j] = taskList.size() - 1;
+					j++;
+				}
+			} else {
+				break;
+			}
+		}
+		return reAddedTaskIndexList;
+	}
+
 }

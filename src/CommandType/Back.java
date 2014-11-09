@@ -18,20 +18,11 @@ public class Back implements Command{
 
 	@Override
 	public DisplayInfo execute() {
-		int highlightLine = GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE;
-		GUI.changeCurretnTask(GUI.getTaskIndex() - GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE);
-		
-		Command view;
-		if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
-			view = new ViewTrashBin(GUI.getTaskIndex(), feedback, title);
-		} else {
-			view = new ViewTaskList(GUI.getTaskIndex(), feedback, title);
-		}
-		DisplayInfo dis = view.execute();
-		dis.setHighlight(Default.HIGHLIGHT_LINE);
-		dis.setHighlightLine(highlightLine);
-		return dis;
+		int highlightLine = determineHighlight();
+		updateGUI();
+		return constructDisplay(highlightLine);
 	}
+
 
 	@Override
 	public DisplayInfo undo() {
@@ -51,4 +42,26 @@ public class Back implements Command{
 	private static void initialize(){
 		GUI = RunLogic.getGuiStatus();
 	}
+	
+	private DisplayInfo constructDisplay(int highlightLine) {
+		Command view;
+		if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			view = new ViewTrashBin(GUI.getTaskIndex(), feedback, title);
+		} else {
+			view = new ViewTaskList(GUI.getTaskIndex(), feedback, title);
+		}
+		DisplayInfo dis = view.execute();
+		dis.setHighlight(Default.HIGHLIGHT_LINE);
+		dis.setHighlightLine(highlightLine);
+		return dis;
+	}
+
+	private void updateGUI() {
+		GUI.changeCurretnTask(GUI.getTaskIndex() - GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE);
+	}
+
+	private int determineHighlight() {
+		return GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE;
+	}
+
 }
