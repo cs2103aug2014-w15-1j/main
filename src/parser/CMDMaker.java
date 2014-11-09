@@ -1,6 +1,7 @@
 package parser;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import parser.CMDTypes.COMMAND_TYPE;
 
@@ -22,6 +23,8 @@ import parser.CMDTypes.COMMAND_TYPE;
  * */
 class CMDMaker {
 
+	private static Logger logger = Logger.getLogger("CMDMaker");
+
 	/**
 	 * Generate a RawCommand for "Add" operation.
 	 * 
@@ -29,9 +32,10 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand add(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform add operation");
 		try {
 			String taskTitle;
-			String repeatDate;
 			String startDate;
 			String endDate;
 			String description;
@@ -40,12 +44,8 @@ class CMDMaker {
 			titlePair = InfoRetrieve.getTaskTitle(tokenPairs);
 			taskTitle = titlePair.getFront();
 			
-			RawInfoPair repeatPair;
-			repeatPair = InfoRetrieve.getRepeatDate(titlePair.getSubInfo());
-			repeatDate = repeatPair.getFront();
-			
 			RawInfoPair startPair;
-			startPair = InfoRetrieve.getDate(repeatPair.getSubInfo());
+			startPair = InfoRetrieve.getDate(titlePair.getSubInfo());
 			startDate = startPair.getFront();
 			
 			RawInfoPair endPair;
@@ -58,8 +58,8 @@ class CMDMaker {
 				endDate = startDate;
 				startDate = null;
 			}
-			return new RawCommand(CMDTypes.COMMAND_TYPE.ADD.name(), taskTitle, 
-								  repeatDate, startDate, 
+			return new RawCommand(CMDTypes.COMMAND_TYPE.ADD.name(), 
+								  taskTitle, startDate, 
 								  endDate, description);
 		} catch (Exception e) {
 			return makeInvalid();
@@ -74,6 +74,7 @@ class CMDMaker {
 	 */
 	static RawCommand update(ArrayList<TokenPair> tokenPairs){
 		
+		logger.info("Perform update operation");
 		try {
 			TokenPair firstPair = tokenPairs.get(0);
 			String field1 = firstPair.getCotent();
@@ -121,6 +122,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand search(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform search operation");
 		try {
 			String getContent = InfoRetrieve.getFrontUN(tokenPairs).getFront();
 			return new RawCommand(COMMAND_TYPE.SEARCH.name(), getContent);
@@ -136,6 +139,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand rename(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform rename operation");
 		try {
 			TokenPair firstPair = tokenPairs.get(0);
 			String locateLine;
@@ -163,6 +168,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand describe(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform describe operation");
 		try {
 			TokenPair firstPair = tokenPairs.get(0);
 			String locateLine;
@@ -190,6 +197,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand reschedule(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform reshcedule operation");
 		try {
 			TokenPair firstPair = tokenPairs.get(0);
 			String locateLine;
@@ -226,6 +235,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand repeat(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform repeat operation");
 		try {
 			TokenPair firstPair = tokenPairs.get(0);
 			String locateLine;
@@ -255,6 +266,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 */
 	static RawCommand read(ArrayList<TokenPair> tokenPairs){
+		
+		logger.info("Perform read operation");
 		try {
 			if(tokenPairs.isEmpty()){
 				return makeInvalid();
@@ -273,6 +286,7 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand undo(){
+		logger.info("Perform undo operation");
 		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.UNDO.name());
 
 		return commandPackage;		
@@ -285,6 +299,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand delete(ArrayList<TokenPair> tokenPairs){
+		
+		logger.info("Perform delete operation");
 		try {
 			if(tokenPairs.isEmpty()){
 				return makeInvalid();
@@ -303,6 +319,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand view(ArrayList<TokenPair> tokenPairs){
+		
+		logger.info("Perform view operation");
 		try {
 			String getFields = tokenPairs.get(0).getCotent();
 			if (ValidityChecker.isValidViewDate(getFields)) {
@@ -324,6 +342,8 @@ class CMDMaker {
 	 * @return -RawCommand
 	 */
 	static RawCommand viewDate(String getDate) {
+		
+		logger.info("Perform viewDate operation");
 		try {
 			return new RawCommand(CMDTypes.COMMAND_TYPE.VIEWDATE.name(), getDate);
 		} catch (Exception e) {
@@ -338,6 +358,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand mark(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform mark operation");
 		try {
 			RawInfoPair getLinePair = InfoRetrieve.getNB(tokenPairs);
 			String getLine = getLinePair.getFront();
@@ -356,6 +378,8 @@ class CMDMaker {
 	 * @return -RawCommand
 	 */
 	static RawCommand next(){
+		
+		logger.info("Perform next operation");
 		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.NEXT.name());
 
 		return commandPackage;
@@ -367,6 +391,8 @@ class CMDMaker {
 	 * @return -RawCommand
 	 */
 	static RawCommand previous(){
+		
+		logger.info("Perform previous operation");
 		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.PREVIOUS.name());
 
 		return commandPackage;
@@ -379,6 +405,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 */
 	static RawCommand restore(ArrayList<TokenPair> tokenPairs){
+		
+		logger.info("Perform restore operation");
 		try {
 			RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.RESTORE.name(), 
 													   tokenPairs.get(0).getCotent());
@@ -395,6 +423,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 * */
 	static RawCommand back(){
+		
+		logger.info("Perform back operation");
 		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.BACK.name());
 
 		return commandPackage;
@@ -406,6 +436,8 @@ class CMDMaker {
 	 * @return -RawCommand
 	 * */
 	static RawCommand makeInvalid() {
+		
+		logger.info("Perform makeInvalid operation");
 		return new RawCommand(CMDTypes.COMMAND_TYPE.INVALID.name());
 	}
 	
@@ -415,6 +447,8 @@ class CMDMaker {
 	 * @return -RawCommand
 	 * */
 	static RawCommand help() {
+		
+		logger.info("Perform help operation");
 		return new RawCommand(CMDTypes.COMMAND_TYPE.HELP.name());
 	}
 	
@@ -424,6 +458,8 @@ class CMDMaker {
 	 * @return a RawCommand object
 	 */
 	static RawCommand exit(){
+		
+		logger.info("Perform exit operation");
 		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.EXIT.name());
 
 		return commandPackage;		
