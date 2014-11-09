@@ -35,7 +35,6 @@ public class ParserProcesser {
 	 * */
 	public static RawCommand interpretCommand(String inputString){
 
-		assert inputString == null : "input String passed to parser cannot be null";
 		
 		// Tokenize command and information, split sentence into words.
 		RawInfoPair rawCmdPair = Tokenizer.splitRawInput(inputString);
