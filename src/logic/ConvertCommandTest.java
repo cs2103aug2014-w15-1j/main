@@ -8,21 +8,39 @@ import org.junit.Test;
 import CommandType.*;
 import parser.RawCommand;
 
+/**
+ * 
+ * @author a0119456Y
+ *
+ */
 public class ConvertCommandTest {
-	RawCommand RawCommand1 = new RawCommand("add", "title", "description");
-	RawCommand RawCommand2 = new RawCommand("rename", "1", "new name");
-	RawCommand RawCommand3 = new RawCommand("view", "trashbin");
-	RawCommand RawCommand4 = new RawCommand("lllll");
-	Command result1 = new Add(new Task("title", "description"), "New task added successfully!", "Task List");
-	Command result2 = new Rename("1", "new name", "Task rename successfully!", )
+	RawCommand RawCommand1;
+	RawCommand RawCommand2;
+	RawCommand RawCommand3;
+	Command expectedResult1;
+	Command expectedResult2;
+	Command expectedResult3;
 	
 	@Before
 	public void setUp() throws Exception {
+		RawCommand1 = new RawCommand("add", "title", "description");
+		RawCommand2 = new RawCommand("view", "trashbin");
+		RawCommand3 = new RawCommand("lllll");
+		expectedResult1 = new Add(new Task("title", "description"), "New task added successfully!", "Task List");
+		expectedResult2 = new ViewTrashBin(0, "View mode changed!", "Trash bin");
+		expectedResult3 = new Invalid("Invalid Command!");
 	}
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		Command result1 = ConvertCommand.convert(RawCommand1);
+		assertEquals(expectedResult1, result1);
+		
+		Command result2 = ConvertCommand.convert(RawCommand2);
+		assertEquals(expectedResult1, result2);
+		
+		Command result3 = ConvertCommand.convert(RawCommand3);
+		assertEquals(expectedResult1, result3);
 	}
 
 }

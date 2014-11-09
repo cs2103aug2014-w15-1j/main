@@ -290,4 +290,24 @@ public class Task implements Comparable<Task> {
 			return getStartDate().compareTo(o.getStartDate());
 		}
 	}
+	
+	public boolean equalIgnorePointer(Task task){
+		if(task == null){
+			return false;
+		}
+		if(this.compareTo(task) != 0){
+			return false;
+		}
+		if(!this.getName().equals(task.getName())){
+			return false;
+		}
+		if(this.getDescription() != null && !this.getDescription().equals(task.getDescription())){
+			return false
+		}
+		if(this.getDescription() == null && task.getDescription() != null){
+			return false;
+		}
+		return (this.getDone() && task.getDone()) || (!this.getDone() && !task.getDone());
+	}
+	
 }
