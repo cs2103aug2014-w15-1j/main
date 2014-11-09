@@ -10,7 +10,7 @@ import logic.LogicToStore;
 
 import java.io.File;
 
-/*
+/**
  * @author A0100792M
  * 
  * DataStore will store object LogicToStore containing commands input strings into text files Trashlist.txt and Tasklist.txt
@@ -21,6 +21,9 @@ public class DataStore {
 	
 	/**
 	 * Get the respective path of working directory OS-dependent
+	 * 
+	 * @return
+	 * 		Pathname of user's home directory
 	 */
 	public static String getFilePath(String nameList){
 		
@@ -31,7 +34,10 @@ public class DataStore {
 	}
 	
 	/**
-	 * Writing all data to distinctive file
+	 * Writing all data to respective files on local
+	 * 
+	 * @param
+	 * 		LogicToStore object containing ArrayList<Task> for Trash and Tasks
 	 */
 	public static void writeAllData(LogicToStore allData) {
 		writeTrash(allData.getTrashbinList());
@@ -55,7 +61,9 @@ public class DataStore {
 	}
 	
 	
-	/**Initializing files with empty data
+	/**
+	 * Initializing files with empty data
+	 * 
      * */
     public static void initializeFile() {
         initializeTrash();
@@ -99,6 +107,7 @@ public class DataStore {
 	
 	/**
 	 * Initializing Trash by creating a empty trash file
+	 * 
 	 * */
 	private static void initializeTrash() {
 		 String absolutePath = getFilePath(SystemInfo.TRASH_NAME);
@@ -108,6 +117,7 @@ public class DataStore {
 	
 	/**
 	 * Initializing Task by creating a empty task file
+	 * 
      * */
 	private static void initializeTask() {      	    	
         String absolutePath = getFilePath(SystemInfo.EVENT_NAME);

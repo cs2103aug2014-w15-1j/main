@@ -1,16 +1,16 @@
 package read_file;
 
 import logic.JDate;
-
 import logic.Task;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-/*
- * @author A0100792 more testing
+/**
+ * @author A0100792 testing
  */
+
 @SuppressWarnings("unused")
 public class MakeTaskTest {
 	

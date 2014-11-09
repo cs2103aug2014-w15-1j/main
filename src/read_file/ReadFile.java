@@ -12,7 +12,7 @@ import logic.Task;
 
 /**
  * @author A0100792M
- *         A0119493X
+ *        
  * 
  * This class read task files and trash files and return them in ArrayList<Task>
  *            creation of Task objects that includes null fields from string in files
@@ -30,12 +30,12 @@ public class ReadFile {
         this.setTRASHFILE(new ArrayList<Task>());
     }
     
-    /*
-     * Edited by A0100792M to retrieve home path for file
- 	*/
     
     /**
-     * get event ArrayList<Task>
+     * Retrieve ArrayList of Taskfile
+     * 
+     * @return
+     * 		return event ArrayList<Task> object
      */
     public ArrayList<Task> getEventTask() {
     	String filePathName = data_store.DataStore.getFilePath(SystemInfo.EVENT_NAME);
@@ -44,17 +44,17 @@ public class ReadFile {
     }
 
     /**
-     * get trash ArrayList<Task>
+     * 
+     * Retrieve ArrayList of Trashfile
+     * 
+     * @return
+     * 		return trash ArrayList<Task>
      */
     public ArrayList<Task> getTrashFile() {
       String filePathName = data_store.DataStore.getFilePath(SystemInfo.TRASH_NAME);
        
       return getOSTrashFile(filePathName);
     }
-    
-    /*
-     * End
-     */
 
     /** 
      * Read tasks file line by line and store them into temporal ArrayList
@@ -133,10 +133,10 @@ public class ReadFile {
     }
 
     /**
+     * Make a Task object from string in file
      * 
-     * By A0100792 to accept null date
-     * create a event
-     * @return 
+     * @return
+     * 		Task object
      */
     public static Task makeTask(String taskString) {
 
@@ -202,7 +202,10 @@ public class ReadFile {
     }
 
     /**
-     * Make a Date object
+     * Make a JDate object from a string representing date
+     * 
+     * @return
+     *  	JDate object of date
      * */
     private static JDate dateMaker(String[] dateInfo) {
         try {
