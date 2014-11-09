@@ -4,13 +4,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.BorderFactory;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.Component;
@@ -85,6 +84,9 @@ public class BasicGui extends JFrame {
 			Font.PLAIN, 29);
 	private final static Font FONT_FEEDBACK_WINDOW = new Font("Ayuthaya",
 			Font.PLAIN, 13);
+	
+	//all available keyboard shortcut
+	private String[] keyboardShortcut = {"F1", "F2","F3","F4","F5", "F6"};
 
 	/*
 	 * ====================================================================
@@ -132,8 +134,12 @@ public class BasicGui extends JFrame {
 		changeMainPanel(detailed);
 
 		return detailed;
-
 	}
+
+	public CustomizedJPanel showHelp(String helpInfo) {
+		return null;
+	}
+
 
 	public void refreshMainPanel() {
 		mainPanel.validate();
@@ -297,9 +303,17 @@ public class BasicGui extends JFrame {
 		inputWindow.addActionListener(new EnterKeyListener(inputWindow));
 		inputWindow.setText(inputWindowHelperText);
 		inputWindow.selectAll();
-
+		
+		// add keyboard shortcut key and action into maps
+		for(String s: keyboardShortcut){
+			inputWindow.getInputMap().put(KeyStroke.getKeyStroke(s), s);
+			inputWindow.getActionMap().put(s, new ShortcutKeyListener(s, inputWindow));
+		}
+		
 		inputPanel.add(inputWindow);
 		inputWindow.requestFocus();
+		
+		
 	}
 
 	/**

@@ -37,7 +37,6 @@ public class GuiInfoTranslator {
 	private boolean hightlightMultipleLines = false;
 
 	// constants
-
 	private final static String EMPTY_STRING = "";
 	private final static String STR_DONE = "Done";
 	private final static String STR_UNDDONE = "Undone";
@@ -80,7 +79,7 @@ public class GuiInfoTranslator {
 	public ArrayList<String> getFirstCol() {
 		return firstCol;
 	}
-
+	
 	public ArrayList<String> getSecondCol() {
 		return secondCol;
 	}
@@ -121,6 +120,9 @@ public class GuiInfoTranslator {
 		return this.hightlightMultipleLines;
 	}
 
+	public String getHelpInfo() {
+		return info.getHelpInfo();
+	}
 	/********************************************
 	 ************* Private Method ***************
 	 ********************************************/
@@ -131,11 +133,13 @@ public class GuiInfoTranslator {
 		ArrayList<Task> taskList = info.getTaskList();
 		Task task;
 		if (taskList == null || taskList.size() <= 0) {
-			return;
+			return; 
 		}
 		int expectedListSize;
 		int firstIndex = 0;
 		switch (info.getViewMode()) {
+		case HELP:
+			break;
 		case TASK_DETAIL:
 			expectedListSize = 1;
 			assert taskList.size() ==  expectedListSize : 

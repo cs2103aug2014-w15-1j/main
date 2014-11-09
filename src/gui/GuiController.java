@@ -138,7 +138,9 @@ public class GuiController {
 		CustomizedJPanel panel;
 
 		logger.info("current view mode:" + mode);
-		if (mode.equals(VIEW_MODE.TASK_DETAIL)) {
+		if(mode.equals(VIEW_MODE.HELP)) {
+			panel = gui.showHelp(info.getHelpInfo());
+		} else if (mode.equals(VIEW_MODE.TASK_DETAIL)) {
 			panel = gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
 			((AttributePanel) panel).setHighlightedProperty(info
 					.getHighlightedProperty());

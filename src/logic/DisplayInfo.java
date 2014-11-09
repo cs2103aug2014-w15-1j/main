@@ -31,7 +31,7 @@ public class DisplayInfo {
 
 	// information for feedback
 	private String feedback;
-	
+	private String helpInfo;
 	private JDate date;
 
 	// info for highlight
@@ -139,6 +139,12 @@ public class DisplayInfo {
 
 	public int getHighlightItem() {
 		return this.highlightItem;
+	}
+	public String getHelpInfo() {
+		return this.helpInfo;
+	}
+	public void setHelpInfo(String info) {
+		this.helpInfo = info;
 	}
 	
 	
