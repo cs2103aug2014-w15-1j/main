@@ -35,16 +35,17 @@ public class ParserProcesser {
 	 * */
 	public static RawCommand interpretCommand(String inputString){
 
-		
 		// Tokenize command and information, split sentence into words.
 		RawInfoPair rawCmdPair = Tokenizer.splitRawInput(inputString);
 		logger.info("Raw String splitted");
 		
 		// Identify command, form a pair of command and sub information.
+		assert rawCmdPair != null : "input after tokenizer should not be null";
 		CMDInfoPair cmdPair = CMDInterpreter.makeCmdPair(rawCmdPair);
 		logger.info("CMDInfoPair generated, current interpreted command: " + cmdPair.getCMD());
 		
 		// Call corresponding commands information retrieval.
+		assert cmdPair != null : "input after generating command pair should not be null";
 		RawCommand interpretedCm = CMDCaller.transformCmd(cmdPair);
 		logger.info("RawCommand generated, command passed to Logic: " + interpretedCm.getCommand());
 		return interpretedCm;

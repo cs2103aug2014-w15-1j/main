@@ -9,9 +9,10 @@ import parser.CMDTypes.COMMAND_TYPE;
  * class <Strong>CMDMaker</Strong>: 
  *
  *<p>
- * CMDMaker accept an <code>ArrayList</code> of <code>TokenPairs</code>, it retrieves valid information 
- * regarding to different commands. it will packaging all the information by creating 
- * an object called <code>RawCommand</code>, it would contains the command and categorized sub-information.
+ * CMDMaker accept an <code>ArrayList</code> of <code>TokenPairs</code>. It contains all 
+ * the supported commands and their information retrieving procedures. All the commands would
+ * it will packaging information by creating an object called <code>RawCommand</code>, 
+ * which would contains the command and categorized sub-information.
  *</p>
  *
  *<p>
@@ -40,14 +41,17 @@ class CMDMaker {
 			String endDate;
 			String description;
 			
+			// Get the title and pass on rest information
 			RawInfoPair titlePair;
 			titlePair = InfoRetrieve.getTaskTitle(tokenPairs);
 			taskTitle = titlePair.getFront();
 			
+			// Get the start date and pass on rest information
 			RawInfoPair startPair;
 			startPair = InfoRetrieve.getDate(titlePair.getSubInfo());
 			startDate = startPair.getFront();
 			
+			// Get the end date and pass on rest information
 			RawInfoPair endPair;
 			endPair = InfoRetrieve.getDate(startPair.getSubInfo());
 			endDate = endPair.getFront();
@@ -69,7 +73,7 @@ class CMDMaker {
 	/**
 	 * Generate a RawCommand for "Update" operation
 	 * 
-	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @param an ArrayList TokenPair that contains tokenized words
 	 * @return a RawCommand object
 	 */
 	static RawCommand update(ArrayList<TokenPair> tokenPairs){
@@ -82,6 +86,8 @@ class CMDMaker {
 			TokenPair SecondPair = tokenPairs.get(1);
 			String field2 = SecondPair.getCotent();
 			
+			// Check if there is a line number specified. Line number is used for 
+			// manipulating a specific task when having tasklist view
 			if (field1.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.NAME.name())){
 				tokenPairs.remove(0);
 				return rename(tokenPairs);

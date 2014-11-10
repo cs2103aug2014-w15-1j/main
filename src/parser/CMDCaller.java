@@ -3,8 +3,13 @@ package parser;
 import java.util.ArrayList;
 
 /**
- * class <Strong>CMDCaller</Strong>: Calling corresponding command operation regarding 
- * different command types. 
+ * class <Strong>CMDCaller</Strong>: 
+ * 
+ * <p>
+ * Calling corresponding command operation regarding different command types. 
+ * CMDCaller would switch commands between all the CMDTypes and all the unidentifiable
+ * command would be treated as "INVLAID" commands
+ * </p>
  * 
  * @see CMDTypes
  * @author A0119493X
