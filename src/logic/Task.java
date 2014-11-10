@@ -302,7 +302,7 @@ public class Task implements Comparable<Task> {
 			return false;
 		}
 		if(this.getDescription() != null && !this.getDescription().equals(task.getDescription())){
-			return false
+			return false;
 		}
 		if(this.getDescription() == null && task.getDescription() != null){
 			return false;
