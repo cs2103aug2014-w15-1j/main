@@ -102,7 +102,7 @@ public class DeleteTrashbin implements Command{
 
 	private void deleteAll() {			
 		for(int i = 1; i<= Default.MAX_DISPLAY_LINE; i++){
-			if(currentDisplay[i] != -1){
+			if(currentDisplay[i] != -1 && currentListIndex[currentDisplay[1]] != -1){
 				trashbinList.remove(currentListIndex[currentDisplay[1]]);
 			} else {
 				break;
@@ -116,6 +116,11 @@ public class DeleteTrashbin implements Command{
 	
 	private DisplayInfo constructDisplay() {
 		ViewTrashBin viewTrashbin;
+		if(trashbinList.isEmpty()){
+			viewTrashbin = new ViewTrashBin(feedback, title);
+			return viewTrashbin.execute();
+		}
+		
 		int index = currentDisplay[1];
 		if(currentListIndex[index] != -1){
 			viewTrashbin = new ViewTrashBin(index, feedback, title);
