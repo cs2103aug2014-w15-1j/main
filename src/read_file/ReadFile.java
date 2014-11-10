@@ -12,7 +12,7 @@ import logic.Task;
 
 /**
  * @author A0100792M
- *         A0119493X
+ *        
  * 
  * This class read task files and trash files and return them in ArrayList<Task>
  *            creation of Task objects that includes null fields from string in files
@@ -30,12 +30,12 @@ public class ReadFile {
         this.setTRASHFILE(new ArrayList<Task>());
     }
     
-    /*
-     * Edited by A0100792M to retrieve home path for file
- 	*/
     
     /**
-     * get event ArrayList<Task>
+     * Retrieve ArrayList of Taskfile
+     * 
+     * @return
+     * 		return event ArrayList<Task> object
      */
     public ArrayList<Task> getEventTask() {
     	String filePathName = data_store.DataStore.getFilePath(SystemInfo.EVENT_NAME);
@@ -44,17 +44,17 @@ public class ReadFile {
     }
 
     /**
-     * get trash ArrayList<Task>
+     * 
+     * Retrieve ArrayList of Trashfile
+     * 
+     * @return
+     * 		return trash ArrayList<Task>
      */
     public ArrayList<Task> getTrashFile() {
       String filePathName = data_store.DataStore.getFilePath(SystemInfo.TRASH_NAME);
        
       return getOSTrashFile(filePathName);
     }
-    
-    /*
-     * End
-     */
 
     /** 
      * Read tasks file line by line and store them into temporal ArrayList
@@ -133,123 +133,17 @@ public class ReadFile {
     }
 
     /**
+     * Make a Task object from string in file
      * 
-     * By A0100792 to accept null date
-     * create a event
-     * @return 
+     * @return
+     * 		Task object
      */
     public static Task makeTask(String taskString) {
 
         String[] tempoTaskSplit = taskString.split(SystemInfo.SEPERATESIMBOL);       
         
         if (tempoTaskSplit.length == 5) {       	
-        	/*
-        	 if(     tempoTaskSplit[1]=="null" &&
-        	 
-        			tempoTaskSplit[3].endsWith(SystemInfo.CHECKSTART) && 
-        			tempoTaskSplit[4].endsWith(SystemInfo.CHECKEND))
-        	{
-        		String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
-                JDate startDate = dateMaker(startDateStr);
-                
-                String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);
-                JDate endDate = dateMaker(endDateStr);
-                
-                curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[2], startDate, endDate);
-                
-        	}else if(
-        			  tempoTaskSplit[1]!="null" &&
-        			  tempoTaskSplit[3]=="null" &&
-        			  tempoTaskSplit[4].endsWith(SystemInfo.CHECKEND))
-        	{   // add start
-        		
-                JDate startDate = new JDate();
-        		
-                String[] endDateStr = tempoTaskSplit[4].split(SystemInfo.SPLIT_DATE_SYMBOL);
-                JDate endDate = dateMaker(endDateStr);
-                
-                curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[1], tempoTaskSplit[2], startDate,endDate);
-        	}else if(
-        			  tempoTaskSplit[1]!="null" &&
-        			  tempoTaskSplit[3].endsWith(SystemInfo.CHECKSTART) &&
-        			  tempoTaskSplit[4]=="null")
-        	{
-        		//add end
-        		JDate endDate = new JDate();
-        		
-        		String[] startDateStr = tempoTaskSplit[3].split(SystemInfo.SPLIT_DATE_SYMBOL);
-            	JDate startDate = dateMaker(startDateStr);
-            
-            	curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[1], tempoTaskSplit[2], startDate,endDate);
-            	
-            	  curTask = new Task(tempoTaskSplit[0],
-            			tempoTaskSplit[1], startDate, tempoTaskSplit[2]);
-            	
-        	}else if(
-        			  tempoTaskSplit[1]!="null" &&
-        			  tempoTaskSplit[3]=="null" &&
-        			  tempoTaskSplit[4]=="null")
-        	{	
-        		JDate startDate = new JDate();
-        		JDate endDate = new JDate();
-        		
-        		curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[1], tempoTaskSplit[2], startDate,endDate);
-        		
-        		 curTask = new Task(tempoTaskSplit[0],
-                    tempoTaskSplit[1], tempoTaskSplit[2]);
-                    
-        	}else if(
-        			tempoTaskSplit[1]=="null" &&
-        		    tempoTaskSplit[3]=="null" &&
-              	    tempoTaskSplit[4]=="null")
-        	{
-        		JDate startDate = new JDate();
-        		JDate endDate = new JDate();
-        		
-        		curTask = new Task(tempoTaskSplit[0],
-                         tempoTaskSplit[2], startDate,endDate);
-        		
-        		curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[2]);  
-                         
-        	}else if(
-        			  tempoTaskSplit[1]=="null" &&
-        			  tempoTaskSplit[3]=="null" &&
-        			  tempoTaskSplit[4].endsWith(SystemInfo.CHECKEND))
-        	{
-        		JDate startDate = new JDate();
-        		
-        		String[] endDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);
-                JDate endDate = dateMaker(endDateStr);
-                
-                curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[2], startDate,endDate);
-                curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[1], endDate);
-                        
-        	}else if(
-        			  tempoTaskSplit[1]=="null" &&
-        			  tempoTaskSplit[3].endsWith(SystemInfo.CHECKSTART) &&
-        			  tempoTaskSplit[4]=="null")
-        	{
-        		JDate endDate = new JDate();
-        		
-        		String[] startDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);
-                JDate startDate = dateMaker(startDateStr);
-                
-                curTask = new Task(tempoTaskSplit[0],
-                        tempoTaskSplit[2], startDate,endDate);
-                curTask = new Task(tempoTaskSplit[0],
-                        startDate,tempoTaskSplit[1]);
-                        
         	
-        	}else{
-        	*/
-        		// ALL 5 FIELDS
           		
         		String[] startDateStr = tempoTaskSplit[2].split(SystemInfo.SPLIT_DATE_SYMBOL);                
 
@@ -308,7 +202,10 @@ public class ReadFile {
     }
 
     /**
-     * Make a Date object
+     * Make a JDate object from a string representing date
+     * 
+     * @return
+     *  	JDate object of date
      * */
     private static JDate dateMaker(String[] dateInfo) {
         try {

@@ -12,7 +12,7 @@ import logic.Task;
 import org.junit.Before;
 import org.junit.Test;
 
-/*
+/**
  * @author A0100792 testing
  * 
  */
