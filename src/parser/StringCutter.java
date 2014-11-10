@@ -8,7 +8,7 @@ package parser;
  * </p>
  * 
  * <p>
- * <Strong>Note</Strong>: Here, <code>Block</code> is defined to be either a word that is 
+ * <Strong>Note</Strong>: Here, a <code>Block</code> is defined to be either a word that is 
  * separated by a space from other contents or a quoted chunk of words/sentence.
  * </p>
  * 

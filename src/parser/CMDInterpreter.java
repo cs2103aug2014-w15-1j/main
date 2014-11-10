@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * class <Strong>CmdInterpretor</Strong>: Identify commands in input string
  * <p>
  * CmdInterpretor takes in a raw <code>String</code> input, identifies the command
- * in the raw input and return a <code>RawCommand</code> object that contains basic
+ * in the raw input and return a <code>CMDInfoPair</code> object that contains basic
  * information.
  * </p>
  * @author A0119493X
@@ -15,13 +15,14 @@ import java.util.ArrayList;
 class CMDInterpreter {
 	
 	/**
-     * Interpret strings by their own commands
+     * Interpret strings by their own commands.
      * 
      * @param rawString -String
      * @return CmdInfoPair
      * 		   this object contains a pair of command and sub-information string 
      * 		   of an raw input. For unidentified commands, an RawCommand containing 
      * 		   command "Invalid" would be returned
+     * @see CMDInfoPair
      * */
     static CMDInfoPair makeCmdPair(RawInfoPair rawCMDPair){
         String getCommand = rawCMDPair.getFront();

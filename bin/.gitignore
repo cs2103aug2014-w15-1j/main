@@ -1,4 +1,14 @@
+<<<<<<< HEAD
 /logic
 /data_store
 /read_file
 /CommandType
+=======
+/CommandType/
+/data_store/
+/gui/
+/images/
+/logic/
+/parser/
+/read_file/
+>>>>>>> 1bdaeb214b21dca0db1ef6a209d62e1c158350ed
