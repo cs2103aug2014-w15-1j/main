@@ -226,7 +226,7 @@ public class ConvertCommand {
 
 			// delete certain line
 			int deleteLine = Integer.parseInt(command.getCMDDescription());
-			if (checkLineExist(deleteLine)) {
+			if (checkLineNotExist(deleteLine)) {
 				return new Invalid(INVALID_DELETE_ITEM);
 			}
 
@@ -248,7 +248,7 @@ public class ConvertCommand {
 
 			// delete certain line
 			int deleteLine = Integer.parseInt(command.getCMDDescription());
-			if (checkLineExist(deleteLine)) {
+			if (checkLineNotExist(deleteLine)) {
 				return new Invalid(INVALID_DELETE_ITEM);
 			}
 
@@ -265,7 +265,7 @@ public class ConvertCommand {
 			return new Invalid(INVALID_READ_ITEM);
 		}
 		int readLine = Integer.parseInt(command.getCMDDescription());
-		if (checkLineExist(readLine)) {
+		if (checkLineNotExist(readLine)) {
 			return new Invalid(INVALID_READ_ITEM);
 		}
 
@@ -296,7 +296,7 @@ public class ConvertCommand {
 				return new Invalid(INVALID_RENAME_ITEM);
 			}
 			int readLine = Integer.parseInt(command.getCMDDescription());
-			if (checkLineExist(readLine)) {
+			if (checkLineNotExist(readLine)) {
 				return new Invalid(INVALID_RENAME_ITEM);
 			}
 
@@ -360,7 +360,7 @@ public class ConvertCommand {
 				return new Invalid(INVALID_RESCHEDULE_ITEM);
 			}
 			int readLine = Integer.parseInt(command.getCMDDescription());
-			if (checkLineExist(readLine)) {
+			if (checkLineNotExist(readLine)) {
 				return new Invalid(INVALID_RESCHEDULE_ITEM);
 			}
 
@@ -388,12 +388,11 @@ public class ConvertCommand {
 		// describe in task list view mode
 		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)) {
 			// if updating item dose not exist, return invalid
-			if (!isInt(command.getCMDDescription())) {
-				System.out.println(command.getCMDDescription());
+			if (!isInt(command.getCMDDescription().trim())) {
 				return new Invalid(INVALID_DESCRIBE_ITEM);
 			}
 			int readLine = Integer.parseInt(command.getCMDDescription());
-			if (!checkLineExist(readLine)) {
+			if (checkLineNotExist(readLine)) {
 				return new Invalid(INVALID_DESCRIBE_ITEM);
 			}
 			Task task = RunLogic.getTaskList().get(getTaskWithLine(readLine));
@@ -408,9 +407,9 @@ public class ConvertCommand {
 		}
 
 		// describe in task detail mode
-		if (newDescription == null) {
+		if (command.getDescription() == null || command.getDescription() == "") {
 			newDescription = command.getCMDDescription();
-		} else if (command.getDescription() != null) {
+		} else if (command.getCMDDescription() != null && command.getCMDDescription() != "") {
 			newDescription = command.getCMDDescription() + " " + command.getDescription();
 		}
 		Task task = RunLogic.getTaskList().get(
@@ -427,7 +426,7 @@ public class ConvertCommand {
 				return new Invalid(INVALID_MARK_ITEM);
 			}
 			int readLine = Integer.parseInt(command.getCMDDescription());
-			if (checkLineExist(readLine)) {
+			if (checkLineNotExist(readLine)) {
 				return new Invalid(INVALID_MARK_ITEM);
 			}
 			Task task = RunLogic.getTaskList().get(getTaskWithLine(readLine));
@@ -467,7 +466,7 @@ public class ConvertCommand {
 				return new Invalid(INVALID_RESTORE_ITEM);
 			}
 			int restoreLine = Integer.parseInt(command.getCMDDescription());
-			if (!checkLineExist(restoreLine)) {
+			if (checkLineNotExist(restoreLine)) {
 				return new Invalid(INVALID_RESTORE_ITEM);
 			}
 
@@ -661,7 +660,7 @@ public class ConvertCommand {
 		return new JDate(year, month - 1, day);
 	}
 
-	private static boolean checkLineExist(int line) {
+	private static boolean checkLineNotExist(int line) {
 		return line > Default.MAX_DISPLAY_LINE || line <= 0
 				|| RunLogic.getCurrentDisplay()[line] == -1;
 	}
