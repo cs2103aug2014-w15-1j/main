@@ -33,7 +33,7 @@ public class Default {
 	public static String helpInfo = "<html>" + "<table style='width:100%'>" + 
 			HTML_TR1 + HTML_TD1 + "Add" + HTML_TD2  + HTML_TD1 + "Add a new Tasklist "+ HTML_TD2  + HTML_TD1 + "[Add &lt;title&gt; &lt;Start Time YYYY-MM-DD&gt; &lt;End Time YYYY-MM-DD&gt; &lt;Description&gt;]" + HTML_TD2  + HTML_TR2 +
 			HTML_TR1 + HTML_TD1 + "Back" + HTML_TD2  + HTML_TD1 + "Back to Tasklist View "+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
-			HTML_TR1 + HTML_TD1 + "Delete" + HTML_TD2  + HTML_TD1 + "Delete a task"+ HTML_TD2  + HTML_TD1 + "HTML_TD2"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Delete" + HTML_TD2  + HTML_TD1 + "Delete a task"+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
 			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + " [Delete all]"+ HTML_TD2  + HTML_TR2 +
 			HTML_TR1 + HTML_TD1 + "Describe" + HTML_TD2  + HTML_TD1 + "Redescribe a task"+ HTML_TD2  + HTML_TD1 + "[Describe &lt;new description&gt;]"+ HTML_TD2  + HTML_TR2 +
 			HTML_TR1 + HTML_TD1 + "Mark" + HTML_TD2  + HTML_TD1 + "Mark the status "+ HTML_TD2  + HTML_TD1 + " [Mark &lt;index&gt; &lt;status 'Done' or 'Undone'&gt;]"+ HTML_TD2  + HTML_TR2 +

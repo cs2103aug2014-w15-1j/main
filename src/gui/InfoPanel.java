@@ -19,7 +19,7 @@ import javax.swing.text.StyledDocument;
  * Layout manager used in <code>InfoPanel</code> is <code>BorderLayout</code>
  * info panel is divided into two parts: title panel and content panel.
  * 
- * @author JJ
+ * @author A0119391A
  */
 public class InfoPanel extends JPanel {
 

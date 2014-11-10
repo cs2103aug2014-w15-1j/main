@@ -1,0 +1,2790 @@
+//@author: a0119493x
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\DeleteTaskList.java
+	 */
+
+ *
+ */
+public class DeleteTaskList implements Command{
+	// feedback format
+	private static String UNDO_FEEDBACK = "Deleted tasks added back!";
+	
+	private static String feedback;
+	private static String title;
+	
+	private static boolean deleteAll;
+	private static int deleteIndex;
+	
+	//local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> trashbinList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+		
+	// memory for undo 
+	private int[] taskPointers = initializeList(Default.MAX_DISPLAY_LINE);
+	
+	// value for I/O
+	private static LogicToStore passToStore;
+	
+	public DeleteTaskList(Boolean all, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		initialize();
+		deleteAll = all;
+		deleteIndex = -1;
+	}
+	
+	public DeleteTaskList(int line, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		initialize();
+		deleteAll = false;
+		deleteIndex = currentDisplay[line];
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		if(deleteAll){
+			deleteAll();
+		} else {
+			deleteLine();
+		}
+		modifyIndexList();	
+		update();
+		constructBridges();
+		DataStore.writeAllData(passToStore);
+		return constructDisplay();
+		
+	}
+	@Override
+	public DisplayInfo undo() {
+		initialize();
+		int[] reAddedTaskIndexList = addTasksBack();	
+		int firstHighlightTaskIndex = determinefirstTask(reAddedTaskIndexList);
+		modifyIndexList();		
+		update();
+		return constructUndoDisplay(firstHighlightTaskIndex, reAddedTaskIndexList);
+
+	}
+
+	
+	//-----------helper functions-----------------
+	
+	
+	private static void initialize(){
+		GUI = RunLogic.getGuiStatus();
+		taskList = RunLogic.getTaskList();
+		trashbinList = RunLogic.getTrashbinList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+	
+	private static void update(){
+		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateTaskList(taskList);
+		RunLogic.updateTrashbinList(trashbinList);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+	
+	private int[] updateListIndex(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < taskList.size(); i++){
+			temp[i] = i;
+		}
+		for(int i = taskList.size(); i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+	
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+
+	private static void constructBridges(){
+		passToStore = new LogicToStore(taskList,trashbinList);
+	}
+	
+	private static int[] initializeList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+	
+	private DisplayInfo constructDisplay() {
+		ViewTaskList viewTaskList;
+		int index = currentDisplay[1];
+		if(currentListIndex[index] != -1){
+			viewTaskList = new ViewTaskList(index, feedback, title);
+		} else if (GUI.hasPrevious()){
+			viewTaskList = new ViewTaskList(index - Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTaskList = new ViewTaskList(feedback, title);
+		}
+		return viewTaskList.execute();
+	}
+
+	private void deleteLine() {
+		this.taskPointers[0] = taskList.get(currentListIndex[deleteIndex]).getPointer();
+		trashbinList.add(taskList.remove(currentListIndex[deleteIndex]));
+	}
+
+	private void deleteAll() {
+		for(int i = 1; i<= Default.MAX_DISPLAY_LINE; i++){
+			if(currentDisplay[i] != -1){
+				this.taskPointers[i - 1] = taskList.get(currentListIndex[currentDisplay[1]]).getPointer();
+				trashbinList.add(taskList.remove(currentListIndex[currentDisplay[1]]));
+			} else {
+				break;
+			}
+		}
+	}
+	
+	private void modifyIndexList() {
+		currentListIndex = updateListIndex(currentListIndex.length);
+	}
+	
+	private DisplayInfo constructUndoDisplay(int firstHighlightTaskIndex, int[] reAddedTaskIndexList) {
+		Command view = new ViewTaskList(reAddedTaskIndexList[firstHighlightTaskIndex] - (reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE), 
+				UNDO_FEEDBACK, title);
+		DisplayInfo dis = view.execute();
+		if(reAddedTaskIndexList[firstHighlightTaskIndex] >= 0){
+			dis.setHighlight(Default.HIGHLIGHT_LINES);
+			dis.setHighlightLine(reAddedTaskIndexList[firstHighlightTaskIndex] % Default.MAX_DISPLAY_LINE);
+		}
+		
+		return dis;
+	}
+
+	private int determinefirstTask(int[] reAddedTaskIndexList) {
+		int firstHighlightTaskIndex = 0;
+		for(int i = 0; i < Default.MAX_DISPLAY_LINE; i++){
+			if(reAddedTaskIndexList[i] >= 0){
+				if(reAddedTaskIndexList[i] % Default.MAX_DISPLAY_LINE == 0){
+					firstHighlightTaskIndex = i;
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		return firstHighlightTaskIndex;
+	}
+
+	private int[] addTasksBack() {
+		int[] reAddedTaskIndexList = initializeList(Default.MAX_DISPLAY_LINE); 
+		for(int i = 0, j = 0; i < Default.MAX_DISPLAY_LINE; i++){
+			if(taskPointers[i] >= 0){
+				int index = RunLogic.getIndexInList(trashbinList, taskPointers[i]);
+				if(index >= 0){
+					taskList.add(trashbinList.remove(index));
+					reAddedTaskIndexList[j] = taskList.size() - 1;
+					j++;
+				}
+			} else {
+				break;
+			}
+		}
+		return reAddedTaskIndexList;
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\DeleteTaskList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\DeleteTrashbin.java
+	 */
+
+ *
+ */
+public class DeleteTrashbin implements Command{
+	private static String feedback;
+	private static String title;
+	
+	private static boolean deleteAll;
+	private static int deleteIndex;
+	
+	//local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> trashbinList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+	
+	public DeleteTrashbin(Boolean all, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		initialize();
+		deleteAll = all;
+		deleteIndex = -1;
+	}
+	
+	public DeleteTrashbin(int line, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		initialize();
+		deleteAll = false;
+		deleteIndex = currentDisplay[line];
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		if(deleteAll){
+			deleteAll();
+		} else {
+			deleteLine();
+		}
+		modifyIndexList();	
+		update();
+		DataStore.writeTrash(trashbinList);
+		return constructDisplay();
+	}
+
+
+
+	
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//-----------helper functions-----------------
+	
+	
+	private static void initialize(){
+		GUI = RunLogic.getGuiStatus();
+		trashbinList = RunLogic.getTrashbinList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+	
+	private static void update(){
+		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateTrashbinList(trashbinList);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+
+	private int[] updateListIndex(int[] currentList) {
+		for(int i = 0; i < trashbinList.size(); i++){
+			currentList[i] = i;
+		}
+		for(int i = trashbinList.size(); i < currentList.length; i++){
+			currentList[i] = -1;
+		}
+		return currentList;
+	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+	private void deleteLine() {
+		trashbinList.remove(currentListIndex[deleteIndex]);
+	}
+
+	private void deleteAll() {			
+		for(int i = 1; i<= Default.MAX_DISPLAY_LINE; i++){
+			if(currentDisplay[i] != -1){
+				trashbinList.remove(currentListIndex[currentDisplay[1]]);
+			} else {
+				break;
+			}
+		}
+	}
+	
+	private void modifyIndexList() {
+		currentListIndex = updateListIndex(currentListIndex);
+	}
+	
+	private DisplayInfo constructDisplay() {
+		ViewTrashBin viewTrashbin;
+		int index = currentDisplay[1];
+		if(currentListIndex[index] != -1){
+			viewTrashbin = new ViewTrashBin(index, feedback, title);
+		} else if (GUI.hasPrevious()){
+			viewTrashbin = new ViewTrashBin(index - Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTrashbin = new ViewTrashBin(feedback, title);
+		}
+		return viewTrashbin.execute();
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\DeleteTrashbin.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Describe.java
+	 */
+
+ *
+ */
+public class Describe implements Command {
+	private static String feedback;
+	private static String title;
+
+	private static String newDescription;
+	private static int lineIndex;
+
+	// local memory
+	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+	private long taskPointer;
+	private String beforeChangeDes;
+	
+	
+	public Describe(String description, String myFeedback, String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		newDescription = description;
+		
+		lineIndex = 1;
+	}
+
+	public Describe(int line, String description, String myFeedback,
+			String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		newDescription = description;
+		lineIndex = line;
+	}
+
+	@Override
+	public DisplayInfo execute() {
+		recordOldInfo();
+		modifyTaskList(newDescription);
+		update();
+		DataStore.writeTask(taskList);
+		return constructDisplay();
+	}
+
+	
+	@Override
+	public DisplayInfo undo() {
+		initialize();
+		modifyTaskList(beforeChangeDes);
+		update();
+		DataStore.writeTask(taskList);
+		return constructUndoDisplay();
+	}
+
+	// -----------helper functions-----------------
+
+
+	private static void initialize() {
+		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+
+	private static void update() {
+		RunLogic.updateTaskList(taskList);
+	}
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+
+	private DisplayInfo constructDisplay() {
+		ReadTaskList read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.DESCRIPTION);
+		return dis;
+	}
+
+	private void modifyTaskList(String newDescription2) {		
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).describe(
+			newDescription);
+	}
+
+	private void recordOldInfo() {
+		beforeChangeDes = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getDescription();
+	}
+
+	private DisplayInfo constructUndoDisplay() {
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_DESCRIBE, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.DESCRIPTION);
+		return dis;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Describe.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Rename.java
+	 */
+
+ *
+ */
+public class Rename implements Command {
+	private static String feedback;
+	private static String title;
+
+	private static String newName;
+	private static int lineIndex;
+
+	// local memory
+	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+	private long taskPointer;
+	private String beforeChangeTitle;
+	
+	
+	public Rename(int line, String name, String myFeedback, String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		newName = name;
+		lineIndex = line;
+	}
+
+	public Rename(String name, String myFeedback, String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		newName = name;
+		lineIndex = 1;
+	}
+
+	@Override
+	public DisplayInfo execute() {
+		recordOldInfo();
+		modifyTaskList(newName);
+		update();
+		DataStore.writeTask(taskList);
+		return constructDisplay();
+		
+	}
+
+	
+	@Override
+	public DisplayInfo undo() {
+		initialize();
+		modifyTaskList(beforeChangeTitle);
+		update();
+		DataStore.writeTask(taskList);
+		return constructUndoDisplay();	
+	}
+
+	// -----------helper functions-----------------
+
+	private DisplayInfo constructUndoDisplay() {
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_RENAME, String.format(ConvertCommand.DETAIL_TITLE_FORMAT, beforeChangeTitle));
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.NAME);
+		return dis;
+	}
+
+	private static void initialize() {
+		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+
+	private static void update() {
+		RunLogic.updateTaskList(taskList);
+	}
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+	
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+
+	private DisplayInfo constructDisplay() {
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+		Command read = new ReadTaskList(lineIndex, feedback, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.NAME);
+		return dis;
+	} else {
+		Command view = new ViewTaskList(RunLogic.getGuiStatus().getTaskIndex(), feedback, title);
+		DisplayInfo dis = view.execute();
+		dis.setHighlight(Default.HIGHLIGHT_LINE);
+		dis.setHighlightLine(lineIndex - 1);
+		return dis;
+	}
+	}
+
+	private void modifyTaskList(String name) {
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).rename(
+				name);
+	}
+
+	private void recordOldInfo() {
+		beforeChangeTitle = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getName();
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Rename.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Reschedule.java
+	 */
+
+ *
+ */
+public class Reschedule implements Command {
+	private static String feedback;
+	private static String title;
+
+	private static JDate newStartDate;
+	private static JDate newEndDate;
+	private static int lineIndex;
+
+	// local memory
+	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+	private long taskPointer;
+	private JDate startDayBC;
+	private JDate endDayBC;
+	
+	
+	public Reschedule(JDate startDate, JDate endDate, String myFeedback,
+			String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		newStartDate = startDate;
+		newEndDate = endDate;
+		lineIndex = 1;
+	}
+
+	public Reschedule(int line, JDate startDate, JDate endDate,
+		String myFeedback, String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		newStartDate = startDate;
+		newEndDate = endDate;
+		lineIndex = line;
+	}
+
+	@Override
+	public DisplayInfo execute() {
+		recordOldInfo();
+		modifyTaskList(newStartDate, newEndDate);
+		update();
+		DataStore.writeTask(taskList);
+		return constructDisplay();	
+	}
+
+	
+
+	@Override
+	public DisplayInfo undo() {
+		modifyTaskList(startDayBC, endDayBC);
+		update();
+		DataStore.writeTask(taskList);
+		return constructUndoDisplay();
+	}
+
+	// ---------------helper function--------------
+
+	private DisplayInfo constructUndoDisplay() {
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_RESCHEDULE, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.BOTHDATE);
+		if(newStartDate == null){
+			dis.setHighlightItem(Default.ENDDATE);
+		} else if(newEndDate == null){
+			dis.setHighlightItem(Default.STARTDATE);
+		}
+		return dis;
+	}
+
+	private static void initialize() {
+		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+
+	private static void update() {
+		RunLogic.updateTaskList(taskList);
+	}
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+	
+	private DisplayInfo constructDisplay() {
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			Command read = new ReadTaskList(lineIndex, feedback, title);
+			DisplayInfo dis = read.execute();
+			dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+			dis.setHighlightItem(Default.BOTHDATE);
+			if(newStartDate == null){
+				dis.setHighlightItem(Default.ENDDATE);
+			} else if(newEndDate == null){
+				dis.setHighlightItem(Default.STARTDATE);
+			}
+			return dis;
+		} else {
+			Command view = new ViewTaskList(RunLogic.getGuiStatus().getTaskIndex(), feedback, title);
+			DisplayInfo dis = view.execute();
+			dis.setHighlight(Default.HIGHLIGHT_LINE);
+			dis.setHighlightLine(lineIndex - 1);
+			return dis;
+		}
+	}
+
+	private void modifyTaskList(JDate startDayBC2, JDate endDayBC2) {
+		taskList.get(currentListIndex[currentDisplay[lineIndex]]).reschedule(
+			newStartDate, newEndDate);
+	}
+
+	private void recordOldInfo() {
+		startDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getStartDate();
+		endDayBC = taskList.get(currentListIndex[currentDisplay[lineIndex]]).getEndDate();
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Reschedule.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Restore.java
+	 */
+
+ *
+ */
+public class Restore implements Command {
+	private static String UNDO_FEEDBACK = "Restored task deleted!";
+	
+	private static String feedback;
+	private static String title;
+
+	int restoreIndex;
+
+	// local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> trashbinList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;	
+	private long taskPointer;
+	private int originListIndex;
+
+	// values for I/O
+	private static LogicToStore passToStore;
+
+	
+	public Restore(int line, String myFeedback, String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		this.restoreIndex = currentDisplay[line];
+	}
+
+	@Override
+	public DisplayInfo execute() {
+		recordOldInfo();
+		modifyTaskList();
+		modifyIndexList();
+		update();
+		constructBridges();
+		DataStore.writeAllData(passToStore);
+		return constructDisplay();	
+	}
+
+	
+	@Override
+	public DisplayInfo undo() {
+		initialize();
+		modifyTrashBin();
+		modifyIndexList();
+		update();
+		constructBridges();
+		DataStore.writeAllData(passToStore);
+		return constructUndoDisplay();
+		
+	}
+
+	
+
+	// -----------helper functions-----------------
+
+	private static void initialize() {
+		GUI = RunLogic.getGuiStatus();
+		taskList = RunLogic.getTaskList();
+		trashbinList = RunLogic.getTrashbinList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+
+	private static void update() {
+		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateTaskList(taskList);
+		RunLogic.updateTrashbinList(trashbinList);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+
+	private int[] updateListIndex(int[] currentList) {
+		for (int i = 0; i < trashbinList.size(); i++) {
+			currentList[i] = i;
+		}
+		for (int i = trashbinList.size(); i < currentList.length; i++) {
+			currentList[i] = -1;
+		}
+		return currentList;
+	}
+
+	private static void constructBridges() {
+		passToStore = new LogicToStore(taskList, trashbinList);
+	}
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+	
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+	
+	private DisplayInfo constructDisplay() {
+		ViewTrashBin viewTrashBin;
+		if (currentListIndex[restoreIndex] != -1) {
+			viewTrashBin = new ViewTrashBin(restoreIndex, feedback, title);
+		} else if (GUI.hasPrevious()) {
+			viewTrashBin = new ViewTrashBin(restoreIndex
+					- Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTrashBin = new ViewTrashBin(feedback, title);
+		}
+		return viewTrashBin.execute();
+	}
+
+	private void modifyIndexList() {
+		currentListIndex = updateListIndex(currentListIndex);
+	}
+
+	private void modifyTaskList() {
+		taskList.add(trashbinList.remove(currentListIndex[restoreIndex]));
+	}
+
+	private void recordOldInfo() {
+		originListIndex = currentListIndex[restoreIndex];
+	}
+	
+	private DisplayInfo constructUndoDisplay() {
+		Command viewTrashBin = new ViewTrashBin(trashbinList.size() - 1 - (trashbinList.size() % Default.MAX_DISPLAY_LINE), UNDO_FEEDBACK, title);
+		if (currentListIndex[originListIndex] != -1) {
+			viewTrashBin = new ViewTrashBin(originListIndex, feedback, title);
+		} else if (GUI.hasPrevious()) {
+			viewTrashBin = new ViewTrashBin(originListIndex
+					- Default.MAX_DISPLAY_LINE, feedback, title);
+		} else {
+			viewTrashBin = new ViewTrashBin(feedback, title);
+		}
+		return viewTrashBin.execute();
+	}
+
+	private void modifyTrashBin() {
+		trashbinList.add(taskList.remove(originListIndex));
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Restore.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Undo.java
+	 */
+
+ *
+ */
+public class Undo implements Command {
+	
+	
+	private static String NO_UNDO = "No available undo!";	
+	
+	
+	@Override
+	public DisplayInfo execute() {
+		if(!RunLogic.hasPastCommands()) {
+			return new Invalid(NO_UNDO).execute();
+		} else {
+			return RunLogic.undo();
+		}
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Undo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDCaller.java
+	 */
+
+ * */
+class CMDCaller {
+
+	/**
+	 * Transform string command into corresponding CliToLog objects
+	 * 
+	 * @param infoPair -CmdInfoPair
+	 * @return -RawCommand
+	 * */
+	static RawCommand transformCmd(CMDInfoPair infoPair){
+	    RawCommand resultCMD;
+	    CMDTypes.COMMAND_TYPE getCMD = infoPair.getCMD();
+	    ArrayList<TokenPair> subInfoPairs = infoPair.getSubInfo();
+	
+	    switch(getCMD){
+	    case ADD:
+	        resultCMD = CMDMaker.add(subInfoPairs);
+	        break;
+	    case UPDATE:
+	        resultCMD = CMDMaker.update(subInfoPairs);
+	        break;
+	    case RENAME:
+	        resultCMD = CMDMaker.rename(subInfoPairs);
+	        break;
+	    case RESCHEDULE:
+	        resultCMD = CMDMaker.reschedule(subInfoPairs);
+	        break;
+	    case DESCRIBE:
+	        resultCMD = CMDMaker.describe(subInfoPairs);
+	        break;
+	    case REPEAT:
+	        resultCMD = CMDMaker.repeat(subInfoPairs);
+	        break;
+	    case READ:
+	        resultCMD = CMDMaker.read(subInfoPairs);
+	        break;
+	    case DELETE:
+	        resultCMD = CMDMaker.delete(subInfoPairs);
+	        break;
+	    case VIEW:
+	        resultCMD = CMDMaker.view(subInfoPairs);
+	        break;
+	    case UNDO:
+	        resultCMD = CMDMaker.undo();
+	        break;
+	    case NEXT:
+	        resultCMD = CMDMaker.next();
+	        break;
+	    case PREVIOUS:
+	        resultCMD = CMDMaker.previous();
+	        break;
+	    case EXIT:
+	        resultCMD = CMDMaker.exit();
+	        break;
+	    case RESTORE:
+	    	resultCMD = CMDMaker.restore(subInfoPairs);
+	    	break;
+	    case BACK:
+	    	resultCMD = CMDMaker.back();
+	    	break;
+	    case SEARCH:
+	    	resultCMD = CMDMaker.search(subInfoPairs);
+	    	break;
+	    case MARK:
+	    	resultCMD = CMDMaker.mark(subInfoPairs);
+	    	break;
+	    case HELP:
+	    	resultCMD = CMDMaker.help();
+	    	break;
+	    default:
+	        resultCMD = CMDMaker.makeInvalid();
+	        break;
+	    }
+	    return resultCMD;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDCaller.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDInfoPair.java
+	 */
+
+ *          
+ * */
+
+class CMDInfoPair {
+    protected COMMAND_TYPE cmd;
+    protected ArrayList<TokenPair> subInfo;
+    
+    public CMDInfoPair(COMMAND_TYPE add, ArrayList<TokenPair> getSubInfo) {
+        this.cmd = add;
+        this.subInfo = getSubInfo;
+    }
+    
+    public COMMAND_TYPE getCMD() {
+        return this.cmd;
+    }
+    
+    public ArrayList<TokenPair> getSubInfo() {
+        return this.subInfo;
+    }
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDInfoPair.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDInterpreter.java
+	 */
+
+ * 			
+ * */
+class CMDInterpreter {
+	
+	/**
+     * Interpret strings by their own commands.
+     * 
+     * @param rawString -String
+     * @return CmdInfoPair
+     * 		   this object contains a pair of command and sub-information string 
+     * 		   of an raw input. For unidentified commands, an RawCommand containing 
+     * 		   command "Invalid" would be returned
+     * @see CMDInfoPair
+     * */
+    static CMDInfoPair makeCmdPair(RawInfoPair rawCMDPair){
+        String getCommand = rawCMDPair.getFront();
+        ArrayList<TokenPair> getSubInfo = rawCMDPair.getSubInfo();
+        
+        if (ValidityChecker.isAdd(getCommand) &&
+        	!ValidityChecker.isRead(getCommand) &&
+        	!ValidityChecker.isUpdate(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.ADD, getSubInfo);
+        } else if (ValidityChecker.isUpdate(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.UPDATE, getSubInfo);
+        } else if (ValidityChecker.isRename(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.RENAME, getSubInfo);
+        } else if (ValidityChecker.isDescribe(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.DESCRIBE, getSubInfo);
+        } else if (ValidityChecker.isReschedule(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.RESCHEDULE, getSubInfo);
+        } else if (ValidityChecker.isRepeat(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.REPEAT, getSubInfo);
+        } else if (ValidityChecker.isDelete(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.DELETE, getSubInfo);
+        } else if (ValidityChecker.isRead(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.READ, getSubInfo);
+        } else if (ValidityChecker.isView(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.VIEW, getSubInfo);
+        } else if (ValidityChecker.isNext(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.NEXT, getSubInfo);
+        } else if (ValidityChecker.isPrevious(getCommand)) {
+        	return new CMDInfoPair(CMDTypes.COMMAND_TYPE.PREVIOUS, getSubInfo);
+        } else if (ValidityChecker.isUndo(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.UNDO, getSubInfo);
+        } else if (ValidityChecker.isSearch(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.SEARCH, getSubInfo);
+        } else if (ValidityChecker.isBack(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.BACK, getSubInfo);
+        } else if (ValidityChecker.isExit(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.EXIT, getSubInfo);
+        } else if (ValidityChecker.isRestore(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.RESTORE, getSubInfo);
+        } else if (ValidityChecker.isMark(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.MARK, getSubInfo);
+        } else if (ValidityChecker.isHelp(getCommand)) {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.HELP, getSubInfo);
+        } else {
+            return new CMDInfoPair(CMDTypes.COMMAND_TYPE.INVALID, getSubInfo);
+        }
+    }
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDInterpreter.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDMaker.java
+	 */
+
+ * @see RawCommand
+ * */
+class CMDMaker {
+
+	private static Logger logger = Logger.getLogger("CMDMaker");
+
+	/**
+	 * Generate a RawCommand for "Add" operation.
+	 * 
+	 * @param an <code>ArrayList</code> of <code>TokenPair</code> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand add(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform add operation");
+		try {
+			String taskTitle;
+			String startDate;
+			String endDate;
+			String description;
+			
+			// Get the title and pass on rest information
+			RawInfoPair titlePair;
+			titlePair = InfoRetrieve.getTaskTitle(tokenPairs);
+			taskTitle = titlePair.getFront();
+			
+			// Get the start date and pass on rest information
+			RawInfoPair startPair;
+			startPair = InfoRetrieve.getDate(titlePair.getSubInfo());
+			startDate = startPair.getFront();
+			
+			// Get the end date and pass on rest information
+			RawInfoPair endPair;
+			endPair = InfoRetrieve.getDate(startPair.getSubInfo());
+			endDate = endPair.getFront();
+			
+			description = InfoRetrieve.getDescription(endPair.getSubInfo());
+			
+			if (endDate == null) {
+				endDate = startDate;
+				startDate = null;
+			}
+			return new RawCommand(CMDTypes.COMMAND_TYPE.ADD.name(), 
+								  taskTitle, startDate, 
+								  endDate, description);
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+	
+	/**
+	 * Generate a RawCommand for "Update" operation
+	 * 
+	 * @param an ArrayList TokenPair that contains tokenized words
+	 * @return a RawCommand object
+	 */
+	static RawCommand update(ArrayList<TokenPair> tokenPairs){
+		
+		logger.info("Perform update operation");
+		try {
+			TokenPair firstPair = tokenPairs.get(0);
+			String field1 = firstPair.getCotent();
+			
+			TokenPair SecondPair = tokenPairs.get(1);
+			String field2 = SecondPair.getCotent();
+			
+			// Check if there is a line number specified. Line number is used for 
+			// manipulating a specific task when having tasklist view
+			if (field1.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.NAME.name())){
+				tokenPairs.remove(0);
+				return rename(tokenPairs);
+			} else if (field2.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.NAME.name())){
+				tokenPairs.remove(1);
+				return rename(tokenPairs);
+			} else if (field1.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.DESCRIPTION.name())){
+				tokenPairs.remove(0);
+				return describe(tokenPairs);
+			} else if (field2.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.DESCRIPTION.name())){
+				tokenPairs.remove(1);
+				return describe(tokenPairs);
+			} else if (field1.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RESCHEDULE.name())){
+				tokenPairs.remove(0);
+				return reschedule(tokenPairs);
+			} else if (field2.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.RESCHEDULE.name())){
+				tokenPairs.remove(1);
+				return reschedule(tokenPairs);
+			} else if (field1.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.REPEAT.name())){
+				tokenPairs.remove(0);
+				return repeat(tokenPairs);
+			} else if (field2.equalsIgnoreCase(CMDTypes.COMMAND_TYPE.REPEAT.name())){
+				tokenPairs.remove(1);
+				return repeat(tokenPairs);
+			} else {
+				return makeInvalid();
+			}
+		} catch (Exception e) {
+			ErrorGenerator.popError(ErrorMSG.UPDATE_INPUT_ERR);
+			return makeInvalid(); 
+		}
+	}
+	
+	/**
+	 * Generate a RawCommand for "Search" operation
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand search(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform search operation");
+		try {
+			String getContent = InfoRetrieve.getFrontUN(tokenPairs).getFront();
+			return new RawCommand(COMMAND_TYPE.SEARCH.name(), getContent);
+		} catch (Exception e) {
+			return makeInvalid(); 
+		}
+	}
+	
+	/**
+	 * Generate a RawCommand for "Rename" operation
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand rename(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform rename operation");
+		try {
+			TokenPair firstPair = tokenPairs.get(0);
+			String locateLine;
+			
+			// Get locate Line
+			if (firstPair.getToken() == TokenType.TOKEN_TYPE.NB){
+				locateLine = tokenPairs.remove(0).getCotent();
+			} else {
+				locateLine = null;
+			}
+			
+			return new RawCommand(CMDTypes.COMMAND_TYPE.RENAME.name(), 
+								  InfoRetrieve.getAllSubInfo(tokenPairs).getFront(),
+								  locateLine);
+			
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+
+	/**
+	 * Generate a RawCommand for "Re-describe" operation
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand describe(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform describe operation");
+		try {
+			TokenPair firstPair = tokenPairs.get(0);
+			String locateLine;
+			
+			// Get locate Line
+			if (firstPair.getToken() == TokenType.TOKEN_TYPE.NB){
+				locateLine = tokenPairs.remove(0).getCotent();
+				
+			} else {
+				locateLine = null;
+			}
+		
+			return new RawCommand(CMDTypes.COMMAND_TYPE.DESCRIBE.name(), 
+								  InfoRetrieve.getAllSubInfo(tokenPairs).getFront(),
+								  locateLine);
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+
+	/**
+	 * Generate a RawCommand for "Re-schedule" operation
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand reschedule(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform reshcedule operation");
+		try {
+			TokenPair firstPair = tokenPairs.get(0);
+			String locateLine;
+			
+			// Get locate Line
+			if (firstPair.getToken() == TokenType.TOKEN_TYPE.NB){
+				locateLine = tokenPairs.remove(0).getCotent();
+			} else {
+				locateLine = null;
+			}
+			if (tokenPairs.size() > 1){
+				String startDate = InfoRetrieve.makeDay(tokenPairs.get(0).getCotent());
+				String endDate = InfoRetrieve.makeDay(tokenPairs.get(1).getCotent());
+				return new RawCommand(CMDTypes.COMMAND_TYPE.RESCHEDULE.name(), 
+									  startDate,
+									  endDate,
+									  locateLine);
+			} else {
+				String endDate = InfoRetrieve.makeDay(tokenPairs.get(0).getCotent());
+				return new RawCommand(CMDTypes.COMMAND_TYPE.RESCHEDULE.name(), 
+									  null,
+									  endDate,
+									  locateLine);
+			}
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+
+	/**
+	 * Generate a RawCommand for "Repeat" operation
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand repeat(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform repeat operation");
+		try {
+			TokenPair firstPair = tokenPairs.get(0);
+			String locateLine;
+			
+			// Get locate Line
+			if (firstPair.getToken() == TokenType.TOKEN_TYPE.NB){
+				locateLine = tokenPairs.remove(0).getCotent();
+			} else {
+				locateLine = null;
+			}
+			
+			if(tokenPairs.isEmpty()){
+				return makeInvalid();
+			}
+			return new RawCommand(CMDTypes.COMMAND_TYPE.REPEAT.name(), 
+								  tokenPairs.get(0).getCotent(),
+								  locateLine);
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+
+	/** 
+	 * Generate a RawCommand for "Read" operation
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 */
+	static RawCommand read(ArrayList<TokenPair> tokenPairs){
+		
+		logger.info("Perform read operation");
+		try {
+			if(tokenPairs.isEmpty()){
+				return makeInvalid();
+			}
+			return new RawCommand(CMDTypes.COMMAND_TYPE.READ.name(), 
+								  tokenPairs.get(0).getCotent());
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+
+	/**
+	 * Return a RawCommand for "Undo" operation
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand undo(){
+		logger.info("Perform undo operation");
+		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.UNDO.name());
+
+		return commandPackage;		
+	}
+
+	/**
+	 * Return a RawCommand for "Delete" operation
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand delete(ArrayList<TokenPair> tokenPairs){
+		
+		logger.info("Perform delete operation");
+		try {
+			if(tokenPairs.isEmpty()){
+				return makeInvalid();
+			}
+			return new RawCommand(CMDTypes.COMMAND_TYPE.DELETE.name(), 
+								  tokenPairs.get(0).getCotent());
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+	
+	/**
+	 * Return a RawCommand for "View" operation.
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand view(ArrayList<TokenPair> tokenPairs){
+		
+		logger.info("Perform view operation");
+		try {
+			String getFields = tokenPairs.get(0).getCotent();
+			if (ValidityChecker.isValidViewDate(getFields)) {
+				return InfoRetrieve.translateDate(getFields);
+			} else if (ValidityChecker.isValidDate(getFields)) {
+				return viewDate(InfoRetrieve.makeDay(getFields));
+			} else {
+				return new RawCommand(CMDTypes.COMMAND_TYPE.VIEW.name(), getFields);
+			}
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+	
+	/** 
+	 * Generate a RawCommand for viewing a certain date
+	 * 
+	 * @param String date
+	 * @return -RawCommand
+	 */
+	static RawCommand viewDate(String getDate) {
+		
+		logger.info("Perform viewDate operation");
+		try {
+			return new RawCommand(CMDTypes.COMMAND_TYPE.VIEWDATE.name(), getDate);
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+	
+	/**
+	 * Generate a RawCommand for marking a task
+	 * 
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 * */
+	static RawCommand mark(ArrayList<TokenPair> tokenPairs) {
+		
+		logger.info("Perform mark operation");
+		try {
+			RawInfoPair getLinePair = InfoRetrieve.getNB(tokenPairs);
+			String getLine = getLinePair.getFront();
+			
+			String getMarkInfo = InfoRetrieve.getFrontUN(getLinePair.getSubInfo()).getFront();
+			System.out.println("!" + getMarkInfo + "!");
+			return new RawCommand(CMDTypes.COMMAND_TYPE.MARK.name(), getMarkInfo, getLine);
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+
+	/** 
+	 * Generate a RawCommand for viewing Next page for current state of view
+	 * 
+	 * @return -RawCommand
+	 */
+	static RawCommand next(){
+		
+		logger.info("Perform next operation");
+		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.NEXT.name());
+
+		return commandPackage;
+	}
+
+	/** 
+	 * Generate a RawCommand for going to previous page for current state of view
+	 * 
+	 * @return -RawCommand
+	 */
+	static RawCommand previous(){
+		
+		logger.info("Perform previous operation");
+		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.PREVIOUS.name());
+
+		return commandPackage;
+	}
+
+	/**
+	 * Generate a RawCommand for restoring item from bin
+	 *  
+	 * @param an ArrayList<TokenPair> that contains tokenized words
+	 * @return a RawCommand object
+	 */
+	static RawCommand restore(ArrayList<TokenPair> tokenPairs){
+		
+		logger.info("Perform restore operation");
+		try {
+			RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.RESTORE.name(), 
+													   tokenPairs.get(0).getCotent());
+	
+			return commandPackage;
+		} catch (Exception e) {
+			return makeInvalid();
+		}
+	}
+
+	/**
+	 * Generate a RawCommand for backing to the previous page
+	 * 
+	 * @return a RawCommand object
+	 * */
+	static RawCommand back(){
+		
+		logger.info("Perform back operation");
+		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.BACK.name());
+
+		return commandPackage;
+	}
+	
+	/**
+	 * Generate a RawCommand of any invalid operation
+	 * 
+	 * @return -RawCommand
+	 * */
+	static RawCommand makeInvalid() {
+		
+		logger.info("Perform makeInvalid operation");
+		return new RawCommand(CMDTypes.COMMAND_TYPE.INVALID.name());
+	}
+	
+	/**
+	 * Generate a RawCommand of help operation
+	 * 
+	 * @return -RawCommand
+	 * */
+	static RawCommand help() {
+		
+		logger.info("Perform help operation");
+		return new RawCommand(CMDTypes.COMMAND_TYPE.HELP.name());
+	}
+	
+	/** 
+	 * Generate a RawCommand for exiting the program
+	 *
+	 * @return a RawCommand object
+	 */
+	static RawCommand exit(){
+		
+		logger.info("Perform exit operation");
+		RawCommand commandPackage = new RawCommand(CMDTypes.COMMAND_TYPE.EXIT.name());
+
+		return commandPackage;		
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDMaker.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDTypes.java
+	 */
+
+ * */
+class CMDTypes {
+
+	/**
+	 * Acceptable command types
+	 * */
+	enum COMMAND_TYPE {
+	    ADD, DELETE, UPDATE, READ, VIEW, VIEWDATE, UNDO, INVALID, 
+	    EXIT, NEXT, PREVIOUS, SEARCH, BACK, MARK, HELP,
+	    // VIEW_MODE
+	    TASKLIST, BIN, 
+	    // from bin
+	    RESTORE,
+	    // UPDATE
+	    RENAME, RESCHEDULE, DESCRIBE, REPEAT,
+	    // UPDATE_FIELD
+	    NAME, DESCRIPTION, DATE, DAY;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\CMDTypes.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\ErrorHandle.java
+	 */
+
+ *          Parser error messages of all scenarios.
+ * */
+
+class ErrorMSG {
+    public static final String QUOTATION_UNCLOSE_ERR = "Error at Parser: Quotation mark unclosed or missing title/discription";
+    public static final String UNEXPECTED_QUOTATION_ERR = "Error at Parser: Input task contain unexpected quotation mark";
+    public static final String TASK_INFO_ERR = "Error at Parser: Invalid task information, check repeat time/start day/end day";
+    public static final String INPUT_DATE_ERR = "Error at Parser: Invalid date input";
+    public static final String UPDATE_INPUT_ERR = "Error at Parser: Invalid update input";
+    public static final String UPDATE_FIELD_ERR = "Error at Parser: Invalid update field";
+    public static final String VIEW_MODE_ERR = "Error at Parser: Invalid view mode input";
+    public static final String INPUT_SYMBOL_ERR = "Error at Parser: Input contains invalid symbols, delete symbol such as \"=\"";
+    public static final String REPEAT_ERR = "Error at Parser: invalide repeat date";
+}
+
+class ErrorGenerator {
+	
+    //Print out error
+    public static void popError(String errorMSG) {
+        System.err.println(errorMSG);
+    }
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\ErrorHandle.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\InfoRetrieve.java
+	 */
+
+ * 
+ * */
+class InfoRetrieve {
+	
+	/**
+     * Get task title, 
+     * 
+     * @param tokenPairs
+     * 			a <code>ArrayList<code> of <code>TokenPair<code> object 
+     * @return RawInfoPair
+     * 			Return a RawInfoPair containing tasktitle and subInformation, 
+     * 			Title would be EMPYT_TITLE if title is empty, 
+     * */
+    static RawInfoPair getTaskTitle(ArrayList<TokenPair> tokenPairs) {
+    	
+    	TokenPair front;
+    	TOKEN_TYPE frontToken;
+    	int numOfQuotes;
+    	
+    	numOfQuotes = countQuoted(tokenPairs);
+    	
+    	if (numOfQuotes == 0) {
+    		return getFrontUN(tokenPairs);
+    	} else if (numOfQuotes == 1) {
+    		front = tokenPairs.get(0);
+        	frontToken = front.getToken();
+    
+        	return judgeUN(tokenPairs, frontToken);
+    	} else {
+    		// numOfQuotes == 2
+    		return getOneQT(tokenPairs);
+    	}
+    }
+
+    /**
+     * Judge if the front element has the token UN
+     * 
+     * @param tokenPairs
+     * 			an list of tokenPairs
+     * @param frontToken
+     * 			front element's token
+     * */
+	private static RawInfoPair judgeUN(ArrayList<TokenPair> tokenPairs,
+									   TOKEN_TYPE frontToken) {
+		if (ValidityChecker.isUN(frontToken)) {
+			return getFrontUN(tokenPairs);
+		} else {
+			return getOneQT(tokenPairs);
+		}
+	}
+    
+    /**
+     * Get the first contents that is Quoted
+     * 
+     * @param tokenPairs
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object
+     * */
+    static RawInfoPair getOneQT(ArrayList<TokenPair> tokenPairs) {
+    	String result = ParserKeys.EMPTY_STR;
+    	TokenPair curPair;
+    	for (int i = 0; i < tokenPairs.size(); i++) {
+    		curPair = tokenPairs.get(i);
+    		if (curPair.getToken() == TOKEN_TYPE.QT) {
+    			result = curPair.getCotent();
+    			tokenPairs.remove(i);
+    		}
+    	}
+    	return new RawInfoPair(result, tokenPairs);
+    }
+    
+    /**
+     * Get front contents that is unidentifiable
+     * 
+     * @param tokenPairs
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object
+     * */
+    static RawInfoPair getFrontUN(ArrayList<TokenPair> tokenPairs) {
+    	String result = ParserKeys.EMPTY_STR;
+    	TokenPair front;
+    	TOKEN_TYPE frontToken;
+    	
+    	while(!tokenPairs.isEmpty()) {
+			front = tokenPairs.get(0);
+			frontToken = front.getToken();
+			
+			if (ValidityChecker.isUN(frontToken) || 
+				ValidityChecker.isNB(frontToken)){
+        		result += front.getCotent() + ParserKeys.SPACE;
+        		tokenPairs.remove(0);
+        	} else {
+        		break;
+        	}
+        }
+    	
+    	return cleanEndSpace(tokenPairs, result);
+    }
+
+    
+    /**
+     * Fet all the sub contents in the token-pair list
+     * 
+     * @param tokenPairs
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object containing a subInformation
+     * */
+    static RawInfoPair getAllSubInfo(ArrayList<TokenPair> tokenPairs) {
+    	String result = ParserKeys.EMPTY_STR;
+    	TokenPair front;
+    	
+    	while(!tokenPairs.isEmpty()) {
+			front = tokenPairs.get(0);
+        	result += front.getCotent() + ParserKeys.SPACE;
+        	tokenPairs.remove(0);
+        }
+    	
+    	return cleanEndSpace(tokenPairs, result);
+    }
+    
+    /**
+     * Count number of quoted contents in the tokenPairs
+     * 
+     * @param tokens
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object
+     * */
+    static int countQuoted(ArrayList<TokenPair> tokenPairs) {
+    	int result = 0;
+    	for (int i = 0; i < tokenPairs.size(); i++) {
+    		if (tokenPairs.get(i).getToken() == TOKEN_TYPE.QT) {
+    			result ++;
+    		}
+    	}
+    	
+    	return result;
+    }
+	
+	/**
+     * Get repeated date for a task
+     * 
+     * @param tokens
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object, return system default repeat if cannot find a valid repeat date
+     * */
+    static RawInfoPair getRepeatDate(ArrayList<TokenPair> tokens) {
+    	String repeatDate = ParserKeys.EMPTY_STR;
+    	TokenPair curPair;
+    	
+        for (int i = 0; i < tokens.size(); i++) {
+        	curPair = tokens.get(i);
+        	if (ValidityChecker.isRP(curPair.getToken())) {
+        		repeatDate = curPair.getCotent();
+        		tokens.remove(i);
+        		break;
+        	}
+        }
+        
+        if (repeatDate.isEmpty()) {
+        	repeatDate = ParserKeys.RP_NON;
+        }
+        
+        return new RawInfoPair(repeatDate, tokens);
+    }
+    
+    /**
+     * Get tokenPairs with token NB
+     * 
+     * @param tokens
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object
+     * */
+    static RawInfoPair getNB(ArrayList<TokenPair> tokens) {
+    	String number = ParserKeys.EMPTY_STR;
+    	TokenPair curPair;
+    	
+        for (int i = 0; i < tokens.size(); i++) {
+        	curPair = tokens.get(i);
+        	if (ValidityChecker.isNB(curPair.getToken())) {
+        		number = curPair.getCotent();
+        		tokens.remove(i);
+        		break;
+        	}
+        }
+        
+        return new RawInfoPair(number, tokens);
+    }
+    
+    /**
+     * Get identifiable dates
+     * 
+     * @param tokens
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object, return EMPTY_DATE if cannot find date
+     * */
+    static RawInfoPair getDate(ArrayList<TokenPair> tokens) {
+    	String date = ParserKeys.EMPTY_STR;
+    	TokenPair curPair;
+    	
+        for (int i = 0; i < tokens.size(); i++) {
+        	curPair = tokens.get(i);
+        	if (ValidityChecker.isDT(curPair.getToken())) {
+        		date = makeDay(curPair.getCotent());
+        		tokens.remove(i);
+        		break;
+        	}
+        }
+        
+        if (date.isEmpty()) {
+        	date = ParserKeys.EMPTY_DATE;
+        }
+        
+        return new RawInfoPair(date, tokens);
+    }
+    
+    /**
+     * Get the description at the end
+     * 
+     * @param tokenPairs 
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return String 
+	 * 			a string containing descriptions
+     * */
+    static String getDescription(ArrayList<TokenPair> tokenPairs) {
+    	String description = ParserKeys.EMPTY_STR;
+    	int numOfQuotes;
+    	numOfQuotes = countQuoted(tokenPairs);
+    	
+    	if (numOfQuotes == 0) {
+    		for ( int i = 0; i < tokenPairs.size(); i++) {
+            	description += tokenPairs.get(i).getCotent() + ParserKeys.SPACE;
+            }
+    	} else {
+    		return getOneQT(tokenPairs).getFront();
+    	}
+        
+        if (description.isEmpty()) {
+        	description = ParserKeys.EMPTY_DIS;
+        }
+        
+        if (description.endsWith(ParserKeys.SPACE)) {
+        	return description.substring(0, description.length()-1);
+        } else {
+        	return description;
+        }
+    }
+    
+    /**
+     * Split date information, standardize them to YYYYMMDD;
+     * 
+     * @param rawDay
+     *          String of date
+     * @return String
+     * 			a standardized date YYYYMMDD
+     * */
+    static String makeDay(String rawDay) {
+        String resultDay = ParserKeys.EMPTY_STR;
+        String[] startDayArr = rawDay.split(ParserKeys.SPLIT_DATE);
+        for (int i = 0; i < startDayArr.length; i++) {
+            resultDay += startDayArr[i];
+        }
+        
+        return resultDay;
+    }
+    
+    
+    
+    /**
+     * Get the index of quotation mark in raw input String
+     * 
+     * @param subInfoStr
+     * @return ArrayList<Integer>
+     * 			an list containing index of date marker
+     * */
+    static ArrayList<Integer> getQuoteMark(String subInfoStr) {
+        ArrayList<Integer> quotationIndex = new ArrayList<Integer>();
+        String curStr;
+        int countSymbol = 0;
+        for(int i = 0; i < subInfoStr.length(); i ++) {
+            curStr = subInfoStr.substring(i, i+1);
+            if (countSymbol == 4) {
+                break;
+            } else if (curStr.equals(ParserKeys.SPLITSYMBOL)) {
+                quotationIndex.add(i);
+                countSymbol++;
+            }
+        }
+        return quotationIndex;
+    }
+    
+    /**
+     * Get the index of date mark in raw input String
+     * 
+     * @param subInfoStr
+     * @return ArrayList<Integer>
+     * 			an list containing index of date marker
+     * */
+    static ArrayList<Integer> getDateMarker(String subInfoStr) {
+        ArrayList<Integer> dateMarkIndex = new ArrayList<Integer>();
+        String curStr;
+        
+        for(int i = 0; i < subInfoStr.length(); i ++) {
+            curStr = subInfoStr.substring(i, i + 1);
+            if (curStr.equals(ParserKeys.SPLIT_DATE)) {
+                dateMarkIndex.add(i);
+            }
+        }
+        return dateMarkIndex;
+    }
+
+	/**
+	 * Get front command
+	 * 
+	 * @param rawString
+	 * @return String
+	 * */
+    static String getCommand(String rawString) {
+		
+		String command = ParserKeys.EMPTY_STR;
+		command = StringCutter.getFrontBlock(rawString);
+		
+	    return command;
+	}
+
+	/**
+	 * Translate plain date to standardized date
+	 * 
+	 * @param getFields
+	 * 			a string containing dates fields
+	 * @return RawCommand
+	 * */
+	static RawCommand translateDate(String getFields) {
+		Calendar cal = Calendar.getInstance();
+		String date = ParserKeys.EMPTY_STR;
+		
+		if (getFields.equalsIgnoreCase(ParserKeys.FIELD_TODAY)) {
+			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit(cal.get(Calendar.DATE));
+			return CMDMaker.viewDate(makeDay(date));
+		} else if (getFields.equalsIgnoreCase(ParserKeys.FIELD_TMR)) {
+			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit((cal.get(Calendar.DATE) + 1));
+			return CMDMaker.viewDate(makeDay(date));
+		} else {
+			// Yesterday
+			date += cal.get(Calendar.YEAR) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit(cal.get(Calendar.MONTH) + 1) + ParserKeys.SPLIT_DATE;
+			date += InfoRetrieve.toTwoDigit((cal.get(Calendar.DATE) - 1));
+			return CMDMaker.viewDate(makeDay(date));
+		} 
+	}
+
+	/**
+     * Clean the white space at the start of a string
+     * 
+     * @param rawString
+     * 			-String
+     * @return String
+     * */
+    static String cleanFrontSpace(String rawString) {
+        if(rawString.startsWith(ParserKeys.SPACE)) {
+            return cleanFrontSpace(rawString.substring(1, rawString.length()));
+        } else {
+            return rawString;
+        }
+    }
+    
+	/**
+     * Remove the end space of a string
+     * 
+     * @param tokenPairs
+     * 			an ArrayList<TokenPair> that contains tokenized words
+	 * @return RawInfoPair
+	 * 			a RawInfoPair object		
+     * */
+	private static RawInfoPair cleanEndSpace(ArrayList<TokenPair> tokenPairs,
+										  String result) {
+		if (result.endsWith(ParserKeys.SPACE)) {
+        	return new RawInfoPair(result.substring(0, result.length()-1), tokenPairs);
+        } else {
+        	return new RawInfoPair(result, tokenPairs);
+        }
+	}
+	
+	/**
+	 * Make integer to two digit string
+	 * */
+	static String toTwoDigit(int rawNum) {
+		if (rawNum < 10 && rawNum >0) {
+			return ParserKeys.ZERO + rawNum;
+		} else {
+			return (rawNum + ParserKeys.EMPTY_STR);
+		}
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\InfoRetrieve.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\RawCommand.java
+	 */
+
+ *          Command information includes command type, command description, 
+ *          task title, task description, repeat time, start date, end date. All of them
+ *          are in String type
+ *          
+ * */
+
+public class RawCommand{
+
+    /*
+     * ====================================================================
+     * ===================== START OF PRIVATE FIELD =======================
+     * ====================================================================
+     */
+    
+    private String command;
+    private String taskTitle;
+    private String description;
+    private String startDay;
+    private String endDay;
+    private String cmdDescription;
+    
+    /*
+     * ====================================================================
+     * ===================== END OF PRIVATE FIELD =========================
+     * ====================================================================
+     */
+    
+    // For commands with no subInfo
+    public RawCommand(String command) {
+    	this.command = command;
+    }
+    
+    // For commands with only one subInfo
+    public RawCommand(String command, String subInfo) {
+    	this.command = command;
+    	this.cmdDescription = subInfo;
+    }
+    
+    // For update info with locateLine
+    public RawCommand(String command, String fieldInfo, String locateLine) {
+    	
+    	this.command = command;
+    	if (command.equals(COMMAND_TYPE.RENAME.name())) {
+    		this.taskTitle = fieldInfo;
+    		this.cmdDescription = locateLine;
+    	} else if (command.equals(COMMAND_TYPE.DESCRIBE.name())) {
+    		this.description = fieldInfo;
+    		this.cmdDescription = locateLine;
+    	} else if (command.equals(COMMAND_TYPE.MARK.name())){
+    		this.description = fieldInfo;
+    		this.cmdDescription = locateLine;
+    	}
+    }
+    
+    // For reschedule only
+    public RawCommand(String command, String startDay, String endDay, String locateLine) {
+    	this.command = command;
+    	this.startDay = startDay;
+    	this.endDay = endDay;
+    	this.cmdDescription = locateLine;
+    } 
+        
+    // Strictly only for add command
+    public RawCommand(String command, String taskTitle, 
+                   	  String startDay, String endDay, 
+                      String description) {
+        this.command = command;
+        this.taskTitle = taskTitle;
+        this.description = description;
+        this.startDay = startDay;
+        this.endDay = endDay;
+    }
+
+    public String getCommand(){
+        return this.command;
+    }
+
+    public String getTitle(){
+        return this.taskTitle;
+    }
+
+    public String getDescription(){
+        return this.description;
+    }
+    
+    public String getCMDDescription(){
+        return this.cmdDescription;
+    }
+
+    public String getStartDay(){
+        return this.startDay;
+    }
+
+    public String getEndDay(){
+        return this.endDay;
+    }
+}
+
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\RawCommand.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\SpecialKeys.java
+	 */
+
+ *          Containing special keys to help interpreting input strings, including separating
+ *          symbols, special field names, and invalid symbols
+ * */
+
+class ParserKeys {
+	static final String SPLITSYMBOL = "\"";
+	static final String SPLIT_DATE = "-";
+	static final String SPACE = " ";
+	static final String INVALID_SYMBOL = "=";
+	static final String EMPTY_STR = "";
+	static final String EMPTY_TITLE = "EMPTY TITLE";
+	static final String EMPTY_DIS = "EMPTY DESCRIPTION";
+	static final String ZERO = "0";
+	static final String EMPTY_DATE = null;
+	static final String FIELD_TODAY = "today";
+	static final String FIELD_TMR = "tomorrow";
+
+	static final String RP_EVREYDAY = "everyday";
+	static final String RP_MON = "monday";
+	static final String RP_TUES = "tuesday";
+	static final String RP_WED = "wednesday"; 
+	static final String RP_THUR = "thursday";
+	static final String RP_FRI = "friday";
+	static final String RP_SAT = "saturday";
+	static final String RP_SUN = "sunday";
+	static final String RP_NON = "no_repeat";
+	static final String[] REPEAT_KEYS = {"everyday", "monday", "tuesday", 
+										 "wednesday", "thursday", "friday", 
+										 "saturday", "sunday", "no_repeat", ""};
+	static final String[] VIEW_DATE = {"yesterday", "today", "tomorrow", "nextweek"};
+	static final String[] COMMANDS = {"add", "update", "rename","reschedule",
+									  "repeat","describe","delete","view",
+									  "read","undo","restore","exit","next", 
+									  "previous", "back", "search", "viewdate", "mark", "help"};
+
+	static final String[] KEYS_ADD = 	{"a", "d"};
+	static final String[] KEYS_UPDATE = {"u", "p", "d"};
+	static final String[] KEYS_RENAME = {"r", "n"};
+	static final String[] KEYS_RESCHEDULE = {"r", "s", "c", "d"};
+	static final String[] KEYS_REPEAT =   {"r", "p", "t"};
+	static final String[] KEYS_DESCRIBE = {"d", "s", "b"};
+	static final String[] KEYS_DELETE =   {"d", "l"};
+	static final String[] KEYS_VIEW = {"v", "e", "w"};
+	static final String[] KEYS_READ = {"r", "d"};
+	static final String[] KEYS_UNDO = {"u", "d"};
+	static final String[] KEYS_RESTORE = {"r", "s", "t"};
+	static final String[] KEYS_EXIT = 	 {"e", "x"};
+	static final String[] KEYS_NEXT = 	 {"n", "x"};
+	static final String[] KEYS_PREVIOUS = {"p", "r"};
+	static final String[] KEYS_BACK = 	  {"b", "c"};
+	static final String[] KEYS_SEARCH =   {"s", "r", "c"};
+	static final String[] KEYS_VIEWDATE = {"v", "d"};
+	static final String[] KEYS_MARK = {"m"};
+	static final String[] KEYS_HELP = {"h", "l"};
+
+	static final String INVALID_INFO = "invalid info";
+
+	static final int DATE_LENGTH = 8;
+	static final int INDEX_NOT_EXIST = -1;
+}
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\SpecialKeys.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\StringCutter.java
+	 */
+
+ * */
+public class StringCutter {
+	
+	/**
+	 * Get front block separated by the space or quoted by quotation mark
+	 * 
+	 * @param originStr
+	 * 			-String
+	 * @return String
+	 * 			the front block of content
+	 * */
+	static String getFrontBlock(String originStr) {
+		String frontBlock;
+		String frontSPclean = StringCutter.cleanFrontSpace(originStr);
+		if (originStr != null && frontSPclean.startsWith(ParserKeys.SPLITSYMBOL)) {
+			frontBlock = StringCutter.getFrontQuoted(frontSPclean);
+		} else {
+			frontBlock = StringCutter.getFrontUnquoted(frontSPclean);
+		}
+		
+		return frontBlock;
+	}
+	
+	/**
+	 * Get front unquoted block separated by the space;
+	 * 
+	 * @param originStr
+	 * 			-String
+	 * @return String
+	 * 			the front block of content
+	 * */
+	private static String getFrontUnquoted(String frontSPclean) {
+		if (frontSPclean != null) {
+			int getFirstSpace = frontSPclean.indexOf(ParserKeys.SPACE);
+			
+			if (getFirstSpace != ParserKeys.INDEX_NOT_EXIST) {
+				return frontSPclean.substring(0, getFirstSpace);
+			} else {
+				return frontSPclean;
+			}
+		} else {
+			return ParserKeys.EMPTY_STR;
+		}
+	}
+
+	/**
+	 * Get front quoted block
+	 * 
+	 * @param originStr
+	 * 			-String
+	 * @return String
+	 * 			the front quoted block of content
+	 * */
+	private static String getFrontQuoted(String frontSPclean) {
+		String frontQuotClean = frontSPclean.substring(1, frontSPclean.length());
+		int quoteEndIndex = frontQuotClean.indexOf(ParserKeys.SPLITSYMBOL);
+		
+		return frontQuotClean.substring(0, quoteEndIndex) + ParserKeys.SPLITSYMBOL;
+	}
+
+	/**
+	 * Remove one front block of word, separated by space or quoted by quotation marks
+	 * 
+	 * @param originStr
+	 * 			-String
+	 * @return String
+	 * 			the front block of content
+	 * */
+	static String rmFrontBlock(String originStr) {
+		String resultStr;
+		String frontSPclean = StringCutter.cleanFrontSpace(originStr);
+		if (frontSPclean.startsWith(ParserKeys.SPLITSYMBOL)) {
+			resultStr = StringCutter.rmFrontQuoted(frontSPclean);
+		} else {
+			resultStr = StringCutter.rmFrontUnquoted(frontSPclean);
+		}
+		
+		return resultStr;
+	}
+
+	/**
+	 * Remove front quoted block
+	 * 
+	 * @param originStr
+	 * 			-String
+	 * @return String
+	 * 			a string with the front quoted block removed
+	 * */
+	static String rmFrontQuoted(String orginStr) {
+		String frontQuotClean = orginStr.substring(1, orginStr.length());
+		int quoteEndIndex = frontQuotClean.indexOf(ParserKeys.SPLITSYMBOL);
+		
+		return frontQuotClean.substring(quoteEndIndex + 1, frontQuotClean.length());
+	}
+
+	/**
+	 * Remove front unquoted block
+	 * 
+	 * @param originStr
+	 * 			-String
+	 * @return String
+	 * 			a string with the front block, separated by space, being removed
+	 * */
+	static String rmFrontUnquoted(String orginStr) {
+		if (orginStr != null) {
+			int getFirstSpace = orginStr.indexOf(ParserKeys.SPACE);
+			
+			if (getFirstSpace != ParserKeys.INDEX_NOT_EXIST) {
+				return orginStr.substring(getFirstSpace + 1, orginStr.length());
+			} else {
+				return ParserKeys.EMPTY_STR;
+			}
+		} else {
+			return ParserKeys.EMPTY_STR;
+		}
+	}
+	
+	/**
+	 * Remove front blocks until commands
+	 * 
+	 * @param originStr
+	 * 			-String
+	 * @return String
+	 * 			the front block of content
+	 * */
+	static String rmAfterCommand(String originStr) {
+		
+		originStr = rmFrontBlock(originStr);
+		
+		return originStr;
+	}
+
+	/**
+	 * Clean the white space at the start of a string
+	 * 
+	 * @param originStr
+	 * 			-String
+	 * @return String
+	 * 			the front space being cleaned
+	 * */
+	static String cleanFrontSpace(String rawString) {
+		if(rawString != null && rawString.startsWith(ParserKeys.SPACE)) {
+	        return cleanFrontSpace(rawString.substring(1, rawString.length()));
+	    } else {
+	        return rawString;
+	    }
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\StringCutter.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\Tokenizer.java
+	 */
+
+ * @see TokenType
+ * */
+class Tokenizer {
+	
+	/**
+	 * Split raw input into a command and a list of sub info.
+	 * 
+	 * @param rawInputStr
+	 * @return subInfo list is null if there is only a command exists;
+	 * */
+	public static RawInfoPair splitRawInput(String rawInputStr) {
+		String command;
+		ArrayList<TokenPair> subInfo;
+		
+		command = InfoRetrieve.getCommand(rawInputStr);
+		
+		String commandRemoved = StringCutter.rmAfterCommand(rawInputStr);
+		
+		if (commandRemoved == null || commandRemoved.isEmpty()) {
+			subInfo = new ArrayList<TokenPair>();
+		} else {
+			String frontSPRemoved = StringCutter.cleanFrontSpace(commandRemoved);
+			
+			assert frontSPRemoved != null : "tokenized string cannot be null";
+			subInfo = splitInfoString(frontSPRemoved);
+		}
+		
+		return new RawInfoPair(command, subInfo);
+	}
+	
+	/**
+	 * Split sub info string into pairs and attach corresponding tokens;
+	 * 
+	 * @param subInfoStr
+	 * 			-String
+	 * @return ArrayList<TokenPair>
+	 * 			a list of TokenPairs
+	 * */
+	private static ArrayList<TokenPair> splitInfoString(String subInfoStr) {
+		ArrayList<TokenPair> infoList = new ArrayList<TokenPair>();
+		String frontBlock;
+		TokenPair frontPair;
+		while (!subInfoStr.isEmpty()) {
+			frontBlock = StringCutter.getFrontBlock(subInfoStr);
+			frontPair = judgeContent(frontBlock);
+			infoList.add(frontPair);
+			
+			subInfoStr = StringCutter.rmFrontBlock(subInfoStr);
+		}
+		
+		return infoList;
+	}
+
+	/**
+	 * Judge contents and form corresponding token pair
+	 * 
+	 * @param frontBlock
+	 * 			-String
+	 * @return TokenPair
+	 * 			a pair of content and corresponding tokens
+	 * */
+	private static TokenPair judgeContent(String frontBlock) {
+		
+		if (ValidityChecker.isValidDate(frontBlock)) {
+			return new TokenPair(frontBlock, TOKEN_TYPE.DT);
+		} else if (ValidityChecker.isValidRP(frontBlock)) {
+			return new TokenPair(frontBlock, TOKEN_TYPE.RP);
+		} else if (ValidityChecker.endsWithQuo(frontBlock)) {
+			return new TokenPair(frontBlock.substring(0, frontBlock.length() - 1), 
+								 TOKEN_TYPE.QT);
+		} else if (ValidityChecker.isInteger(frontBlock)) {
+			return new TokenPair(frontBlock, TOKEN_TYPE.NB);
+		} else {
+			return new TokenPair(frontBlock, TOKEN_TYPE.UN);
+		}
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\Tokenizer.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\TokenPair.java
+	 */
+
+ * */
+class TokenPair {
+	private String content;
+	private TOKEN_TYPE token;
+	
+	public TokenPair(String content, TOKEN_TYPE token) {
+		this.content = content;
+		this.token = token;
+	}
+	
+	public String getCotent() {
+		return this.content;
+	}
+	
+	public TOKEN_TYPE getToken() {
+		return this.token;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\TokenPair.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\TokenType.java
+	 */
+
+ * */
+class TokenType {
+	enum TOKEN_TYPE {
+		// QUOTED CONTENTS
+	    QT,
+	    
+	    // UNIDENTIFIED CONTENTS
+	    UN,
+	    
+	    // DATE CONTENTS
+	    DT,
+	    
+	    // REPEATING TIME
+	    RP,
+	    
+	    // NUMBER
+	    NB
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\TokenType.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\ValidityChecker.java
+	 */
+
+ * */
+
+class ValidityChecker {
+
+	/**
+	 * Check if token type is DT
+	 * 
+	 * @param tType
+	 * @return boolean
+	 * */
+	static boolean isDT(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.DT;
+	}
+
+	/**
+	 * Check if token is RP
+	 * 
+	 * @param tType
+	 * @return boolean
+	 * */
+	static boolean isRP(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.RP;
+	}
+
+	/**
+	 * Check if token type is UN
+	 * 
+	 * @param tType
+	 * @return boolean
+	 * */
+	static boolean isUN(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.UN;
+	}
+	
+	/**
+	 * Check if token type is QT
+	 * 
+	 * @param tType
+	 * @return boolean
+	 * */
+	static boolean isQT(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.QT;
+	}
+	
+	/**
+	 * Check if token type is NB
+	 * 
+	 * @param tType
+	 * @return boolean
+	 * */
+	static boolean isNB(TOKEN_TYPE tType) {
+		return tType == TOKEN_TYPE.NB;
+	}
+
+	/***
+	 * Check if string is an Integer
+	 * 
+	 * @param inputStr
+	 * @return boolean
+	 * */
+	static boolean isInteger(String inputStr) {
+		try { 
+			Integer.parseInt(inputStr); 
+		} catch(NumberFormatException e) { 
+			return false; 
+		}
+		// only got here if we didn't return false
+		return true;
+	}
+
+	/**
+	 * Check if input contains invalid keys or incomplete quotation marks
+	 * 
+	 * @param inputStr
+	 * @return boolean
+	 * */
+	static boolean isValidInput(String inputStr) {
+		ArrayList<Integer> symbolIndex = InfoRetrieve.getQuoteMark(inputStr);
+		int markNumber = symbolIndex.size();
+
+		if (markNumber % 2 != 0) {
+			return false;
+		} else if (ValidityChecker.noInvalidKeys(inputStr)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * Judge the validity of repeat date input
+	 * 
+	 * @param repDate
+	 * @return boolean
+	 * */
+	static boolean isValidRP(String repDate) {
+		boolean result = false;
+		for (int i = 0; i < ParserKeys.REPEAT_KEYS.length; i++) {
+			if (repDate.equalsIgnoreCase(ParserKeys.REPEAT_KEYS[i])){
+				result = true;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Check if is valid date
+	 * 
+	 * @param rawStr
+	 * @return boolean
+	 * */
+	static boolean isValidDate(String rawStr) {
+		ArrayList<Integer> dateMarker = InfoRetrieve.getDateMarker(rawStr);
+		if (dateMarker.size() == 2 && InfoRetrieve.makeDay(rawStr).length() == 8) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Judge the validity of repeat date input
+	 * 
+	 * @param viewDate
+	 * @return boolean
+	 * */
+	static boolean isValidViewDate(String viewDate) {
+		boolean result = false;
+		for (int i = 0; i < ParserKeys.VIEW_DATE.length; i++) {
+			if (viewDate.equalsIgnoreCase(ParserKeys.VIEW_DATE[i])){
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Check if ends with quotation mark;
+	 * 
+	 * @param rawStr
+	 * @return boolean
+	 * */
+	static boolean endsWithQuo(String rawStr) {
+		return rawStr.endsWith(ParserKeys.SPLITSYMBOL);
+	}
+
+	/**
+	 * Check if input contains invalid symbols
+	 * 
+	 * @param inputString
+	 * @return boolean
+	 * */
+	static boolean noInvalidKeys(String inputString) {
+		return !inputString.contains(ParserKeys.INVALID_SYMBOL);
+	}
+	
+	// Command Matcher
+	static boolean isAdd(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_ADD);	
+	}
+	
+	static boolean isUpdate(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_UPDATE);
+	}
+	
+	static boolean isRename(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_RENAME);
+	}
+	
+	static boolean isReschedule(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_RESCHEDULE);
+	}
+	
+	static boolean isRepeat(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_REPEAT);
+	}
+	
+	static boolean isDescribe(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_DESCRIBE);
+	}
+	
+	static boolean isDelete(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_DELETE);
+	}
+	
+	static boolean isView(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_VIEW);
+	}
+	
+	static boolean isRead(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_READ);
+	}
+	
+	static boolean isUndo(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_UNDO);
+	}
+	
+	static boolean isRestore(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_RESTORE);
+	}
+	
+	static boolean isExit(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_EXIT);
+	}
+	
+	static boolean isNext(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_NEXT);
+	}
+	
+	static boolean isPrevious(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_PREVIOUS);
+	}
+	
+	static boolean isBack(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_BACK);
+	}
+	
+	static boolean isSearch(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_SEARCH);
+	}
+	
+	static boolean isViewDate(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_VIEWDATE);
+	}
+	
+	static boolean isMark(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_MARK);
+	}
+	
+	static boolean isHelp(String rawStr) {
+		return matchCommand(rawStr, ParserKeys.KEYS_HELP);
+	}
+	
+	/**
+	 * Match the command with given matching symbols
+	 * 
+	 * @param rawStr
+	 * @param matcher
+	 * 			an list of matching symbols
+	 * @return boolean
+	 * */
+	static boolean matchCommand(String rawStr, String[] matcher) {
+		boolean result = true;
+		for (int i = 0; i < matcher.length; i++) {
+			if (!rawStr.contains(matcher[i])) {
+				result = false;
+				break;
+			}
+		}
+		return result;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\parser\ValidityChecker.java
+
+
+
+
+

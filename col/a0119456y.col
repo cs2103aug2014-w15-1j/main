@@ -1,0 +1,3196 @@
+//@author: a0119456y
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Add.java
+	 */
+
+ *
+ */
+public class Add implements Command{
+	// feedback format
+	private static String UNDO_INVALID = "Task not found!";
+	
+	private static Task task;
+	private static String feedback;
+	private static String title;
+	
+	//local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> trashbinList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+	private int taskPointer;
+	
+	//values for GUI
+	private static DisplayInfo passToGui;
+	
+
+
+
+	
+	public Add(Task newTask, String myFeedback, String myTitle){
+		task = newTask;
+		setTaskPointer(task.getPointer());
+		feedback = myFeedback;
+		title = myTitle;
+		initialize();
+	}
+
+	@Override
+	public DisplayInfo execute() {
+		modifyTaskList();
+		modifyIndexList();
+		modifyGUI();
+		modifyDisplayIndex();
+		update();
+		constructBridges(constructDisplay(), feedback, title);
+		DataStore.writeTask(taskList);
+		return passToGui;
+	}
+
+
+	@Override
+	public DisplayInfo undo() {
+		initialize();
+		if(RunLogic.removeTaskByPointer(taskList, getTaskPointer())){
+			modifyIndexList();	
+			DataStore.writeTask(taskList);
+			update();
+			int highlightLine = determinHighlightLine();
+			int firstLine = determinfistLine();
+			return construstDisplay(firstLine, highlightLine);
+		} else {
+			return constructInvalid();
+		}
+	}
+	
+	
+	//-----------helper functions-----------------
+	
+	
+	private static void initialize(){
+		GUI = RunLogic.getGuiStatus();
+		taskList = RunLogic.getTaskList();
+		trashbinList = RunLogic.getTrashbinList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+	
+	private static void update(){
+		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateTaskList(taskList);
+		RunLogic.updateTrashbinList(trashbinList);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+	
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+	
+	private int[] updateListIndex(int[] currentList) {
+		for(int i = 0; i < taskList.size(); i++){
+			currentList[i] = i;
+		}
+		for(int i = taskList.size(); i < currentList.length; i++){
+			currentList[i] = -1;
+		}
+		return currentList;
+	}
+	
+	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
+		passToGui = new DisplayInfo(GUI, display, feedback, title);
+	}
+
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+
+	public void setTaskPointer(int pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public int getTaskPointer() {
+		return taskPointer;
+	}
+	
+
+	private ArrayList<Task> constructDisplay() {
+		ArrayList<Task> display = new ArrayList<Task>();	
+		display.add(task);
+		return display;
+	}
+
+	private void modifyTaskList() {
+		taskList.add(task);
+	}
+
+	private void modifyIndexList() {
+		currentListIndex = updateListIndex(currentListIndex);
+	}
+
+	private void modifyGUI() {
+		GUI.changeCurretnTask((taskList.size() - 1));
+		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
+	}
+
+	private void modifyDisplayIndex() {
+		currentDisplay = initializeDisplayList(currentDisplay.length);
+		currentDisplay[1] = GUI.getTaskIndex();
+	}
+	
+	private DisplayInfo constructInvalid() {
+		Command invalid = new Invalid(UNDO_INVALID);
+		return invalid.execute();
+	}
+
+	private DisplayInfo construstDisplay(int firstLine, int highlightLine) {
+		ViewTaskList viewTaskList = new ViewTaskList(firstLine, feedback, title);
+		DisplayInfo dis = viewTaskList.execute();
+		dis.setHighlight(Default.HIGHLIGHT_LINE);
+		dis.setHighlightLine(highlightLine);
+		return dis;
+	}
+
+	private int determinfistLine() {
+		int index = RunLogic.getIndexInList(taskList, getTaskPointer());
+		index -= index % Default.MAX_DISPLAY_LINE;
+		if(currentListIndex[index] != -1){
+			return index;
+		} else if (((index -= Default.MAX_DISPLAY_LINE) >= 0 ) && currentListIndex[index -= Default.MAX_DISPLAY_LINE] != -1){
+			return currentDisplay[1] - Default.MAX_DISPLAY_LINE;
+		} else {
+			return 0;
+		}
+	}
+
+	private int determinHighlightLine() {
+		return RunLogic.getIndexInList(taskList, getTaskPointer()) % Default.MAX_DISPLAY_LINE;
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Add.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Back.java
+	 */
+
+ *
+ */
+public class Back implements Command{
+	private static String feedback;
+	private static String title;
+	
+	//local memory
+	private static GUIStatus GUI;
+	
+	public Back(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		initialize();
+	}
+
+	@Override
+	public DisplayInfo execute() {
+		int highlightLine = determineHighlight();
+		updateGUI();
+		return constructDisplay(highlightLine);
+	}
+
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+	
+	//-----------helper functions-----------------
+
+	private static void initialize(){
+		GUI = RunLogic.getGuiStatus();
+	}
+	
+	private DisplayInfo constructDisplay(int highlightLine) {
+		Command view;
+		if(GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			view = new ViewTrashBin(GUI.getTaskIndex(), feedback, title);
+		} else {
+			view = new ViewTaskList(GUI.getTaskIndex(), feedback, title);
+		}
+		DisplayInfo dis = view.execute();
+		dis.setHighlight(Default.HIGHLIGHT_LINE);
+		dis.setHighlightLine(highlightLine);
+		return dis;
+	}
+
+	private void updateGUI() {
+		GUI.changeCurretnTask(GUI.getTaskIndex() - GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE);
+	}
+
+	private int determineHighlight() {
+		return GUI.getTaskIndex() % Default.MAX_DISPLAY_LINE;
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Back.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Command.java
+	 */
+
+ *
+ */
+public interface Command {
+	public DisplayInfo execute();	
+	public DisplayInfo undo();
+	public boolean supportUndo();
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Command.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\DeleteTaskList.java
+	 */
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\DeleteTaskList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\DeleteTrashbin.java
+	 */
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\DeleteTrashbin.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Describe.java
+	 */
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Describe.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Exit.java
+	 */
+
+ *
+ */
+public class Exit implements Command{
+
+	public Exit(){
+		
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		System.exit(0);
+		return null;
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Exit.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Helper.java
+	 */
+
+ *
+ */
+public class Helper implements Command{
+	private static String feedback;
+	private static String title;
+	
+	public Helper(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		RunLogic.getGuiStatus().changeViewMode(VIEW_MODE.HELP);
+		return new DisplayInfo(RunLogic.getGuiStatus().getMode(), Default.helpInfo, feedback, title);
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Helper.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Invalid.java
+	 */
+
+ *
+ */
+public class Invalid implements Command{
+	private static String feedback;
+	
+	public Invalid(String myFeedback) {
+		feedback = myFeedback;
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		return new DisplayInfo(RunLogic.getGuiStatus(), feedback, false, false);
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Invalid.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Mark.java
+	 */
+
+ *
+ */
+public class Mark implements Command{
+	private static String feedback;
+	private static String title;
+
+	private static boolean status;
+	private static int lineIndex;
+
+	// local memory
+	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+	private long taskPointer;
+	private boolean oldStatus;
+
+	
+	public Mark(boolean myStatus, String myFeedback, String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		status = myStatus;
+		lineIndex = 1;
+	}
+
+	public Mark(int line, boolean myStatus, String myFeedback,
+			String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		status = myStatus;
+		lineIndex = line;
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		recordOldInfo();
+		modifyTaskList(status);
+		update();
+		DataStore.writeTask(taskList);
+		return constructDisplay();		
+	}
+
+	
+	@Override
+	public DisplayInfo undo() {
+		initialize();
+		modifyTaskList(oldStatus);
+		update();
+		DataStore.writeTask(taskList);
+		return constructUndoDisplay();
+	}
+
+	
+	// -----------helper functions-----------------
+
+
+
+	private static void initialize() {
+		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+
+	private static void update() {
+		RunLogic.updateTaskList(taskList);
+	}
+	@Override
+	public boolean supportUndo() {
+		return true;
+	}
+
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+	
+	private DisplayInfo constructDisplay() {
+		if(RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)){
+			Command read = new ReadTaskList(lineIndex, feedback, title);
+			DisplayInfo dis = read.execute();
+			dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+			dis.setHighlightItem(Default.MARK);
+			return dis;
+		} else {
+			Command view = new ViewTaskList(RunLogic.getCurrentDisplay()[1], feedback, title);
+			DisplayInfo dis = view.execute();
+			dis.setHighlight(Default.HIGHLIGHT_LINE);
+			dis.setHighlightLine(lineIndex - 1);
+			return dis;
+		}
+	}
+
+	private void modifyTaskList(boolean status2) {
+		if(status){
+			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setDone();
+		} else {
+			taskList.get(currentListIndex[currentDisplay[lineIndex]]).setUndone();
+		}
+	}
+
+	private void recordOldInfo() {
+		oldStatus = status;
+	}
+
+	private DisplayInfo constructUndoDisplay() {
+		ReadTaskList read = new ReadTaskList(lineIndex, ConvertCommand.UNDO_MARK, title);
+		DisplayInfo dis = read.execute();
+		dis.setHighlight(Default.HIGHLIGHT_PROPERTY);
+		dis.setHighlightItem(Default.MARK);
+		return dis;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Mark.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Next.java
+	 */
+
+ *
+ */
+public class Next implements Command{
+	private static String feedback;
+	private static String title;
+	
+	private static GUIStatus GUI;
+	public Next(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		GUI = RunLogic.getGuiStatus();
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		int FirstIndex = GUI.getTaskIndex() + Default.MAX_DISPLAY_LINE;
+		VIEW_MODE mode = GUI.getMode();
+		if(mode.equals(VIEW_MODE.TASK_LIST)){
+			ViewTaskList view = new ViewTaskList(FirstIndex, feedback, title);
+			return view.execute();
+		} else {
+			ViewTrashBin view = new ViewTrashBin(FirstIndex, feedback, title);
+			return view.execute();
+		}
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Next.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Previous.java
+	 */
+
+ *
+ */
+public class Previous implements Command{
+	private static String feedback;
+	private static String title;
+	
+	private static GUIStatus GUI;
+	public Previous(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		GUI = RunLogic.getGuiStatus();
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		int firstIndex = GUI.getTaskIndex() - Default.MAX_DISPLAY_LINE;
+		VIEW_MODE mode = GUI.getMode();
+		if(mode.equals(VIEW_MODE.TASK_LIST)){
+			ViewTaskList view = new ViewTaskList(firstIndex, feedback, title);
+			return view.execute();
+		} else {
+			ViewTrashBin view = new ViewTrashBin(firstIndex, feedback, title);
+			return view.execute();
+		}
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Previous.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ReadBin.java
+	 */
+
+ *
+ */
+public class ReadBin implements Command {
+	private static String feedback;
+	private static String title;
+
+	int readIndex;
+
+	// local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> trashbinList;
+	private static int[] currentDisplay;
+
+	// values for GUI and I/O
+	private static DisplayInfo passToGui;
+
+	// added by Zhang Ji
+	private long taskPointer;
+
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+
+	public ReadBin(int line, String myFeedback, String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		readIndex = currentDisplay[line];
+	}
+
+	@Override
+	public DisplayInfo execute() {
+		modifyDisplayList();
+		modifyGUI();
+		constructBridges(constructDisplay(), feedback, title);
+		update();
+		return passToGui;
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// -----------helper functions-----------------
+
+	private static void initialize() {
+		GUI = RunLogic.getGuiStatus();
+		trashbinList = RunLogic.getTrashbinList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+	}
+
+	private static void update() {
+		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+	}
+
+	private static int[] initializeList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+
+	private static void constructBridges(ArrayList<Task> display,
+			String feedback, String title) {
+		passToGui = new DisplayInfo(GUI, display, feedback, title);
+	}
+	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+	
+	
+	private void modifyDisplayList() {		
+		currentDisplay = initializeList(currentDisplay.length);
+		currentDisplay[1] = readIndex;
+	}
+
+	private void modifyGUI() {
+		GUI.changeViewMode(VIEW_MODE.BIN_DETAIL);
+		GUI.changeCurretnTask(RunLogic.getCurrentListIndex()[readIndex]);
+	}
+
+	private ArrayList<Task> constructDisplay() {
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(trashbinList.get(RunLogic.getCurrentListIndex()[readIndex]));
+		return display;
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ReadBin.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ReadTaskList.java
+	 */
+
+ *
+ */
+public class ReadTaskList implements Command {
+	private static String feedback;
+	private static String title;
+
+	private static int readIndex;
+
+	// local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+
+	// added by Zhang Ji
+	private long taskPointer;
+
+	public void setTaskPointer(long pointer) {
+		this.taskPointer = pointer;
+	}
+
+	public long getTaskPointer() {
+		return taskPointer;
+	}
+
+	// values for GUI and I/O
+	private static DisplayInfo passToGui;
+
+	public ReadTaskList(int line, String myFeedback, String myTitle) {
+		feedback = myFeedback;
+		title = myTitle;
+
+		initialize();
+		readIndex = currentDisplay[line];
+	}
+
+	@Override
+	public DisplayInfo execute() {
+		modifyDisplayList();
+		modifyGUI();
+		constructBridges(constructDisplay(), feedback, title);
+		update();
+		return passToGui;
+	}
+
+	
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// -----------helper functions-----------------
+
+	private static void initialize() {
+		GUI = RunLogic.getGuiStatus();
+		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+	}
+
+	private static void update() {
+		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+	}
+
+	private static int[] initializeList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+
+	private static void constructBridges(ArrayList<Task> display,
+			String feedback, String title) {
+		passToGui = new DisplayInfo(GUI, display, feedback, title);
+	}
+	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+	
+	private void modifyDisplayList() {		
+		currentDisplay = initializeList(currentDisplay.length);
+		currentDisplay[1] = readIndex;
+	}
+
+	private void modifyGUI() {
+		GUI.changeViewMode(VIEW_MODE.TASK_DETAIL);
+		GUI.changeCurretnTask(RunLogic.getCurrentListIndex()[readIndex]);
+	}
+
+	private ArrayList<Task> constructDisplay() {
+		ArrayList<Task> display = new ArrayList<Task>();
+		display.add(taskList.get(RunLogic.getCurrentListIndex()[readIndex]));
+		return display;
+	}
+
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ReadTaskList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Rename.java
+	 */
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Rename.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Reschedule.java
+	 */
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Reschedule.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Restore.java
+	 */
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\Restore.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\SearchTaskList.java
+	 */
+
+ *
+ */
+public class SearchTaskList implements Command{
+	private static String[] keyWord;
+	private static String feedback;
+	private static String title;
+	
+	//local memory
+	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+
+	
+	public SearchTaskList(String word, String myFeedback, String myTitle){
+		keyWord = word.split(" ");
+		feedback = myFeedback;
+		title = myTitle;
+		initialize();
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		modifyIndexList();
+		update();
+		return determineDisplay();
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	
+	//-----------helper functions-----------------
+	
+	
+	private static void initialize(){
+		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+	
+	private static void update(){
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+	
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+
+	private DisplayInfo determineDisplay() {
+		Command search = new ViewTaskList(0, feedback, title);
+		return search.execute();
+	}
+
+	private void modifyIndexList() {
+		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
+		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
+			for(int k = 0; k < keyWord.length; k++){
+				if(taskList.get(currentListIndex[i]).getName().contains(keyWord[k])){
+					tempListIndex[j] = currentListIndex[i];
+					j++;
+					break;
+				}
+			}
+
+		}
+		currentListIndex = tempListIndex;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\SearchTaskList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\SearchTrashBin.java
+	 */
+
+ *
+ */
+public class SearchTrashBin implements Command{
+	private static String[] keyWord;
+	private static String feedback;
+	private static String title;
+	
+	//local memory
+	private static ArrayList<Task> trashbinList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+	
+	public SearchTrashBin(String word, String myFeedback, String myTitle){
+		keyWord = word.split(" ");
+		feedback = myFeedback;
+		title = myTitle;
+		initialize();
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		modifyIndexList();
+		update();
+		return determineDisplay();
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	
+	//-----------helper functions-----------------
+	
+	
+	private static void initialize(){
+		trashbinList = RunLogic.getTrashbinList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+	
+	private static void update(){
+		RunLogic.updateTrashbinList(trashbinList);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+	
+	private static int[] initializeDisplayList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+	private DisplayInfo determineDisplay() {
+		Command search = new ViewTrashBin(0, feedback, title);
+		return search.execute();
+	}
+
+	private void modifyIndexList() {
+		int[] tempListIndex = initializeDisplayList(currentListIndex.length);
+		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
+			for(int k = 0; k < keyWord.length; k++){
+				if(trashbinList.get(currentListIndex[i]).getName().contains(keyWord[k])){
+					tempListIndex[j] = currentListIndex[i];
+					j++;
+					break;
+				}
+			}
+
+		}
+		currentListIndex = tempListIndex;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\SearchTrashBin.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ViewDate.java
+	 */
+
+ *
+ */
+public class ViewDate implements Command{
+	private static JDate date;
+	private static String feedback;
+	private static String title;
+	
+	//local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> trashbinList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+
+	
+	public ViewDate(JDate myDate, String myFeedback, String myTitle) {
+		date = myDate;
+		feedback = myFeedback;
+		title = myTitle;
+		initialize();
+		
+	}
+
+	@Override
+	public DisplayInfo execute() {
+		ArrayList<Task> targetList = determineTargetList();
+		modifyIndexList(targetList);
+		modifyGUI();
+		update();
+		
+
+		return constructDisplay();
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
+	//-----------helper functions-----------------
+	
+	
+	private static void initialize(){
+		GUI = RunLogic.getGuiStatus();
+		taskList = RunLogic.getTaskList();
+		trashbinList = RunLogic.getTrashbinList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+	
+	private static void update(){
+		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+	
+	private static int[] initializeList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+	private int[] updateListIndex(int length,  ArrayList<Task> targetList) {
+		int[] currentList = new int[length];
+		for(int i = 0; i < targetList.size(); i++){
+			currentList[i] = i;
+		}
+		for(int i = targetList.size(); i < currentList.length; i++){
+			currentList[i] = -1;
+		}
+		return currentList;
+	}
+	
+
+	private DisplayInfo constructDisplay() {
+		Command viewDate;
+		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			viewDate = new ViewTrashBin(0, feedback, title);
+		} else {
+			viewDate = new ViewTaskList(0, feedback, title);
+		}
+		
+		DisplayInfo dis = viewDate.execute();
+		dis.setHighlight(Default.HIGHLIGHT_DATE);
+		return dis;
+	}
+
+	private void modifyGUI() {
+		GUI.changeDate(date);
+	}
+
+	private void modifyIndexList(ArrayList<Task> targetList) {
+		currentListIndex = updateListIndex(currentListIndex.length, targetList);
+		int[] tempListIndex = initializeList(currentListIndex.length);
+		for(int i = 0, j = 0; currentListIndex[i] >= 0; i++){
+			if(date.equals(targetList.get(currentListIndex[i]).getStartDate()) || 
+					date.equals(targetList.get(currentListIndex[i]).getEndDate())){
+				tempListIndex[j] = currentListIndex[i];
+				j++;
+			}
+		}
+		currentListIndex = tempListIndex;
+	}
+
+	private ArrayList<Task> determineTargetList() {
+		ArrayList<Task> targetList = new ArrayList<Task>();
+		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			targetList = trashbinList;
+		} else {
+			targetList = taskList;
+		}
+		return targetList;
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ViewDate.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ViewTaskList.java
+	 */
+
+ *
+ */
+public class ViewTaskList implements Command{
+	private static String feedback;
+	private static String title;
+	
+	int firstTaskIndex;
+	
+	//local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> taskList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+	
+	//values for GUI and I/O
+	private static DisplayInfo passToGui;
+	
+	public ViewTaskList(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		firstTaskIndex = 0;
+		initialize();
+	}
+	
+	public ViewTaskList(int index, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		firstTaskIndex = index;
+		initialize();
+	}
+	
+	@Override
+	public DisplayInfo execute() {		
+		boolean hasNext = determineNext();
+		boolean hasPrevious = determinePrevious();
+		ArrayList<Task> display = determineDisplayIndex();
+		modifyGUI(hasNext, hasPrevious);
+		update();
+		constructBridges(display, feedback, title);
+		return passToGui;
+	}
+
+
+	
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
+	
+	//-----------helper functions-----------------
+	
+	
+	
+	private static void initialize(){
+		GUI = RunLogic.getGuiStatus();
+		taskList = RunLogic.getTaskList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+	
+	private static void update(){
+		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+	
+	private static int[] initializeList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+		
+	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
+		passToGui = new DisplayInfo(GUI, display, feedback, title);
+	}
+	
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+	private ArrayList<Task> determineDisplayIndex() {
+		ArrayList<Task> display = new ArrayList<Task>();
+		currentDisplay = initializeList(currentDisplay.length);
+		if(currentListIndex[0] >= 0){
+			for(int i = 1, j = firstTaskIndex; currentListIndex[j] >= 0; j++){
+				if(i <= Default.MAX_DISPLAY_LINE){
+					display.add(taskList.get(currentListIndex[j]));
+					currentDisplay[i] = j;
+					i++;
+				} else {
+					break;
+				}
+			}
+		}
+		return display;
+	}
+
+	private boolean determinePrevious() {
+		return firstTaskIndex >= Default.MAX_DISPLAY_LINE;
+	}
+
+	private boolean determineNext() {
+		return currentListIndex[firstTaskIndex + Default.MAX_DISPLAY_LINE] > 0;
+	}
+
+	private void modifyGUI(boolean hasNext, boolean hasPrevious) {
+		int firstTask = -1;
+		if(currentDisplay[1] >= 0 ){
+			firstTask = currentListIndex[currentDisplay[1]];
+		}
+		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, hasNext, hasPrevious, firstTask, GUI.getDate());
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ViewTaskList.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ViewTrashBin.java
+	 */
+
+ *
+ */
+public class ViewTrashBin implements Command{
+	private static String feedback;
+	private static String title;
+	
+	int firstTaskIndex;
+	
+	//local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> trashbinList;
+	private static int[] currentDisplay;
+	private static int[] currentListIndex;
+	
+	//values for GUI and I/O
+	private static DisplayInfo passToGui;
+	
+	public ViewTrashBin(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		firstTaskIndex = 0;
+		initialize();
+	}
+	
+	public ViewTrashBin(int index, String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		firstTaskIndex = index;
+		initialize();
+	}
+	
+	@Override
+	public DisplayInfo execute() {		
+		boolean hasNext = determineNext();
+		boolean hasPrevious = determinePrevious();
+		ArrayList<Task> display = determineDisplayIndex();
+		modifyGUI(hasNext, hasPrevious);
+		update();
+		constructBridges(display, feedback, title);
+		return passToGui;
+	}
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
+	
+	//-----------helper functions-----------------
+	
+	
+	
+	private static void initialize(){
+		GUI = RunLogic.getGuiStatus();
+		trashbinList = RunLogic.getTrashbinList();
+		currentDisplay = RunLogic.getCurrentDisplay();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+	
+	private static void update(){
+		RunLogic.updateGuiStatus(GUI);
+		RunLogic.updateCurrentdiaplay(currentDisplay);
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+	
+	private static int[] initializeList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+
+	private static void constructBridges(ArrayList<Task> display, String feedback, String title){
+		passToGui = new DisplayInfo(GUI, display, feedback, title);
+	}
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+	private ArrayList<Task> determineDisplayIndex() {
+		ArrayList<Task> display = new ArrayList<Task>();
+		currentDisplay = initializeList(currentDisplay.length);
+		if(currentListIndex[0] >= 0){
+			for(int i = 1, j = firstTaskIndex;  currentListIndex[j] >= 0; j++){
+				if(i <= Default.MAX_DISPLAY_LINE){
+					display.add(trashbinList.get(currentListIndex[j]));
+					currentDisplay[i] = j;
+					i++;
+				} else {
+					break;
+				}
+			}
+		}
+		return display;
+	}
+
+	private boolean determinePrevious() {
+		return firstTaskIndex >= Default.MAX_DISPLAY_LINE;
+	}
+
+	private boolean determineNext() {
+		return currentListIndex[firstTaskIndex + Default.MAX_DISPLAY_LINE] > 0;
+	}
+
+	private void modifyGUI(boolean hasNext, boolean hasPrevious) {
+		int firstTask = -1;
+		if(currentDisplay[1] >= 0 ){
+			firstTask = currentListIndex[currentDisplay[1]];
+		}
+		GUI = new GUIStatus(VIEW_MODE.BIN, hasNext, hasPrevious, firstTask, GUI.getDate());
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ViewTrashBin.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ViewUndone.java
+	 */
+
+ *
+ */
+public class ViewUndone implements Command{
+	private static String feedback;
+	private static String title;
+	
+	int firstTaskIndex;
+	
+	//local memory
+	private static GUIStatus GUI;
+	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> trashbinList;
+	private static int[] currentListIndex;
+	
+	public ViewUndone(String myFeedback, String myTitle){
+		feedback = myFeedback;
+		title = myTitle;
+		
+		firstTaskIndex = 0;
+		initialize();
+	}
+	
+	@Override
+	public DisplayInfo execute() {
+		ArrayList<Task> targetList = determineTargetList();
+		currentListIndex = initializeCurrentDisplay(currentListIndex.length, targetList);
+		update();
+		
+		Command view  = new ViewTaskList(0, feedback, title);
+		return view.execute();
+	}
+
+
+
+	@Override
+	public DisplayInfo undo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
+	//-----------helper functions-----------------
+	
+	
+	
+	private static void initialize(){
+		GUI = RunLogic.getGuiStatus();
+		taskList = RunLogic.getTaskList();
+		trashbinList = RunLogic.getTrashbinList();
+		currentListIndex = RunLogic.getCurrentListIndex();
+	}
+	
+	private static void update(){
+		RunLogic.updateCurrentListIndex(currentListIndex);
+	}
+	
+	private static int[] initializeList(int length) {
+		int[] temp = new int[length];
+		for(int i = 0; i < length; i++){
+			temp[i] = -1;
+		}
+		return temp;
+	}
+	
+	private int[] initializeCurrentDisplay(int length, ArrayList<Task> targetList) {
+		int[] result = initializeList(length);
+		for(int i = 0, j = 0; i < targetList.size(); i++){
+			if(!targetList.get(i).getDone()){
+				result[j] = i;
+				j++;
+			}
+		}
+		return result;
+	}
+	
+	private ArrayList<Task> determineTargetList() {
+		ArrayList<Task> targetList = new ArrayList<Task>();
+		if(GUI.getMode().equals(VIEW_MODE.BIN) || GUI.getMode().equals(VIEW_MODE.BIN_DETAIL)){
+			targetList = trashbinList;
+		} else {
+			targetList = taskList;
+		}
+		return targetList;
+	}
+
+	@Override
+	public boolean supportUndo() {
+		return false;
+	}
+
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\CommandType\ViewUndone.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\ConvertCommand.java
+	 */
+
+ *
+ */
+
+
+public class ConvertCommand {
+	private static Logger logger = Logger.getLogger("Convert");
+	
+	// title formats
+	private static String TASKLIST_TITLE = "Task List";
+	private static String BIN_TITLE = "Trash bin";
+	private static String UNDONE_TITLE = "Undone Tasks";
+	public static String DETAIL_TITLE_FORMAT = "Detail of %s";
+	private static String SEARCH_TITLE = "Search result of %s";
+
+	// UNDO messages
+	public static String UNDO_MARK = "Undo Mark Successful";
+	public static String UNDO_DESCRIBE = "Undo Describe Successful";
+	public static String UNDO_RENAME = "Undo Rename Successful";
+	public static String UNDO_RESCHEDULE = "Undo Reschedule Successful";
+	public static String UNDO_RESTORE = "Undo Restore Successful";
+
+	// feedback formats
+	private static String CANNOT_FORMAT = "Cannot command %s in current view mode!";
+	private static String INVALID_ARGUMENT_FORMAT = "Invaid argument for %s: %s invalid!";
+	private static String UNKNOWN = "Invalid Command!";
+
+	private static String SUCCESSFUL_ADD = "New task added successfully!";
+	private static String CANNOT_ADD = String.format(CANNOT_FORMAT, "Add");
+	private static String INVALID_ADD_NAME = String.format(
+			INVALID_ARGUMENT_FORMAT, "Add", "task title");
+	private static String INVALID_ADD_STARTDATE = String.format(
+			INVALID_ARGUMENT_FORMAT, "Add", "start date");
+	private static String INVALID_ADD_ENDDATE = String.format(
+			INVALID_ARGUMENT_FORMAT, "Add", "end date");
+
+	private static String SUCCESSFUL_DELETE = "Task deleted successfully!";
+	private static String CANNOT_DELETE = String
+			.format(CANNOT_FORMAT, "Delete");
+	private static String INVALID_DELETE_ITEM = String.format(
+			INVALID_ARGUMENT_FORMAT, "Delete", "delete line");
+
+	private static String SUCCESSFUL_READ = "Task details!";
+	private static String CANNOT_READ = String.format(CANNOT_FORMAT, "Read");
+	private static String INVALID_READ_ITEM = String.format(
+			INVALID_ARGUMENT_FORMAT, "Read", "Read line");
+
+	private static String SUCCESSFUL_RENAME = "Task rename successfully!";
+	private static String CANNOT_RENAME = String
+			.format(CANNOT_FORMAT, "Rename");
+	private static String INVALID_RENAME_ITEM = String.format(
+			INVALID_ARGUMENT_FORMAT, "Rename", "Update line");
+	private static String INVALID_RENAME_NAME = String.format(
+			INVALID_ARGUMENT_FORMAT, "Rename", "New name");
+
+	private static String SUCCESSFUL_RESCHDULE = "Task reschedule successfully!";
+	private static String CANNOT_RESCHEDULE = String.format(CANNOT_FORMAT,
+			"Reschedule");
+	private static String INVALID_RESCHEDULE_ITEM = String.format(
+			INVALID_ARGUMENT_FORMAT, "Reschedule", "Update line");
+	private static String INVALID_RESCHEDULE_STARTDATE = String.format(
+			INVALID_ARGUMENT_FORMAT, "Reschedule", "Start date");
+	private static String INVALID_RESCHEDULE_ENDDATE = String.format(
+			INVALID_ARGUMENT_FORMAT, "Reschedule", "End date");
+
+	private static String SUCCESSFUL_DESCRIBE = "Task describe successfully!";
+	private static String INVALID_DESCRIBE_ITEM = String.format(
+			INVALID_ARGUMENT_FORMAT, "Describe", "Update line");
+	private static String CANNOT_DESCRIBE = String.format(CANNOT_FORMAT,
+			"Describe");
+
+	private static String SUCCESSFUL_MARK = "Task Mark successfully!";
+	private static String INVALID_MARK_ITEM = String.format(
+			INVALID_ARGUMENT_FORMAT, "Mark", "Update line");
+	private static String CANNOT_MARK = String.format(CANNOT_FORMAT, "Mark");
+
+	private static String SUCCESSFUL_RESTORE = "Task restore successfully!";
+	private static String CANNOT_RESTORE = String.format(CANNOT_FORMAT,
+			"Restore");
+	private static String INVALID_RESTORE_ITEM = String.format(
+			INVALID_ARGUMENT_FORMAT, "Restore", "Restore line");
+
+	private static String SUCCESSFUL_VIEW = "View mode changed!";
+	private static String INVALID_VIEW_MODE = String.format(
+			INVALID_ARGUMENT_FORMAT, "View", "View mode");
+
+	private static String SUCCESSFUL_NEXT = "Next page!";
+	private static String NO_NEXT = "No next page!";
+	private static String CANNOT_NEXT = String.format(CANNOT_FORMAT, "Next");
+
+	private static String SUCCESSFUL_PREVIOUS = "Previous page!";
+	private static String NO_PREVIOUS = "No previous page!";
+	private static String CANNOT_PREVIOUS = String.format(CANNOT_FORMAT,
+			"Previous");
+
+	private static String SUCCESSFUL_BACK = "Back to List!";
+	private static String CANNOT_BACK = String.format(CANNOT_FORMAT, "Back");
+
+	private static String SUCCESSFUL_SEARCH = "Search Results!";
+	private static String INVALID_KEYWORD = String.format(
+			INVALID_ARGUMENT_FORMAT, "Search", "Key word");
+	private static String SUCCESSFUL_VIEW_DATE = "Search result!";
+	
+	private static String HELP_FEEDBACK = "All the valid command format!";
+	private static String HELP_TITLE = "Helper";
+
+	// some command format
+	private static String DELETE_ALL = "all";
+
+	public static Command convert(RawCommand command) {
+		if (command == null) {
+			logger.log(Level.WARNING, "Convertor get null raw command!");
+			return new Invalid(UNKNOWN);
+		}
+
+		logger.info("Command : " + command.getCommand());
+
+		if (command.getCommand().equalsIgnoreCase("add")) {
+			int nextTaskPointer = RunLogic.getNextTaskPointer();
+			RunLogic.incrementnextTaskPointer();
+			return convertAdd(command, nextTaskPointer);
+		} else if (command.getCommand().equalsIgnoreCase("delete")) {
+			return convertDelete(command);
+		} else if (command.getCommand().equalsIgnoreCase("read")) {
+			return convertRead(command);
+		} else if (command.getCommand().equalsIgnoreCase("rename")) {
+			return convertRename(command);
+		} else if (command.getCommand().equalsIgnoreCase("reschedule")) {
+			return convertReschedule(command);
+		} else if (command.getCommand().equalsIgnoreCase("describe")) {
+			return ConvertDescribe(command);
+		} else if (command.getCommand().equalsIgnoreCase("mark")) {
+			return ConvertMark(command);
+		} else if (command.getCommand().equalsIgnoreCase("restore")) {
+			return convertRestore(command);
+		} else if (command.getCommand().equalsIgnoreCase("view")) {
+			return convertView(command);
+		} else if (command.getCommand().equalsIgnoreCase("viewdate")) {
+			return convertViewDate(command);
+		} else if (command.getCommand().equalsIgnoreCase("undo")) {
+			return convertUndo();
+		} else if (command.getCommand().equalsIgnoreCase("next")) {
+			return convertNext(command);
+		} else if (command.getCommand().equalsIgnoreCase("previous")) {
+			return convertPrevious(command);
+		} else if (command.getCommand().equalsIgnoreCase("search")) {
+			return convertSearch(command);
+		} else if (command.getCommand().equalsIgnoreCase("back")) {
+			return convertBack(command);
+		} else if (command.getCommand().equalsIgnoreCase("exit")) {
+			return convertExit(command);
+		} else if (command.getCommand().equalsIgnoreCase("help")) {
+			return convertHelp();
+		} else {
+			return new Invalid(UNKNOWN);
+		}
+	}
+
+	private static Command convertAdd(RawCommand command, int taskPointer) {
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)
+				|| RunLogic.getGuiStatus().getMode()
+						.equals(VIEW_MODE.TASK_DETAIL)) {
+			// must have a task name
+			if (command.getTitle() == null) {
+				return new Invalid(INVALID_ADD_NAME);
+			}
+
+			// must have correct date format or have no date
+			JDate startDate = null;
+			JDate endDate = null;
+
+			if (command.getStartDay() != null) {
+				if (!checkDateformat(command.getStartDay())) {
+					return new Invalid(INVALID_ADD_STARTDATE);
+				}
+				startDate = convertDate(command.getStartDay());
+				if (startDate == null) {
+					return new Invalid(INVALID_ADD_STARTDATE);
+				}
+			}
+
+			if (command.getEndDay() != null) {
+				if (!checkDateformat(command.getEndDay())) {
+					return new Invalid(INVALID_ADD_ENDDATE);
+				}
+				endDate = convertDate(command.getEndDay());
+				if (endDate == null) {
+					return new Invalid(INVALID_ADD_ENDDATE);
+				}
+			}
+
+			// construct the Task object
+			Task task = new Task(command.getTitle(), command.getDescription(),
+					startDate, endDate);
+			task.setPointer(taskPointer);
+			return new Add(task, SUCCESSFUL_ADD, String.format(
+					DETAIL_TITLE_FORMAT, task.getName()));
+		}
+
+		// command add in wrong view mode
+		return new Invalid(CANNOT_ADD);
+	}
+
+	private static Command convertDelete(RawCommand command) {
+		// delete in task list
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)) {
+			// delete all
+			if (!isInt(command.getCMDDescription())) {
+				if (command.getCMDDescription().equalsIgnoreCase(DELETE_ALL)) {
+					return new DeleteTaskList(true, SUCCESSFUL_DELETE,
+							TASKLIST_TITLE);
+				} else {
+					return new Invalid(INVALID_DELETE_ITEM);
+				}
+			}
+
+			// delete certain line
+			int deleteLine = Integer.parseInt(command.getCMDDescription());
+			if (checkLineNotExist(deleteLine)) {
+				return new Invalid(INVALID_DELETE_ITEM);
+			}
+
+			return new DeleteTaskList(deleteLine, SUCCESSFUL_DELETE,
+					TASKLIST_TITLE);
+		}
+
+		// delete line in trash bin
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)) {
+			// delete all
+			if (!isInt(command.getCMDDescription())) {
+				if (command.getCMDDescription().equalsIgnoreCase(DELETE_ALL)) {
+					return new DeleteTrashbin(true, SUCCESSFUL_DELETE,
+							BIN_TITLE);
+				} else {
+					return new Invalid(INVALID_DELETE_ITEM);
+				}
+			}
+
+			// delete certain line
+			int deleteLine = Integer.parseInt(command.getCMDDescription());
+			if (checkLineNotExist(deleteLine)) {
+				return new Invalid(INVALID_DELETE_ITEM);
+			}
+
+			return new DeleteTrashbin(deleteLine, SUCCESSFUL_DELETE, BIN_TITLE);
+		}
+
+		// command delete in wrong view mode
+		return new Invalid(CANNOT_DELETE);
+	}
+
+	private static Command convertRead(RawCommand command) {
+		// if reading item dose not exist, return invalid
+		if (!isInt(command.getCMDDescription())) {
+			return new Invalid(INVALID_READ_ITEM);
+		}
+		int readLine = Integer.parseInt(command.getCMDDescription());
+		if (checkLineNotExist(readLine)) {
+			return new Invalid(INVALID_READ_ITEM);
+		}
+
+		// read in task list
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)) {
+			Task task = RunLogic.getTaskList().get(getTaskWithLine(readLine));
+			return new ReadTaskList(readLine, SUCCESSFUL_READ, String.format(
+					DETAIL_TITLE_FORMAT, task.getName()));
+		}
+
+		// read in trash bin
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)) {
+			Task task = RunLogic.getTrashbinList().get(
+					getTaskWithLine(readLine));
+			return new ReadBin(readLine, SUCCESSFUL_READ, String.format(
+					DETAIL_TITLE_FORMAT, task.getName()));
+		}
+
+		// command read in wrong view mode
+		return new Invalid(CANNOT_READ);
+	}
+
+	private static Command convertRename(RawCommand command) {
+		// rename in task list mode
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)) {
+			// if updating item dose not exist, return invalid
+			if (!isInt(command.getCMDDescription())) {
+				return new Invalid(INVALID_RENAME_ITEM);
+			}
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if (checkLineNotExist(readLine)) {
+				return new Invalid(INVALID_RENAME_ITEM);
+			}
+
+			// must have a new task name
+			String newName = command.getTitle();
+			if (newName == null) {
+				return new Invalid(INVALID_RENAME_NAME);
+			}
+
+			return new Rename(readLine, newName, SUCCESSFUL_RENAME,
+					String.format(DETAIL_TITLE_FORMAT, newName));
+		}
+
+		// command rename in wrong view mode
+		if (!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)) {
+			return new Invalid(CANNOT_RENAME);
+		}
+
+		// rename in task detail mode
+		// must have a new name
+		if (command.getCMDDescription() == null && command.getTitle() == null) {
+			return new Invalid(INVALID_RENAME_NAME);
+		}
+		String newName = command.getCMDDescription();
+		if (newName == null) {
+			newName = command.getTitle();
+		} else {
+			newName = newName.concat(" ").concat(command.getTitle());
+		}
+
+		return new Rename(newName, SUCCESSFUL_RENAME, String.format(
+				DETAIL_TITLE_FORMAT, newName));
+	}
+
+	private static Command convertReschedule(RawCommand command) {
+		String newStartDate = command.getStartDay();
+		String newEndDate = command.getEndDay();
+
+		JDate startDate = null;
+		JDate endDate = null;
+
+		// must have date in correct format or have no date
+		if (command.getStartDay() != null) {
+			if (!checkDateformat(command.getStartDay())) {
+				return new Invalid(INVALID_RESCHEDULE_STARTDATE);
+			}
+			startDate = convertDate(newStartDate);
+		}
+
+		if (command.getEndDay() != null) {
+			if (!checkDateformat(command.getEndDay())) {
+				return new Invalid(INVALID_RESCHEDULE_ENDDATE);
+			}
+			endDate = convertDate(newEndDate);
+		}
+
+		// reschedule in task list mode
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)) {
+			// if updating item dose not exist, return invalid
+			if (!isInt(command.getCMDDescription())) {
+				return new Invalid(INVALID_RESCHEDULE_ITEM);
+			}
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if (checkLineNotExist(readLine)) {
+				return new Invalid(INVALID_RESCHEDULE_ITEM);
+			}
+
+			Task task = RunLogic.getTaskList().get(getTaskWithLine(readLine));
+			return new Reschedule(readLine, startDate, endDate,
+					SUCCESSFUL_RENAME, String.format(DETAIL_TITLE_FORMAT,
+							task.getName()));
+		}
+
+		// command reschedule in wrong view mode
+		if (!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)) {
+			return new Invalid(CANNOT_RESCHEDULE);
+		}
+
+		// command reschedule in task detail mode
+		Task task = RunLogic.getTaskList().get(
+				RunLogic.getGuiStatus().getTaskIndex());
+		return new Reschedule(startDate, endDate, SUCCESSFUL_RESCHDULE,
+				String.format(DETAIL_TITLE_FORMAT, task.getName()));
+	}
+
+	private static Command ConvertDescribe(RawCommand command) {
+		String newDescription = command.getDescription();
+
+		// describe in task list view mode
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)) {
+			// if updating item dose not exist, return invalid
+			if (!isInt(command.getCMDDescription().trim())) {
+				return new Invalid(INVALID_DESCRIBE_ITEM);
+			}
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if (checkLineNotExist(readLine)) {
+				return new Invalid(INVALID_DESCRIBE_ITEM);
+			}
+			Task task = RunLogic.getTaskList().get(getTaskWithLine(readLine));
+
+			return new Describe(readLine, newDescription, SUCCESSFUL_DESCRIBE,
+					String.format(DETAIL_TITLE_FORMAT, task.getName()));
+		}
+
+		// command describe in wrong view mode
+		if (!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)) {
+			return new Invalid(CANNOT_DESCRIBE);
+		}
+
+		// describe in task detail mode
+		if (command.getDescription() == null || command.getDescription() == "") {
+			newDescription = command.getCMDDescription();
+		} else if (command.getCMDDescription() != null && command.getCMDDescription() != "") {
+			newDescription = command.getCMDDescription() + " " + command.getDescription();
+		}
+		Task task = RunLogic.getTaskList().get(
+				RunLogic.getGuiStatus().getTaskIndex());
+		return new Describe(newDescription, SUCCESSFUL_DESCRIBE, String.format(
+				DETAIL_TITLE_FORMAT, task.getName()));
+	}
+
+	private static Command ConvertMark(RawCommand command) {
+		// mark in task list mode
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)) {
+			// if updating item dose not exist, return invalid
+			if (!isInt(command.getCMDDescription())) {
+				return new Invalid(INVALID_MARK_ITEM);
+			}
+			int readLine = Integer.parseInt(command.getCMDDescription());
+			if (checkLineNotExist(readLine)) {
+				return new Invalid(INVALID_MARK_ITEM);
+			}
+			Task task = RunLogic.getTaskList().get(getTaskWithLine(readLine));
+
+			boolean status = convertStatus(command.getDescription(), task);
+
+			return new Mark(readLine, status, SUCCESSFUL_MARK, String.format(
+					DETAIL_TITLE_FORMAT, task.getName()));
+		}
+
+		// command mark in wrong view mode
+		if (!RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)) {
+			return new Invalid(CANNOT_MARK);
+		}
+
+		// mark in task detail mode
+		Task task = RunLogic.getTaskList().get(
+				RunLogic.getGuiStatus().getTaskIndex());
+		boolean status = convertStatus(command.getDescription(), task);
+		return new Mark(status, SUCCESSFUL_MARK, String.format(
+				DETAIL_TITLE_FORMAT, task.getName()));
+	}
+
+	private static Command convertRestore(RawCommand command) {
+		// restore in trash bin task detail mode
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN_DETAIL)) {
+			Task task = RunLogic.getTrashbinList().get(
+					RunLogic.getGuiStatus().getTaskIndex());
+			return new Restore(1, SUCCESSFUL_RESTORE, String.format(
+					DETAIL_TITLE_FORMAT, task.getName()));
+		}
+
+		// restore in trash bin mode
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)) {
+			// if restore line dose not exist, return invalid
+			if (!isInt(command.getCMDDescription())) {
+				return new Invalid(INVALID_RESTORE_ITEM);
+			}
+			int restoreLine = Integer.parseInt(command.getCMDDescription());
+			if (checkLineNotExist(restoreLine)) {
+				return new Invalid(INVALID_RESTORE_ITEM);
+			}
+
+			return new Restore(restoreLine, SUCCESSFUL_RESTORE, BIN_TITLE);
+		}
+
+		// command restore in wrong view mode
+		return new Invalid(CANNOT_RESTORE);
+	}
+
+	private static Command convertView(RawCommand command) {
+		String newMode = command.getCMDDescription();
+
+		if (newMode == null) {
+			RunLogic.updateCurrentListIndex(updateListIndexOfTaskList(RunLogic
+					.getCurrentListIndex().length));
+			return new ViewTaskList(0, SUCCESSFUL_VIEW, TASKLIST_TITLE);
+		} else if (newMode.equalsIgnoreCase("tasklist")) {
+			RunLogic.updateCurrentListIndex(updateListIndexOfTaskList(RunLogic
+					.getCurrentListIndex().length));
+			return new ViewTaskList(0, SUCCESSFUL_VIEW, TASKLIST_TITLE);
+		} else if (newMode.equalsIgnoreCase("bin")) {
+			RunLogic.updateCurrentListIndex(updateListIndexOfTrashBin(RunLogic
+					.getCurrentListIndex().length));
+			return new ViewTrashBin(0, SUCCESSFUL_VIEW, BIN_TITLE);
+		} else if (newMode.equalsIgnoreCase("undone")) {
+			return new ViewUndone(SUCCESSFUL_VIEW, UNDONE_TITLE);
+		} else {
+			return new Invalid(INVALID_VIEW_MODE);
+		}
+	}
+
+	private static Command convertViewDate(RawCommand command) {
+		String rawDate = command.getCMDDescription();
+		// if date is in wrong format or has no date, return invalid
+		if (rawDate == null) {
+			return new Invalid(INVALID_VIEW_MODE);
+		} else if (!isInt(rawDate)) {
+			return new Invalid(INVALID_VIEW_MODE);
+		} else {
+			return new ViewDate(convertDate(rawDate), SUCCESSFUL_VIEW_DATE,
+					String.format(SEARCH_TITLE, rawDate));
+		}
+	}
+
+	private static Command convertNext(RawCommand command) {
+		if (RunLogic.getGuiStatus().hasNext()) {
+			if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)) {
+				return new Next(SUCCESSFUL_NEXT, TASKLIST_TITLE);
+			} else if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)) {
+				return new Next(SUCCESSFUL_NEXT, BIN_TITLE);
+			}
+			// command next in wrong view mode
+			return new Invalid(CANNOT_NEXT);
+		}
+		// has no next page
+		return new Invalid(NO_NEXT);
+	}
+
+	private static Command convertPrevious(RawCommand command) {
+		if (RunLogic.getGuiStatus().hasPrevious()) {
+			if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_LIST)) {
+				return new Previous(SUCCESSFUL_PREVIOUS, TASKLIST_TITLE);
+			} else if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)) {
+				return new Previous(SUCCESSFUL_PREVIOUS, BIN_TITLE);
+			}
+			// command next in wrong view mode
+			return new Invalid(CANNOT_PREVIOUS);
+		}
+		// has no next page
+		return new Invalid(NO_PREVIOUS);
+	}
+
+	private static Command convertSearch(RawCommand command) {
+		String keyWord = command.getCMDDescription();
+
+		// must have a valid keyword
+		if (keyWord == null) {
+			return new Invalid(INVALID_KEYWORD);
+		}
+
+		// if view mode is trash bin or trash bin task detail, search in trash bin; 
+		// otherwise search in task list
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN_DETAIL)) {
+			return new SearchTrashBin(keyWord, SUCCESSFUL_SEARCH,
+					String.format(SEARCH_TITLE, keyWord));
+		} else if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.BIN)) {
+			return new SearchTrashBin(keyWord, SUCCESSFUL_SEARCH,
+					String.format(SEARCH_TITLE, keyWord));
+		} else {
+			return new SearchTaskList(keyWord, SUCCESSFUL_SEARCH,
+					String.format(SEARCH_TITLE, keyWord));
+		}
+	}
+
+	private static Command convertBack(RawCommand command) {
+		// task detail mode will back to task list mode
+		// trash bin task detail mode will back trash bin mode
+		if (RunLogic.getGuiStatus().getMode().equals(VIEW_MODE.TASK_DETAIL)) {
+			return new Back(SUCCESSFUL_BACK, TASKLIST_TITLE);
+		} else if (RunLogic.getGuiStatus().getMode()
+				.equals(VIEW_MODE.BIN_DETAIL)) {
+			return new Back(SUCCESSFUL_BACK, BIN_TITLE);
+		}
+		// command back in wrong view mode
+		return new Invalid(CANNOT_BACK);
+	}
+
+	private static Command convertExit(RawCommand command) {
+		return new Exit();
+	}
+
+	private static Command convertUndo() {
+		return new Undo();
+	}
+	
+	private static Command convertHelp() {
+		return new Helper(HELP_FEEDBACK, HELP_TITLE);
+	}
+
+	// --------------------Helper Function-------------------------
+	private static boolean isInt(String str) {
+		if (str == null || str == "") {
+			return false;
+		}
+
+		int len = str.length();
+		for (int i = 0; i < len; i++) {
+			if (str.charAt(i) < 48 || str.charAt(i) > 57) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static int[] updateListIndexOfTaskList(int length) {
+		int[] temp = new int[length];
+		for (int i = 0; i < RunLogic.getTaskList().size(); i++) {
+			temp[i] = i;
+		}
+		for (int i = RunLogic.getTaskList().size(); i < length; i++) {
+			temp[i] = -1;
+		}
+		return temp;
+	}
+
+	private static int[] updateListIndexOfTrashBin(int length) {
+		int[] temp = new int[length];
+		for (int i = 0; i < RunLogic.getTrashbinList().size(); i++) {
+			temp[i] = i;
+		}
+		for (int i = RunLogic.getTrashbinList().size(); i < length; i++) {
+			temp[i] = -1;
+		}
+		return temp;
+	}
+
+	private static boolean checkDateformat(String date) {
+		return isInt(date) && date.length() == Default.LENGTH_OF_DATE_FORMAT;
+	}
+
+	private static JDate convertDate(String date) {
+		int year = Integer.parseInt(date.substring(0, 4));
+		int month = Integer.parseInt(date.substring(4, 6));
+
+		// check month valid
+		if (month < 1 || month > 12) {
+			return null;
+		}
+
+		int day = Integer.parseInt(date.substring(6, 8));
+
+		// check day valid
+		if ((day < 1) || (day > 31)) {
+			return null;
+		} else if (day == 29) {
+			if ((month == 2) && ((year % 4 != 0) || (year % 400 == 0))) {
+				return null;
+			}
+		} else if (day == 30) {
+			if (month == 2) {
+				return null;
+			}
+		} else if (day == 31) {
+			if ((month == 2) || (month == 4) || (month == 6) || (month == 9)
+					|| (month == 11)) {
+				return null;
+			}
+		}
+		return new JDate(year, month - 1, day);
+	}
+
+	private static boolean checkLineNotExist(int line) {
+		return line > Default.MAX_DISPLAY_LINE || line <= 0
+				|| RunLogic.getCurrentDisplay()[line] == -1;
+	}
+
+	private static int getTaskWithLine(int line) {
+		return RunLogic.getCurrentListIndex()[RunLogic.getCurrentDisplay()[line]];
+	}
+
+	private static boolean convertStatus(String newStatus, Task task) {
+		if (newStatus == null) {
+			return !task.getDone();
+		} else if (newStatus.equalsIgnoreCase("done")) {
+			return true;
+		} else if (newStatus.equalsIgnoreCase("undone")) {
+			return false;
+		} else {
+			return !task.getDone();
+		}
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\ConvertCommand.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\ConvertCommandTest.java
+	 */
+
+ *
+ */
+public class ConvertCommandTest {
+	RawCommand RawCommand1;
+	RawCommand RawCommand2;
+	Task task;
+	int[] display = new int[Default.MAX_DISPLAY_LINE + 1];
+	private static boolean arrayEquals(int[] a,int[] b) {
+		if(a == b) return true;
+		if(a.length != b.length) return false;
+		for(int i = 0; i<a.length; i++){
+			if(a[i] != b[i]) return false;			
+		}
+		return true;
+	}
+	
+	@Before
+	public void setUp() throws Exception {
+		RunLogic.initialize();
+		RawCommand1 = new RawCommand("add", "title", null, null, "description");
+		task = new Task("title", "description", null, null);
+		RawCommand2 = new RawCommand("read", "1");
+		for(int i = 0; i < display.length; i++){
+			display[i] = -1;
+		}
+	}
+
+	@Test
+	public void test() {
+		Command result1 = ConvertCommand.convert(RawCommand1);
+		result1.execute();
+		assertEquals(true, RunLogic.getTaskList().get(RunLogic.getTaskList().size() - 1).equalIgnorePointer(task));
+		
+		Command help = new ViewTaskList(null, null);
+		help.execute();
+		Command result2 = ConvertCommand.convert(RawCommand2);
+		result2.execute();
+		display[1] = 0;
+		assertEquals(true, arrayEquals(RunLogic.getCurrentDisplay(), display));
+		
+		result1.undo();
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\ConvertCommandTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\Default.java
+	 */
+
+ *
+ */
+public class Default {
+	// the line number to display in GUI
+	public static int MAX_DISPLAY_LINE = 10;
+	// standard format of date from parser
+	public static int LENGTH_OF_DATE_FORMAT = 8;	
+	// maximum tasks to store
+	public static int MAX_TASKS = 65535;
+	// define highlight part index for GUI display
+	public static int NO_HIGHLIGHT = -1;
+	public static int HIGHLIGHT_LINE = 1;
+	public static int HIGHLIGHT_PROPERTY = 2;
+	public static int HIGHLIGHT_DATE = 3;
+	public static int HIGHLIGHT_LINES = 4;
+	// define properties of a task to integers
+	public static int NAME = 1;
+	public static int STARTDATE = 2;
+	public static int ENDDATE = 3;
+	public static int BOTHDATE = 4;
+	public static int DESCRIPTION = 5;
+	public static int MARK = 6;
+	public static String HTML_BR = "<br>";
+	public static String HTML_TR1 = "<tr>";
+	public static String HTML_TR2 = "</tr>";
+	public static String HTML_TD1 = "<td>";
+	public static String HTML_TD2 = "</td>";
+	public static String helpInfo = "<html>" + "<table style='width:100%'>" + 
+			HTML_TR1 + HTML_TD1 + "Add" + HTML_TD2  + HTML_TD1 + "Add a new Tasklist "+ HTML_TD2  + HTML_TD1 + "[Add &lt;title&gt; &lt;Start Time YYYY-MM-DD&gt; &lt;End Time YYYY-MM-DD&gt; &lt;Description&gt;]" + HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Back" + HTML_TD2  + HTML_TD1 + "Back to Tasklist View "+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Delete" + HTML_TD2  + HTML_TD1 + "Delete a task"+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + " [Delete all]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Describe" + HTML_TD2  + HTML_TD1 + "Redescribe a task"+ HTML_TD2  + HTML_TD1 + "[Describe &lt;new description&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Mark" + HTML_TD2  + HTML_TD1 + "Mark the status "+ HTML_TD2  + HTML_TD1 + " [Mark &lt;index&gt; &lt;status 'Done' or 'Undone'&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Next" + HTML_TD2  + HTML_TD1 + "View next page"+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Previous " + HTML_TD2  + HTML_TD1 + "View previous page"+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Read" + HTML_TD2  + HTML_TD1 + "Read a specific task "+ HTML_TD2  + HTML_TD1 + "[Read &lt;index&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Rename" + HTML_TD2  + HTML_TD1 + "Rename a task title"+ HTML_TD2  + HTML_TD1 + " [Rename &lt;index&gt; &lt;new name&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Search" + HTML_TD2  + HTML_TD1 + "Search task title"+ HTML_TD2  + HTML_TD1 + "[Search &lt;keyword&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Update" + HTML_TD2  + HTML_TD1 + "Update task detail"+ HTML_TD2  + HTML_TD1 + "[Update &lt;index (Optional)&gt; name &lt;new name&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + " [Update &lt;index (Optional)&gt; description &lt;new description&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "Undo" + HTML_TD2  + HTML_TD1 + "Undo last operation"+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "View" + HTML_TD2  + HTML_TD1 + "View a field"+ HTML_TD2  + HTML_TD1 + "[View &lt;date&gt;]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + " [View bin]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + " [View tasklist]"+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			HTML_TR1 + HTML_TD1 + "" + HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TD1 + ""+ HTML_TD2  + HTML_TR2 +
+			"</table>"+ "" +
+			"<H2><center>Shortcuts:</center></H2>"
+			+
+			"<H2><Strong><center>F1:    view today"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F2: view tomorrow"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F3: view undone"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F4: view tasklist"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F5: view bin"
+			+ "&nbsp;&nbsp;&nbsp;" +
+			"F6: help</center></Strong></h2>"
+			+
+			"</html>";
+			
+ 
+		
+			
+			
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\Default.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\DisplayInfo.java
+	 */
+
+ * 
+ */
+public class DisplayInfo {
+	/*
+	 * ====================================================================
+	 * ===================== Start OF PRIVATE FIELD =======================
+	 * ====================================================================
+	 */
+	private VIEW_MODE mode;
+	
+	// information for page indicator
+	private boolean hasNextPage;
+	private boolean hasPreviousPage;
+	
+	// information for title
+	private boolean changeTitle;
+	private String title;
+	
+	// information for task 
+	private boolean changeTasklist;
+	private ArrayList<Task> taskList;
+
+	// information for feedback
+	private String feedback;
+	private String helpInfo;
+	private JDate date;
+
+	// info for highlight
+	private int highlight; 
+	private int highlightLine;
+	private int highlightItem;
+
+	/*
+	 * ====================================================================
+	 * ===================== END OF PRIVATE FIELD =========================
+	 * ====================================================================
+	 */
+
+	/*
+	 * ====================================================================
+	 * ===================== START OF PUBLIC METHOD =======================
+	 * ====================================================================
+	 */
+	public DisplayInfo(GUIStatus status){
+		this.mode = status.getMode();
+		this.hasNextPage = status.hasNext();
+		this.hasPreviousPage = status.hasPrevious();
+		this.date = status.getDate();
+		
+		this.changeTasklist = true;
+		this.changeTitle = true;
+		this.highlight = Default.NO_HIGHLIGHT;
+	}
+	
+	public DisplayInfo(VIEW_MODE newMode, String help, String feedback, String title) {
+		
+		this.mode = newMode;
+		this.helpInfo = help;
+		this.feedback = feedback;
+		this.title = title;
+		this.changeTasklist = true;
+		this.changeTitle = true;
+	}
+	
+	public DisplayInfo(GUIStatus status, ArrayList<Task> taskList,
+			String feedback, String title) {
+		this(status);
+		
+		this.taskList = taskList;
+		this.feedback = feedback;
+		this.title = title;
+
+	}
+
+	public DisplayInfo(GUIStatus status, String feedback,
+			Boolean changeTaskList, String title) {
+		this(status);
+
+		this.feedback = feedback;
+		this.title = title;
+		this.changeTasklist = changeTaskList;
+	}
+
+	public DisplayInfo(GUIStatus status, String feedback,
+			Boolean changeTaskList, Boolean changeTitle) {
+		this(status);
+
+		this.feedback = feedback;
+		this.changeTitle = changeTitle;
+		this.changeTasklist = changeTaskList;
+	}
+	
+	
+	
+	public VIEW_MODE getViewMode() {
+		return this.mode;
+	}
+
+	public ArrayList<Task> getTaskList() {
+		return this.taskList;
+	}
+
+	public boolean hasNextPage() {
+		return this.hasNextPage;
+	}
+
+	
+	public boolean hasPreviousPage() {
+		return this.hasPreviousPage;
+	}
+
+	public String getFeedbackString() {
+		return this.feedback;
+	}
+
+	public String getTitleString() {
+		return this.title;
+	}
+
+	public boolean changeTasklist() {
+		return changeTasklist;
+	}
+
+	public boolean changeTitle() {
+		return changeTitle;
+	}
+
+	public JDate getDate() {
+		return this.date;
+	}
+	
+
+	public int getHighlight() {
+		return this.highlight;
+	}
+
+	public int getHighlightLine() {
+		return this.highlightLine;
+	}
+
+	public int getHighlightItem() {
+		return this.highlightItem;
+	}
+	public String getHelpInfo() {
+		return this.helpInfo;
+	}
+	public void setHelpInfo(String info) {
+		this.helpInfo = info;
+	}
+	
+	
+	public void setHighlight(int newHighlight) {
+		this.highlight = newHighlight;
+	}
+
+	public void setHighlightLine(int line) {
+		this.highlightLine = line;
+	}
+
+	public void setHighlightItem(int item) {
+		this.highlightItem = item;
+	}
+	/*
+	 * ====================================================================
+	 * ===================== END OF PUBLIC METHOD =========================
+	 * ====================================================================
+	 */
+
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\DisplayInfo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\GUIStatus.java
+	 */
+
+ *
+ */
+public class GUIStatus {
+	private VIEW_MODE viewMode;
+	private boolean hasNext;
+	private boolean hasPrevious;
+	private int currentTask;
+	private JDate date;
+
+	public GUIStatus(VIEW_MODE viewMode, boolean hasNext, boolean hasPrevious, int currentTask, JDate date){
+		this.viewMode = viewMode;
+		this.hasNext = hasNext;
+		this.hasPrevious = hasPrevious;
+		this.currentTask = currentTask;
+		this.date = date;
+	}
+	
+	public VIEW_MODE getMode(){
+		return this.viewMode ;
+	}
+	
+	public boolean hasNext(){
+		return this.hasNext;
+	}
+	
+	public boolean hasPrevious(){
+		return this.hasPrevious;
+	}
+	
+	public int getTaskIndex(){
+		return this.currentTask;
+	}
+	
+	public JDate getDate(){
+		return this.date;
+	}
+	
+	public void changeViewMode(VIEW_MODE mode){
+		this.viewMode = mode;
+	}
+	
+	public void changeHasNext(boolean hasNext){
+		this.hasNext = hasNext;
+	}
+	
+	public void changeHasPrevious(boolean hasPrevious){
+		this.hasPrevious = hasPrevious;
+	}
+	
+	public void changeCurretnTask(int task){
+		this.currentTask = task;
+	}
+	
+	public void changeDate(JDate date){
+		this.date = date;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\GUIStatus.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\LogicToStore.java
+	 */
+
+ *
+ */
+public class LogicToStore {
+	private ArrayList<Task> TaskList;
+	private ArrayList<Task> TrashbinList;
+	
+	LogicToStore(){
+		this.TaskList = null;
+		this.TrashbinList = null;
+	}
+	
+	public LogicToStore(ArrayList<Task> taskList, ArrayList<Task> TrashbinList){
+		this.TaskList = taskList;
+		this.TrashbinList = TrashbinList;
+	}
+	
+	public ArrayList<Task> getTaskList(){
+		return this.TaskList;
+	}
+	
+	public  ArrayList<Task> getTrashbinList(){
+		return this.TrashbinList;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\LogicToStore.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\RunLogic.java
+	 */
+
+ *
+ */
+public class RunLogic {
+	private static Logger logger = Logger.getLogger("RunLogic");
+	
+	private static String WELCOME = "Welcome to MagiCal!";
+	private static String TITLE = "Today's tasks";
+	
+	// keep track on GUI and File status
+	private static GUIStatus GUI;
+	private static ArrayList<Task> taskList = new ArrayList<Task>();
+	private static ArrayList<Task> trashbinList = new ArrayList<Task>();
+	private static int[] currentDisplay = new int[Default.MAX_DISPLAY_LINE + 1];
+	private static int[] currentListIndex = new int[Default.MAX_TASKS];
+	private static Stack<Command> pastCommands ;
+	private static int nextTaskPointer;
+	
+	
+
+	public static DisplayInfo initialize() {
+		try{
+			initializeTaskLists();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "failed to read file");
+		}
+		initializeTaskPointer();
+		initializeCommandList();
+		initializeGUI();
+		initializeIndexLists();
+		return startupDisplay();
+	}
+	
+	public static DisplayInfo logic(String inputCommand){
+		RawCommand stringCommand = ParserProcesser.interpretCommand(inputCommand);
+		assert stringCommand != null : "logic cannot get correct command from parser!";
+		Command userCommand = ConvertCommand.convert(stringCommand);	
+		assert userCommand != null : "logic cannot convert command!";
+		addPastCommands(userCommand);
+		return userCommand.execute();
+	}
+	
+	
+	
+	//-------------------helper--------------------------
+	
+	public static GUIStatus getGuiStatus(){
+		return GUI;
+	}
+	
+	public static ArrayList<Task> getTaskList(){
+		return taskList;
+	}
+	
+	public static ArrayList<Task> getTrashbinList(){
+		return trashbinList;
+	}
+	
+	public static int[] getCurrentDisplay(){
+		return currentDisplay;
+	}
+	
+	public static int[] getCurrentListIndex(){
+		return currentListIndex;
+	}
+	public static void updateGuiStatus(GUIStatus newGUI){
+		GUI = newGUI;
+	}
+	
+	public static void updateTaskList(ArrayList<Task> newTaskList){
+		taskList = newTaskList;
+	}
+	
+	public static void updateTrashbinList(ArrayList<Task> newTrashbinList){
+		trashbinList = newTrashbinList;
+	}
+	
+	public static void updateCurrentdiaplay(int[] newDisplay){
+		currentDisplay = newDisplay;
+	}
+	
+	public static void updateCurrentListIndex(int[] newListIndex){
+		currentListIndex = newListIndex;
+	}
+	
+	private static void initializeTaskLists(){
+		ReadFile rf = new ReadFile();
+		taskList = rf.getEventTask();
+		if(taskList == null) {
+			taskList = new ArrayList<Task>();
+		}
+		trashbinList = rf.getTrashFile();
+		if(trashbinList == null) {
+			trashbinList = new ArrayList<Task>();
+		}
+	}
+	
+	private static void initializeCommandList(){
+		pastCommands = new Stack<Command>();
+	}
+	
+	private static void initializeGUI(){
+		Calendar c = Calendar.getInstance();
+ 		
+ 		GUI = new GUIStatus(VIEW_MODE.TASK_LIST, false, false, -1, 
+ 				new JDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)));
+ 		
+	}
+	
+	private static void initializeIndexLists(){
+		int length = currentListIndex.length;
+		for(int i = 0; i < taskList.size(); i++){
+			currentListIndex[i] = i;
+		}
+		for(int i = taskList.size(); i < length; i++){
+			currentListIndex[i] = -1;
+		}
+	}
+	
+	private static DisplayInfo startupDisplay(){
+		Command start = new ViewDate(GUI.getDate(), WELCOME, TITLE);
+		return start.execute();
+	}
+	
+	public static boolean hasPastCommands() {
+		return !pastCommands.isEmpty();
+	}
+	public static DisplayInfo undo() {
+		return pastCommands.pop().undo();
+	}
+	private static void addPastCommands(Command cmd){
+		if(cmd.supportUndo()) {
+			pastCommands.push(cmd);
+		}
+	}
+	
+	private static void initializeTaskPointer() {
+		nextTaskPointer = 0;
+		
+		for(Task t: taskList) {
+			t.setPointer(nextTaskPointer);
+			incrementnextTaskPointer();
+		}	
+		for(Task t: trashbinList) {
+			t.setPointer(nextTaskPointer);
+				incrementnextTaskPointer();
+			}
+	}
+	
+	public static int getNextTaskPointer() {
+		return nextTaskPointer;
+	}
+	
+	public static void incrementnextTaskPointer() {
+		nextTaskPointer++;
+	}
+	
+	public static int getPointerInList(ArrayList<Task> lst, int index){
+		if (lst != null) {
+			return lst.get(index).getPointer();
+		} else {
+			return -1;
+		}
+	}
+
+	public static int getIndexInList(ArrayList<Task> lst, int ptr) {
+		for(int i=0; i<lst.size(); i++) {
+			if(lst.get(i).matchPointer(ptr)){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public static boolean removeTaskByPointer(ArrayList<Task> lst, int ptr){
+		int index = getIndexInList(lst, ptr);
+		if(index != -1){
+			lst.remove(index);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\RunLogic.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\Task.java
+	 */
+
+ *
+ */
+public class Task implements Comparable<Task> {
+	private String name;
+	private String description;
+	private JDate startDate;
+	private JDate endDate; 
+	private boolean done;
+	
+	//added by Zhang Ji
+	private int pointer;
+	public void setPointer(int pointer) {
+		this.pointer = pointer;
+	}
+	public int getPointer() {
+		return pointer;
+	}
+	public boolean matchPointer(int ptr){
+		return this.pointer == ptr;
+	}
+	
+	// constructor
+	public Task(){
+		// empty constructor
+	}
+	
+	public Task(String name){
+		this.name = name;
+		this.description = null;
+		this.startDate = null;
+		this.endDate = null;
+		this.done = false;
+	}
+	
+	/*
+	 * @para 2 fields
+	 */
+	public Task(String name, String description){
+		this.name = name;
+		this.description = description;
+		this.startDate = null;
+		this.endDate = null;
+		this.done = false;
+	}
+	
+	/*
+	 * @para 3 fields
+	 * Input has No Description,No Start Date
+	 */
+	public Task(String name, String description, JDate endDate){
+		this.name = name;
+		this.description = description;
+		this.startDate = null;
+		this.endDate = endDate;
+		this.done = false;
+	}
+	
+	/*
+	 * @para 3 fields
+	 * Input has No Description, No End Date
+	 */
+	public Task(String name, JDate endDate){
+		this.name = name;
+		this.description = null;
+		this.startDate = null;
+		this.endDate = endDate;
+		this.done = false;
+	}
+	
+	/*
+	 * @para 4 fields
+	 * Input has no Description
+	 */
+	public Task(String name, JDate startDate, JDate endDate){
+		this.name = name;
+		this.description = null;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.done = false;
+	}
+	
+	/*
+	 * Full 5 parts
+	 */
+	public Task(String name, String description, JDate startDate2, JDate endDate2){
+		this.name = name;
+		this.description = description;
+		this.startDate = startDate2;
+		this.endDate = endDate2;
+		this.done = false;
+	}
+	
+	
+	
+	/*public Task(String name, String description, String repeatDays, JDate startDate2, null){
+		this.name = name;
+		this.description = description;
+		this.repeatDays = repeatDays;
+		this.startDate = startDate2;
+		this.endDate = endDate2;
+		this.done = false;
+	}
+	
+	
+	public Task(String name, String description, String repeatDays, null, JDate endDate2){
+		this.name = name;
+		this.description = description;
+		this.repeatDays = repeatDays;
+		this.startDate = startDate2;
+		this.endDate = endDate2;
+		this.done = false;
+	}
+	*/
+	
+	
+	
+	// API for get info
+	public String getName(){
+		return this.name;
+	}
+	
+	public String getDescription(){
+		return this.description;
+	}
+	
+	public JDate getStartDate(){
+		return this.startDate;
+	}
+	
+	public JDate getEndDate(){
+		return this.endDate;
+	}
+	
+	public boolean getDone(){
+		return this.done;
+	}
+	
+	// API for modify
+	public void rename(String newName){
+		this.name = newName;
+	}
+	
+	public void reschedule(JDate newStartDate, JDate newEndDate){
+		this.startDate = newStartDate;
+		this.endDate = newEndDate;
+	}
+	
+	public void describe(String newDescription){
+		this.description = newDescription;
+	}
+	
+	public void setDone(){
+		this.done = true;
+	}
+	
+	public void setUndone(){
+		this.done = false;
+	}
+	
+	
+	// API for compare
+	public boolean equals(Task task){
+		if(!this.name.equals(task.name)){
+			return false;
+		}
+		
+		//no description compare
+		if(this.description==null && task.description!=null){
+			return false;
+		}
+		if(description==null && task.description==null){
+			return true;
+		}
+		
+		
+		if(!this.description.equals(task.description)){
+			return false;
+		}
+		
+		//no start date compare
+		if(this.startDate==null && task.startDate!=null){
+			return false;
+		}
+		if(this.startDate==null && task.startDate==null){
+			return true;
+		}
+		
+		
+		if(!this.startDate.equals(task.startDate)){
+			return false;
+		}
+		
+		//no end date compare
+		if(this.endDate==null && task.endDate!=null){
+			return false;
+		}
+		if(this.endDate==null && task.endDate==null){
+			return true;
+		}
+		
+		
+		if(!this.endDate.equals(task.endDate)){
+			return false;
+		}
+
+		if((this.done || task.done) && !(this.done && task.done)){
+			return false;
+		}
+		return true;
+	}
+	
+	public String toPersonalString() {
+	    String startDateStr;
+	    String endDateStr;
+	    String status;
+	    
+	    if (this.startDate == null) {
+	        startDateStr = SystemInfo.EMPTYDATE;
+	    } else {
+	        startDateStr = "" + this.startDate.getYear() + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            this.startDate.getMonth() + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            this.startDate.getDay() + SystemInfo.SPLIT_DATE_SYMBOL +
+	                            SystemInfo.CHECKSTART;
+	    }
+	    
+	    if (this.endDate == null) {
+	        endDateStr = SystemInfo.EMPTYDATE;
+	    } else {
+	        endDateStr =   "" + this.endDate.getYear()  + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            this.endDate.getMonth()  + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            this.endDate.getDay() + SystemInfo.SPLIT_DATE_SYMBOL + 
+	                            SystemInfo.CHECKEND;
+	    }
+
+	    if (this.done){
+	    	status = SystemInfo.CHECKDONE;
+	    } else {
+	    	status = SystemInfo.CHECKUNDONE;
+	    }
+	    
+	    return this.name + 
+	    		SystemInfo.SEPERATESIMBOL + this.description +  
+	    		SystemInfo.SEPERATESIMBOL + startDateStr + 
+	    		SystemInfo.SEPERATESIMBOL + endDateStr +
+	    		SystemInfo.SEPERATESIMBOL + status;
+	}
+	@Override
+	public int compareTo(Task o) {
+		if(this.endDateCompareTo(o) != 0){
+			return this.endDateCompareTo(o);
+		} else {
+			return this.startDateCompareTo(o);
+		}
+		
+	}
+	private int endDateCompareTo(Task o) {
+		if(o == null) {
+			return 1;
+		}
+		if(getEndDate() == null) {	
+			if(o.getEndDate() != null) {
+				return -1;
+			} else {
+				return 0;
+			}
+		} else {
+			return getEndDate().compareTo(o.getEndDate());
+		}
+	}
+	private int startDateCompareTo(Task o) {
+		if(o == null) {
+			return 1;
+		}
+		if(getStartDate() == null) {	
+			if(o.getStartDate() != null) {
+				return -1;
+			} else {
+				return 0;
+			}
+		} else {
+			return getStartDate().compareTo(o.getStartDate());
+		}
+	}
+	
+	public boolean equalIgnorePointer(Task task){
+		if(task == null){
+			return false;
+		}
+		if(this.compareTo(task) != 0){
+			return false;
+		}
+		if(!this.getName().equals(task.getName())){
+			return false;
+		}
+		if(this.getDescription() != null && !this.getDescription().equals(task.getDescription())){
+			return false;
+		}
+		if(this.getDescription() == null && task.getDescription() != null){
+			return false;
+		}
+		return (this.getDone() && task.getDone()) || (!this.getDone() && !task.getDone());
+	}
+	
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\Task.java
+
+
+
+
+

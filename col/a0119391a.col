@@ -1,0 +1,1923 @@
+//@author: a0119391a
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\AttributePanel.java
+	 */
+
+ * @see CustomizedJPanel
+ * @see InfoPanel
+ * 
+ */
+public class AttributePanel extends JPanel implements CustomizedJPanel {
+
+	private static final long serialVersionUID = 1L;
+
+	private ArrayList<String> firstCol;
+	private ArrayList<String> secondCol;
+
+
+	private static Color highlightedColor = new Color(255, 157, 180, 100);
+	private static Color lightWhite = new Color(255, 255, 255, 80);
+
+	// highlight flag for property
+	private int highlightedProperty;
+
+	// background color for each attribute panel.
+	private Color NAME_BG;
+	private Color START_BG;
+	private Color END_BG;
+	private Color STATUS_BG;
+	private Color DESCRIPTION_BG;
+
+	private void determineBG() {
+		if (highlightedProperty == Default.NAME) {
+			NAME_BG = highlightedColor;
+		} else if (highlightedProperty == Default.STARTDATE) {
+			START_BG = highlightedColor;
+		} else if (highlightedProperty == Default.ENDDATE) {
+			END_BG = highlightedColor;
+		} else if (highlightedProperty == Default.BOTHDATE) {
+			START_BG = highlightedColor;
+			END_BG = highlightedColor;
+		} else if (highlightedProperty == Default.DESCRIPTION) {
+			DESCRIPTION_BG = highlightedColor;
+		} else if (highlightedProperty == Default.MARK) {
+			STATUS_BG = highlightedColor;
+		} else {
+			
+		}
+	}
+
+	private void initialize() {
+		NAME_BG = lightWhite;
+		START_BG = lightWhite;
+		END_BG = lightWhite;
+		STATUS_BG = lightWhite;
+		DESCRIPTION_BG = lightWhite;
+	
+		setLayout(new GridBagLayout());
+		this.setOpaque(false);
+	}
+
+	private void contructAllColumns(ArrayList<String> firstCol,
+			ArrayList<String> secondCol) {
+		int currentIndex = 0;
+	
+		// Name attribute
+		GridBagConstraints c1 = new GridBagConstraints();
+		c1.fill = GridBagConstraints.BOTH;
+		c1.gridx = 0;
+		c1.gridy = 0;
+		c1.ipady = 20;
+		c1.insets = new Insets(50, 10, 0, 10);
+		c1.weightx = 0.8;
+		c1.weighty = 0.2;
+		c1.gridwidth = 3;
+	
+		this.add(
+				new InfoPanel(NAME_BG, firstCol.get(currentIndex), secondCol
+						.get(currentIndex)), c1);
+	
+		// startDate Attribute
+		currentIndex++;
+		GridBagConstraints c2 = new GridBagConstraints();
+		c2.fill = GridBagConstraints.BOTH;
+		c2.gridx = 0;
+		c2.gridy = 1;
+		c2.weightx = 0.3;
+		c2.weighty = 0.2;
+		c2.ipady = 20;
+		c2.insets = new Insets(10, 10, 0, 0);
+		this.add(
+				new InfoPanel(START_BG, firstCol.get(currentIndex), secondCol
+						.get(currentIndex)), c2);
+	
+		// endDate Attribute
+		c2.gridx++;
+		currentIndex++;
+		this.add(
+				new InfoPanel(END_BG, firstCol.get(currentIndex), secondCol
+						.get(currentIndex)), c2);
+	
+		// status Attribute
+		c2.gridx++;
+		c2.insets = new Insets(10, 10, 0, 10);
+		currentIndex++;
+		this.add(
+				new InfoPanel(STATUS_BG, firstCol.get(currentIndex), secondCol
+						.get(currentIndex)), c2);
+	
+		// description Attribute
+		currentIndex++;
+		GridBagConstraints c3 = new GridBagConstraints();
+		c3.fill = GridBagConstraints.HORIZONTAL;
+		c3.gridx = 0;
+		c3.gridy = 2;
+		c3.weightx = 0.9;
+		c3.weighty = 0.2;
+		c3.ipady = 200;
+		c3.insets = new Insets(10, 10, 70, 10);
+		c3.gridwidth = 3;
+		c3.gridheight = 3;
+		this.add(new InfoPanel(DESCRIPTION_BG, firstCol.get(currentIndex),
+				secondCol.get(currentIndex)), c3);
+	}
+
+	public void setHighlightedProperty(int propertyNum) {
+		this.highlightedProperty = propertyNum;
+	}
+
+	/**
+	 * 
+	 * @param firstCol
+	 *            stores titles of each attribute
+	 * @param secondCol
+	 *            stores data of each attribute
+	 */
+	public AttributePanel(ArrayList<String> firstCol,
+			ArrayList<String> secondCol) {
+		super();
+		this.firstCol = firstCol;
+		this.secondCol = secondCol;
+
+		initialize();
+	}
+
+	public void construct() {
+		determineBG();
+		contructAllColumns(firstCol, secondCol);
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\AttributePanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\BasicGui.java
+	 */
+
+ * 
+ */
+public class BasicGui extends JFrame {
+
+	/*
+	 * ====================================================================
+	 * ===================== START OF PRIVATE FIELD =======================
+	 * ====================================================================
+	 */
+
+	private static final long serialVersionUID = 1L;
+	// instance of BasicGui
+	private static BasicGui instance;
+
+	// all relevant components
+	private JPanel menuArea;
+	private JPanel titlePanel;
+	private JTextField titleWindow;
+
+	private JPanel mainArea;
+	private JPanel FeedbackPanel;
+	private TransColorTextField feedbackWindow;
+	private JPanel mainPanel;
+	private CustomizedJPanel mainWindow;
+
+	private JPanel controlArea;
+	private JPanel inputPanel;
+	private JTextField inputWindow;
+
+	// constants for component size (unit in pixel)
+	private final static int TOP_LEFT_X_VALUE = 100;
+	private final static int TOP_LEFT_Y_VALUE = 100;
+	private final static int FRAME_WIDTH = 1000;
+	private final static int FRAME_HEIGHT = 640;
+	private final static int MINIMUM_FRAME_WIDTH = 1000;
+	private final static int MINIMUM_FRAME_HEIGHT = 640;
+
+	private final static int MENU_AREA_WIDTH = FRAME_WIDTH;
+	private final static int MENU_AREA_HEIGHT = 30;
+
+	String inputWindowHelperText = "Enter your command here:";
+	// color info
+	private final static Color COLOR_TITLE_WINDOW_BACK = Color.WHITE;
+	private final static Color COLOR_TITLE_WINDOW_FORE = new Color(66, 161,
+			223, 220);
+	private final static Color COLOR_TITLE_WINDOW_BORDER = new Color(66, 161,
+			223, 255);
+	// font info
+	private final static Font FONT_MAIN_WINDOW = new Font("Calibri",
+			Font.PLAIN, 29);
+	
+	
+	//all available keyboard shortcut
+	private String[] keyboardShortcut = {"F1", "F2","F3","F4","F5", "F6"};
+
+	/*
+	 * ====================================================================
+	 * ===================== END OF PRIVATE FIELD =========================
+	 * ====================================================================
+	 */
+
+	/*
+	 * ====================================================================
+	 * ===================== START OF PUBLIC METHOD =======================
+	 * ====================================================================
+	 */
+
+	public static BasicGui getInstance() {
+		if (instance == null) {
+			instance = new BasicGui();
+		}
+		return instance;
+	}
+
+	public void setTitleText(String text) {
+		titleWindow.setText(text);
+	}
+
+	public void setFeedbackText(String text) {
+		feedbackWindow.setTextTransColor(text);
+	}
+
+	public void showLayered() {
+		MultiLayeredPanel layered = new MultiLayeredPanel();
+		mainPanel.removeAll();
+		mainPanel.add(layered);
+	}
+
+	public TaskListPanel showListed(ArrayList<String> a, ArrayList<String> b,
+			ArrayList<String> c, ArrayList<Boolean> d) {
+		TaskListPanel listed = new TaskListPanel(a, b, c, d);
+		changeMainPanel(listed);
+
+		return listed;
+	}
+
+	public AttributePanel ShowDetailed(ArrayList<String> a, ArrayList<String> b) {
+		AttributePanel detailed = new AttributePanel(a, b);
+		changeMainPanel(detailed);
+
+		return detailed;
+	}
+
+	public CustomizedJPanel showHelp(String helpInfo) {
+		HelperPanel help = new HelperPanel(helpInfo);
+		changeMainPanel(help);
+		return help;
+	}
+
+
+	public void refreshMainPanel() {
+		mainPanel.validate();
+	}
+
+	/*
+	 * ====================================================================
+	 * ===================== END OF PUBLIC METHOD =========================
+	 * ====================================================================
+	 */
+
+	/*
+	 * ====================================================================
+	 * ===================== START OF Private METHOD =======================
+	 * ====================================================================
+	 */
+
+	/**
+	 * method BasicGUI: constructor of GUI. It is private as the singleton
+	 * pattern is applied.
+	 */
+	private BasicGui() {
+		constructFrame();
+		constructContentPanel();
+
+		constructMenuArea();
+		constructTitlePanel();
+		constructTitleWindow();
+
+		constructMainArea();
+		constructMainPanel();
+		constructMainWindow();
+		constructFeedbackPanel();
+		constructFeedbackWindow();
+
+		constructControlArea();
+		constructInputPanel();
+		constructInputWindow();
+		
+		validate();
+	}
+
+	private void constructFrame() {
+
+		setRootPaneCheckingEnabled(false);
+		setType(Type.UTILITY);
+		setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
+		getContentPane().setFocusTraversalPolicyProvider(true);
+		setVisible(true);
+	}
+
+	private void constructContentPanel() {
+		getContentPane().setEnabled(false);
+		getContentPane().setLayout(new BorderLayout());
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setMinimumSize(new Dimension(MINIMUM_FRAME_WIDTH,
+				MINIMUM_FRAME_HEIGHT));
+		setBounds(TOP_LEFT_X_VALUE, TOP_LEFT_Y_VALUE, FRAME_WIDTH, FRAME_HEIGHT);
+	}
+
+	private void constructMenuArea() {
+		menuArea = new JPanel();
+		menuArea.setOpaque(true);
+		menuArea.setPreferredSize(new Dimension(MENU_AREA_WIDTH,
+				MENU_AREA_HEIGHT));
+		menuArea.setLayout(new BorderLayout(0, 0));
+
+		getContentPane().add(menuArea, BorderLayout.NORTH);
+	}
+
+	private void constructTitlePanel() {
+		titlePanel = new JPanel();
+		titlePanel.setLayout(new BorderLayout());
+		titlePanel.setOpaque(true);
+
+		menuArea.add(titlePanel, BorderLayout.CENTER);
+	}
+
+	private void constructTitleWindow() {
+		titleWindow = new JTextField();
+
+		Font titleWindowFont = new Font("DIALOG", Font.ITALIC, 15);
+
+		titleWindow.setFont(titleWindowFont);
+		titleWindow.setEditable(false);
+		titleWindow.setBackground(COLOR_TITLE_WINDOW_BACK);
+		titleWindow.setForeground(COLOR_TITLE_WINDOW_FORE);
+		titleWindow.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0,
+				COLOR_TITLE_WINDOW_BORDER));
+
+		titlePanel.add(titleWindow, BorderLayout.CENTER);
+	}
+
+	private void constructMainArea() {
+		mainArea = new ImagePanel();
+		mainArea.setOpaque(true);
+		mainArea.setLayout(new BorderLayout(0, 0));
+
+		getContentPane().add(mainArea, BorderLayout.CENTER);
+
+	}
+
+	private void constructMainPanel() {
+		mainPanel = new JPanel();
+		mainPanel.setRequestFocusEnabled(false);
+		mainPanel.setOpaque(false);
+		mainPanel.setDoubleBuffered(false);
+		mainPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		mainPanel.setBorder(null);
+		mainPanel.setLayout(new BorderLayout(0, 0));
+
+		mainArea.add(mainPanel, BorderLayout.CENTER);
+	}
+
+	private void constructMainWindow() {
+		
+	}
+
+	private void constructFeedbackPanel() {
+		FeedbackPanel = new JPanel();
+		FeedbackPanel.setOpaque(false);
+		FeedbackPanel.setBorder(null);
+		FeedbackPanel.setLayout(new BorderLayout(0, 0));
+
+		mainArea.add(FeedbackPanel, BorderLayout.SOUTH);
+	}
+
+	private void constructFeedbackWindow() {
+		feedbackWindow = new TransColorTextField();
+		
+		
+
+		FeedbackPanel.add(feedbackWindow, BorderLayout.CENTER);
+	}
+
+	private void constructControlArea() {
+		controlArea = new JPanel();
+		controlArea.setOpaque(true);
+		controlArea.setBorder(null);
+		controlArea.setLayout(new BorderLayout(0, 0));
+
+		getContentPane().add(controlArea, BorderLayout.SOUTH);
+	}
+
+	private void constructInputPanel() {
+		inputPanel = new JPanel();
+		inputPanel.setOpaque(false);
+		inputPanel.setLayout(new BorderLayout());
+
+		controlArea.add(inputPanel);
+	}
+
+	private void constructInputWindow() {
+		inputWindow = new JTextField();
+		inputWindow.setOpaque(true);
+		inputWindow.addActionListener(new EnterKeyListener(inputWindow));
+		inputWindow.setText(inputWindowHelperText);
+		inputWindow.selectAll();
+		
+		// add keyboard shortcut key and action into maps
+		for(String s: keyboardShortcut){
+			inputWindow.getInputMap().put(KeyStroke.getKeyStroke(s), s);
+			inputWindow.getActionMap().put(s, new ShortcutKeyListener(s, inputWindow));
+		}
+		
+		inputPanel.add(inputWindow);
+		inputWindow.requestFocus();
+		
+		
+	}
+
+	/**
+	 * a helper method to help change the inner component of main panel
+	 * 
+	 * @param panel
+	 */
+	private void changeMainPanel(CustomizedJPanel panel) {
+		
+		mainPanel.removeAll();
+		mainPanel.add((Component) panel);
+	}
+
+	/*
+	 * ====================================================================
+	 * ===================== END OF PRIVATE FIELD =========================
+	 * ====================================================================
+	 */
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\BasicGui.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\CustomizedJPanel.java
+	 */
+
+ */
+
+public interface CustomizedJPanel {
+
+	public void construct();
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\CustomizedJPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\EnterKeyListener.java
+	 */
+
+ *
+ */
+class EnterKeyListener implements ActionListener {
+	
+	private JTextField input;
+	private final static String EMPTY_STRING = "";
+	
+	// add input JTextField into list of observation
+	public EnterKeyListener(JTextField input) {
+		this.input = input;
+	}
+
+	// once enter key is invoked, user command in the TextField will be sent
+	public void actionPerformed(ActionEvent e) {
+		
+		String inputCommand =input.getText().trim(); 
+		input.setText(EMPTY_STRING);
+		GuiController.processCommand(inputCommand);
+
+	}
+}
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\EnterKeyListener.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\GuiController.java
+	 */
+
+ * 
+ */
+public class GuiController {
+	private static BasicGui gui;
+	private static Logger logger = Logger.getLogger("GuiController");
+
+	/*********************************************
+	 ************** Public Method ****************
+	 ********************************************/
+	
+	// start point of the whole program 
+	public static void main(String[] args) {
+		run();
+	}
+
+	/**
+	 * pass the command to <strong>Logic</strong> and update
+	 * <strong>GUI</strong> accordingly
+	 * 
+	 * @param command
+	 */
+	public static void processCommand(String command) {
+		if(gui == null) {
+			gui = BasicGui.getInstance();
+		}
+		
+		DisplayInfo info = RunLogic.logic(command);
+		logger.info("user enters command: " + command);
+		display(info);
+		
+	}
+
+	/**
+	 * <em>run()</em>is the start point of <strong>MagiCal</strong>.
+	 * <code>BasicGui</code> instance is obtained and <strong>Gui</strong>
+	 * initialization is completed here.
+	 */
+	private static void run() {
+		gui = BasicGui.getInstance();
+		assert gui != null : "GuiController cannot get instance of Gui.";
+		logger.log(Level.CONFIG, "BasicGui instance gotten.");
+
+		DisplayInfo info = RunLogic.initialize();
+		display(info);
+		logger.log(Level.CONFIG, "MagiCal initialization completed.");
+
+	}
+
+	/*********************************************
+	 ************* Private Method ****************
+	 ********************************************/
+
+	/**
+	 * call <code>GuiInfoTranslator</code> to translate <code>DisplayInfo</code>
+	 * .
+	 * 
+	 * @param info
+	 *            DisplayInfo sent by GUI
+	 * @return GuiInfoTranslator
+	 */
+	private static GuiInfoTranslator translate(DisplayInfo info) {
+		return new GuiInfoTranslator(info);
+	}
+
+	/**
+	 * show updated <strong>GUI</strong> by given <code>DisplayInfo</code>
+	 * <strong>Note><strong>: a shortcut method combine
+	 * <em>display(GuiInfoTranslator)</em> and <em>translate(DisplayInfo)</em>.
+	 * 
+	 * @see #display(GuiInfoTranslator)
+	 * @see #translate(DisplayInfo)
+	 * @param info
+	 */
+	private static void display(DisplayInfo info) {
+		display(translate(info));
+	}
+
+	/**
+	 * manage and update <strong>GUI</strong> by given
+	 * <code>GuiInfoTranslator</code>
+	 * 
+	 * @param info
+	 */
+	private static void display(GuiInfoTranslator info) {
+		assert (gui != null);
+		if (info.changeTitle()) {
+			logger.info("title: " + info.getTitleString());
+			gui.setTitleText(info.getTitleString());
+		}
+
+		gui.setFeedbackText(info.getFeedbackString());
+		logger.info("feedback: " + info.getFeedbackString());
+
+		if (info.changeTaskList()) {
+			setMainPanel(info);
+		}
+
+	}
+
+	/**
+	 * determine and update main panel in <strong>GUI</strong> by given
+	 * <code>GuiInfoTranslator</code>
+	 * @param info
+	 */
+	private static void setMainPanel(GuiInfoTranslator info) {
+		VIEW_MODE mode = info.getViewMode();
+		CustomizedJPanel panel;
+
+		logger.info("current view mode:" + mode);
+		if(mode.equals(VIEW_MODE.HELP)) {
+			panel = gui.showHelp(info.getHelpInfo());
+		} else if (mode.equals(VIEW_MODE.TASK_DETAIL)) {
+			panel = gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
+			((AttributePanel) panel).setHighlightedProperty(info
+					.getHighlightedProperty());
+		} else if (mode.equals(VIEW_MODE.BIN_DETAIL)) {
+			panel = gui.ShowDetailed(info.getFirstCol(), info.getSecondCol());
+			((AttributePanel) panel).setHighlightedProperty(info
+					.getHighlightedProperty());
+		} else if (mode.equals(VIEW_MODE.MONTH)) {
+			throw new UnsupportedOperationException(
+					"view in Month is not supported yet");
+		} else if (mode.equals(VIEW_MODE.HELP)) {
+			throw new UnsupportedOperationException(
+					"Help info is not supported yet");
+		} else {
+			panel = gui.showListed(info.getFirstCol(), info.getSecondCol(),
+					info.getThirdCol(), info.getFourthCol());
+
+			assert panel != null : "a new component is not returned in main panel";
+			((TaskListPanel) panel).setPreviousPage(info.hasPreviousPage());
+			((TaskListPanel) panel).setNextPage(info.hasNextPage());
+			((TaskListPanel) panel).setIsHighlightedMultipleLine(info
+					.getHighlightMultipleLines());
+			((TaskListPanel) panel).setHighlightedLine(info
+					.getHighlightedLine());
+			((TaskListPanel) panel).setHighlightedDate(info
+					.getHighlightedDate());
+		}
+		
+		panel.construct();
+		gui.refreshMainPanel();
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\GuiController.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\GuiInfoTranslator.java
+	 */
+
+ * 
+ */
+public class GuiInfoTranslator {
+
+	// display information sent by Logic
+	private DisplayInfo info;
+
+	private ArrayList<String> firstCol = new ArrayList<String>();
+	private ArrayList<String> secondCol = new ArrayList<String>();
+	private ArrayList<String> thirdCol = new ArrayList<String>();
+	private ArrayList<Boolean> fourthCol = new ArrayList<Boolean>();
+
+	private int highlightedLine = -1;
+	private JDate highlightedDate;
+	private int highlightedProperty = -1;
+	private boolean hightlightMultipleLines = false;
+
+	// constants
+	private final static String EMPTY_STRING = "";
+	private final static String STR_DONE = "Done";
+	private final static String STR_UNDDONE = "Undone";
+
+	// attributes in task detail view mode
+	private String[] taskDetailAttr = { "Name", "StartDate", "EndDate",
+			"Status", "Description" };
+
+	/********************************************
+	 ************** Constructor *****************
+	 ********************************************/
+	public GuiInfoTranslator(DisplayInfo info) {
+		this.info = info;
+		processTaskInfo();
+	}
+
+	/********************************************
+	 ************** Public Method ***************
+	 ********************************************/
+	public boolean hasNextPage() {
+		return info.hasNextPage();
+	}
+
+	public boolean hasPreviousPage() {
+		return info.hasPreviousPage();
+	}
+
+	public boolean changeTitle() {
+		return info.changeTitle();
+	}
+
+	public String getTitleString() {
+		return info.getTitleString();
+	}
+
+	public boolean changeTaskList() {
+		return info.changeTasklist();
+	}
+
+	public ArrayList<String> getFirstCol() {
+		return firstCol;
+	}
+	
+	public ArrayList<String> getSecondCol() {
+		return secondCol;
+	}
+
+	public ArrayList<String> getThirdCol() {
+		return thirdCol;
+	}
+
+	public ArrayList<Boolean> getFourthCol() {
+		return fourthCol;
+	}
+
+	public String getFeedbackString() {
+		return info.getFeedbackString();
+	}
+
+	public VIEW_MODE getViewMode() {
+		return info.getViewMode();
+	}
+
+	public int getHighlightedLine() {
+		return this.highlightedLine;
+	}
+
+	public String getHighlightedDate() {
+		if (this.highlightedDate != null) {
+			return highlightedDate.toString();
+		} else {
+			return null;
+		}
+	}
+
+	public int getHighlightedProperty() {
+		return this.highlightedProperty;
+	}
+
+	public boolean getHighlightMultipleLines() {
+		return this.hightlightMultipleLines;
+	}
+
+	public String getHelpInfo() {
+		return info.getHelpInfo();
+	}
+	/********************************************
+	 ************* Private Method ***************
+	 ********************************************/
+	/**
+	 * determine and process task information according to the view mode
+	 */
+	private void processTaskInfo() {
+		ArrayList<Task> taskList = info.getTaskList();
+		Task task;
+		if (taskList == null || taskList.size() <= 0) {
+			return; 
+		}
+		int expectedListSize;
+		int firstIndex = 0;
+		switch (info.getViewMode()) {
+		case HELP:
+			break;
+		case TASK_DETAIL:
+			expectedListSize = 1;
+			assert taskList.size() ==  expectedListSize : 
+				"Length of tasklist passed from Logic must be 1 in Taks detail view mode";
+
+			task = taskList.get(firstIndex);
+			processTaskDetail(task);
+			return;
+		case BIN_DETAIL:
+			expectedListSize = 1;
+			assert taskList.size() ==  expectedListSize : 
+				"Length of tasklist passed from Logic must be 1 in bin detail view mode";
+			task = taskList.get(firstIndex);
+			processTaskDetail(task);
+			return;
+		case MONTH:
+			throw new UnsupportedOperationException(
+					"view in Month is not supported yet");
+		default:
+			processTaskList(taskList);
+			return;
+		}
+	}
+
+	/**
+	 * process the title and end date for each task in task list into two
+	 * <code>ArrayList</code>. The first <code>ArrayList</code> is stored in
+	 * <em>firstCol</em> The second <code>ArrayList</code> is stored in
+	 * <em>secondCol</em>.
+	 * 
+	 * @param lst
+	 *            ArrayList of task.
+	 */
+	private void processTaskList(ArrayList<Task> lst) {
+		assert lst != null : "a null tasklit cannot be processed";
+		assert lst.size() > 0 : "a empty tasklist cannot be processed";
+
+		if (info.getHighlight() == Default.HIGHLIGHT_LINE) {
+			this.highlightedLine = info.getHighlightLine();
+		} else if (info.getHighlight() == Default.HIGHLIGHT_DATE) {
+			this.highlightedDate = info.getDate();
+		} else if (info.getHighlight() == Default.HIGHLIGHT_LINES) {
+			this.highlightedLine = info.getHighlightLine();
+			this.hightlightMultipleLines = true;
+		}
+
+		for (int i = 0; i < lst.size(); i++) {
+			firstCol.add(lst.get(i).getName());
+			if (lst.get(i).getStartDate() != null) {
+				secondCol.add(lst.get(i).getStartDate().toString());
+			} else {
+				secondCol.add(EMPTY_STRING);
+			}
+			if (lst.get(i).getEndDate() != null) {
+				thirdCol.add(lst.get(i).getEndDate().toString());
+			} else {
+				thirdCol.add(EMPTY_STRING);
+			}
+			fourthCol.add(lst.get(i).getDone());
+
+		}
+
+	}
+
+	/**
+	 * process detail information of a certain task into several
+	 * <code>ArrayList</code>. The first <code>ArrayList</code> is stored in
+	 * <em>firstCol</em> The second <code>ArrayList</code> is stored in
+	 * <em>secondCol</em>.
+	 * 
+	 * @param task
+	 */
+	private void processTaskDetail(Task task) {
+		
+		assert task != null : "a null task cannot be processed";
+		
+		String name = task.getName();
+		JDate startDate = task.getStartDate();
+		JDate endDate = task.getEndDate();
+		String descrition = task.getDescription();
+		boolean status = task.getDone();
+
+		for (String attr : taskDetailAttr) {
+			firstCol.add(attr);
+		}
+		secondCol.add(name);
+
+		if (startDate != null) {
+			secondCol.add(startDate.toString());
+		} else {
+			secondCol.add(EMPTY_STRING);
+		}
+
+		if (endDate != null) {
+			secondCol.add(endDate.toString());
+		} else {
+			secondCol.add(EMPTY_STRING);
+		}
+
+		if (status) {
+			secondCol.add(STR_DONE);
+		} else {
+			secondCol.add(STR_UNDDONE);
+		}
+		secondCol.add(descrition);
+
+		if (info.getHighlight() == Default.HIGHLIGHT_PROPERTY) {
+			this.highlightedProperty = info.getHighlightItem();
+		}
+
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\GuiInfoTranslator.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\GuiInfoTranslatorTest.java
+	 */
+
+ *
+ */
+public class GuiInfoTranslatorTest {
+
+	private GuiInfoTranslator run(VIEW_MODE mode, boolean nextPage,
+			boolean previousPage, String feedback, String title, JDate date) {
+
+		GUIStatus status = new GUIStatus(mode, nextPage, previousPage, -1, date);
+		DisplayInfo displayInfo = new DisplayInfo(status, feedback, true, title);
+
+		GuiInfoTranslator translator = new GuiInfoTranslator(displayInfo);
+		return translator;
+	}
+
+	@Test
+	public void test1() {
+
+		VIEW_MODE mode = VIEW_MODE.TASK_DETAIL;
+		boolean nextPage = false;
+		boolean previousPage = false;
+		String feedback = "dsakfsadlkfasdfaf";
+		String title = "sdaf";
+	
+
+		GuiInfoTranslator translator = run(mode, nextPage, previousPage,
+				feedback, title, new JDate(2004, 10, 27));
+
+		Assert.assertTrue("view mode does not match", translator.getViewMode()
+				.equals(mode));
+		Assert.assertTrue("feedback does not match", translator
+				.getFeedbackString().equals(feedback));
+		Assert.assertTrue("title does not match", translator.getTitleString()
+				.equals(title));
+		Assert.assertTrue("next page does not match",
+				translator.hasNextPage() == nextPage);
+		Assert.assertTrue("previous page does not match",
+				translator.hasPreviousPage() == previousPage);
+		
+	}
+	
+	@Test
+	public void test2() {
+
+		VIEW_MODE mode = VIEW_MODE.TASK_LIST;
+		boolean nextPage = true;
+		boolean previousPage = true;
+		String feedback = "";
+		String title = "";
+	
+
+		GuiInfoTranslator translator = run(mode, nextPage, previousPage,
+				feedback, title, new JDate(2004, 10, 27));
+
+		Assert.assertTrue("view mode does not match", translator.getViewMode()
+				.equals(mode));
+		Assert.assertTrue("feedback does not match", translator
+				.getFeedbackString().equals(feedback));
+		Assert.assertTrue("title does not match", translator.getTitleString()
+				.equals(title));
+		Assert.assertTrue("next page does not match",
+				translator.hasNextPage() == nextPage);
+		Assert.assertTrue("previous page does not match",
+				translator.hasPreviousPage() == previousPage);
+		
+	}
+	
+	@Test
+	public void test3() {
+
+		VIEW_MODE mode = VIEW_MODE.TASK_LIST;
+		boolean nextPage = true;
+		boolean previousPage = false;
+		String feedback = "";
+		String title = "";
+	
+
+		GuiInfoTranslator translator = run(mode, nextPage, previousPage,
+				feedback, title, new JDate(2004, 10, 27));
+
+		Assert.assertTrue("view mode does not match", translator.getViewMode()
+				.equals(mode));
+		Assert.assertTrue("feedback does not match", translator
+				.getFeedbackString().equals(feedback));
+		Assert.assertTrue("title does not match", translator.getTitleString()
+				.equals(title));
+		Assert.assertTrue("next page does not match",
+				translator.hasNextPage() == nextPage);
+		Assert.assertTrue("previous page does not match",
+				translator.hasPreviousPage() == previousPage);
+		
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\GuiInfoTranslatorTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\HelperPanel.java
+	 */
+
+ *
+ */
+public class HelperPanel extends JPanel implements CustomizedJPanel {
+	
+	private static final long serialVersionUID = 1L;
+	
+	private String text;
+	private JTextPane contentPane;
+	private Color background = new Color(255, 255, 255, 100); 
+	
+	public HelperPanel(String text){
+		super();
+		this.text = text;
+		this.setOpaque(false);
+		this.setBackground(background);
+		this.setLayout(new BorderLayout());
+		
+	}
+	
+	public void construct() {
+		initializeContentPane(text);
+		this.add(contentPane);
+	}
+	private void initializeContentPane(String content) {
+		contentPane = new JTextPane();
+		contentPane.setEditable(false);
+		contentPane.setOpaque(false);
+		contentPane.setContentType("text/html");
+		contentPane.setText(content);
+		contentPane.setHighlighter(null);
+		contentPane.setAutoscrolls(true);
+		
+		
+		
+		
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\HelperPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\ImagePanel.java
+	 */
+
+ * 
+ */
+public class ImagePanel extends JPanel {
+
+	private static final long serialVersionUID = 1L;
+
+	private BufferedImage background;
+	
+	private String defaultImageFilePath = "images/background.jpg";
+
+	private static Logger logger = Logger.getLogger("ImagePanel");
+	/********************************************
+	 ************** Constructor *****************
+	 ********************************************/
+	/**
+	 * create a new ImagePanel using default background image
+	 */
+	public ImagePanel() {
+		try {
+			background = ImageIO.read(ResourceLoader.load(defaultImageFilePath));
+		} catch (IOException ex) {
+			logger.log(Level.SEVERE, "default image cannot be loaded");
+			ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * create a new <code>ImagePanel</code> given a background image. if the
+	 * given path is invalid, default background image is used instead.
+	 * 
+	 * @param path
+	 *            file path of image
+	 */
+	public ImagePanel(String path) {
+		try {
+			background = ImageIO.read(ResourceLoader.load(path));
+        } catch (IOException ex) {
+        	logger.log(Level.WARNING, "given image cannot be loaded");
+        	ex.printStackTrace();
+        	try {
+    			background = ImageIO.read(ResourceLoader.load(defaultImageFilePath));
+    		} catch (IOException e) {
+    			logger.log(Level.SEVERE, "default image cannot be loaded");
+    			ex.printStackTrace();
+    		}
+        }  
+		
+
+	}
+
+	/********************************************
+	 ************* Public Method ****************
+	 ********************************************/
+	@Override
+	public Dimension getPreferredSize() {
+		return background == null ? super.getPreferredSize() : new Dimension(
+				background.getWidth(), background.getHeight());
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+	}	
+}
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\ImagePanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\InfoPanel.java
+	 */
+
+ */
+public class InfoPanel extends JPanel {
+
+	private static final long serialVersionUID = -6143438348516086903L;
+	private JLabel titleF;
+	private JTextPane contentF;
+	private Font titleFont = new Font("calibri", Font.BOLD | Font.ITALIC, 15);
+	private Font contentFont = new Font("calibri", Font.BOLD, 25);
+	
+	private static final Color COLOR_WHITE_210 = new Color(255, 255, 255, 210);
+	private static final Color COLOR_CYAN_220 = new Color(55, 177, 241, 220);
+
+	public InfoPanel(Color background, String title, String content) {
+		super();
+		this.setBackground(background);
+		this.setLayout(new BorderLayout());
+		this.setOpaque(true);
+
+		initializeTitleF(title);
+		initializeContentF(content);
+		this.add(titleF, BorderLayout.NORTH);
+		this.add(contentF, BorderLayout.CENTER);
+
+	}
+
+	private void initializeTitleF(String title) {
+		titleF = new JLabel();
+		titleF.setOpaque(false);
+		titleF.setBackground(Color.WHITE);
+		titleF.setForeground(COLOR_CYAN_220);
+		
+		titleF.setFont(titleFont);
+		titleF.setText(title + ":");
+	}
+
+	private void initializeContentF(String content) {
+
+		contentF = new JTextPane();
+		contentF.setFont(contentFont);
+		contentF.setEditable(false);
+		contentF.setOpaque(true);
+		contentF.setBackground(COLOR_WHITE_210);
+		contentF.setForeground(COLOR_CYAN_220);
+		contentF.setText(content);
+		contentF.selectAll();
+		contentF.setHighlighter(null);
+
+		// align text to center
+		StyledDocument doc = contentF.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\InfoPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\ResourceLoader.java
+	 */
+
+ * 
+ */
+final public class ResourceLoader {
+	public static InputStream load(String path) {
+		InputStream input = ResourceLoader.class.getResourceAsStream(path);
+		if (input == null) {
+			input = ResourceLoader.class.getResourceAsStream("/" + path);
+		}
+		return input;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\ResourceLoader.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\ShortcutKeyListener.java
+	 */
+
+ *
+ */
+public class ShortcutKeyListener extends AbstractAction {
+	
+	private static final long serialVersionUID = 1L;
+	HashMap<String, String> map = new HashMap<String, String>();
+	private JTextField input;
+	private String inputString;
+	private final static String EMPTY_STRING = "";
+	
+	// initialize map using action key and corresponding command
+	private void initializeMap() {
+		map.put("F1", "view today");
+		map.put("F2", "view tomorrow");
+		map.put("F3", "view undone");
+		map.put("F4", "view tasklist");
+		map.put("F5", "view bin");
+		map.put("F6", "help");
+	}
+	// add input JTextField into list of observation
+	public ShortcutKeyListener(String actionKey, JTextField input) {
+		this.input = input;
+		initializeMap();
+		inputString = map.get(actionKey);
+		
+	}
+		
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		input.setText(EMPTY_STRING);
+		GuiController.processCommand(inputString);
+		
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\ShortcutKeyListener.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\TaskListPanel.java
+	 */
+
+ * @see CustomizedJPanel
+ */
+public class TaskListPanel extends JPanel implements CustomizedJPanel {
+
+	private static final long serialVersionUID = -5452419359255825458L;
+
+	// info of task list
+	private ArrayList<String> firstCol;
+	private ArrayList<String> secondCol;
+	private ArrayList<String> thirdCol;
+	private ArrayList<Boolean> fourthCol;
+	private ArrayList<String> indexCol;
+
+	private boolean previousPage;
+	private boolean nextPage;
+	private boolean isHighlightedMultipleLine;
+	private int highlightedLine;
+	private String highlightedDate;
+
+	private final static String SPACE = " ";
+	private final static String indexColTitle = "Index";
+	private final static String firstColTitle = "Title";
+	private final static String secondColTitle = "Start Date";
+	private final static String thirdColTitle = "End Date";
+	private final static String fourthColTitle = "Status";
+
+	// length of rows firstColTitle
+	private int NUM_OF_COL = 10;
+
+	private int INDEX_COL = 0;
+	private int TITLE_COL = 1;
+	private int START_COL = 2;
+	private int END_COL = 3;
+	private int STATUS_COL = 4;
+	private String folder = "images/";
+	private String previousArrowYPath = folder + "previousArrowY.png";
+	private String previousArrowNPath = folder + "previousArrowN.png";
+	private String nextArrowYPath = folder + "nextArrowY.png";
+	private String nextArrowNPath = folder + "nextArrowN.png";
+	private String tickPath = folder + "tick.png";
+	private String untickPath = folder + "untick.png";
+
+	// Pre-defined color
+	private static Color lightCyan120 = new Color(55, 177, 241, 220);
+	private static Color lightWhite = new Color(255, 255, 255, 150);
+	private static Color highlightedColor = new Color(255, 165, 186, 180);
+	
+	private final static String MESSAGE_IMAGE_LOST = "image lost";
+	
+	private static Logger logger = Logger.getLogger("TaskListPanel");
+
+	/********************************************
+	 ************** Constructor *****************
+	 ********************************************/
+
+	/**
+	 * create a new ColumnListPanel with multiple column information filled
+	 */
+	public TaskListPanel(ArrayList<String> firstCol,
+			ArrayList<String> secondCol, ArrayList<String> thirdCol,
+			ArrayList<Boolean> fourthCol) {
+		super();
+		this.indexCol = new ArrayList<String>();
+		this.firstCol = firstCol;
+		this.secondCol = secondCol;
+		this.thirdCol = thirdCol;
+		this.fourthCol = fourthCol;
+
+		this.previousPage = false;
+		this.nextPage = false;
+		this.isHighlightedMultipleLine = false;
+
+		setUp();
+
+	}
+
+	public void setPreviousPage(boolean flag) {
+		this.previousPage = flag;
+	}
+
+	public void setNextPage(boolean flag) {
+		this.nextPage = flag;
+	}
+
+	public void setHighlightedLine(int lineNum) {
+		this.highlightedLine = lineNum;
+	}
+
+	public void setIsHighlightedMultipleLine(boolean flag) {
+		this.isHighlightedMultipleLine = flag;
+	}
+
+	public void setHighlightedDate(String date) {
+		this.highlightedDate = date;
+	}
+
+	/**
+	 * construct all columns using <em>constructCol<em>
+	 * 
+	 * @see #constructTextCol(int, String, ArrayList, GridBagConstraints)
+	 */
+	public void construct() {
+		constructPageIndicatorRow();
+		constructIndexCol();
+		constructFirstCol();
+		constructSecondCol();
+		constuctThirdCol();
+		constructFourthCol();
+
+	}
+
+	/*********************************************
+	 ************* Private Method ****************
+	 ********************************************/
+	/**
+	 * set the attributes of the <code>container</code> and
+	 * <code>Layout Manager</code>
+	 */
+	private void setUp() {
+		setOpaque(false);
+//		this.setBackground(Color.white.);
+		setLayout(new GridBagLayout());
+		// initialize index column
+		for (int i = 1; i <= firstCol.size(); i++) {
+			indexCol.add(Integer.toString(i));
+		}
+	}
+
+	/**
+	 * construct the next page and previous page indicator in the first row
+	 */
+	private void constructPageIndicatorRow() {
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridy = 0;
+		c.gridx = 0;
+		c.insets = new Insets(0, 10, 0, 10);
+		String imgPath;
+		if (previousPage) {
+			imgPath = previousArrowYPath;
+		} else {
+			imgPath = previousArrowNPath;
+		}
+		this.add(createImageLabel(imgPath, null, new Dimension(50, 50), false),
+				c);
+		c.gridx = 4;
+
+		if (nextPage) {
+			imgPath = nextArrowYPath;
+		} else {
+			imgPath = nextArrowNPath;
+		}
+		this.add(createImageLabel(imgPath, null, new Dimension(50, 50), false),
+				c);
+	}
+
+	// column for task index
+	private void constructIndexCol() {
+		int colIndex = INDEX_COL;
+
+		GridBagConstraints c0 = new GridBagConstraints();
+		c0.fill = GridBagConstraints.BOTH;
+		c0.ipady = 25;
+		c0.insets = new Insets(0, 10, 0, 0);
+		c0.weightx = 0.03;
+		c0.weighty = 0.1;
+		constructTextCol(colIndex, indexColTitle, indexCol, c0);
+	}
+
+	// column for task title
+	private void constructFirstCol() {
+		int colIndex;
+		colIndex = TITLE_COL;
+		GridBagConstraints c1 = new GridBagConstraints();
+		c1.fill = GridBagConstraints.BOTH;
+
+		c1.insets = new Insets(0, 10, 0, 0);
+		c1.weightx = 0.7;
+		constructTextCol(colIndex, firstColTitle, firstCol, c1);
+	}
+
+	// column for task start date
+	private void constructSecondCol() {
+		int colIndex;
+		colIndex = START_COL;
+		GridBagConstraints c2 = new GridBagConstraints();
+		c2.weightx = 0.03;
+		c2.insets = new Insets(0, 10, 0, 0);
+		c2.fill = GridBagConstraints.BOTH;
+		constructTextCol(colIndex, secondColTitle, secondCol, c2);
+	}
+
+	// column for task end date
+	private void constuctThirdCol() {
+		int colIndex;
+		colIndex = END_COL;
+		GridBagConstraints c3 = new GridBagConstraints();
+		c3.weightx = 0.03;
+		c3.insets = new Insets(0, 10, 0, 0);
+		c3.fill = GridBagConstraints.BOTH;
+		constructTextCol(colIndex, thirdColTitle, thirdCol, c3);
+	}
+
+	// column for task status
+	private void constructFourthCol() {
+		int colIndex;
+		colIndex = STATUS_COL;
+		GridBagConstraints c4 = new GridBagConstraints();
+		c4.weightx = 0.03;
+		c4.insets = new Insets(0, 10, 0, 10);
+		c4.fill = GridBagConstraints.BOTH;
+		constructStatusCol(colIndex, fourthColTitle, fourthCol, c4);
+	}
+
+	/**
+	 * construct a column of text JLabels
+	 * 
+	 * @param colIndex
+	 *            index of the columns (start from 0)
+	 * @param title
+	 *            title of the column
+	 * @param lst
+	 *            data in this column
+	 * @param c
+	 *            GridBagConstraints
+	 */
+	private void constructTextCol(int colIndex, String title,
+			ArrayList<String> lst, GridBagConstraints c) {
+		c.gridx = colIndex;
+		c.gridy = 1;
+
+		this.add(createColoredLabel(title, lightCyan120), c);
+		for (int i = 0; i < NUM_OF_COL; i++) {
+			int offset = 2; // page indicator and title row
+			c.gridy = i + offset;
+			if (i < lst.size()) {
+				Color bg;
+				// check for line highlight
+				if (checkHightedLines(i)) {
+					bg = highlightedColor;
+				} else {
+					bg = lightWhite;
+				}
+				// check for date highlight
+				if (colIndex == START_COL || colIndex == END_COL) {
+					if (checkHighlightedDate(lst.get(i))) {
+						bg = highlightedColor;
+					}
+
+				}
+				this.add(createColoredLabel(lst.get(i), bg), c);
+			} else {
+				this.add(createEmptyLabel(), c);
+			}
+
+		}
+	}
+
+	/**
+	 * construct a columns of image labels(special for done/undone status)
+	 * 
+	 * @param index
+	 *            of the columns (start from 0)
+	 * @param title
+	 *            title of the column
+	 * @param lst
+	 *            data in this column
+	 * @param c
+	 *            GridBagConstraint
+	 */
+	private void constructStatusCol(int colIndex, String title,
+			ArrayList<Boolean> lst, GridBagConstraints c) {
+		c.gridx = colIndex;
+		int offset = 1; // page indicator row
+		c.gridy = offset;
+		this.add(createColoredLabel(title, lightCyan120), c);
+		for (int i = 0; i < NUM_OF_COL; i++) {
+			offset = 2; // page indicator and title row
+			c.gridy = i + offset;
+
+			if (i < lst.size()) {
+				Dimension labelSize = new Dimension(10, 10);
+				String imagePath = untickPath;
+				Color backgroundColor = lightWhite;
+				if (lst.get(i)) {
+					imagePath = tickPath;
+				}
+				if (checkHightedLines(i)) {
+					backgroundColor = highlightedColor;
+				}
+
+				this.add(
+						createImageLabel(imagePath, backgroundColor, labelSize,
+								true), c);
+
+			} else {
+				this.add(createEmptyLabel(), c);
+			}
+
+		}
+	}
+
+	/**
+	 * create and return a colored <code>JLabel</code>
+	 * 
+	 * @param text
+	 *            JLabel text
+	 * @param color
+	 *            background color of JLabel
+	 * @return JLabel
+	 */
+	private JLabel createColoredLabel(String text, Color color) {
+		JLabel label = new JLabel(text);
+		label.setFont(label.getFont().deriveFont(Font.BOLD | Font.ITALIC));
+		label.setOpaque(true);
+		
+		label.setBackground(color);
+		label.setForeground(Color.black);
+		label.setFont(new Font("Arial", Font.BOLD, 14));
+		label.setHorizontalAlignment(label.CENTER);
+		return label;
+	}
+
+	/**
+	 * create and return a image <code>JLabel</code>
+	 * 
+	 * @param path
+	 *            file path of image
+	 * @param color
+	 *            background color
+	 * @param d
+	 *            dimension
+	 * @param opaque
+	 *            is opaque
+	 * @return JLabel
+	 */
+	private JLabel createImageLabel(String path, Color color, Dimension d,
+			boolean opaque) {
+		try {
+			ImageIcon icon;
+
+			InputStream pic = ResourceLoader.load(path);
+			icon = new ImageIcon(ImageIO.read(pic));
+			
+			JLabel label = new JLabel(icon);
+			label.setOpaque(opaque);
+			
+			label.setBackground(color);
+			label.setMaximumSize(d);
+			label.setPreferredSize(d);
+			return label;
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "cannot load image on label");
+			return new JLabel(MESSAGE_IMAGE_LOST);
+		}
+	}
+
+	/**
+	 * create and return a empty <code>JLabel</code>
+	 * 
+	 * @return JLabel
+	 */
+	private JLabel createEmptyLabel() {
+		JLabel label = new JLabel(SPACE); // note that empty string cannot be
+											// used here
+		label.setFont(label.getFont().deriveFont(Font.BOLD | Font.ITALIC));
+		label.setOpaque(false);
+		return label;
+	}
+
+	/**
+	 * check if the given line should be highlighted by given line number
+	 * <strong>note</strong>: the line number count from the first datum in
+	 * certain column, excluding the title. Note first line number is 0.
+	 * 
+	 * @param lineNum
+	 * @return true if given line should be highlighted.
+	 */
+	private boolean checkHightedLines(int lineNum) {
+		if (isHighlightedMultipleLine) {
+			return highlightedLine <= lineNum;
+		} else {
+			return highlightedLine == lineNum;
+		}
+	}
+
+	/**
+	 * check if the certain position should be highlighted given highlighted
+	 * date <strong>Note</strong>: given highlighted date and data in column are
+	 * all stored in strings
+	 * 
+	 * @param date
+	 * @return true if date matches
+	 */
+	private boolean checkHighlightedDate(String date) {
+		if (date == null) {
+			return false;
+		} else {
+			return date.equalsIgnoreCase(highlightedDate);
+		}
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\TaskListPanel.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\TransColorTextField.java
+	 */
+
+ * 
+ */
+public class TransColorTextField extends JTextField {
+
+	private static final long serialVersionUID = 2017126697448899239L;
+	
+	private static final Color COLOR_A = new Color(255, 255, 255, 150);
+	private static final Color COLOR_B = new Color(128, 138, 135, 100);
+	private Color currentColor;
+	private final static Font FONT_FEEDBACK_WINDOW = new Font("Ayuthaya",
+			Font.PLAIN, 13);
+	
+	private static final int PREFEFERRED_WIDTH = 200;
+	private static final int PREFEFERRED_HEIGHT = 40;
+	/*********************************************
+	 *************** Constructor *****************
+	 ********************************************/
+	public TransColorTextField() {
+		super();
+		this.setOpaque(false);
+		setEditable(false);
+		this.setPreferredSize(new Dimension(PREFEFERRED_WIDTH, PREFEFERRED_HEIGHT));
+		this.setFont(FONT_FEEDBACK_WINDOW);
+		this.setBorder(null);
+		this.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		currentColor = COLOR_A;
+
+	}
+	/*********************************************
+	 ************* Public Method ****************
+	 ********************************************/
+	public void setTextTransColor(String txt) {
+		setBackground(currentColor);
+		setText(txt);
+		switchColor();
+
+	}
+	/*********************************************
+	 ************* Private Method ****************
+	 ********************************************/
+	private void switchColor() {
+		if (currentColor.equals(COLOR_A)) {
+			currentColor = COLOR_B;
+		} else {
+			currentColor = COLOR_A;
+		}
+	}
+	}
+
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\gui\TransColorTextField.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\DisplayInfo.java
+	 */
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\DisplayInfo.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\JDate.java
+	 */
+
+ * @see GregorianCalendar
+ * 
+ */
+public class JDate extends GregorianCalendar {
+	private static final long serialVersionUID = 1L;
+	// locale for provide information when toString method is used
+	private static final Locale defaultLocale = Locale.ENGLISH;
+	private Locale locale;
+
+	/********************************************
+	 ************** Constructor *****************
+	 ********************************************/
+
+	// note: input range for month value is from 1 to 12
+	public JDate(int year, int month, int day) {
+		super(year, month, day);
+		setLenient(false);
+	}
+
+	// empty constructor
+	public JDate() {
+
+	}
+
+	/********************************************
+	 ************* Public Method ****************
+	 ********************************************/
+	public void setYear(int newValue) {
+		this.set(YEAR, newValue);
+	}
+
+	public void setMonth(int newValue) {
+		this.set(MONTH, newValue);
+	}
+
+	public void setDay(int newValue) {
+		this.set(DAY_OF_MONTH, newValue);
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+	public int getYear() {
+		return this.get(YEAR);
+	}
+
+	public int getMonth() {
+		return this.get(MONTH);
+	}
+
+	public int getDay() {
+		return this.get(DAY_OF_MONTH);
+	}
+
+	public Locale getLocale() {
+		return this.locale;
+	}
+
+	/**
+	 * convert <code>JDate</code> information into string using following
+	 * format:<br>
+	 * <code>month <em>splitter</em> day <em>splitter</small> year</code>.
+	 * 
+	 * @param spliter
+	 *            a string to split attributes
+	 * @return info string
+	 */
+	public String toString(String splitter) {
+		return monthToString() + splitter + getDay() + splitter + getYear();
+	}
+
+	/**
+	 * default version of <code>toString(String)</code>. with the default
+	 * splitter as the space
+	 * 
+	 * @see #toString(String)
+	 */
+	public String toString() {
+		return toString(" ");
+	}
+
+	/**
+	 * <em>compareTo</em> method to compare between two JDate.
+	 * 
+	 * <strong>Note</strong>: if the given JDate is null, it is considered as a
+	 * null date without any time information. therefore 1 will be returned
+	 * since we want to place all floating tasks in the end.
+	 * 
+	 * @param another
+	 *            another JDate
+	 */
+	public int compareTo(JDate another) {
+		if (another == null) {
+			return 1;
+		}
+		if (this.getYear() < another.getYear()) {
+			return -1;
+		} else if (this.getYear() > another.getYear()) {
+			return 1;
+		} else {
+			if (this.getMonth() < another.getMonth()) {
+				return -1;
+			} else if (this.getMonth() > another.getMonth()) {
+				return 1;
+			} else {
+				if (this.getDay() < another.getDay()) {
+					return 1;
+				} else if (this.getDay() > another.getDay()) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		}
+	}
+
+	/********************************************
+	 ************* Private Method ***************
+	 ********************************************/
+
+	/**
+	 * convert month into string according to the locale given
+	 */
+	private String monthToString() {
+		if (locale != null) {
+			return this.getDisplayName(MONTH, SHORT, getLocale());
+		} else {
+			return this.getDisplayName(MONTH, SHORT, defaultLocale);
+		}
+
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\JDate.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\VIEW_MODE.java
+	 */
+
+ */
+public enum VIEW_MODE {
+	 MONTH, UNDONE, BIN, TASK_DETAIL, TASK_LIST, BIN_DETAIL, HELP
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\logic\VIEW_MODE.java
+
+
+
+
+

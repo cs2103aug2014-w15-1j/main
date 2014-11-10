@@ -1,0 +1,224 @@
+//@author: a0100792testing
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\data_store\DataStoreTest.java
+	 */
+
+ * 
+ */
+
+@SuppressWarnings("unused")
+public class DataStoreTest {
+	
+    String name = "Test Name";
+    String description = "Buy New Birthday Gift";
+    String repeatDays = "1 month";
+    
+
+    JDate startDate = new JDate(2014, 8, 22);
+    JDate endDate = null;
+    
+
+    private   Task testTask = new Task(name,  description,
+                                       startDate, endDate);
+
+    private   ArrayList<Task> TestTasks;
+    private   ArrayList<Task> TestTrash;
+
+    public ReadFile testReadFile;
+
+
+	@Before 
+    public void setUp() { 
+		TestTasks = new ArrayList<Task>();
+	    TestTrash = new ArrayList<Task>();
+		
+		testReadFile = new read_file.ReadFile();
+		
+        TestTasks.add(testTask);
+        TestTrash.add(testTask);
+
+    }
+ 
+	@Test
+    public void test() {
+			
+		/*
+		 * Test Writing into a task list file and Retrieving it to check it
+		 */	
+		
+        DataStore.writeTask(TestTasks);       
+        
+        ArrayList<Task> resultTA = new ArrayList<Task>();    
+        resultTA = testReadFile.getEventTask();      
+        assertTrue(resultTA,TestTasks);
+        
+		
+        /*
+         * Test Writing into a trash list file and Retrieving it to check
+         */
+	    DataStore.writeTrash(TestTrash);
+        
+        ArrayList<Task> resultTR = new ArrayList<Task>();    
+        resultTR = testReadFile.getTrashFile(); 
+       
+		assertTrue(resultTR,TestTrash);
+    }
+
+	private boolean assertTrue(ArrayList<Task> result, ArrayList<Task> testing ) {
+		if (result.equals(testing))
+			return true;
+			else
+			return false;	
+	}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\data_store\DataStoreTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\read_file\MakeTaskTest.java
+	 */
+
+ */
+
+@SuppressWarnings("unused")
+public class MakeTaskTest {
+	
+    String name = "Hello";
+    String description = "Go shopping";
+    String repeatDays = "1 month";
+    
+    JDate startDate = new JDate(2014, 9, 22);
+    JDate endDate = null;
+    
+    //5 fields
+    private   Task testTask5 = new Task(name, description, 
+             startDate, endDate);
+
+    public ReadFile testMakeTask;
+	
+	@Before
+	public void setUp() throws Exception {
+		
+		testMakeTask = new read_file.ReadFile();		
+	}
+
+
+	@Test
+	public void test() {
+		//5 fields
+		Task test5;
+		String case5 = "Hello=Go shopping=1 month=2014-9-22-start=null";
+		test5 = ReadFile.makeTask(case5);
+		assertTrue(test5,testTask5);						
+		
+	}
+	
+	private boolean assertTrue(Task result, Task expected) {
+		if(result.equals(expected))
+			return true;
+		else
+			return false;
+		}
+
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\read_file\MakeTaskTest.java
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Zhang Ji\workspace\MagiCal\main\src\read_file\ReadFIleTest.java
+	 */
+
+ * 
+ */
+@SuppressWarnings("unused")
+public class ReadFIleTest {
+
+	String name = "Test Name";
+    String description = "Buy New Birthday Gift";
+    String repeatDays = "1 month";
+    
+
+    JDate startDate = null;
+    JDate endDate = new JDate(2014, 8, 22);
+    //new JDate(2014, 8, 22)
+
+    private   Task testTask = new Task(name, description, 
+                                       startDate, endDate);
+
+    private ArrayList<Task> trashData;
+    private ArrayList<Task> eventData;
+    
+    private ReadFile testReadTrash;
+    private ReadFile testReadTask;
+    
+            
+    @Before 
+    public void setUp() { 
+    	testReadTrash = new ReadFile();
+    	testReadTask = new ReadFile();
+    	
+    	trashData = new ArrayList<Task>();
+        eventData = new ArrayList<Task>();
+    	
+    	trashData.add(testTask);
+    	eventData.add(testTask);
+    }
+
+    @Test
+    public void test() {
+    	
+    	
+    	DataStore.writeTrash(trashData);
+    	DataStore.writeTask(eventData);
+      
+        ArrayList<Task> resultTrash = testReadTrash.getTrashFile();
+        assertTrue(trashData,resultTrash);
+        
+
+        ArrayList<Task> resultEvent = testReadTask.getEventTask();
+        assertTrue(eventData,resultEvent);
+        
+    }
+
+	private boolean assertTrue(ArrayList<Task> event,ArrayList<Task> result){
+		if (event.equals(result))
+			return true;
+		else 
+			return false;
+	}
+
+	public ArrayList<Task> getTrashData() {
+		return trashData;
+	}
+
+	public void setTrashData(ArrayList<Task> trashData) {
+		this.trashData = trashData;
+	}
+
+	public ArrayList<Task> getEventData() {
+		return eventData;
+	}
+
+	public void setEventData(ArrayList<Task> eventData) {
+		this.eventData = eventData;
+	}
+}
+
+	// End of segment: C:\Users\Zhang Ji\workspace\MagiCal\main\src\read_file\ReadFIleTest.java
+
+
+
+
+

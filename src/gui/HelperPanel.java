@@ -2,11 +2,15 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
 
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-
+/**
+ *  a customized swing container that extends <code>JPanel</code>. It is a simple
+ * JPanel to display the help information for Magical.
+ * @author A0119391A
+ *
+ */
 public class HelperPanel extends JPanel implements CustomizedJPanel {
 	
 	private static final long serialVersionUID = 1L;

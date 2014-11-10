@@ -7,7 +7,7 @@ import java.io.InputStream;
  * Sombat. here is the youtube link I got the idea from:
  * https://www.youtube.com/watch?v=rCoed3MKpEA
  * 
- * @author A0119391
+ * @author A0119391A
  * 
  */
 final public class ResourceLoader {
